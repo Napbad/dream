@@ -6,9 +6,15 @@
 #define CHECK_H
 #include <string>
 
+#include "model/val.h"
+
 
 namespace util::check {
     bool strIsNum(const std::string &s);
+
+    bool valIsZero(const Dval *val);
+
+    bool isVal(const Dval *val);
 }
 
 

@@ -27,7 +27,10 @@ namespace dval {
 
     Dval *dval_char(char x, const std::string &identifier, int val_mutable, int val_nullable);
 
-    Dval *dval_bool(const std::string &val, const std::string &string, int val_mutable, int val_nullable);
+    Dval *dval_bool(const std::string &val, const std::string &identifier, int val_mutable, int val_nullable);
+
+    Dval *dval_bool(const bool &val, const std::string &identifier, int val_mutable,
+                    int val_nullable);
 
     Dval *dval_str(const std::string &val, const std::string &identifier, int val_mutable, int val_nullable);
 
@@ -40,13 +43,17 @@ namespace dval {
 
     Dval *dval_float(float f, const std::string &identifier, int val_mutable, int val_nullable);
 
+    Dval *dval_op(std::string op);
+
     void denv_add_int(const std::string &num, const std::string &identifier, Denv *env);
 
     void denv_add_bool(const std::string &val, const std::string &identifier, Denv *env);
+
+    Dval *dval_err(const char *str);
 }
 
 // Define the type for built-in functions
-typedef Dval *(*builtin)(Denv *, Dval *);
+typedef Dval *(*builtin)(const Denv *, const Dval *,const Dval *);
 
 // dval Class
 class Dval {
@@ -73,7 +80,7 @@ class Dval {
 public:
     // Constructors
     Dval(int type,
-         long num,
+         long long_value,
          float f,
          std::byte byte_value,
          int int_value,
@@ -86,7 +93,7 @@ public:
          std::vector<Dval *> *child);
 
     Dval(int type,
-         long num,
+         long long_value,
          float f,
          std::byte byte_value,
          int int_value,
@@ -101,14 +108,14 @@ public:
          int val_nullable);
 
     Dval(int type,
-         long num,
+         long long_value,
          float f,
          std::byte byte_value,
          int int_value,
          short short_value,
          char char_value,
          const std::string &value,
-         std::vector<Dval*> *arr_val,
+         std::vector<Dval *> *arr_val,
          const std::string &identifier,
          builtin *fun,
          int count,
@@ -152,16 +159,40 @@ public:
 
     [[nodiscard]] float float_value() const;
 
+    [[nodiscard]] std::byte byte_value() const;
+
+    [[nodiscard]] char char_value() const;
+
+    [[nodiscard]] short short_value() const;
+
     [[nodiscard]] std::vector<Dval *> *arr_val() const;
+
+    [[nodiscard]] bool bool_value() const;
+
+    [[nodiscard]] int int_value() const;
+
     void set_arr_val(std::vector<Dval *> *arr_val);
-    
+
     void set_value(std::string value);
 
-    void set_num(long num);
+    void set_long_value(long long_value);
 
     void set_float(float f);
 
     void print_value();
+
+    void add_child(Dval *dval) const;
+
+    void set_fun(builtin *builtin);
+
+    void set_int_value(int i);
+
+    void set_short_value(int i);
+
+    void set_char_value(int i);
+
+    void set_byte_value(std::byte byte);
+
 };
 
 // denv Class
@@ -184,26 +215,26 @@ public:
     // Accessor methods
     [[nodiscard]] int count() const;
 
-    void set_count(int count);
-
     [[nodiscard]] std::unordered_map<const Dval *, Dval *> *identifiers() const;
 
     [[nodiscard]] std::unordered_map<std::string, const Dval *> *identifiers_str() const;
-
-    void add(const Dval *identifier, Dval *val);
 
     [[nodiscard]] Dval *get(const Dval *identifier) const;
 
     [[nodiscard]] std::vector<Denv *> *children(int index) const;
 
-    void add_child(Denv *child) const;
-
     [[nodiscard]] Denv *parent() const;
+
+    [[nodiscard]] Dval *get(const std::string &identifier) const;
+
+    void set_count(int count);
+
+    void add(const Dval *identifier, Dval *val);
+
+    void add_child(Denv *child) const;
 
     void set_parent(Denv *parent);
 
     void add(const std::string &identifier, Dval *val);
-
-    [[nodiscard]] Dval *get(const std::string &identifier) const;
 };
 #endif

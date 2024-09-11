@@ -1,5 +1,5 @@
 //
-// Created by napbad on 9/10/24.
+
 //
 #pragma once
 
@@ -38,11 +38,11 @@
 #define D_VAR "var"
 #define D_FUN "fun"
 #define D_INT "int"
-# define D_BYTE "byte"
-# define D_SHORT "short"
-# define D_LONG "long"
-# define D_CHAR "char"
-# define D_FLOAT "float"
+#define D_BYTE "byte"
+#define D_SHORT "short"
+#define D_LONG "long"
+#define D_CHAR "char"
+#define D_FLOAT "float"
 #define D_STRING "string"
 #define D_FLOAT "float"
 #define D_BOOL "bool"
@@ -53,19 +53,69 @@
 #define D_BANG "!"
 #define D_BANG_QUESTION "?"
 
-#define D_ASSIGN "="
 #define D_PLUS_ASSIGN "+="
 #define D_MINUS_ASSIGN "-="
 #define D_MUL_ASSIGN "*="
 #define D_DIV_ASSIGN "/="
 #define D_MOD_ASSIGN "%="
+#define D_NOT "!"
+
+#define D_ASSIGN "="
+#define D_ADD "+"
+#define D_SUB "-"
+#define D_MUL "*"
+#define D_DIV "/"
+#define D_MOD "%"
+#define D_LT "<"
+#define D_GT ">"
+#define D_LTE "<="
+#define D_GTE ">="
+#define D_EQ "=="
+#define D_NEQ "!="
+#define D_AND "&&"
+#define D_OR "||"
+#define D_XOR "^"
+#define D_LSHIFT "<<"
+#define D_RSHIFT ">>"
+#define D_URSHIFT ">>>"
+
+#define D_CHAR_ASSIGN '='
+#define D_CHAR_ADD '+'
+#define D_CHAR_SUB '-'
+#define D_CHAR_MUL '*'
+#define D_CHAR_DIV '/'
+#define D_CHAR_MOD '%'
+#define D_CHAR_LT '<'
+#define D_CHAR_GT '>'
+#define D_CHAR_XOR '^'
 
 #define D_SEMICOLON ";"
 
 #define D_PACKAGE_FORMAT "(PACKAGE) (name) (;)"
 #define D_PACKAGE_SPLIT "."
 
+#include "val.h"
+
+extern std::vector<std::string> ops;
+extern std::vector<char> ops_c;
+
+extern builtin add_builtin;
+extern builtin sub_builtin;
+extern builtin mul_builtin;
+extern builtin div_builtin;
+extern builtin mod_builtin;
+extern builtin lt_builtin;
+extern builtin gt_builtin;
+extern builtin lte_builtin;
+extern builtin gte_builtin;
+extern builtin eq_builtin;
+extern builtin neq_builtin;
+extern builtin and_builtin;
+extern builtin or_builtin;
+extern builtin xor_builtin;
+extern builtin lshift_builtin;
+extern builtin rshift_builtin;
+extern builtin urshift_builtin;
 
 
 #endif
-

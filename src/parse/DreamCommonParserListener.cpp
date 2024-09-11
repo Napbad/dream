@@ -83,10 +83,9 @@ void DreamCommonParserListener::enterStmt(DreamParser::StmtContext *ctx) {
 
     if (ctx->children.size() == 2) {
         antlr4::tree::ParseTree * value = ctx->children.at(0);
-        string identifier = value->getText();
+        const string identifier = value->getText();
 
-        Dval * val = _curr_env->get(identifier);
-        if (val != nullptr) {
+        if (Dval * val = _curr_env->get(identifier); val != nullptr) {
             val->print_value();
         }
         else {
@@ -202,7 +201,7 @@ void DreamCommonParserListener::exitDeclaration(DreamParser::DeclarationContext 
 }
 
 void DreamCommonParserListener::enterVarDeclaration(DreamParser::VarDeclarationContext *ctx) {
-    std::vector<antlr4::tree::ParseTree *> child = ctx->children;
+    const std::vector<antlr4::tree::ParseTree *> child = ctx->children;
 
     const string var_name = child[2]->getText();
     const string var_mut = child[0]->getText();
@@ -212,6 +211,10 @@ void DreamCommonParserListener::enterVarDeclaration(DreamParser::VarDeclarationC
     // TODO calculate value of var_val expression
 
     Dval *val;
+
+
+
+    Dval * expr = util::parse::parseExpr(var_val, _curr_env);
 
     if (var_type.ends_with("[]")) {
         val = new Dval();

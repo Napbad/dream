@@ -7,6 +7,8 @@ package com.napbad.main; // 这是一个包声明，指定当前文件属于 `ma
 import com.napbad.std; // 这是一个导入语句，导入 `com.napbad.std` 包
 import com.napbad.http; // 这是一个导入语句，导入 `com.napbad.http` 包
 
+var int b? = (20 + 10 * 40 - 100 / 5) + 10 * (10 + 1) % 4;
+
 var int a! = 10; // 这是一个变量声明
 // `var` 表示 `a` 是一个可变变量
 // `!` 表示 `a` 不可以为 null，并且初始化为 10
@@ -14,7 +16,7 @@ var int a! = 10; // 这是一个变量声明
 
 // 支持的变量有这些类型：
 // byte short int long flo  at double bool char string
-var int b? = 20;
+
 var string c? = "Hello, world!";
 
 // 加上[]，表示数组

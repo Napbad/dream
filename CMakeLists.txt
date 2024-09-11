@@ -40,6 +40,7 @@ add_executable(dream
         src/parse/DreamBaseListener.h
         src/model/val.h
         src/model/enum.h
+        src/model/reserved.cpp
 )
 
 target_link_libraries(dream ${LIBANTLR})

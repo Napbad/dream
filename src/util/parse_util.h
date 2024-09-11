@@ -19,6 +19,10 @@ namespace util::parse {
 
     void printPackageTree(const Package *package, int level);
 
+    Dval *parseExpr(const antlr4::tree::ParseTree & val, const Denv *env);
 
+    pair<int, string> findOp(const string& expr);
+
+    Dval* calc_expr(Dval *exp, const Denv *env);
 }
 

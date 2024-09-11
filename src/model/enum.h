@@ -14,7 +14,7 @@ inline enum {
     DVAL_SYM,
     DVAL_PACK,
     DVAL_IMPORT,
-
+    DVAL_OP,
     DVAL_BODY,
     DVAL_PACKAGE
 } DVAL_TYPE;

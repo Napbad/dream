@@ -11,7 +11,7 @@
 // Constructor implementation
 Dval::Dval(
     const int type,
-    const long num,
+    const long long_value,
     const float f,
     const std::byte byte_value,
     const int int_value,
@@ -24,18 +24,18 @@ Dval::Dval(
     std::vector<Dval *> *child)
 
     : _type(type),
-      _long_value(num),
+      _long_value(long_value),
       _byte_value(byte_value),
       _int_value(int_value),
       _char_value(char_value),
       _short_value(short_value),
       _value(std::move(value)),
-      _identifier(std::move(identifier)),
+      _float_value(f),
       _arr_val(nullptr),
+      _identifier(std::move(identifier)),
       _fun(fun),
       _count(count),
-      _child(child),
-      _float_value(f) {
+      _child(child) {
     _val_mutable = static_cast<std::byte>(IMMUTABLE);
     _val_nullable = static_cast<std::byte>(NON_NULLABLE);
     _package = nullptr;
@@ -44,7 +44,7 @@ Dval::Dval(
 
 Dval::Dval(
     const int type,
-    const long num,
+    const long long_value,
     const float f,
     const std::byte byte_value,
     const int int_value,
@@ -58,7 +58,7 @@ Dval::Dval(
     int val_mutable,
     int val_nullable) {
     _type = type;
-    _long_value = num;
+    _long_value = long_value;
     _float_value = f;
     _byte_value = byte_value;
     _int_value = int_value;
@@ -78,7 +78,7 @@ Dval::Dval(
 
 Dval::Dval(
     const int type,
-    const long num,
+    const long long_value,
     const float f,
     const std::byte byte_value,
     const int int_value,
@@ -96,7 +96,7 @@ Dval::Dval(
     Package *package,
     Dval *parent) {
     _type = type;
-    _long_value = num;
+    _long_value = long_value;
     _float_value = f;
     _byte_value = byte_value;
     _int_value = int_value;
@@ -222,6 +222,18 @@ float Dval::float_value() const {
     return _float_value;
 }
 
+std::byte Dval::byte_value() const {
+    return _byte_value;
+}
+
+char Dval::char_value() const {
+    return _char_value;
+}
+
+short Dval::short_value() const {
+    return _short_value;
+}
+
 std::vector<Dval *> *Dval::arr_val() const {
     return _arr_val;
 }
@@ -234,8 +246,8 @@ void Dval::set_value(std::string value) {
     _value = std::move(value);
 }
 
-void Dval::set_num(const long num) {
-    _long_value = num;
+void Dval::set_long_value(const long long_value) {
+    _long_value = long_value;
 }
 
 void Dval::set_float(const float f) {
@@ -260,7 +272,8 @@ void Dval::print_value() {
             std::cout << "Char: " << this->identifier() << " = " << this->_char_value << std::endl;
             break;
         case DVAL_BOOL:
-            std::cout << "Bool: " << this->identifier() << " = " << (this->_value == "true" ? "true" : "false") << std::endl;
+            std::cout << "Bool: " << this->identifier() << " = " << (this->_value == "true" ? "true" : "false") <<
+                    std::endl;
             break;
         case DVAL_STR:
             std::cout << "String: " << this->identifier() << " = " << this->_value << std::endl;
@@ -275,6 +288,38 @@ void Dval::print_value() {
             std::cout << "Unknown type" << std::endl;
             break;
     }
+}
+
+int Dval::int_value() const {
+    return _int_value;
+}
+
+void Dval::add_child(Dval *dval) const {
+    _child->push_back(dval);
+}
+
+void Dval::set_fun(builtin *builtin) {
+    _fun = builtin;
+}
+
+bool Dval::bool_value() const {
+    return _value == "true";
+}
+
+void Dval::set_int_value(const int i) {
+    _int_value = i;
+}
+
+void Dval::set_short_value(const int i) {
+    _short_value = static_cast<short>(i);
+}
+
+void Dval::set_char_value(const int i) {
+    _char_value = static_cast<char>(i);
+}
+
+void Dval::set_byte_value(const std::byte byte) {
+    _byte_value = byte;
 }
 
 Denv::Denv(const int count) {
@@ -424,6 +469,31 @@ namespace dval {
                         val_mutable, val_nullable, nullptr, nullptr);
     }
 
+    Dval *dval_op(std::string op) {
+        Dval *val = new Dval(DVAL_FUN, 0, 0, static_cast<std::byte>(0), 0, 0, 0, "", std::move(op), nullptr, 0,
+                             new std::vector<Dval *>);
+
+        if (op == D_ADD) {
+            val->set_fun(&add_builtin);
+        } else if (op == D_SUB) {
+            val->set_fun(&sub_builtin);
+        } else if (op == D_MUL) {
+            val->set_fun(&mul_builtin);
+        } else if (op == D_DIV) {
+            val->set_fun(&div_builtin);
+        } else if (op == D_MOD) {
+            val->set_fun(&mod_builtin);
+        } else if (op == D_LSHIFT) {
+            val->set_fun(&lshift_builtin);
+        } else if (op == D_RSHIFT) {
+            val->set_fun(&rshift_builtin);
+        }
+        return val;
+    }
+
+    Dval *dval_err(const char *str) {
+        return new Dval(DVAL_ERR, 0, 0, static_cast<std::byte>(0), 0, 0, 0, "", str, nullptr, 0, nullptr);
+    }
 
     /* Construct a pointer to a new Symbol dval */
     Dval *dval_identifier(const std::string &s) {
@@ -468,6 +538,14 @@ namespace dval {
                         val_mutable, val_nullable, nullptr, nullptr);
     }
 
+    Dval *dval_bool(const bool &val, const std::string &identifier, const int val_mutable,
+                    const int val_nullable) {
+        return new Dval(DVAL_BOOL, val, 0.0, static_cast<std::byte>(0), 0, 0, '\0', val ? "true" : "false", nullptr,
+                        identifier, nullptr, 0,
+                        nullptr,
+                        val_mutable, val_nullable, nullptr, nullptr);
+    }
+
     Dval *dval_str(const std::string &val, const std::string &identifier, const int val_mutable,
                    const int val_nullable) {
         return new Dval(DVAL_STR, 0, 0.0, static_cast<std::byte>(0), 0, 0, '\0', val, nullptr, identifier, nullptr, 0,
@@ -505,26 +583,6 @@ namespace dval {
     Denv *denv_new() {
         Denv *e = new Denv(0);
         return e;
-    }
-
-    void denv_del(const Denv *e) {
-        // 遍历 e->identifiers_str()
-        const auto identifiers_str = e->identifiers_str();
-        for (const auto &pair: *identifiers_str) {
-            delete pair.second;
-        }
-
-        // 删除 e->identifiers()
-        delete[] e->identifiers();
-
-        // 遍历 e->identifiers()
-        const auto identifiers = e->identifiers();
-        for (const auto &pair: *identifiers) {
-            delete pair.second;
-            delete pair.first; // 注意：删除 first 可能会导致内存泄漏或未定义行为
-        }
-
-        delete e;
     }
 
     void denv_put(Denv *e, const Dval *k, Dval *v) {
