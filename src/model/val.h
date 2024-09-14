@@ -6,6 +6,7 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
+#include <tree/ParseTree.h>
 
 #include "Package.h"
 
@@ -17,7 +18,7 @@ class Package;
 namespace dval {
     Dval *dval_identifier(const std::string &s);
 
-    Dval *dval_int(long x, const std::string &identifier, int val_mutable, int val_nullable);
+    Dval *dval_int(int x, const std::string &identifier, int val_mutable, int val_nullable);
 
     Dval *dval_byte(std::byte x, const std::string &identifier, int val_mutable, int val_nullable);
 
@@ -29,31 +30,54 @@ namespace dval {
 
     Dval *dval_bool(const std::string &val, const std::string &identifier, int val_mutable, int val_nullable);
 
-    Dval *dval_bool(const bool &val, const std::string &identifier, int val_mutable,
-                    int val_nullable);
+    Dval *dval_bool(const bool &val, const std::string &identifier, int val_mutable, int val_nullable);
 
     Dval *dval_str(const std::string &val, const std::string &identifier, int val_mutable, int val_nullable);
+
+    Dval *dval_float(float f, const std::string &identifier, int val_mutable, int val_nullable);
+
+    Dval *dval_op(std::string op);
+
+    Dval *dval_int_arr(const std::string &identifier, int val_mutable, int val_nullable);
+
+    Dval *dval_byte_arr(const std::string &identifier, int val_mutable, int val_nullable);
+
+    Dval *dval_short_arr(const std::string &identifier, int val_mutable, int val_nullable);
+
+    Dval *dval_long_arr(const std::string &identifier, int val_mutable, int val_nullable);
+
+    Dval *dval_char_arr(const std::string &identifier, int val_mutable, int val_nullable);
+
+    Dval *dval_bool_arr(const std::string &identifier, int val_mutable, int val_nullable);
+
+    Dval *dval_float_arr(const std::string &identifier, int val_mutable, int val_nullable);
+
+    Dval *dval_str_arr(const std::string &identifier, int val_mutable, int val_nullable);
 
     Dval *dval_package(Package *pkg);
 
     Dval *dval_import(const std::string &identifier, Denv *env);
 
+
     Dval *dval_gen(const std::string &val, const std::string &type, const std::string &identifier, int val_mutable,
                    int val_nullable);
 
-    Dval *dval_float(float f, const std::string &identifier, int val_mutable, int val_nullable);
-
-    Dval *dval_op(std::string op);
+    Dval *dval_array_gen(const std::string &type, const std::string &identifier, int val_mutable,
+                         int val_nullable);
 
     void denv_add_int(const std::string &num, const std::string &identifier, Denv *env);
 
     void denv_add_bool(const std::string &val, const std::string &identifier, Denv *env);
 
     Dval *dval_err(const char *str);
+
+    Dval * dval_err(const std::string & err);
+
+    int get_type(const std::string & type);
 }
 
 // Define the type for built-in functions
-typedef Dval *(*builtin)(const Denv *, const Dval *,const Dval *);
+typedef Dval *(*builtin)(const Denv *, const Dval *, const Dval *);
 
 // dval Class
 class Dval {
@@ -63,7 +87,7 @@ class Dval {
     int _int_value;
     char _char_value;
     short _short_value;
-    std::string _value;
+    std::string _string_value;
     float _float_value;
     std::vector<Dval *> *_arr_val;
 
@@ -74,8 +98,8 @@ class Dval {
     std::vector<Dval *> *_child;
     Package *_package;
     Dval *_parent;
-    std::byte _val_mutable;
-    std::byte _val_nullable;
+    bool _val_mutable;
+    bool _val_nullable;
 
 public:
     // Constructors
@@ -99,7 +123,7 @@ public:
          int int_value,
          short short_value,
          char char_value,
-         const std::string &value,
+         const std::string &string_value,
          const std::string &identifier,
          builtin *fun,
          int count,
@@ -114,7 +138,7 @@ public:
          int int_value,
          short short_value,
          char char_value,
-         const std::string &value,
+         const std::string &string_value,
          std::vector<Dval *> *arr_val,
          const std::string &identifier,
          builtin *fun,
@@ -135,7 +159,7 @@ public:
     // Accessor methods
     [[nodiscard]] int type() const;
 
-    [[nodiscard]] std::string value() const;
+    [[nodiscard]] std::string string_value() const;
 
     [[nodiscard]] std::string identifier() const;
 
@@ -171,9 +195,27 @@ public:
 
     [[nodiscard]] int int_value() const;
 
+    [[nodiscard]] std::string get_string_value() const;
+
+    [[nodiscard]] float get_float_value() const;
+
+    [[nodiscard]] long get_long_value() const;
+
+    [[nodiscard]] int get_int_value() const;
+
+    [[nodiscard]] short get_short_value() const;
+
+    [[nodiscard]] char get_char_value() const;
+
+    [[nodiscard]] std::byte get_byte_value() const;
+
+    [[nodiscard]] bool is_mutable() const;
+
+    [[nodiscard]] bool is_nullable() const;
+
     void set_arr_val(std::vector<Dval *> *arr_val);
 
-    void set_value(std::string value);
+    void set_string_value(std::string value);
 
     void set_long_value(long long_value);
 
@@ -193,6 +235,13 @@ public:
 
     void set_byte_value(std::byte byte);
 
+    void set_val_nullable(bool cond);
+
+    void set_val_mutable(bool cond);
+
+    void set_identifier(const std::string & string);
+
+    void set_value(const std::string &val);
 };
 
 // denv Class

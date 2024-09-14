@@ -1,7 +1,9 @@
 #include "enum.h"
 #include "val.h"
 #include <cstring>
+#include <cfloat>
 #include <iostream>
+#include <climits>
 #include <utility>
 
 #include "reserved.h"
@@ -29,15 +31,15 @@ Dval::Dval(
       _int_value(int_value),
       _char_value(char_value),
       _short_value(short_value),
-      _value(std::move(value)),
+      _string_value(std::move(value)),
       _float_value(f),
       _arr_val(nullptr),
       _identifier(std::move(identifier)),
       _fun(fun),
       _count(count),
       _child(child) {
-    _val_mutable = static_cast<std::byte>(IMMUTABLE);
-    _val_nullable = static_cast<std::byte>(NON_NULLABLE);
+    _val_mutable = IMMUTABLE;
+    _val_nullable = NON_NULLABLE;
     _package = nullptr;
     _parent = nullptr;
 }
@@ -50,13 +52,13 @@ Dval::Dval(
     const int int_value,
     const short short_value,
     const char char_value,
-    const std::string &value,
+    const std::string &string_value,
     const std::string &identifier,
     builtin *fun,
     const int count,
     std::vector<Dval *> *child,
-    int val_mutable,
-    int val_nullable) {
+    const int val_mutable,
+    const int val_nullable) {
     _type = type;
     _long_value = long_value;
     _float_value = f;
@@ -64,14 +66,14 @@ Dval::Dval(
     _int_value = int_value;
     _short_value = short_value;
     _char_value = char_value;
-    _value = value;
-    _arr_val = nullptr,
-            _identifier = identifier;
+    _string_value = string_value;
+    _arr_val = nullptr;
+    _identifier = identifier;
     _fun = fun;
     _count = count;
     _child = child;
-    _val_mutable = static_cast<std::byte>(val_mutable);
-    _val_nullable = static_cast<std::byte>(val_nullable);
+    _val_mutable = val_mutable == MUTABLE;
+    _val_nullable = val_nullable == NULLABLE;
     _package = nullptr;
     _parent = nullptr;
 }
@@ -84,15 +86,14 @@ Dval::Dval(
     const int int_value,
     const short short_value,
     const char char_value,
-    const std::string &value,
+    const std::string &string_value,
     std::vector<Dval *> *arr_val,
     const std::string &identifier,
     builtin *fun,
     const int count,
-
     std::vector<Dval *> *child,
-    int val_mutable,
-    int val_nullable,
+    const int val_mutable,
+    const int val_nullable,
     Package *package,
     Dval *parent) {
     _type = type;
@@ -102,23 +103,23 @@ Dval::Dval(
     _int_value = int_value;
     _short_value = short_value;
     _char_value = char_value;
-    _value = value;
+    _string_value = string_value;
     _arr_val = arr_val;
     _identifier = identifier;
     _fun = fun;
     _count = count;
     _child = child;
-    _val_mutable = static_cast<std::byte>(val_mutable);
-    _val_nullable = static_cast<std::byte>(val_nullable);
+    _val_mutable = val_mutable;
+    _val_nullable = val_nullable;
     _package = package;
     _parent = parent;
 }
 
 Dval::Dval() {
-    _type = 0;
+    _type = -1;
     _long_value = 0;
     _float_value = 0;
-    _value = "";
+    _string_value = "";
     _byte_value = static_cast<std::byte>(0);
     _int_value = 0;
     _short_value = 0;
@@ -127,9 +128,9 @@ Dval::Dval() {
     _identifier = "";
     _fun = nullptr;
     _count = 0;
-    _child = nullptr;
-    _val_mutable = static_cast<std::byte>(IMMUTABLE);
-    _val_nullable = static_cast<std::byte>(NON_NULLABLE);
+    _child = new std::vector<Dval *>;
+    _val_mutable = IMMUTABLE;
+    _val_nullable = NON_NULLABLE;
     _package = nullptr;
     _parent = nullptr;
 }
@@ -141,7 +142,7 @@ Dval::Dval(const Dval &other)
       _int_value(other._int_value),
       _char_value(other._char_value),
       _short_value(other._short_value),
-      _value(other._value),
+      _string_value(other._string_value),
       _identifier(other._identifier),
       _fun(other._fun),
       _count(other._count),
@@ -161,7 +162,16 @@ Dval::Dval(const Dval &other)
 
 // Destructor implementation
 Dval::~Dval() {
+    for (const auto &child: *_child) {
+        delete child;
+    }
+
+    for (const auto &arr_val: *_arr_val) {
+        delete arr_val;
+    }
+
     delete _child;
+    delete _arr_val;
 }
 
 // Accessor method for type
@@ -170,8 +180,8 @@ int Dval::type() const {
 }
 
 // Accessor method for value
-std::string Dval::value() const {
-    return _value;
+std::string Dval::string_value() const {
+    return _string_value;
 }
 
 // Accessor method for identifier
@@ -242,8 +252,8 @@ void Dval::set_arr_val(std::vector<Dval *> *arr_val) {
     _arr_val = arr_val;
 }
 
-void Dval::set_value(std::string value) {
-    _value = std::move(value);
+void Dval::set_string_value(std::string value) {
+    _string_value = std::move(value);
 }
 
 void Dval::set_long_value(const long long_value) {
@@ -272,17 +282,98 @@ void Dval::print_value() {
             std::cout << "Char: " << this->identifier() << " = " << this->_char_value << std::endl;
             break;
         case DVAL_BOOL:
-            std::cout << "Bool: " << this->identifier() << " = " << (this->_value == "true" ? "true" : "false") <<
+            std::cout << "Bool: " << this->identifier() << " = " << (this->_string_value == "true" ? "true" : "false")
+                    <<
                     std::endl;
             break;
         case DVAL_STR:
-            std::cout << "String: " << this->identifier() << " = " << this->_value << std::endl;
+            std::cout << "String: " << this->identifier() << " = " << this->_string_value << std::endl;
             break;
         case DVAL_FLOAT:
             std::cout << "Float: " << this->identifier() << " = " << this->_float_value << std::endl;
             break;
-        case DVAL_SYM:
+        case DVAL_IDENT:
             std::cout << "Identifier: " << this->identifier() << " = " << this->_identifier << std::endl;
+            break;
+        case DVAL_INT_ARR:
+            std::cout << "Int Array: " << this->identifier() << " = [";
+            for (int i = 0; i < this->_arr_val->size(); ++i) {
+                std::cout << this->_arr_val->at(i)->int_value();
+                if (i != this->_arr_val->size() - 1) {
+                    std::cout << ", ";
+                }
+            }
+            std::cout << "]" << std::endl;
+        break;
+        case DVAL_BYTE_ARR:
+            std::cout << "Byte Array: " << this->identifier() << " = [";
+            for (size_t i = 0; i < this->_arr_val->size(); ++i) {
+                std::cout << static_cast<int>((*this->_arr_val)[i]->_byte_value);
+                if (i != this->_arr_val->size() - 1) {
+                    std::cout << ", ";
+                }
+            }
+            std::cout << "]" << std::endl;
+            break;
+        case DVAL_SHORT_ARR:
+            std::cout << "Short Array: " << this->identifier() << " = [";
+            for (size_t i = 0; i < this->_arr_val->size(); ++i) {
+                std::cout << (*this->_arr_val)[i]->_short_value;
+                if (i != this->_arr_val->size() - 1) {
+                    std::cout << ", ";
+                }
+            }
+            std::cout << "]" << std::endl;
+            break;
+        case DVAL_LONG_ARR:
+            std::cout << "Long Array: " << this->identifier() << " = [";
+            for (size_t i = 0; i < this->_arr_val->size(); ++i) {
+                std::cout << (*this->_arr_val)[i]->_long_value;
+                if (i != this->_arr_val->size() - 1) {
+                    std::cout << ", ";
+                }
+            }
+            std::cout << "]" << std::endl;
+            break;
+        case DVAL_CHAR_ARR:
+            std::cout << "Char Array: " << this->identifier() << " = [";
+            for (size_t i = 0; i < this->_arr_val->size(); ++i) {
+                std::cout << (*this->_arr_val)[i]->_char_value;
+                if (i != this->_arr_val->size() - 1) {
+                    std::cout << ", ";
+                }
+            }
+            std::cout << "]" << std::endl;
+            break;
+        case DVAL_BOOL_ARR:
+            std::cout << "Bool Array: " << this->identifier() << " = [";
+            for (size_t i = 0; i < this->_arr_val->size(); ++i) {
+                std::cout << ((*this->_arr_val)[i]->_string_value == "true" ? "true" : "false");
+                if (i != this->_arr_val->size() - 1) {
+                    std::cout << ", ";
+                }
+            }
+            std::cout << "]" << std::endl;
+            break;
+        case DVAL_STR_ARR:
+            std::cout << "String Array: " << this->identifier() << " = [";
+            for (size_t i = 0; i < this->_arr_val->size(); ++i) {
+                std::cout << (*this->_arr_val)[i]->_string_value;
+                if (i != this->_arr_val->size() - 1) {
+                    std::cout << ", ";
+                }
+            }
+            std::cout << "]" << std::endl;
+            break;
+        case DVAL_FLOAT_ARR:
+            std::cout << "Float Array: " << this->identifier() << " = [";
+            for (size_t i = 0; i < this->_arr_val->size(); ++i) {
+                std::cout << (*this->_arr_val)[i]->_float_value;
+                if (i != this->_arr_val->size() - 1) {
+                    std::cout << ", ";
+                }
+            }
+            std::cout << "]" << std::endl;
             break;
         default:
             std::cout << "Unknown type" << std::endl;
@@ -303,7 +394,7 @@ void Dval::set_fun(builtin *builtin) {
 }
 
 bool Dval::bool_value() const {
-    return _value == "true";
+    return _string_value == "true";
 }
 
 void Dval::set_int_value(const int i) {
@@ -320,6 +411,229 @@ void Dval::set_char_value(const int i) {
 
 void Dval::set_byte_value(const std::byte byte) {
     _byte_value = byte;
+}
+
+void Dval::set_val_nullable(const bool cond) {
+    _val_nullable = cond;
+}
+
+void Dval::set_val_mutable(const bool cond) {
+    _val_mutable = cond;
+}
+
+void Dval::set_identifier(const std::string &string) {
+    _identifier = string;
+}
+
+void Dval::set_value(const std::string &val) {
+    switch (_type) {
+        case DVAL_INT:
+            _int_value = std::stoi(val);
+            break;
+        case DVAL_BYTE:
+            _byte_value = static_cast<std::byte>(std::stoi(val));
+            break;
+        case DVAL_SHORT:
+            _short_value = static_cast<short>(std::stoi(val));
+            break;
+        case DVAL_LONG:
+            _long_value = std::stol(val);
+            break;
+        case DVAL_CHAR:
+            _char_value = static_cast<char>(std::stoi(val));
+            break;
+        case DVAL_BOOL:
+        case DVAL_STR:
+            _string_value = val;
+            break;
+        case DVAL_FLOAT:
+            _float_value = std::stof(val);
+            break;
+        case DVAL_IDENT:
+            _identifier = val;
+            break;
+        default:
+            break;
+    }
+}
+
+std::string Dval::get_string_value() const {
+    switch (_type) {
+        case DVAL_INT:
+            return std::to_string(_int_value);
+        case DVAL_BYTE:
+            return std::to_string(static_cast<int>(_byte_value));
+        case DVAL_SHORT:
+            return std::to_string(_short_value);
+        case DVAL_LONG:
+            return std::to_string(_long_value);
+        case DVAL_CHAR:
+            return std::to_string(_char_value);
+        case DVAL_BOOL:
+        case DVAL_STR:
+            return _string_value;
+        case DVAL_FLOAT:
+            return std::to_string(_float_value);
+        case DVAL_IDENT:
+            return _identifier;
+        default:
+            return "";
+    }
+}
+
+float Dval::get_float_value() const {
+    switch (_type) {
+        case DVAL_INT:
+            return static_cast<float>(_int_value);
+        case DVAL_BYTE:
+            return static_cast<float>(_byte_value);
+        case DVAL_SHORT:
+            return _short_value;
+        case DVAL_LONG:
+            return static_cast<float>(_long_value);
+        case DVAL_CHAR:
+            return _char_value;
+        case DVAL_BOOL:
+            return _string_value == "true" ? 1 : 0;
+        case DVAL_STR:
+            return std::stof(_string_value);
+        case DVAL_FLOAT:
+            return _float_value;
+        case DVAL_IDENT:
+            return FLT_MIN;
+        default:
+            return 0;
+    }
+}
+
+long Dval::get_long_value() const {
+    switch (_type) {
+        case DVAL_INT:
+            return _int_value;
+        case DVAL_BYTE:
+            return static_cast<long>(_byte_value);
+        case DVAL_SHORT:
+            return _short_value;
+        case DVAL_LONG:
+            return _long_value;
+        case DVAL_CHAR:
+            return _char_value;
+        case DVAL_BOOL:
+            return _string_value == "true" ? 1 : 0;
+        case DVAL_STR:
+            return std::stol(_string_value);
+        case DVAL_FLOAT:
+            return static_cast<int>(_float_value);
+        case DVAL_IDENT:
+            return LONG_MIN;
+        default:
+            return 0;
+    }
+}
+
+int Dval::get_int_value() const {
+    switch (_type) {
+        case DVAL_INT:
+            return _int_value;
+        case DVAL_BYTE:
+            return static_cast<int>(_byte_value);
+        case DVAL_SHORT:
+            return _short_value;
+        case DVAL_LONG:
+            return _int_value;
+        case DVAL_CHAR:
+            return _char_value;
+        case DVAL_BOOL:
+            return _string_value == "true" ? 1 : 0;
+        case DVAL_STR:
+            return std::stoi(_string_value);
+        case DVAL_FLOAT:
+            return static_cast<int>(_float_value);
+        case DVAL_IDENT:
+            return INT_MIN;
+        default:
+            return 0;
+    }
+}
+
+short Dval::get_short_value() const {
+    switch (_type) {
+        case DVAL_INT:
+            return static_cast<short>(_int_value);
+        case DVAL_BYTE:
+            return static_cast<short>(_byte_value);
+        case DVAL_SHORT:
+            return _short_value;
+        case DVAL_CHAR:
+            return _char_value;
+        case DVAL_BOOL:
+            return _string_value == "true" ? 1 : 0;
+        case DVAL_STR:
+            return static_cast<short>(std::stoi(_string_value));
+        case DVAL_FLOAT:
+            return static_cast<short>(_float_value);
+        case DVAL_IDENT:
+            return SHRT_MIN;
+        default:
+            return 0;
+    }
+}
+
+char Dval::get_char_value() const {
+    switch (_type) {
+        case DVAL_INT:
+            return static_cast<char>(_int_value);
+        case DVAL_BYTE:
+            return static_cast<char>(_byte_value);
+        case DVAL_SHORT:
+            return static_cast<char>(_short_value);
+        case DVAL_LONG:
+            return static_cast<char>(_long_value);
+        case DVAL_CHAR:
+            return _char_value;
+        case DVAL_BOOL:
+            return _string_value == "true" ? 1 : 0;
+        case DVAL_STR:
+            return _string_value.empty() ? '\0' : _string_value.at(0);
+        case DVAL_FLOAT:
+            return static_cast<char>(_float_value);
+        case DVAL_IDENT:
+            return '\0';
+        default:
+            return 0;
+    }
+}
+
+std::byte Dval::get_byte_value() const {
+    switch (_type) {
+        case DVAL_INT:
+            return static_cast<std::byte>(_int_value);
+        case DVAL_BYTE:
+            return _byte_value;
+        case DVAL_SHORT:
+            return static_cast<std::byte>(_short_value);
+        case DVAL_LONG:
+            return static_cast<std::byte>(_long_value);
+        case DVAL_CHAR:
+            return static_cast<std::byte>(_char_value);
+        case DVAL_BOOL:
+            return _string_value == "true" ? static_cast<std::byte>(1) : static_cast<std::byte>(0);
+        case DVAL_STR:
+            return _string_value.empty() ? static_cast<std::byte>(1) : static_cast<std::byte>(_string_value.at(0));
+        case DVAL_FLOAT:
+            return static_cast<std::byte>(_float_value);
+        case DVAL_IDENT:
+        default:
+            return static_cast<std::byte>(0);
+    }
+}
+
+bool Dval::is_mutable() const {
+    return _val_mutable;
+}
+
+bool Dval::is_nullable() const {
+    return _val_mutable;
 }
 
 Denv::Denv(const int count) {
@@ -361,18 +675,19 @@ std::unordered_map<std::string, const Dval *> *Denv::identifiers_str() const {
     return _identifier_str;
 }
 
-void Denv::add(const Dval *identifier, Dval *val) {
+void Denv::add(const Dval *identifier,
+               Dval *val) {
     _identifier_str->insert(std::make_pair(identifier->identifier(), identifier));
     _identifiers->insert(std::make_pair(identifier, val));
     _count = count() + 1;
 }
 
 Dval *Denv::get(const Dval *identifier) const {
-    if (!_identifiers->contains(identifier)) {
+    if (!_identifier_str->contains(identifier->identifier())) {
         return nullptr;
     }
 
-    return _identifiers->at(identifier);
+    return _identifiers->at(_identifier_str->at(identifier->identifier()));
 }
 
 std::vector<Denv *> *Denv::children(int index) const {
@@ -409,148 +724,689 @@ Dval *Denv::get(const std::string &identifier) const {
 
 namespace dval {
     Dval *dval_package(Package *pkg) {
-        Dval *v = new Dval(DVAL_PACK, 0, 0,
-                           static_cast<std::byte>(0), 0, 0, 0,
-                           pkg->name(), nullptr, pkg->name(), nullptr, 0,
-                           nullptr, NON_NULLABLE, IMMUTABLE, pkg,
+        Dval *v = new Dval(DVAL_PACK,
+                           0,
+                           0,
+                           static_cast<std::byte>(0),
+                           0,
+                           0,
+                           0,
+                           pkg->name(),
+                           nullptr,
+                           pkg->name(),
+                           nullptr,
+                           0,
+                           nullptr,
+                           NON_NULLABLE,
+                           IMMUTABLE,
+                           pkg,
                            nullptr);
         return v;
     }
 
-    Dval *dval_import(const std::string &identifier, Denv *env) {
-        Dval *v = new Dval(DVAL_IMPORT, 0, 0,
-                           static_cast<std::byte>(0), 0, 0, 0,
-                           identifier, identifier, nullptr, 0,
+    Dval *dval_import(const std::string &identifier,
+                      Denv *env) {
+        Dval *v = new Dval(DVAL_IMPORT,
+                           0,
+                           0,
+                           static_cast<std::byte>(0),
+                           0,
+                           0,
+                           0,
+                           identifier,
+                           identifier,
+                           nullptr,
+                           0,
                            nullptr);
         return v;
     }
 
-    Dval *dval_gen(const std::string &val, const std::string &type,
-                   const std::string &identifier, const int val_mutable,
+    Dval *dval_gen(const std::string &val,
+                   const std::string &type,
+                   const std::string &identifier,
+                   const int val_mutable,
                    const int val_nullable) {
         if (type == D_BOOL) {
-            return dval_bool(val, identifier, val_mutable, val_nullable);
+            return dval_bool(val,
+                             identifier,
+                             val_mutable,
+                             val_nullable);
         }
         if (type == D_FLOAT) {
             const float f = std::stof(val);
-            return dval_float(f, identifier, val_mutable, val_nullable);
+            return dval_float(f,
+                              identifier,
+                              val_mutable,
+                              val_nullable);
         }
         if (type == D_INT) {
-            const long x = std::stol(val);
-            return dval_int(x, identifier, val_mutable, val_nullable);
+            const int x = std::stoi(val);
+            return dval_int(x,
+                            identifier,
+                            val_mutable,
+                            val_nullable);
         }
         if (type == D_BYTE) {
             const std::byte b = static_cast<std::byte>(std::stoi(val));
-            return dval_byte(b, identifier, val_mutable, val_nullable);
+            return dval_byte(b,
+                             identifier,
+                             val_mutable,
+                             val_nullable);
         }
         if (type == D_SHORT) {
             const short x = static_cast<short>(std::stoi(val));
-            return dval_short(x, identifier, val_mutable, val_nullable);
+            return dval_short(x,
+                              identifier,
+                              val_mutable,
+                              val_nullable);
         }
         if (type == D_LONG) {
             const long x = std::stol(val);
-            return dval_long(x, identifier, val_mutable, val_nullable);
+            return dval_long(x,
+                             identifier,
+                             val_mutable,
+                             val_nullable);
         }
         if (type == D_CHAR) {
             const char c = val[0];
-            return dval_char(c, identifier, val_mutable, val_nullable);
+            return dval_char(c,
+                             identifier,
+                             val_mutable,
+                             val_nullable);
         }
         if (type == D_STRING) {
-            return dval_str(val, identifier, val_mutable, val_nullable);
+            return dval_str(val,
+                            identifier,
+                            val_mutable,
+                            val_nullable);
+        }
+        if (type == D_IDENTIFIER) {
+            return dval_identifier(identifier);
         }
 
+        if (type == D_OPERATOR) {
+            return dval_op(val);
+        }
 
         return nullptr;
     }
 
-    Dval *dval_float(const float f, const std::string &identifier, const int val_mutable, const int val_nullable) {
-        return new Dval(DVAL_FLOAT, 0, f, static_cast<std::byte>(0), 0, 0, '\0', "", nullptr, identifier, nullptr, 0,
+    Dval *dval_float(const float f,
+                     const std::string &identifier,
+                     const int val_mutable,
+                     const int val_nullable) {
+        return new Dval(DVAL_FLOAT,
+                        0,
+                        f,
+                        static_cast<std::byte>(0),
+                        0,
+                        0,
+                        '\0',
+                        "",
                         nullptr,
-                        val_mutable, val_nullable, nullptr, nullptr);
+                        identifier,
+                        nullptr,
+                        0,
+                        new std::vector<Dval *>,
+                        val_mutable,
+                        val_nullable,
+                        nullptr,
+                        nullptr);
     }
 
     Dval *dval_op(std::string op) {
-        Dval *val = new Dval(DVAL_FUN, 0, 0, static_cast<std::byte>(0), 0, 0, 0, "", std::move(op), nullptr, 0,
+        // std::cout << "Operator: " << op << "    ";
+        Dval *val = new Dval(DVAL_FUN,
+                             0,
+                             0,
+                             static_cast<std::byte>(0),
+                             0,
+                             0,
+                             0,
+                             "",
+                             std::move(op),
+                             nullptr,
+                             0,
                              new std::vector<Dval *>);
 
-        if (op == D_ADD) {
+        if (val->identifier() == D_ADD) {
             val->set_fun(&add_builtin);
-        } else if (op == D_SUB) {
+            // std::cout << "Add operation selected." << std::endl;
+        } else if (val->identifier() == D_SUB) {
             val->set_fun(&sub_builtin);
-        } else if (op == D_MUL) {
+            // std::cout << "Subtraction operation selected." << std::endl;
+        } else if (val->identifier() == D_MUL) {
             val->set_fun(&mul_builtin);
-        } else if (op == D_DIV) {
+            // std::cout << "Multiplication operation selected." << std::endl;
+        } else if (val->identifier() == D_DIV) {
             val->set_fun(&div_builtin);
-        } else if (op == D_MOD) {
+            // std::cout << "Division operation selected." << std::endl;
+        } else if (val->identifier() == D_MOD) {
             val->set_fun(&mod_builtin);
-        } else if (op == D_LSHIFT) {
+            // std::cout << "Modulo operation selected." << std::endl;
+        } else if (val->identifier() == D_LSHIFT) {
             val->set_fun(&lshift_builtin);
-        } else if (op == D_RSHIFT) {
+            // std::cout << "Left shift operation selected." << std::endl;
+        } else if (val->identifier() == D_RSHIFT) {
             val->set_fun(&rshift_builtin);
+            // std::cout << "Right shift operation selected." << std::endl;
         }
+
         return val;
     }
 
     Dval *dval_err(const char *str) {
-        return new Dval(DVAL_ERR, 0, 0, static_cast<std::byte>(0), 0, 0, 0, "", str, nullptr, 0, nullptr);
+        return new Dval(DVAL_ERR,
+                        0,
+                        0,
+                        static_cast<std::byte>(0),
+                        0,
+                        0,
+                        0,
+                        "",
+                        str,
+                        nullptr,
+                        0,
+                        new std::vector<Dval *>);
+    }
+
+    Dval *dval_err(const std::string &err) {
+        return new Dval(DVAL_ERR,
+                        0,
+                        0,
+                        static_cast<std::byte>(0),
+                        0,
+                        0,
+                        0,
+                        "",
+                        err,
+                        nullptr,
+                        0,
+                        new std::vector<Dval *>);
+    }
+
+    int get_type(const std::string &type) {
+        if (type == D_BOOL) {
+            return DVAL_BOOL;
+        }
+        if (type == D_FLOAT) {
+            return DVAL_FLOAT;
+        }
+        if (type == D_INT) {
+            return DVAL_INT;
+        }
+        if (type == D_BYTE) {
+            return DVAL_BYTE;
+        }
+        if (type == D_SHORT) {
+            return DVAL_SHORT;
+        }
+        if (type == D_LONG) {
+            return DVAL_LONG;
+        }
+        if (type == D_CHAR) {
+            return DVAL_CHAR;
+        }
+        if (type == D_STRING) {
+            return DVAL_STR;
+        }
+        if (type == D_IDENTIFIER) {
+            return DVAL_IDENT;
+        }
+        if (type == D_FUN) {
+            return DVAL_FUN;
+        }
+        if (type == D_OPERATOR) {
+            return DVAL_OP;
+        }
+        return DVAL_ERR;
+    }
+
+
+    Dval *dval_array_gen(const std::string &type,
+                         const std::string &identifier,
+                         const int val_mutable,
+                         const int val_nullable) {
+        if (type == D_BOOL_ARR) {
+            return dval_bool_arr(identifier,
+                                 val_mutable,
+                                 val_nullable);
+        }
+        if (type == D_FLOAT_ARR) {
+            return dval_float_arr(
+                identifier,
+                val_mutable,
+                val_nullable);
+        }
+        if (type == D_INT_ARR) {
+            return dval_int_arr(
+                identifier,
+                val_mutable,
+                val_nullable);
+        }
+        if (type == D_BYTE_ARR) {
+            return dval_byte_arr(
+                identifier,
+                val_mutable,
+                val_nullable);
+        }
+        if (type == D_SHORT_ARR) {
+            return dval_short_arr(
+                identifier,
+                val_mutable,
+                val_nullable);
+        }
+        if (type == D_LONG_ARR) {
+            return dval_long_arr(
+                identifier,
+                val_mutable,
+                val_nullable);
+        }
+        if (type == D_CHAR_ARR) {
+            return dval_char_arr(
+                identifier,
+                val_mutable,
+                val_nullable);
+        }
+        if (type == D_STRING_ARR) {
+            return dval_str_arr(
+                identifier,
+                val_mutable,
+                val_nullable);
+        }
+
+        return nullptr;
     }
 
     /* Construct a pointer to a new Symbol dval */
     Dval *dval_identifier(const std::string &s) {
-        Dval *v = new Dval(DVAL_SYM, 0, 0, static_cast<std::byte>(0), 0, 0, 0, "", s, nullptr, 0, nullptr);
+        Dval *v = new Dval(DVAL_IDENT,
+                           0,
+                           0,
+                           static_cast<std::byte>(0),
+                           0,
+                           0,
+                           0,
+                           "",
+                           s,
+                           nullptr,
+                           0,
+                           new std::vector<Dval *>);
         return v;
     }
 
-    Dval *dval_int(const long x, const std::string &identifier, const int val_mutable, const int val_nullable) {
-        return new Dval(DVAL_INT, 0, 0.0, static_cast<std::byte>(0),
-                        static_cast<int>(x), 0, '\0', "", nullptr, identifier, nullptr, 0,
-                        nullptr,
-                        val_mutable, val_nullable, nullptr, nullptr);
-    }
-
-    Dval *dval_byte(const std::byte x, const std::string &identifier, const int val_mutable, const int val_nullable) {
-        return new Dval(DVAL_BYTE, 0, 0.0, x, 0, 0, '\0', "", nullptr, identifier, nullptr, 0, nullptr, val_mutable,
-                        val_nullable, nullptr, nullptr);
-    }
-
-    Dval *dval_short(const short x, const std::string &identifier, const int val_mutable, const int val_nullable) {
-        return new Dval(DVAL_SHORT, x, 0.0, static_cast<std::byte>(0), 0, x, '\0', "", nullptr, identifier, nullptr, 0,
-                        nullptr,
-                        val_mutable, val_nullable, nullptr, nullptr);
-    }
-
-    Dval *dval_long(const long x, const std::string &identifier, const int val_mutable, const int val_nullable) {
-        return new Dval(DVAL_LONG, x, 0.0, static_cast<std::byte>(0), 0, 0, '\0', "", nullptr, identifier, nullptr, 0,
-                        nullptr,
-                        val_mutable, val_nullable, nullptr, nullptr);
-    }
-
-    Dval *dval_char(const char x, const std::string &identifier, const int val_mutable, const int val_nullable) {
-        return new Dval(DVAL_CHAR, 0, 0.0, static_cast<std::byte>(0), 0, 0, x, "", nullptr, identifier, nullptr, 0,
-                        nullptr,
-                        val_mutable, val_nullable, nullptr, nullptr);
-    }
-
-    Dval *dval_bool(const std::string &val, const std::string &identifier, const int val_mutable,
-                    const int val_nullable) {
-        return new Dval(DVAL_BOOL, 0, 0.0, static_cast<std::byte>(0), 0, 0, '\0', val, nullptr, identifier, nullptr, 0,
-                        nullptr,
-                        val_mutable, val_nullable, nullptr, nullptr);
-    }
-
-    Dval *dval_bool(const bool &val, const std::string &identifier, const int val_mutable,
-                    const int val_nullable) {
-        return new Dval(DVAL_BOOL, val, 0.0, static_cast<std::byte>(0), 0, 0, '\0', val ? "true" : "false", nullptr,
-                        identifier, nullptr, 0,
-                        nullptr,
-                        val_mutable, val_nullable, nullptr, nullptr);
-    }
-
-    Dval *dval_str(const std::string &val, const std::string &identifier, const int val_mutable,
+    Dval *dval_int(const int x,
+                   const std::string &identifier,
+                   const int val_mutable,
                    const int val_nullable) {
-        return new Dval(DVAL_STR, 0, 0.0, static_cast<std::byte>(0), 0, 0, '\0', val, nullptr, identifier, nullptr, 0,
+        return new Dval(DVAL_INT,
+                        0,
+                        0.0,
+                        static_cast<std::byte>(0),
+                        static_cast<int>(x),
+                        0,
+                        '\0',
+                        "",
                         nullptr,
-                        val_mutable, val_nullable, nullptr, nullptr);
+                        identifier,
+                        nullptr,
+                        0,
+                        new std::vector<Dval *>,
+                        val_mutable,
+                        val_nullable,
+                        nullptr,
+                        nullptr);
+    }
+
+    Dval *dval_byte(const std::byte x,
+                    const std::string &identifier,
+                    const int val_mutable,
+                    const int val_nullable) {
+        return new Dval(DVAL_BYTE,
+                        0,
+                        0.0,
+                        x,
+                        0,
+                        0,
+                        '\0',
+                        "",
+                        nullptr,
+                        identifier,
+                        nullptr,
+                        0,
+                        new std::vector<Dval *>,
+                        val_mutable,
+                        val_nullable,
+                        nullptr,
+                        nullptr);
+    }
+
+    Dval *dval_short(const short x,
+                     const std::string &identifier,
+                     const int val_mutable,
+                     const int val_nullable) {
+        return new Dval(DVAL_SHORT,
+                        x,
+                        0.0,
+                        static_cast<std::byte>(0),
+                        0,
+                        x,
+                        '\0',
+                        "",
+                        nullptr,
+                        identifier,
+                        nullptr,
+                        0,
+                        new std::vector<Dval *>,
+                        val_mutable,
+                        val_nullable,
+                        nullptr,
+                        nullptr);
+    }
+
+    Dval *dval_long(const long x,
+                    const std::string &identifier,
+                    const int val_mutable,
+                    const int val_nullable) {
+        return new Dval(DVAL_LONG,
+                        x,
+                        0.0,
+                        static_cast<std::byte>(0),
+                        0,
+                        0,
+                        '\0',
+                        "",
+                        nullptr,
+                        identifier,
+                        nullptr,
+                        0,
+                        new std::vector<Dval *>,
+                        val_mutable,
+                        val_nullable,
+                        nullptr,
+                        nullptr);
+    }
+
+    Dval *dval_char(const char x,
+                    const std::string &identifier,
+                    const int val_mutable,
+                    const int val_nullable) {
+        return new Dval(DVAL_CHAR,
+                        0,
+                        0.0,
+                        static_cast<std::byte>(0),
+                        0,
+                        0,
+                        x,
+                        "",
+                        nullptr,
+                        identifier,
+                        nullptr,
+                        0,
+                        new std::vector<Dval *>,
+                        val_mutable,
+                        val_nullable,
+                        nullptr,
+                        nullptr);
+    }
+
+    Dval *dval_bool(const std::string &val,
+                    const std::string &identifier,
+                    const int val_mutable,
+                    const int val_nullable) {
+        return new Dval(DVAL_BOOL,
+                        0,
+                        0.0,
+                        static_cast<std::byte>(0),
+                        0,
+                        0,
+                        '\0',
+                        val,
+                        nullptr,
+                        identifier,
+                        nullptr,
+                        0,
+                        new std::vector<Dval *>,
+                        val_mutable,
+                        val_nullable,
+                        nullptr,
+                        nullptr);
+    }
+
+    Dval *dval_bool(const bool &val,
+                    const std::string &identifier,
+                    const int val_mutable,
+                    const int val_nullable) {
+        return new Dval(DVAL_BOOL,
+                        val,
+                        0.0,
+                        static_cast<std::byte>(0),
+                        0,
+                        0,
+                        '\0',
+                        val ? "true" : "false",
+                        nullptr,
+                        identifier,
+                        nullptr,
+                        0,
+                        new std::vector<Dval *>,
+                        val_mutable,
+                        val_nullable,
+                        nullptr,
+                        nullptr);
+    }
+
+    Dval *dval_str(const std::string &val,
+                   const std::string &identifier,
+                   const int val_mutable,
+                   const int val_nullable) {
+        return new Dval(DVAL_STR,
+                        0,
+                        0.0,
+                        static_cast<std::byte>(0),
+                        0,
+                        0,
+                        '\0',
+                        val,
+                        nullptr,
+                        identifier,
+                        nullptr,
+                        0,
+                        new std::vector<Dval *>,
+                        val_mutable,
+                        val_nullable,
+                        nullptr,
+                        nullptr);
+    }
+
+    Dval *dval_int_arr(
+        const std::string &identifier,
+        const int val_mutable,
+        const int val_nullable) {
+        auto *array_val = new std::vector<Dval *>();
+        return new Dval(DVAL_INT_ARR,
+                        0,
+                        0.0,
+                        static_cast<std::byte>(0),
+                        0,
+                        0,
+                        '\0',
+                        "",
+                        array_val,
+                        identifier,
+                        nullptr,
+                        0,
+                        new std::vector<Dval *>,
+                        val_mutable,
+                        val_nullable,
+                        nullptr,
+                        nullptr);
+    }
+
+    auto dval_byte_arr(
+        const std::string &identifier,
+        const int val_mutable,
+        const int val_nullable) -> Dval * {
+        auto *array_val = new std::vector<Dval *>();
+        return new Dval(DVAL_BYTE_ARR,
+                        0,
+                        0.0,
+                        static_cast<std::byte>(0),
+                        0,
+                        0,
+                        '\0',
+                        "",
+                        array_val,
+                        identifier,
+                        nullptr,
+                        0,
+                        new std::vector<Dval *>,
+                        val_mutable,
+                        val_nullable,
+                        nullptr,
+                        nullptr);
+    }
+
+    Dval *dval_short_arr(
+        const std::string &identifier,
+        const int val_mutable,
+        const int val_nullable) {
+        auto *array_val = new std::vector<Dval *>();
+        return new Dval(DVAL_SHORT_ARR,
+                        0,
+                        0.0,
+                        static_cast<std::byte>(0),
+                        0,
+                        0,
+                        '\0',
+                        "",
+                        array_val,
+                        identifier,
+                        nullptr,
+                        0,
+                        new std::vector<Dval *>,
+                        val_mutable,
+                        val_nullable,
+                        nullptr,
+                        nullptr);
+    }
+
+    Dval *dval_long_arr(
+        const std::string &identifier,
+        const int val_mutable,
+        const int val_nullable) {
+        auto *array_val = new std::vector<Dval *>();
+        return new Dval(DVAL_LONG_ARR,
+                        0,
+                        0.0,
+                        static_cast<std::byte>(0),
+                        0,
+                        0,
+                        '\0',
+                        "",
+                        array_val,
+                        identifier,
+                        nullptr,
+                        0,
+                        new std::vector<Dval *>,
+                        val_mutable,
+                        val_nullable,
+                        nullptr,
+                        nullptr);
+    }
+
+    Dval *dval_char_arr(const std::string &identifier,
+                        const int val_mutable,
+                        const int val_nullable) {
+        auto *array_val = new std::vector<Dval *>();
+
+        return new Dval(DVAL_CHAR_ARR,
+                        0,
+                        0.0,
+                        static_cast<std::byte>(0),
+                        0,
+                        0,
+                        '\0',
+                        "",
+                        array_val,
+                        identifier,
+                        nullptr,
+                        0,
+                        new std::vector<Dval *>,
+                        val_mutable,
+                        val_nullable,
+                        nullptr,
+                        nullptr);
+    }
+
+    Dval *dval_bool_arr(
+        const std::string &identifier,
+        const int val_mutable,
+        const int val_nullable) {
+        auto *array_val = new std::vector<Dval *>();
+        return new Dval(DVAL_BOOL_ARR,
+                        0,
+                        0.0,
+                        static_cast<std::byte>(0),
+                        0,
+                        0,
+                        '\0',
+                        "",
+                        array_val,
+                        identifier,
+                        nullptr,
+                        0,
+                        new std::vector<Dval *>,
+                        val_mutable,
+                        val_nullable,
+                        nullptr,
+                        nullptr);
+    }
+
+    Dval *dval_float_arr(const std::string &identifier,
+                         const int val_mutable,
+                         const int val_nullable) {
+        return new Dval(DVAL_FLOAT_ARR,
+                        0,
+                        0.0,
+                        static_cast<std::byte>(0),
+                        0,
+                        0,
+                        '\0',
+                        "",
+                        new std::vector<Dval *>,
+                        identifier,
+                        nullptr,
+                        0,
+                        new std::vector<Dval *>,
+                        val_mutable,
+                        val_nullable,
+                        nullptr,
+                        nullptr);
+    }
+
+    Dval *dval_str_arr(
+        const std::string &identifier,
+        const int val_mutable,
+        const int val_nullable) {
+        auto *array_val = new std::vector<Dval *>();
+        return new Dval(DVAL_STR_ARR,
+                        0,
+                        0.0,
+                        static_cast<std::byte>(0),
+                        0,
+                        0,
+                        '\0',
+                        "",
+                        array_val,
+                        identifier,
+                        nullptr,
+                        0,
+                        new std::vector<Dval *>,
+                        val_mutable,
+                        val_nullable,
+                        nullptr,
+                        nullptr);
     }
 
     void dval_del(Dval *v) {
@@ -562,7 +1418,7 @@ namespace dval {
             /* For Err or Sym free the string data */
             case DVAL_ERR:
                 break;
-            case DVAL_SYM:
+            case DVAL_IDENT:
                 break;
 
             /* If Sexpr then delete all elements inside */
@@ -585,8 +1441,11 @@ namespace dval {
         return e;
     }
 
-    void denv_put(Denv *e, const Dval *k, Dval *v) {
-        e->add(k, v);
+    void denv_put(Denv *e,
+                  const Dval *k,
+                  Dval *v) {
+        e->add(k,
+               v);
         e->set_count(e->count() + 1);
     }
 }

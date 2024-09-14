@@ -35,7 +35,6 @@ void DreamCommonParserListener::enterPackageDecl(DreamParser::PackageDeclContext
         PARSER_ERR("global package is not set, at ", ctx->getText());
     }
 
-
     const vector<antlr4::tree::ParseTree *> children = ctx->children;
 
     if (children.size() != 3) {
@@ -53,7 +52,7 @@ void DreamCommonParserListener::enterPackageDecl(DreamParser::PackageDeclContext
     _global->add_package(fullName);
 
     cout << "package: " << endl;
-    util::parse::printPackageTree(_global->package());
+    util::parse::print_package_tree(_global->package());
 }
 
 void DreamCommonParserListener::exitPackageDecl(DreamParser::PackageDeclContext *ctx) {
@@ -82,14 +81,11 @@ void DreamCommonParserListener::enterStmt(DreamParser::StmtContext *ctx) {
     string stmt = ctx->getText();
 
     if (ctx->children.size() == 2) {
-        antlr4::tree::ParseTree * value = ctx->children.at(0);
+        antlr4::tree::ParseTree *value = ctx->children.at(0);
         const string identifier = value->getText();
 
-        if (Dval * val = _curr_env->get(identifier); val != nullptr) {
+        if (Dval *val = _curr_env->get(identifier); val != nullptr) {
             val->print_value();
-        }
-        else {
-            cout << "not found: " << identifier << endl;
         }
     }
 }
@@ -140,6 +136,30 @@ void DreamCommonParserListener::exitCastExpr(DreamParser::CastExprContext *ctx) 
 }
 
 void DreamCommonParserListener::enterAssign(DreamParser::AssignContext *ctx) {
+
+
+    if (ctx->children.size() == 3) {
+        cout << "==================== parsing assign ====================" << endl;
+
+        const string ident = ctx->children.at(0)->getText();
+
+        if (const string expr = ctx->children.at(1)->getText(); expr == D_ASSIGN) {
+            Dval *val = _curr_env->get(ident);
+            if (val == nullptr) {
+                cout << "not found: " << ident << endl;
+                return;
+            }
+            if (val->is_mutable()) {
+                val->set_value(ctx->children.at(2)->getText());
+            } else {
+                cout << "not mutable: " << ident << endl;
+                return;
+            }
+            val->print_value();
+        } else {
+            WRONG_INPUT(":=", expr);
+        }
+    }
 }
 
 void DreamCommonParserListener::exitAssign(DreamParser::AssignContext *ctx) {
@@ -182,7 +202,6 @@ void DreamCommonParserListener::exitElseIfClause(DreamParser::ElseIfClauseContex
 }
 
 void DreamCommonParserListener::enterExpr(DreamParser::ExprContext *ctx) {
-
 }
 
 void DreamCommonParserListener::exitExpr(DreamParser::ExprContext *ctx) {
@@ -208,23 +227,16 @@ void DreamCommonParserListener::enterVarDeclaration(DreamParser::VarDeclarationC
     const string var_type = child[1]->getText();
     const string var_null = child[3]->getText();
     const string var_val = child[5]->getText();
-    // TODO calculate value of var_val expression
 
     Dval *val;
-
-
-
-    Dval * expr = util::parse::parseExpr(var_val, _curr_env);
-
     if (var_type.ends_with("[]")) {
-        val = new Dval();
+        val = util::parse::parse_array_expr(var_type, *child[5]->children.at(0)->children.at(0), _curr_env);
     } else {
-        val = dval::dval_gen(var_val,
-                             var_type,
-                             var_name,
-                             var_mut == D_IMT ? IMMUTABLE : MUTABLE,
-                             var_null == D_BANG ? NON_NULLABLE : NULLABLE);
+        val = util::parse::parse_expr(*child[5], _curr_env);
     }
+    val->set_identifier(var_name);
+    val->set_val_nullable(var_null == D_NULLABLE);
+    val->set_val_mutable(var_mut == D_VAR);
 
     _curr_env->add(var_name, val);
 }
@@ -239,6 +251,9 @@ void DreamCommonParserListener::exitVarModifiers(DreamParser::VarModifiersContex
 }
 
 void DreamCommonParserListener::enterFunctionDeclaration(DreamParser::FunctionDeclarationContext *ctx) {
+    vector<antlr4::tree::ParseTree *> children = ctx->children;
+
+
 }
 
 void DreamCommonParserListener::exitFunctionDeclaration(DreamParser::FunctionDeclarationContext *ctx) {

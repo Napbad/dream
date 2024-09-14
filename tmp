@@ -1,4 +1,0 @@
-/usr/bin/c++  -I/home/napbad/Project/dream/dream/libs/antlr4-runtime \
--I/home/napbad/Project/dream/dream/src -g -std=c++20 \
--fdiagnostics-color=always -MD -MT CMakeFiles/dream.dir/src/util/parse_util.cpp.o -MF CMakeFiles/dream.dir/src/util/parse_util.cpp.o.d -o CMakeFiles/dream.dir/src/util/parse_util.cpp.o \
- -c /home/napbad/Project/dream/dream/src/util/parse_util.cpp

@@ -41,7 +41,7 @@ funCallStmt
 
 // 二元运算
 binaryOpExpr
-    : atomExpr (PLUS | MINUS | MUL | DIV | MOD | LT | GT | LE | GE | EQ | NEQ | AND | OR | BIT_AND | BIT_OR | XOR | LSHIFT | RSHIFT | URSHIFT) atomExpr
+    : atomExpr (MOD | MUL | DIV  | MINUS| PLUS | LT | GT | LE | GE | EQ | NEQ | AND | OR | BIT_AND | BIT_OR | XOR | LSHIFT | RSHIFT | URSHIFT) atomExpr
     ;
 
 // 原子表达式
@@ -131,17 +131,25 @@ elseIfClause
     : ELSE IF expr ifBlock
     ;
 
-// 表达式
 expr
-    : binaryOpExpr
+    : LPAREN expr RPAREN
+    | IDENTIFIER (DOT IDENTIFIER)* LPAREN argList* RPAREN
     | unaryOpExpr
+    | expr (MUL | DIV | MOD) expr
+    | expr (PLUS | MINUS) expr
+    | expr (LSHIFT | RSHIFT | URSHIFT) expr
+    | expr (LT | GT | LE | GE) expr
+    | expr (EQ | NEQ) expr
+    | expr BIT_AND expr
+    | expr XOR expr
+    | expr BIT_OR expr      
+    | expr AND expr
+    | expr OR expr
     | atomExpr
     | castExpr
     | assignExpr
-    | IDENTIFIER (DOT IDENTIFIER)* LPAREN argList* RPAREN
-    | expr (PLUS | MINUS | MUL | DIV | MOD | LT | GT | LE | GE | EQ | NEQ | AND | OR | BIT_AND | BIT_OR | XOR | LSHIFT | RSHIFT | URSHIFT) expr
-    | LPAREN expr RPAREN
-    ;
+    ;    
+
 
 // 赋值表达式
 assignExpr
@@ -568,11 +576,11 @@ DOT : '.';
 BANG : '!';
 QUESTION : '?';
 COLON : ':';
+MOD : '%';
 PLUS : '+';
 MINUS : '-';
 MUL : '*';
 DIV : '/';
-MOD : '%';
 LT : '<';
 GT : '>';
 LE : '<=';

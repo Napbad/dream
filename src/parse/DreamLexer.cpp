@@ -65,8 +65,8 @@ void dreamlexerLexerInitialize() {
       "BYTE", "SHORT", "INT", "LONG", "FLOAT", "DOUBLE", "BOOL", "CHAR", 
       "STRING", "VOID", "AT", "ASSIGN", "SEMICOLON", "LPAREN", "RPAREN", 
       "LBRACE", "RBRACE", "LBRACK", "RBRACK", "COMMA", "LINE_COMMENT", "COMMENT", 
-      "WS", "DOT", "BANG", "QUESTION", "COLON", "PLUS", "MINUS", "MUL", 
-      "DIV", "MOD", "LT", "GT", "LE", "GE", "EQ", "NEQ", "AND", "OR", "BIT_AND", 
+      "WS", "DOT", "BANG", "QUESTION", "COLON", "MOD", "PLUS", "MINUS", 
+      "MUL", "DIV", "LT", "GT", "LE", "GE", "EQ", "NEQ", "AND", "OR", "BIT_AND", 
       "BIT_OR", "XOR", "LSHIFT", "RSHIFT", "URSHIFT", "NOT", "TIBLE", "INC", 
       "DEC", "IDENTIFIER"
     },
@@ -85,7 +85,7 @@ void dreamlexerLexerInitialize() {
       "'byte'", "'short'", "'int'", "'long'", "'float'", "'double'", "'bool'", 
       "'char'", "'string'", "'void'", "'@'", "'='", "';'", "'('", "')'", 
       "'{'", "'}'", "'['", "']'", "','", "", "", "", "'.'", "'!'", "'\\u003F'", 
-      "':'", "'+'", "'-'", "'*'", "'/'", "'%'", "'<'", "'>'", "'<='", "'>='", 
+      "':'", "'%'", "'+'", "'-'", "'*'", "'/'", "'<'", "'>'", "'<='", "'>='", 
       "'=='", "'!='", "'&&'", "'||'", "'&'", "'|'", "'^'", "'<<'", "'>>'", 
       "'>>>'", "", "'~'", "'++'", "'--'"
     },
@@ -98,8 +98,8 @@ void dreamlexerLexerInitialize() {
       "BYTE", "SHORT", "INT", "LONG", "FLOAT", "DOUBLE", "BOOL", "CHAR", 
       "STRING", "VOID", "AT", "ASSIGN", "SEMICOLON", "LPAREN", "RPAREN", 
       "LBRACE", "RBRACE", "LBRACK", "RBRACK", "COMMA", "LINE_COMMENT", "COMMENT", 
-      "WS", "DOT", "BANG", "QUESTION", "COLON", "PLUS", "MINUS", "MUL", 
-      "DIV", "MOD", "LT", "GT", "LE", "GE", "EQ", "NEQ", "AND", "OR", "BIT_AND", 
+      "WS", "DOT", "BANG", "QUESTION", "COLON", "MOD", "PLUS", "MINUS", 
+      "MUL", "DIV", "LT", "GT", "LE", "GE", "EQ", "NEQ", "AND", "OR", "BIT_AND", 
       "BIT_OR", "XOR", "LSHIFT", "RSHIFT", "URSHIFT", "NOT", "TIBLE", "INC", 
       "DEC", "IDENTIFIER"
     }
@@ -284,8 +284,8 @@ void dreamlexerLexerInitialize() {
   	1,0,0,0,518,519,1,0,0,0,519,520,1,0,0,0,520,521,6,55,1,0,521,112,1,0,
   	0,0,522,523,5,46,0,0,523,114,1,0,0,0,524,525,5,33,0,0,525,116,1,0,0,0,
   	526,527,5,63,0,0,527,118,1,0,0,0,528,529,5,58,0,0,529,120,1,0,0,0,530,
-  	531,5,43,0,0,531,122,1,0,0,0,532,533,5,45,0,0,533,124,1,0,0,0,534,535,
-  	5,42,0,0,535,126,1,0,0,0,536,537,5,47,0,0,537,128,1,0,0,0,538,539,5,37,
+  	531,5,37,0,0,531,122,1,0,0,0,532,533,5,43,0,0,533,124,1,0,0,0,534,535,
+  	5,45,0,0,535,126,1,0,0,0,536,537,5,42,0,0,537,128,1,0,0,0,538,539,5,47,
   	0,0,539,130,1,0,0,0,540,541,5,60,0,0,541,132,1,0,0,0,542,543,5,62,0,0,
   	543,134,1,0,0,0,544,545,5,60,0,0,545,546,5,61,0,0,546,136,1,0,0,0,547,
   	548,5,62,0,0,548,549,5,61,0,0,549,138,1,0,0,0,550,551,5,61,0,0,551,552,

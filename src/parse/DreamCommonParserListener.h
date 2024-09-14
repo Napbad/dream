@@ -36,8 +36,6 @@ public:
         _dval_package = dval::dval_package(_global->package());
         _curr_env = new Denv();
         _dval_import = dval::dval_import(_global->package()->name(), _curr_env);
-
-
     };
 
     void enterProgram(DreamParser::ProgramContext * /*ctx*/) override;

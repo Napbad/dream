@@ -41,6 +41,12 @@ add_executable(dream
         src/model/val.h
         src/model/enum.h
         src/model/reserved.cpp
+        src/gc/DataSource.cpp
+        src/gc/DataSource.h
+        src/gc/ObjectSource.cpp
+        src/gc/ObjectSource.h
+        src/gc/gc.cpp
+        src/gc/gc.h
 )
 
 target_link_libraries(dream ${LIBANTLR})

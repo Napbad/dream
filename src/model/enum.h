@@ -1,4 +1,5 @@
 #pragma once
+#include <functional>
 
 inline enum {
     DVAL_INT,
@@ -9,9 +10,19 @@ inline enum {
     DVAL_FLOAT,
     DVAL_BOOL,
     DVAL_STR,
+
+    DVAL_INT_ARR,
+    DVAL_BYTE_ARR,
+    DVAL_CHAR_ARR,
+    DVAL_SHORT_ARR,
+    DVAL_LONG_ARR,
+    DVAL_FLOAT_ARR,
+    DVAL_BOOL_ARR,
+    DVAL_STR_ARR,
     DVAL_FUN,
     DVAL_ERR,
-    DVAL_SYM,
+    DVAL_IDENT,
+    DVAL_IDENT_ARR,
     DVAL_PACK,
     DVAL_IMPORT,
     DVAL_OP,
@@ -35,9 +46,9 @@ inline enum {
 
 
 enum {
-    MUTABLE,
-    IMMUTABLE,
+    MUTABLE = 0,
+    IMMUTABLE = 1,
 
-    NULLABLE,
-    NON_NULLABLE
+    NULLABLE = 2,
+    NON_NULLABLE = 3,
 };

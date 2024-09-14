@@ -22,11 +22,11 @@ public:
     BOOL = 40, CHAR = 41, STRING = 42, VOID = 43, AT = 44, ASSIGN = 45, 
     SEMICOLON = 46, LPAREN = 47, RPAREN = 48, LBRACE = 49, RBRACE = 50, 
     LBRACK = 51, RBRACK = 52, COMMA = 53, LINE_COMMENT = 54, COMMENT = 55, 
-    WS = 56, DOT = 57, BANG = 58, QUESTION = 59, COLON = 60, PLUS = 61, 
-    MINUS = 62, MUL = 63, DIV = 64, MOD = 65, LT = 66, GT = 67, LE = 68, 
-    GE = 69, EQ = 70, NEQ = 71, AND = 72, OR = 73, BIT_AND = 74, BIT_OR = 75, 
-    XOR = 76, LSHIFT = 77, RSHIFT = 78, URSHIFT = 79, NOT = 80, TIBLE = 81, 
-    INC = 82, DEC = 83, IDENTIFIER = 84
+    WS = 56, DOT = 57, BANG = 58, QUESTION = 59, COLON = 60, MOD = 61, PLUS = 62, 
+    MINUS = 63, MUL = 64, DIV = 65, LT = 66, GT = 67, LE = 68, GE = 69, 
+    EQ = 70, NEQ = 71, AND = 72, OR = 73, BIT_AND = 74, BIT_OR = 75, XOR = 76, 
+    LSHIFT = 77, RSHIFT = 78, URSHIFT = 79, NOT = 80, TIBLE = 81, INC = 82, 
+    DEC = 83, IDENTIFIER = 84
   };
 
   explicit DreamLexer(antlr4::CharStream *input);

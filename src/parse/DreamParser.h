@@ -22,11 +22,11 @@ public:
     BOOL = 40, CHAR = 41, STRING = 42, VOID = 43, AT = 44, ASSIGN = 45, 
     SEMICOLON = 46, LPAREN = 47, RPAREN = 48, LBRACE = 49, RBRACE = 50, 
     LBRACK = 51, RBRACK = 52, COMMA = 53, LINE_COMMENT = 54, COMMENT = 55, 
-    WS = 56, DOT = 57, BANG = 58, QUESTION = 59, COLON = 60, PLUS = 61, 
-    MINUS = 62, MUL = 63, DIV = 64, MOD = 65, LT = 66, GT = 67, LE = 68, 
-    GE = 69, EQ = 70, NEQ = 71, AND = 72, OR = 73, BIT_AND = 74, BIT_OR = 75, 
-    XOR = 76, LSHIFT = 77, RSHIFT = 78, URSHIFT = 79, NOT = 80, TIBLE = 81, 
-    INC = 82, DEC = 83, IDENTIFIER = 84
+    WS = 56, DOT = 57, BANG = 58, QUESTION = 59, COLON = 60, MOD = 61, PLUS = 62, 
+    MINUS = 63, MUL = 64, DIV = 65, LT = 66, GT = 67, LE = 68, GE = 69, 
+    EQ = 70, NEQ = 71, AND = 72, OR = 73, BIT_AND = 74, BIT_OR = 75, XOR = 76, 
+    LSHIFT = 77, RSHIFT = 78, URSHIFT = 79, NOT = 80, TIBLE = 81, INC = 82, 
+    DEC = 83, IDENTIFIER = 84
   };
 
   enum {
@@ -276,11 +276,11 @@ public:
     virtual size_t getRuleIndex() const override;
     std::vector<AtomExprContext *> atomExpr();
     AtomExprContext* atomExpr(size_t i);
-    antlr4::tree::TerminalNode *PLUS();
-    antlr4::tree::TerminalNode *MINUS();
+    antlr4::tree::TerminalNode *MOD();
     antlr4::tree::TerminalNode *MUL();
     antlr4::tree::TerminalNode *DIV();
-    antlr4::tree::TerminalNode *MOD();
+    antlr4::tree::TerminalNode *MINUS();
+    antlr4::tree::TerminalNode *PLUS();
     antlr4::tree::TerminalNode *LT();
     antlr4::tree::TerminalNode *GT();
     antlr4::tree::TerminalNode *LE();
@@ -533,40 +533,39 @@ public:
   public:
     ExprContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
-    BinaryOpExprContext *binaryOpExpr();
-    UnaryOpExprContext *unaryOpExpr();
-    AtomExprContext *atomExpr();
-    CastExprContext *castExpr();
-    AssignExprContext *assignExpr();
+    antlr4::tree::TerminalNode *LPAREN();
+    std::vector<ExprContext *> expr();
+    ExprContext* expr(size_t i);
+    antlr4::tree::TerminalNode *RPAREN();
     std::vector<antlr4::tree::TerminalNode *> IDENTIFIER();
     antlr4::tree::TerminalNode* IDENTIFIER(size_t i);
-    antlr4::tree::TerminalNode *LPAREN();
-    antlr4::tree::TerminalNode *RPAREN();
     std::vector<antlr4::tree::TerminalNode *> DOT();
     antlr4::tree::TerminalNode* DOT(size_t i);
     std::vector<ArgListContext *> argList();
     ArgListContext* argList(size_t i);
-    std::vector<ExprContext *> expr();
-    ExprContext* expr(size_t i);
-    antlr4::tree::TerminalNode *PLUS();
-    antlr4::tree::TerminalNode *MINUS();
+    UnaryOpExprContext *unaryOpExpr();
+    AtomExprContext *atomExpr();
+    CastExprContext *castExpr();
+    AssignExprContext *assignExpr();
     antlr4::tree::TerminalNode *MUL();
     antlr4::tree::TerminalNode *DIV();
     antlr4::tree::TerminalNode *MOD();
+    antlr4::tree::TerminalNode *PLUS();
+    antlr4::tree::TerminalNode *MINUS();
+    antlr4::tree::TerminalNode *LSHIFT();
+    antlr4::tree::TerminalNode *RSHIFT();
+    antlr4::tree::TerminalNode *URSHIFT();
     antlr4::tree::TerminalNode *LT();
     antlr4::tree::TerminalNode *GT();
     antlr4::tree::TerminalNode *LE();
     antlr4::tree::TerminalNode *GE();
     antlr4::tree::TerminalNode *EQ();
     antlr4::tree::TerminalNode *NEQ();
+    antlr4::tree::TerminalNode *BIT_AND();
+    antlr4::tree::TerminalNode *XOR();
+    antlr4::tree::TerminalNode *BIT_OR();
     antlr4::tree::TerminalNode *AND();
     antlr4::tree::TerminalNode *OR();
-    antlr4::tree::TerminalNode *BIT_AND();
-    antlr4::tree::TerminalNode *BIT_OR();
-    antlr4::tree::TerminalNode *XOR();
-    antlr4::tree::TerminalNode *LSHIFT();
-    antlr4::tree::TerminalNode *RSHIFT();
-    antlr4::tree::TerminalNode *URSHIFT();
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;

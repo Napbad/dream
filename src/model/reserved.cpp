@@ -41,34 +41,43 @@ builtin add_builtin = [](const Denv *env, const Dval *val, const Dval *val2) -> 
     int const type2 = val2->type();
 
     if (type1 == DVAL_STR || type2 == DVAL_STR) {
-        std::string const str1 = type1 == DVAL_STR ? val->value() : std::to_string(val->long_value());
-        std::string const str2 = type2 == DVAL_STR ? val2->value() : std::to_string(val2->long_value());
-        std::string const result =  str1 +  str2;
+        std::string const str1 = val->get_string_value();
+        std::string const str2 = val2->get_string_value();
+        if (util::check::str_is_str(str1)) {
+            if (util::check::str_is_str(str2)) {
+                std::string const result = str1.substr(0, str1.size() - 2) + str2.substr(1, str2.size() - 1);
+                return dval::dval_str(result, val->identifier(), val->val_mutable(), val->val_nullable());
+            }
+            std::string const result = str1.substr(0, str1.size() - 2) + str2 + "\"";
+            return dval::dval_str(result, val->identifier(), val->val_mutable(), val->val_nullable());
+        }
+
+        std::string const result = "\"" + str1 + str2.substr(1, str2.size() - 1);
         return dval::dval_str(result, val->identifier(), val->val_mutable(), val->val_nullable());
     }
     if (type1 == DVAL_FLOAT || type2 == DVAL_FLOAT) {
-        float const result = static_cast<float>(val->long_value()) + static_cast<float>(val2->long_value());
+        float const result = val->get_float_value() + val2->get_float_value();
         return dval::dval_float(result, val->identifier(), val->val_mutable(), val->val_nullable());
     }
-    if (type1 == DVAL_LONG && type2 == DVAL_LONG) {
-        long const result = val->long_value() + val2->long_value();
+    if (type1 == DVAL_LONG || type2 == DVAL_LONG) {
+        long const result = val->get_long_value() + val2->get_long_value();
         return dval::dval_long(result, val->identifier(), val->val_mutable(), val->val_nullable());
     }
-    if (type1 == DVAL_INT && type2 == DVAL_INT) {
-        long const result = val->long_value() + val2->long_value();
+    if (type1 == DVAL_INT || type2 == DVAL_INT) {
+        int const result = val->get_int_value() + val2->get_int_value();
         return dval::dval_int(result, val->identifier(), val->val_mutable(), val->val_nullable());
     }
     if (type1 == DVAL_SHORT || type2 == DVAL_SHORT) {
-        long const result = static_cast<long>(val->short_value()) + static_cast<long>(val2->short_value());
-        return dval::dval_int(result, val->identifier(), val->val_mutable(), val->val_nullable());
+        short const result = static_cast<short>(val->get_short_value() + val2->get_short_value());
+        return dval::dval_short(result, val->identifier(), val->val_mutable(), val->val_nullable());
     }
     if (type1 == DVAL_CHAR || type2 == DVAL_CHAR) {
-        long const result = static_cast<long>(val->char_value()) + static_cast<long>(val2->char_value());
-        return dval::dval_int(result, val->identifier(), val->val_mutable(), val->val_nullable());
+        char const result = static_cast<char>(val->get_char_value() + val2->get_char_value());
+        return dval::dval_char(result, val->identifier(), val->val_mutable(), val->val_nullable());
     }
     if (type1 == DVAL_BYTE || type2 == DVAL_BYTE) {
-        long const result = static_cast<long>(val->byte_value()) + static_cast<long>(val2->byte_value());
-        return dval::dval_int(result, val->identifier(), val->val_mutable(), val->val_nullable());
+        std::byte const result = static_cast<std::byte>(static_cast<short>(val->get_byte_value()) + static_cast<short>(val2->get_byte_value()));
+        return dval::dval_byte(result, val->identifier(), val->val_mutable(), val->val_nullable());
     }
     throw std::runtime_error("Unsupported types for addition");
 };
@@ -78,28 +87,28 @@ builtin sub_builtin = [](const Denv *env, const Dval *val, const Dval *val2) -> 
     int const type2 = val2->type();
 
     if (type1 == DVAL_FLOAT || type2 == DVAL_FLOAT) {
-        float const result = static_cast<float>(val->long_value()) - static_cast<float>(val2->long_value());
+        float const result = val->get_float_value() - val2->get_float_value();
         return dval::dval_float(result, val->identifier(), val->val_mutable(), val->val_nullable());
     }
-    if (type1 == DVAL_LONG && type2 == DVAL_LONG) {
-        long const result = val->long_value() - val2->long_value();
+    if (type1 == DVAL_LONG || type2 == DVAL_LONG) {
+        long const result = val->get_long_value() - val2->get_long_value();
         return dval::dval_long(result, val->identifier(), val->val_mutable(), val->val_nullable());
     }
-    if (type1 == DVAL_INT && type2 == DVAL_INT) {
-        long const result = val->long_value() - val2->long_value();
+    if (type1 == DVAL_INT || type2 == DVAL_INT) {
+        int const result = val->get_int_value() - val2->get_int_value();
         return dval::dval_int(result, val->identifier(), val->val_mutable(), val->val_nullable());
     }
     if (type1 == DVAL_SHORT || type2 == DVAL_SHORT) {
-        long const result = static_cast<long>(val->short_value()) - static_cast<long>(val2->short_value());
-        return dval::dval_int(result, val->identifier(), val->val_mutable(), val->val_nullable());
+        short const result = static_cast<short>(val->get_short_value() - val2->get_short_value());
+        return dval::dval_short(result, val->identifier(), val->val_mutable(), val->val_nullable());
     }
     if (type1 == DVAL_CHAR || type2 == DVAL_CHAR) {
-        long const result = static_cast<long>(val->char_value()) - static_cast<long>(val2->char_value());
-        return dval::dval_int(result, val->identifier(), val->val_mutable(), val->val_nullable());
+        char const result = static_cast<char>(val->get_char_value() - val2->get_char_value());
+        return dval::dval_char(result, val->identifier(), val->val_mutable(), val->val_nullable());
     }
     if (type1 == DVAL_BYTE || type2 == DVAL_BYTE) {
-        long const result = static_cast<long>(val->byte_value()) - static_cast<long>(val2->byte_value());
-        return dval::dval_int(result, val->identifier(), val->val_mutable(), val->val_nullable());
+        std::byte const result = static_cast<std::byte>(static_cast<short>(val->get_byte_value()) - static_cast<short>(val2->get_byte_value()));
+        return dval::dval_byte(result, val->identifier(), val->val_mutable(), val->val_nullable());
     }
     throw std::runtime_error("Unsupported types for subtraction");
 };
@@ -109,28 +118,28 @@ builtin mul_builtin = [](const Denv *env, const Dval *val, const Dval *val2) -> 
     int const type2 = val2->type();
 
     if (type1 == DVAL_FLOAT || type2 == DVAL_FLOAT) {
-        float const result = static_cast<float>(val->long_value()) * static_cast<float>(val2->long_value());
+        float const result = val->get_float_value() * val2->get_float_value();
         return dval::dval_float(result, val->identifier(), val->val_mutable(), val->val_nullable());
     }
-    if (type1 == DVAL_LONG && type2 == DVAL_LONG) {
-        long const result = val->long_value() * val2->long_value();
+    if (type1 == DVAL_LONG || type2 == DVAL_LONG) {
+        long const result = val->get_long_value() * val2->get_long_value();
         return dval::dval_long(result, val->identifier(), val->val_mutable(), val->val_nullable());
     }
-    if (type1 == DVAL_INT && type2 == DVAL_INT) {
-        long const result = val->long_value() * val2->long_value();
+    if (type1 == DVAL_INT || type2 == DVAL_INT) {
+        int const result = val->get_int_value() * val2->get_int_value();
         return dval::dval_int(result, val->identifier(), val->val_mutable(), val->val_nullable());
     }
     if (type1 == DVAL_SHORT || type2 == DVAL_SHORT) {
-        long const result = static_cast<long>(val->short_value()) * static_cast<long>(val2->short_value());
-        return dval::dval_int(result, val->identifier(), val->val_mutable(), val->val_nullable());
+        short const result = static_cast<short>(val->get_short_value() * val2->get_short_value());
+        return dval::dval_short(result, val->identifier(), val->val_mutable(), val->val_nullable());
     }
     if (type1 == DVAL_CHAR || type2 == DVAL_CHAR) {
-        long const result = static_cast<long>(val->char_value()) * static_cast<long>(val2->char_value());
-        return dval::dval_int(result, val->identifier(), val->val_mutable(), val->val_nullable());
+        char const result = static_cast<char>(val->get_char_value() * val2->get_char_value());
+        return dval::dval_char(result, val->identifier(), val->val_mutable(), val->val_nullable());
     }
     if (type1 == DVAL_BYTE || type2 == DVAL_BYTE) {
-        long const result = static_cast<long>(val->byte_value()) * static_cast<long>(val2->byte_value());
-        return dval::dval_int(result, val->identifier(), val->val_mutable(), val->val_nullable());
+        std::byte const result = static_cast<std::byte>(static_cast<short>(val->get_byte_value()) * static_cast<short>(val2->get_byte_value()));
+        return dval::dval_byte(result, val->identifier(), val->val_mutable(), val->val_nullable());
     }
     throw std::runtime_error("Unsupported types for multiplication");
 };
@@ -139,33 +148,34 @@ builtin div_builtin = [](const Denv *env, const Dval *val, const Dval *val2) -> 
     int const type1 = val->type();
     int const type2 = val2->type();
 
-    if (util::check::valIsZero(val2)) {
+    if (util::check::val_is_zero(val2)) {
         return dval::dval_err("Division by zero");
     }
 
+
     if (type1 == DVAL_FLOAT || type2 == DVAL_FLOAT) {
-        float const result = static_cast<float>(val->long_value()) / static_cast<float>(val2->long_value());
+        float const result = val->get_float_value() / val2->get_float_value();
         return dval::dval_float(result, val->identifier(), val->val_mutable(), val->val_nullable());
     }
-    if (type1 == DVAL_LONG && type2 == DVAL_LONG) {
-        long const result = val->long_value() / val2->long_value();
+    if (type1 == DVAL_LONG || type2 == DVAL_LONG) {
+        long const result = val->get_long_value() / val2->get_long_value();
         return dval::dval_long(result, val->identifier(), val->val_mutable(), val->val_nullable());
     }
-    if (type1 == DVAL_INT && type2 == DVAL_INT) {
-        long const result = val->long_value() / val2->long_value();
+    if (type1 == DVAL_INT || type2 == DVAL_INT) {
+        int const result = val->get_int_value() / val2->get_int_value();
         return dval::dval_int(result, val->identifier(), val->val_mutable(), val->val_nullable());
     }
     if (type1 == DVAL_SHORT || type2 == DVAL_SHORT) {
-        long const result = static_cast<long>(val->short_value()) / static_cast<long>(val2->short_value());
-        return dval::dval_int(result, val->identifier(), val->val_mutable(), val->val_nullable());
+        short const result = static_cast<short>(val->get_short_value() / val2->get_short_value());
+        return dval::dval_short(result, val->identifier(), val->val_mutable(), val->val_nullable());
     }
     if (type1 == DVAL_CHAR || type2 == DVAL_CHAR) {
-        long const result = static_cast<long>(val->char_value()) / static_cast<long>(val2->char_value());
-        return dval::dval_int(result, val->identifier(), val->val_mutable(), val->val_nullable());
+        char const result = static_cast<char>(val->get_char_value() / val2->get_char_value());
+        return dval::dval_char(result, val->identifier(), val->val_mutable(), val->val_nullable());
     }
     if (type1 == DVAL_BYTE || type2 == DVAL_BYTE) {
-        long const result = static_cast<long>(val->byte_value()) / static_cast<long>(val2->byte_value());
-        return dval::dval_int(result, val->identifier(), val->val_mutable(), val->val_nullable());
+        std::byte const result = static_cast<std::byte>(static_cast<short>(val->get_byte_value()) / static_cast<short>(val2->get_byte_value()));
+        return dval::dval_byte(result, val->identifier(), val->val_mutable(), val->val_nullable());
     }
     throw std::runtime_error("Unsupported types for division");
 };
@@ -174,33 +184,34 @@ builtin mod_builtin = [](const Denv *env, const Dval *val, const Dval *val2) -> 
     int const type1 = val->type();
     int const type2 = val2->type();
 
-    if (util::check::valIsZero(val2)) {
+    if (util::check::val_is_zero(val2)) {
         return dval::dval_err("Modulo by zero");
     }
 
+
     if (type1 == DVAL_FLOAT || type2 == DVAL_FLOAT) {
-        float const result = std::fmod(static_cast<float>(val->long_value()), static_cast<float>(val2->long_value()));
+        float const result = std::fmod(val->get_float_value() , val2->get_float_value());
         return dval::dval_float(result, val->identifier(), val->val_mutable(), val->val_nullable());
     }
-    if (type1 == DVAL_LONG && type2 == DVAL_LONG) {
-        long const result = val->long_value() % val2->long_value();
+    if (type1 == DVAL_LONG || type2 == DVAL_LONG) {
+        long const result = val->get_long_value() % val2->get_long_value();
         return dval::dval_long(result, val->identifier(), val->val_mutable(), val->val_nullable());
     }
-    if (type1 == DVAL_INT && type2 == DVAL_INT) {
-        long const result = val->long_value() % val2->long_value();
+    if (type1 == DVAL_INT || type2 == DVAL_INT) {
+        int const result = val->get_int_value() % val2->get_int_value();
         return dval::dval_int(result, val->identifier(), val->val_mutable(), val->val_nullable());
     }
     if (type1 == DVAL_SHORT || type2 == DVAL_SHORT) {
-        long const result = static_cast<long>(val->short_value()) % static_cast<long>(val2->short_value());
-        return dval::dval_int(result, val->identifier(), val->val_mutable(), val->val_nullable());
+        short const result = static_cast<short>(val->get_short_value() % val2->get_short_value());
+        return dval::dval_short(result, val->identifier(), val->val_mutable(), val->val_nullable());
     }
     if (type1 == DVAL_CHAR || type2 == DVAL_CHAR) {
-        long const result = static_cast<long>(val->char_value()) % static_cast<long>(val2->char_value());
-        return dval::dval_int(result, val->identifier(), val->val_mutable(), val->val_nullable());
+        char const result = static_cast<char>(val->get_char_value() % val2->get_char_value());
+        return dval::dval_char(result, val->identifier(), val->val_mutable(), val->val_nullable());
     }
     if (type1 == DVAL_BYTE || type2 == DVAL_BYTE) {
-        long const result = static_cast<long>(val->byte_value()) % static_cast<long>(val2->byte_value());
-        return dval::dval_int(result, val->identifier(), val->val_mutable(), val->val_nullable());
+        std::byte const result = static_cast<std::byte>(static_cast<short>(val->get_byte_value()) % static_cast<short>(val2->get_byte_value()));
+        return dval::dval_byte(result, val->identifier(), val->val_mutable(), val->val_nullable());
     }
     throw std::runtime_error("Unsupported types for modulo operation");
 };
@@ -211,27 +222,27 @@ builtin lt_builtin = [](const Denv *env, const Dval *val, const Dval *val2) -> D
     int const type2 = val2->type();
 
     if (type1 == DVAL_FLOAT || type2 == DVAL_FLOAT) {
-        bool const result = static_cast<float>(val->long_value()) < static_cast<float>(val2->long_value());
+        bool const result = val->get_float_value() < val2->get_float_value();
         return dval::dval_bool(result, val->identifier(), val->val_mutable(), val->val_nullable());
     }
-    if (type1 == DVAL_LONG && type2 == DVAL_LONG) {
-        bool const result = val->long_value() < val2->long_value();
+    if (type1 == DVAL_LONG || type2 == DVAL_LONG) {
+        bool const result = val->get_long_value() < val2->get_long_value();
         return dval::dval_bool(result, val->identifier(), val->val_mutable(), val->val_nullable());
     }
-    if (type1 == DVAL_INT && type2 == DVAL_INT) {
-        bool const result = val->long_value() < val2->long_value();
+    if (type1 == DVAL_INT || type2 == DVAL_INT) {
+        bool const result = val->get_int_value() < val2->get_int_value();
         return dval::dval_bool(result, val->identifier(), val->val_mutable(), val->val_nullable());
     }
     if (type1 == DVAL_SHORT || type2 == DVAL_SHORT) {
-        bool const result = static_cast<long>(val->short_value()) < static_cast<long>(val2->short_value());
+        bool const result = static_cast<long>(val->get_short_value()) < static_cast<long>(val2->get_short_value());
         return dval::dval_bool(result, val->identifier(), val->val_mutable(), val->val_nullable());
     }
     if (type1 == DVAL_CHAR || type2 == DVAL_CHAR) {
-        bool const result = static_cast<long>(val->char_value()) < static_cast<long>(val2->char_value());
+        bool const result = static_cast<long>(val->get_char_value()) < static_cast<long>(val2->get_char_value());
         return dval::dval_bool(result, val->identifier(), val->val_mutable(), val->val_nullable());
     }
     if (type1 == DVAL_BYTE || type2 == DVAL_BYTE) {
-        bool const result = static_cast<long>(val->byte_value()) < static_cast<long>(val2->byte_value());
+        bool const result = static_cast<long>(val->get_byte_value()) < static_cast<long>(val2->get_byte_value());
         return dval::dval_bool(result, val->identifier(), val->val_mutable(), val->val_nullable());
     }
     throw std::runtime_error("Unsupported types for less than comparison");
@@ -242,27 +253,27 @@ builtin gt_builtin = [](const Denv *env, const Dval *val, const Dval *val2) -> D
     int const type2 = val2->type();
 
     if (type1 == DVAL_FLOAT || type2 == DVAL_FLOAT) {
-        bool const result = static_cast<float>(val->long_value()) > static_cast<float>(val2->long_value());
+        bool const result = val->get_float_value() > val2->get_float_value();
         return dval::dval_bool(result, val->identifier(), val->val_mutable(), val->val_nullable());
     }
-    if (type1 == DVAL_LONG && type2 == DVAL_LONG) {
-        bool const result = val->long_value() > val2->long_value();
+    if (type1 == DVAL_LONG || type2 == DVAL_LONG) {
+        bool const result = val->get_long_value() > val2->get_long_value();
         return dval::dval_bool(result, val->identifier(), val->val_mutable(), val->val_nullable());
     }
-    if (type1 == DVAL_INT && type2 == DVAL_INT) {
-        bool const result = val->long_value() > val2->long_value();
+    if (type1 == DVAL_INT || type2 == DVAL_INT) {
+        bool const result = val->get_int_value() > val2->get_int_value();
         return dval::dval_bool(result, val->identifier(), val->val_mutable(), val->val_nullable());
     }
     if (type1 == DVAL_SHORT || type2 == DVAL_SHORT) {
-        bool const result = static_cast<long>(val->short_value()) > static_cast<long>(val2->short_value());
+        bool const result = static_cast<long>(val->get_short_value()) > static_cast<long>(val2->get_short_value());
         return dval::dval_bool(result, val->identifier(), val->val_mutable(), val->val_nullable());
     }
     if (type1 == DVAL_CHAR || type2 == DVAL_CHAR) {
-        bool const result = static_cast<long>(val->char_value()) > static_cast<long>(val2->char_value());
+        bool const result = static_cast<long>(val->get_char_value()) > static_cast<long>(val2->get_char_value());
         return dval::dval_bool(result, val->identifier(), val->val_mutable(), val->val_nullable());
     }
     if (type1 == DVAL_BYTE || type2 == DVAL_BYTE) {
-        bool const result = static_cast<long>(val->byte_value()) > static_cast<long>(val2->byte_value());
+        bool const result = static_cast<long>(val->get_byte_value()) > static_cast<long>(val2->get_byte_value());
         return dval::dval_bool(result, val->identifier(), val->val_mutable(), val->val_nullable());
     }
     throw std::runtime_error("Unsupported types for greater than comparison");
@@ -273,27 +284,27 @@ builtin lte_builtin = [](const Denv *env, const Dval *val, const Dval *val2) -> 
     int const type2 = val2->type();
 
     if (type1 == DVAL_FLOAT || type2 == DVAL_FLOAT) {
-        bool const result = static_cast<float>(val->long_value()) <= static_cast<float>(val2->long_value());
+        bool const result = val->get_float_value() <= val2->get_float_value();
         return dval::dval_bool(result, val->identifier(), val->val_mutable(), val->val_nullable());
     }
-    if (type1 == DVAL_LONG && type2 == DVAL_LONG) {
-        bool const result = val->long_value() <= val2->long_value();
+    if (type1 == DVAL_LONG || type2 == DVAL_LONG) {
+        bool const result = val->get_long_value() <= val2->get_long_value();
         return dval::dval_bool(result, val->identifier(), val->val_mutable(), val->val_nullable());
     }
-    if (type1 == DVAL_INT && type2 == DVAL_INT) {
-        bool const result = val->long_value() <= val2->long_value();
+    if (type1 == DVAL_INT || type2 == DVAL_INT) {
+        bool const result = val->get_int_value() <= val2->get_int_value();
         return dval::dval_bool(result, val->identifier(), val->val_mutable(), val->val_nullable());
     }
     if (type1 == DVAL_SHORT || type2 == DVAL_SHORT) {
-        bool const result = static_cast<long>(val->short_value()) <= static_cast<long>(val2->short_value());
+        bool const result = static_cast<long>(val->get_short_value()) <= static_cast<long>(val2->get_short_value());
         return dval::dval_bool(result, val->identifier(), val->val_mutable(), val->val_nullable());
     }
     if (type1 == DVAL_CHAR || type2 == DVAL_CHAR) {
-        bool const result = static_cast<long>(val->char_value()) <= static_cast<long>(val2->char_value());
+        bool const result = static_cast<long>(val->get_char_value()) <= static_cast<long>(val2->get_char_value());
         return dval::dval_bool(result, val->identifier(), val->val_mutable(), val->val_nullable());
     }
     if (type1 == DVAL_BYTE || type2 == DVAL_BYTE) {
-        bool const result = static_cast<long>(val->byte_value()) <= static_cast<long>(val2->byte_value());
+        bool const result = static_cast<long>(val->get_byte_value()) <= static_cast<long>(val2->get_byte_value());
         return dval::dval_bool(result, val->identifier(), val->val_mutable(), val->val_nullable());
     }
     throw std::runtime_error("Unsupported types for less than or equal to comparison");
@@ -304,27 +315,27 @@ builtin gte_builtin = [](const Denv *env, const Dval *val, const Dval *val2) -> 
     int const type2 = val2->type();
 
     if (type1 == DVAL_FLOAT || type2 == DVAL_FLOAT) {
-        bool const result = static_cast<float>(val->long_value()) >= static_cast<float>(val2->long_value());
+        bool const result = val->get_float_value() >= val2->get_float_value();
         return dval::dval_bool(result, val->identifier(), val->val_mutable(), val->val_nullable());
     }
-    if (type1 == DVAL_LONG && type2 == DVAL_LONG) {
-        bool const result = val->long_value() >= val2->long_value();
+    if (type1 == DVAL_LONG || type2 == DVAL_LONG) {
+        bool const result = val->get_long_value() >= val2->get_long_value();
         return dval::dval_bool(result, val->identifier(), val->val_mutable(), val->val_nullable());
     }
-    if (type1 == DVAL_INT && type2 == DVAL_INT) {
-        bool const result = val->long_value() >= val2->long_value();
+    if (type1 == DVAL_INT || type2 == DVAL_INT) {
+        bool const result = val->get_int_value() >= val2->get_int_value();
         return dval::dval_bool(result, val->identifier(), val->val_mutable(), val->val_nullable());
     }
     if (type1 == DVAL_SHORT || type2 == DVAL_SHORT) {
-        bool const result = static_cast<long>(val->short_value()) >= static_cast<long>(val2->short_value());
+        bool const result = static_cast<long>(val->get_short_value()) >= static_cast<long>(val2->get_short_value());
         return dval::dval_bool(result, val->identifier(), val->val_mutable(), val->val_nullable());
     }
     if (type1 == DVAL_CHAR || type2 == DVAL_CHAR) {
-        bool const result = static_cast<long>(val->char_value()) >= static_cast<long>(val2->char_value());
+        bool const result = static_cast<long>(val->get_char_value()) >= static_cast<long>(val2->get_char_value());
         return dval::dval_bool(result, val->identifier(), val->val_mutable(), val->val_nullable());
     }
     if (type1 == DVAL_BYTE || type2 == DVAL_BYTE) {
-        bool const result = static_cast<long>(val->byte_value()) >= static_cast<long>(val2->byte_value());
+        bool const result = static_cast<long>(val->get_byte_value()) >= static_cast<long>(val2->get_byte_value());
         return dval::dval_bool(result, val->identifier(), val->val_mutable(), val->val_nullable());
     }
     throw std::runtime_error("Unsupported types for greater than or equal to comparison");
@@ -335,33 +346,33 @@ builtin eq_builtin = [](const Denv *env, const Dval *val, const Dval *val2) -> D
     int const type2 = val2->type();
 
     if (type1 == DVAL_STR || type2 == DVAL_STR) {
-        std::string const str1 = type1 == DVAL_STR ? val->value() : std::to_string(val->long_value());
-        std::string const str2 = type2 == DVAL_STR ? val2->value() : std::to_string(val2->long_value());
+        std::string const str1 = type1 == DVAL_STR ? val->string_value() : std::to_string(val->get_long_value());
+        std::string const str2 = type2 == DVAL_STR ? val2->string_value() : std::to_string(val2->get_long_value());
         bool const result =  str1 ==  str2;
         return dval::dval_bool(result, val->identifier(), val->val_mutable(), val->val_nullable());
     }
     if (type1 == DVAL_FLOAT || type2 == DVAL_FLOAT) {
-        bool const result = static_cast<float>(val->long_value()) == static_cast<float>(val2->long_value());
+        bool const result = val->get_float_value() == val2->get_float_value();
         return dval::dval_bool(result, val->identifier(), val->val_mutable(), val->val_nullable());
     }
-    if (type1 == DVAL_LONG && type2 == DVAL_LONG) {
-        bool const result = val->long_value() == val2->long_value();
+    if (type1 == DVAL_LONG || type2 == DVAL_LONG) {
+        bool const result = val->get_long_value() == val2->get_long_value();
         return dval::dval_bool(result, val->identifier(), val->val_mutable(), val->val_nullable());
     }
-    if (type1 == DVAL_INT && type2 == DVAL_INT) {
-        bool const result = val->long_value() == val2->long_value();
+    if (type1 == DVAL_INT || type2 == DVAL_INT) {
+        bool const result = val->get_int_value() == val2->get_int_value();
         return dval::dval_bool(result, val->identifier(), val->val_mutable(), val->val_nullable());
     }
     if (type1 == DVAL_SHORT || type2 == DVAL_SHORT) {
-        bool const result = static_cast<long>(val->short_value()) == static_cast<long>(val2->short_value());
+        bool const result = static_cast<long>(val->get_short_value()) == static_cast<long>(val2->get_short_value());
         return dval::dval_bool(result, val->identifier(), val->val_mutable(), val->val_nullable());
     }
     if (type1 == DVAL_CHAR || type2 == DVAL_CHAR) {
-        bool const result = static_cast<long>(val->char_value()) == static_cast<long>(val2->char_value());
+        bool const result = static_cast<long>(val->get_char_value()) == static_cast<long>(val2->get_char_value());
         return dval::dval_bool(result, val->identifier(), val->val_mutable(), val->val_nullable());
     }
     if (type1 == DVAL_BYTE || type2 == DVAL_BYTE) {
-        bool const result = static_cast<long>(val->byte_value()) == static_cast<long>(val2->byte_value());
+        bool const result = static_cast<long>(val->get_byte_value()) == static_cast<long>(val2->get_byte_value());
         return dval::dval_bool(result, val->identifier(), val->val_mutable(), val->val_nullable());
     }
     throw std::runtime_error("Unsupported types for equality comparison");
@@ -372,33 +383,33 @@ builtin neq_builtin = [](const Denv *env, const Dval *val, const Dval *val2) -> 
     int const type2 = val2->type();
 
     if (type1 == DVAL_STR || type2 == DVAL_STR) {
-        std::string const str1 = type1 == DVAL_STR ? val->value() : std::to_string(val->long_value());
-        std::string const str2 = type2 == DVAL_STR ? val2->value() : std::to_string(val2->long_value());
+        std::string const str1 = type1 == DVAL_STR ? val->string_value() : std::to_string(val->get_long_value());
+        std::string const str2 = type2 == DVAL_STR ? val2->string_value() : std::to_string(val2->get_long_value());
         bool const result = str1 != str2;
         return dval::dval_bool(result, val->identifier(), val->val_mutable(), val->val_nullable());
     }
     if (type1 == DVAL_FLOAT || type2 == DVAL_FLOAT) {
-        bool const result = static_cast<float>(val->long_value()) != static_cast<float>(val2->long_value());
+        bool const result = val->get_float_value() != val2->get_float_value();
         return dval::dval_bool(result, val->identifier(), val->val_mutable(), val->val_nullable());
     }
-    if (type1 == DVAL_LONG && type2 == DVAL_LONG) {
-        bool const result = val->long_value() != val2->long_value();
+    if (type1 == DVAL_LONG || type2 == DVAL_LONG) {
+        bool const result = val->get_long_value() != val2->get_long_value();
         return dval::dval_bool(result, val->identifier(), val->val_mutable(), val->val_nullable());
     }
-    if (type1 == DVAL_INT && type2 == DVAL_INT) {
-        bool const result = val->long_value() != val2->long_value();
+    if (type1 == DVAL_INT || type2 == DVAL_INT) {
+        bool const result = val->get_int_value() != val2->get_int_value();
         return dval::dval_bool(result, val->identifier(), val->val_mutable(), val->val_nullable());
     }
     if (type1 == DVAL_SHORT || type2 == DVAL_SHORT) {
-        bool const result = static_cast<long>(val->short_value()) != static_cast<long>(val2->short_value());
+        bool const result = static_cast<long>(val->get_short_value()) != static_cast<long>(val2->get_short_value());
         return dval::dval_bool(result, val->identifier(), val->val_mutable(), val->val_nullable());
     }
     if (type1 == DVAL_CHAR || type2 == DVAL_CHAR) {
-        bool const result = static_cast<long>(val->char_value()) != static_cast<long>(val2->char_value());
+        bool const result = static_cast<long>(val->get_char_value()) != static_cast<long>(val2->get_char_value());
         return dval::dval_bool(result, val->identifier(), val->val_mutable(), val->val_nullable());
     }
     if (type1 == DVAL_BYTE || type2 == DVAL_BYTE) {
-        bool const result = static_cast<long>(val->byte_value()) != static_cast<long>(val2->byte_value());
+        bool const result = static_cast<long>(val->get_byte_value()) != static_cast<long>(val2->get_byte_value());
         return dval::dval_bool(result, val->identifier(), val->val_mutable(), val->val_nullable());
     }
     throw std::runtime_error("Unsupported types for inequality comparison");
@@ -407,8 +418,8 @@ builtin neq_builtin = [](const Denv *env, const Dval *val, const Dval *val2) -> 
 builtin and_builtin = [](const Denv *env, const Dval *val, const Dval *val2) -> Dval* {
     int const type1 = val->type();
 
-    if (int const type2 = val2->type(); type1 == DVAL_BOOL && type2 == DVAL_BOOL) {
-        bool const result = val->bool_value() && val2->bool_value();
+    if (int const type2 = val2->type(); type1 == DVAL_BOOL || type2 == DVAL_BOOL) {
+        bool const result = val->bool_value() || val2->bool_value();
         return dval::dval_bool(result, val->identifier(), val->val_mutable(), val->val_nullable());
     }
     throw std::runtime_error("Unsupported types for logical AND operation");
@@ -417,7 +428,7 @@ builtin and_builtin = [](const Denv *env, const Dval *val, const Dval *val2) -> 
 builtin or_builtin = [](const Denv *env, const Dval *val, const Dval *val2) -> Dval* {
     int const type1 = val->type();
 
-    if (int const type2 = val2->type(); type1 == DVAL_BOOL && type2 == DVAL_BOOL) {
+    if (int const type2 = val2->type(); type1 == DVAL_BOOL || type2 == DVAL_BOOL) {
         bool const result = val->bool_value() || val2->bool_value();
         return dval::dval_bool(result, val->identifier(), val->val_mutable(), val->val_nullable());
     }
@@ -428,33 +439,33 @@ builtin xor_builtin = [](const Denv *env, const Dval *val, const Dval *val2) -> 
     int const type1 = val->type();
     int const type2 = val2->type();
 
-    if (type1 == DVAL_BOOL && type2 == DVAL_BOOL) {
+    if (type1 == DVAL_BOOL || type2 == DVAL_BOOL) {
         bool const result = val->bool_value() != val2->bool_value();
         return dval::dval_bool(result, val->identifier(), val->val_mutable(), val->val_nullable());
     }
 
-    if (type1 == DVAL_LONG && type2 == DVAL_LONG) {
-        long const result = val->long_value() ^ val2->long_value();
+    if (type1 == DVAL_LONG || type2 == DVAL_LONG) {
+        long const result = val->get_long_value() ^ val2->get_long_value();
         return dval::dval_long(result, val->identifier(), val->val_mutable(), val->val_nullable());
     }
 
-    if (type1 == DVAL_INT && type2 == DVAL_INT) {
-        int const result = val->int_value() ^ val2->int_value();
+    if (type1 == DVAL_INT || type2 == DVAL_INT) {
+        int const result = val->get_int_value() ^ val2->get_int_value();
         return dval::dval_int(result, val->identifier(), val->val_mutable(), val->val_nullable());
     }
 
-    if (type1 == DVAL_SHORT && type2 == DVAL_SHORT) {
-        short const result = static_cast<short>(val->short_value() ^ val2->short_value());
+    if (type1 == DVAL_SHORT || type2 == DVAL_SHORT) {
+        short const result = static_cast<short>(val->get_short_value() ^ val2->get_short_value());
         return dval::dval_short(result, val->identifier(), val->val_mutable(), val->val_nullable());
     }
 
-    if (type1 == DVAL_CHAR && type2 == DVAL_CHAR) {
-        char const result = static_cast<char>(val->char_value() ^ val2->char_value());
+    if (type1 == DVAL_CHAR || type2 == DVAL_CHAR) {
+        char const result = static_cast<char>(val->get_char_value() ^ val2->get_char_value());
         return dval::dval_char(result, val->identifier(), val->val_mutable(), val->val_nullable());
     }
 
-    if (type1 == DVAL_BYTE && type2 == DVAL_BYTE) {
-        std::byte const result = val->byte_value() ^ val2->byte_value();
+    if (type1 == DVAL_BYTE || type2 == DVAL_BYTE) {
+        std::byte const result = val->get_byte_value() ^ val2->get_byte_value();
         return dval::dval_byte(result, val->identifier(), val->val_mutable(), val->val_nullable());
     }
 
@@ -465,28 +476,27 @@ builtin lshift_builtin = [](const Denv *env, const Dval *val, const Dval *val2) 
     int const type1 = val->type();
     int const type2 = val2->type();
 
-    if (type1 == DVAL_LONG && type2 == DVAL_LONG) {
-        long const result = val->long_value() << val2->long_value();
+    if (type1 == DVAL_FLOAT || type2 == DVAL_FLOAT) {
+        return dval::dval_err("Unsupported types for left shift operation");
+    }
+    if (type1 == DVAL_LONG || type2 == DVAL_LONG) {
+        long const result = val->get_long_value() << val2->get_long_value();
         return dval::dval_long(result, val->identifier(), val->val_mutable(), val->val_nullable());
     }
-
-    if (type1 == DVAL_INT && type2 == DVAL_INT) {
-        int const result = val->int_value() << val2->int_value();
+    if (type1 == DVAL_INT || type2 == DVAL_INT) {
+        int const result = val->get_int_value() << val2->get_int_value();
         return dval::dval_int(result, val->identifier(), val->val_mutable(), val->val_nullable());
     }
-
-    if (type1 == DVAL_SHORT && type2 == DVAL_SHORT) {
-        short const result = static_cast<short>(val->short_value() << val2->short_value());
+    if (type1 == DVAL_SHORT || type2 == DVAL_SHORT) {
+        short const result = static_cast<short>(val->get_short_value() << val2->get_short_value());
         return dval::dval_short(result, val->identifier(), val->val_mutable(), val->val_nullable());
     }
-
-    if (type1 == DVAL_CHAR && type2 == DVAL_CHAR) {
-        char const result = static_cast<char>(val->char_value() << val2->char_value());
+    if (type1 == DVAL_CHAR || type2 == DVAL_CHAR) {
+        char const result = static_cast<char>(val->get_char_value() << val2->get_char_value());
         return dval::dval_char(result, val->identifier(), val->val_mutable(), val->val_nullable());
     }
-
-    if (type1 == DVAL_BYTE && type2 == DVAL_BYTE) {
-        std::byte const result = static_cast<std::byte>(static_cast<unsigned char>(val->byte_value()) << static_cast<int>(val2->byte_value()));
+    if (type1 == DVAL_BYTE || type2 == DVAL_BYTE) {
+        std::byte const result = static_cast<std::byte>(static_cast<short>(val->get_byte_value()) << static_cast<short>(val2->get_byte_value()));
         return dval::dval_byte(result, val->identifier(), val->val_mutable(), val->val_nullable());
     }
 
@@ -497,28 +507,27 @@ builtin rshift_builtin = [](const Denv *env, const Dval *val, const Dval *val2) 
     int const type1 = val->type();
     int const type2 = val2->type();
 
-    if (type1 == DVAL_LONG && type2 == DVAL_LONG) {
-        long const result = val->long_value() >> val2->long_value();
+    if (type1 == DVAL_FLOAT || type2 == DVAL_FLOAT) {
+        return dval::dval_err("Unsupported types for right shift operation");
+    }
+    if (type1 == DVAL_LONG || type2 == DVAL_LONG) {
+        long const result = val->get_long_value() >> val2->get_long_value();
         return dval::dval_long(result, val->identifier(), val->val_mutable(), val->val_nullable());
     }
-
-    if (type1 == DVAL_INT && type2 == DVAL_INT) {
-        int const result = val->int_value() >> val2->int_value();
+    if (type1 == DVAL_INT || type2 == DVAL_INT) {
+        int const result = val->get_int_value() >> val2->get_int_value();
         return dval::dval_int(result, val->identifier(), val->val_mutable(), val->val_nullable());
     }
-
-    if (type1 == DVAL_SHORT && type2 == DVAL_SHORT) {
-        short const result = static_cast<short>(val->short_value() >> val2->short_value());
+    if (type1 == DVAL_SHORT || type2 == DVAL_SHORT) {
+        short const result = static_cast<short>(val->get_short_value() >> val2->get_short_value());
         return dval::dval_short(result, val->identifier(), val->val_mutable(), val->val_nullable());
     }
-
-    if (type1 == DVAL_CHAR && type2 == DVAL_CHAR) {
-        char const result = static_cast<char>(val->char_value() >> val2->char_value());
+    if (type1 == DVAL_CHAR || type2 == DVAL_CHAR) {
+        char const result = static_cast<char>(val->get_char_value() >> val2->get_char_value());
         return dval::dval_char(result, val->identifier(), val->val_mutable(), val->val_nullable());
     }
-
-    if (type1 == DVAL_BYTE && type2 == DVAL_BYTE) {
-        std::byte const result = static_cast<std::byte>(static_cast<unsigned char>(val->byte_value()) >> static_cast<int>(val2->byte_value()));
+    if (type1 == DVAL_BYTE || type2 == DVAL_BYTE) {
+        std::byte const result = static_cast<std::byte>(static_cast<short>(val->get_byte_value()) >> static_cast<short>(val2->get_byte_value()));
         return dval::dval_byte(result, val->identifier(), val->val_mutable(), val->val_nullable());
     }
 
@@ -529,31 +538,30 @@ builtin urshift_builtin = [](const Denv *env, const Dval *val, const Dval *val2)
     int const type1 = val->type();
     int const type2 = val2->type();
 
-    if (type1 == DVAL_LONG && type2 == DVAL_LONG) {
-        unsigned long const result = static_cast<unsigned long>(val->long_value()) >> val2->long_value();
-        return dval::dval_long(static_cast<long>(result), val->identifier(), val->val_mutable(), val->val_nullable());
-    }
 
-    if (type1 == DVAL_INT && type2 == DVAL_INT) {
-        unsigned int const result = static_cast<unsigned int>(val->int_value()) >> val2->int_value();
+    if (type1 == DVAL_FLOAT || type2 == DVAL_FLOAT) {
+        return dval::dval_err("Unsupported types for unsigned right shift operation");
+    }
+    if (type1 == DVAL_LONG || type2 == DVAL_LONG) {
+        long const result = val->get_long_value() >> val2->get_long_value();
+        return dval::dval_long(result, val->identifier(), val->val_mutable(), val->val_nullable());
+    }
+    if (type1 == DVAL_INT || type2 == DVAL_INT) {
+        int const result = val->get_int_value() >> val2->get_int_value();
         return dval::dval_int(result, val->identifier(), val->val_mutable(), val->val_nullable());
     }
-
-    if (type1 == DVAL_SHORT && type2 == DVAL_SHORT) {
-        unsigned short const result = static_cast<unsigned short>(val->short_value()) >> val2->short_value();
-        return dval::dval_short(static_cast<short>(result), val->identifier(), val->val_mutable(), val->val_nullable());
+    if (type1 == DVAL_SHORT || type2 == DVAL_SHORT) {
+        short const result = static_cast<short>(val->get_short_value() >> val2->get_short_value());
+        return dval::dval_short(result, val->identifier(), val->val_mutable(), val->val_nullable());
     }
-
-    if (type1 == DVAL_CHAR && type2 == DVAL_CHAR) {
-        unsigned char const result = static_cast<unsigned char>(val->char_value()) >> val2->char_value();
-        return dval::dval_char(static_cast<char>(result), val->identifier(), val->val_mutable(), val->val_nullable());
+    if (type1 == DVAL_CHAR || type2 == DVAL_CHAR) {
+        char const result = static_cast<char>(val->get_char_value() >> val2->get_char_value());
+        return dval::dval_char(result, val->identifier(), val->val_mutable(), val->val_nullable());
     }
-
-    if (type1 == DVAL_BYTE && type2 == DVAL_BYTE) {
-        std::byte const result = static_cast<std::byte>(static_cast<unsigned char>(val->byte_value()) >> static_cast<int>(val2->byte_value()));
+    if (type1 == DVAL_BYTE || type2 == DVAL_BYTE) {
+        std::byte const result = static_cast<std::byte>(static_cast<short>(val->get_byte_value()) >> static_cast<short>(val2->get_byte_value()));
         return dval::dval_byte(result, val->identifier(), val->val_mutable(), val->val_nullable());
     }
-
     throw std::runtime_error("Unsupported types for unsigned right shift operation");
 };
 
