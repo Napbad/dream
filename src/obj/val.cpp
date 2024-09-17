@@ -1,4 +1,4 @@
-#include "enum.h"
+#include "./common/enum.h"
 #include "val.h"
 #include <cstring>
 #include <cfloat>
@@ -6,7 +6,7 @@
 #include <climits>
 #include <utility>
 
-#include "reserved.h"
+#include "./common/reserved.h"
 /* =======dval======== */
 
 
@@ -42,6 +42,7 @@ Dval::Dval(
     _val_nullable = NON_NULLABLE;
     _package = nullptr;
     _parent = nullptr;
+    _env = nullptr;
 }
 
 Dval::Dval(
@@ -76,6 +77,7 @@ Dval::Dval(
     _val_nullable = val_nullable == NULLABLE;
     _package = nullptr;
     _parent = nullptr;
+    _env = nullptr;
 }
 
 Dval::Dval(
@@ -113,6 +115,7 @@ Dval::Dval(
     _val_nullable = val_nullable;
     _package = package;
     _parent = parent;
+    _env = nullptr;
 }
 
 Dval::Dval() {
@@ -133,6 +136,7 @@ Dval::Dval() {
     _val_nullable = NON_NULLABLE;
     _package = nullptr;
     _parent = nullptr;
+    _env = nullptr;
 }
 
 Dval::Dval(const Dval &other)
@@ -158,6 +162,7 @@ Dval::Dval(const Dval &other)
     _val_nullable = other._val_nullable;
     _package = nullptr;
     _parent = nullptr;
+    _env = other._env;
 };
 
 // Destructor implementation
@@ -304,7 +309,7 @@ void Dval::print_value() {
                 }
             }
             std::cout << "]" << std::endl;
-        break;
+            break;
         case DVAL_BYTE_ARR:
             std::cout << "Byte Array: " << this->identifier() << " = [";
             for (size_t i = 0; i < this->_arr_val->size(); ++i) {
@@ -636,18 +641,33 @@ bool Dval::is_nullable() const {
     return _val_mutable;
 }
 
+Denv *Dval::env() const {
+    return _env;
+}
+
+void Dval::set_env(Denv *env) {
+    _env = env;
+}
+
 Denv::Denv(const int count) {
-    _identifier_str = new std::unordered_map<std::string, const Dval *>;
-    _identifiers = new std::unordered_map<const Dval *, Dval *>;
+    _identifiers = new std::unordered_map<std::string, Dval *>;
     _count = count;
+    _children = new std::vector<Denv *>;
+    _parent = nullptr;
+}
+
+Denv::Denv(const std::string &identifier) {
+    _identifiers = new std::unordered_map<std::string, Dval *>;
+    _identifier = identifier;
+    _count = 0;
     _children = new std::vector<Denv *>;
     _parent = nullptr;
 }
 
 Denv::Denv() {
     _count = 0;
-    _identifiers = new std::unordered_map<const Dval *, Dval *>;
-    _identifier_str = new std::unordered_map<std::string, const Dval *>;
+    _identifier = "";
+    _identifiers = new std::unordered_map<std::string, Dval *>;
     _children = new std::vector<Denv *>;
     _parent = nullptr;
 }
@@ -665,29 +685,6 @@ int Denv::count() const {
 
 void Denv::set_count(const int count) {
     _count = count;
-}
-
-std::unordered_map<const Dval *, Dval *> *Denv::identifiers() const {
-    return _identifiers;
-}
-
-std::unordered_map<std::string, const Dval *> *Denv::identifiers_str() const {
-    return _identifier_str;
-}
-
-void Denv::add(const Dval *identifier,
-               Dval *val) {
-    _identifier_str->insert(std::make_pair(identifier->identifier(), identifier));
-    _identifiers->insert(std::make_pair(identifier, val));
-    _count = count() + 1;
-}
-
-Dval *Denv::get(const Dval *identifier) const {
-    if (!_identifier_str->contains(identifier->identifier())) {
-        return nullptr;
-    }
-
-    return _identifiers->at(_identifier_str->at(identifier->identifier()));
 }
 
 std::vector<Denv *> *Denv::children(int index) const {
@@ -708,17 +705,19 @@ void Denv::set_parent(Denv *parent) {
 
 void Denv::add(const std::string &identifier, Dval *val) {
     _count = count() + 1;
-    const Dval *id = dval::dval_identifier(identifier);
-    _identifier_str->insert(std::make_pair(identifier, id));
-    _identifiers->insert(std::make_pair(id, val));
+    _identifiers->insert(std::pair(identifier, val));
 }
 
 Dval *Denv::get(const std::string &identifier) const {
-    if (!_identifier_str->contains(identifier)) {
-        return nullptr;
+    if (_identifiers->contains(identifier)) {
+        return _identifiers->at(identifier);
     }
-    const Dval *ident = _identifier_str->at(identifier);
-    return get(ident);
+
+    if (_parent != nullptr) {
+        return _parent->get(identifier);
+    }
+
+    return nullptr;
 }
 
 
@@ -950,6 +949,30 @@ namespace dval {
         if (type == D_STRING) {
             return DVAL_STR;
         }
+        if (type == D_BOOL_ARR) {
+            return DVAL_BOOL_ARR;
+        }
+        if (type == D_FLOAT_ARR) {
+            return DVAL_FLOAT_ARR;
+        }
+        if (type == D_INT_ARR) {
+            return DVAL_INT_ARR;
+        }
+        if (type == D_BYTE_ARR) {
+            return DVAL_BYTE_ARR;
+        }
+        if (type == D_SHORT_ARR) {
+            return DVAL_SHORT_ARR;
+        }
+        if (type == D_LONG_ARR) {
+            return DVAL_LONG_ARR;
+        }
+        if (type == D_CHAR_ARR) {
+            return DVAL_CHAR_ARR;
+        }
+        if (type == D_STRING_ARR) {
+            return DVAL_STR_ARR;
+        }
         if (type == D_IDENTIFIER) {
             return DVAL_IDENT;
         }
@@ -959,6 +982,10 @@ namespace dval {
         if (type == D_OPERATOR) {
             return DVAL_OP;
         }
+        if (type == D_PACKAGE) {
+            return DVAL_PACKAGE;
+        }
+
         return DVAL_ERR;
     }
 
@@ -1439,13 +1466,5 @@ namespace dval {
     Denv *denv_new() {
         Denv *e = new Denv(0);
         return e;
-    }
-
-    void denv_put(Denv *e,
-                  const Dval *k,
-                  Dval *v) {
-        e->add(k,
-               v);
-        e->set_count(e->count() + 1);
     }
 }

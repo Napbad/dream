@@ -6,8 +6,8 @@
 
 #include "check.h"
 
-#include "model/enum.h"
-#include "model/reserved.h"
+#include "common/enum.h"
+#include "common/reserved.h"
 
 bool util::check::str_is_num(const std::string &s) {
     for (char const &ch: s) {

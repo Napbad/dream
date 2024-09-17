@@ -6,7 +6,7 @@
 #define CHECK_H
 #include <string>
 
-#include "model/val.h"
+#include "obj/val.h"
 
 
 namespace util::check {

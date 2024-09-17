@@ -17,20 +17,20 @@ find_library(LIBEDIT libedit.so /usr/lib /usr/lib64)
 find_library(LIBANTLR libantlr4-runtime.so /usr/local/lib64/)
 
 add_executable(dream
-        src/model/val.cpp
+        src/obj/val.cpp
         src/util/check.cpp
         src/util/check.h
         src/parse/DreamBaseListener.cpp
         src/parse/DreamLexer.cpp
         src/parse/DreamListener.cpp
         src/parse/DreamParser.cpp
-        src/parse/DreamCommonParserListener.cpp
-        src/parse/DreamCommonParserListener.h
-        src/model/Package.cpp
-        src/model/Package.h
-        src/model/Global.cpp
-        src/model/Global.h
-        src/model/reserved.h
+        src/parse/DreamParserListenerRunner.cpp
+        src/parse/DreamParserListenerRunner.h
+        src/obj/Package.cpp
+        src/obj/Package.h
+        src/obj/Global.cpp
+        src/obj/Global.h
+        src/common/reserved.h
         src/util/parse_util.cpp
         src/util/parse_util.h
         src/main.cpp
@@ -38,15 +38,15 @@ add_executable(dream
         src/parse/DreamListener.h
         src/parse/DreamLexer.h
         src/parse/DreamBaseListener.h
-        src/model/val.h
-        src/model/enum.h
-        src/model/reserved.cpp
+        src/obj/val.h
+        src/common/enum.h
+        src/common/reserved.cpp
         src/gc/DataSource.cpp
         src/gc/DataSource.h
-        src/gc/ObjectSource.cpp
-        src/gc/ObjectSource.h
         src/gc/gc.cpp
         src/gc/gc.h
+        src/compile/Compiler.cpp
+        src/compile/Compiler.h
 )
 
 target_link_libraries(dream ${LIBANTLR})

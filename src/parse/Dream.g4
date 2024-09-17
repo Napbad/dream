@@ -2,7 +2,7 @@ grammar Dream;
 
 // 程序
 program
-    : packageDecl? importStmt* stmt* fileCodeBlock* EOF
+    : packageDecl? importStmt* (stmt | fileCodeBlock)* EOF
     ;
 
 // 包声明
@@ -398,6 +398,11 @@ singleType
     | SHORT
     | INT
     | LONG
+    | UINT
+    | ULONG
+    | LONG
+    | LONGLONG
+    | ULONGLONG
     | FLOAT
     | DOUBLE
     | BOOL
@@ -454,17 +459,19 @@ forVarDecl
 
 // 代码块
 fileCodeBlock
-    : LBRACE fileCodeBlockBody RBRACE
+    : LBRACE fileCodeBlockBody* RBRACE
     ;
 
 // 代码块体
 fileCodeBlockBody
-    : fileCodeBlockStmt*
+    : fileCodeBlockStmt
+    | fileCodeBlock
     ;
 
 // 代码块语句
 fileCodeBlockStmt
     : expr SEMICOLON
+    | declaration
     | ifStmt
     | forStmt
     | returnStmt
@@ -543,7 +550,12 @@ FALSE_LITERAL : 'false';
 BYTE : 'byte';
 SHORT : 'short';
 INT : 'int';
+UINT: 'u' INT;
+USHORT : 'ushort';
 LONG : 'long';
+ULONG : 'ulong';
+LONGLONG: 'llong';
+ULONGLONG : 'ullong';
 FLOAT : 'float';
 DOUBLE : 'double';
 BOOL : 'bool';

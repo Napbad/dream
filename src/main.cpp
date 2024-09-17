@@ -20,12 +20,12 @@ void add_history(char *unused) {}
 #include <editline/readline.h>
 #endif
 
-#include "model/val.h"
+#include "obj/val.h"
 #include "parse/DreamBaseListener.h"
 #include "parse/DreamParser.h"
 #include "parse/DreamLexer.h"
-#include "model/Global.h"
-#include "parse/DreamCommonParserListener.h"
+#include "obj/Global.h"
+#include "parse/DreamParserListenerRunner.h"
 
 using namespace std;
 using namespace antlr4;
@@ -33,6 +33,11 @@ using namespace antlr4;
 
 int main(int argc, const char *argv[]) {
     std::ifstream stream;
+
+    // stream.open(argv[0], ios::in);
+
+    // cout << argv[0] << endl;
+
     stream.open("../test.drm", ios::in);
 
     if (!stream.is_open()) {
@@ -48,25 +53,25 @@ int main(int argc, const char *argv[]) {
     DreamParser parser(&tokens);
 
     tree::ParseTree *tree = parser.program();
-    DreamCommonParserListener listener(global);
+    DreamParserListenerRunner listener(global);
     tree::ParseTreeWalker::DEFAULT.walk(&listener, tree);
 
-    std::ifstream stream2;
-    stream2.open("../test2.drm", ios::in);
-
-    if (!stream2.is_open()) {
-        cout << "Could not open file" << endl;
-        return 1;
-    }
-
-    ANTLRInputStream inputStream2(stream2);
-    DreamLexer lexer2(&inputStream2);
-    CommonTokenStream tokens2(&lexer2);
-    DreamParser parser2(&tokens2);
-
-    tree::ParseTree *tree2 = parser2.program();
-    DreamCommonParserListener listener2(global);
-    tree::ParseTreeWalker::DEFAULT.walk(&listener2, tree2);
+    // std::ifstream stream2;
+    // stream2.open("../test2.drm", ios::in);
+    //
+    // if (!stream2.is_open()) {
+    //     cout << "Could not open file" << endl;
+    //     return 1;
+    // }
+    //
+    // ANTLRInputStream inputStream2(stream2);
+    // DreamLexer lexer2(&inputStream2);
+    // CommonTokenStream tokens2(&lexer2);
+    // DreamParser parser2(&tokens2);
+    //
+    // tree::ParseTree *tree2 = parser2.program();
+    // DreamParserListenerRunner listener2(global);
+    // tree::ParseTreeWalker::DEFAULT.walk(&listener2, tree2);
 
     return 0;
 }

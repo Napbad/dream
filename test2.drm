@@ -2,10 +2,23 @@
 /* 这是一个多行注释 */
 // `;`作为每条语句的结尾
 
-package com.util.napbad.util; // 这是一个包声明，指定当前文件属于 `main` 包
+package com.napbad.main; // 这是一个包声明，指定当前文件属于 `main` 包
 
 import com.napbad.std; // 这是一个导入语句，导入 `com.napbad.std` 包
 import com.napbad.http; // 这是一个导入语句，导入 `com.napbad.http` 包
+
+var string b? =
+// "a";
+(((1 + 4) * 5) + 4 + 10 / 2 * 0.5) + "a";
+// (20 + 10 * 40 - 100 / 5) + 10 * (10 + -1) % 4;
+ // + (true & a | "ab");
+
+b;
+
+var string b1? = b;
+
+b1;
+b;
 
 var int a! = 10; // 这是一个变量声明
 // `var` 表示 `a` 是一个可变变量
@@ -13,18 +26,22 @@ var int a! = 10; // 这是一个变量声明
 // `?` 表示它可以为 null，例如 `a?`
 
 // 支持的变量有这些类型：
-// byte short int long float double bool char string
-var int b? = 20;
+// byte short int long flo  at double bool char string
+
 var string c? = "Hello, world!";
+
+c; // 这是一个变量访问，打印 `c` 的值
+
+a; // 这是一个变量访问，可以打印 `a` 的值到标准输出
 
 // 加上[]，表示数组
 var int[] d? = [1, 2, 3];
 var string[] e? = ["Hello", "world"];
 imt int[] f! = [2,3,4];
 
-c; // 这是一个变量访问，打印 `c` 的值
+d;
 
-a; // 这是一个变量访问，可以打印 `a` 的值到标准输出
+e;
 
 a = 20; // 这是一个赋值语句，表示 `a` 的值现在变为 20
 
@@ -36,6 +53,19 @@ imt int m! = 100; // 这是一个不可变变量声明
 m; // 这是一个变量访问
 
 m = 120; // 这是一个赋值语句，但由于 `m` 是不可变的，这将导致错误
+
+m;
+
+{
+    m;
+    var int tmp! = 10;
+    tmp;
+    {
+        tmp = 20;
+        tmp;
+        m;
+    }
+}
 
 @Main
 // 这是一个函数注解，表示这个函数是程序的入口点
@@ -52,11 +82,11 @@ fun main(string[] args) {
 
     b; // 这是一个变量访问
 
-    imt Test t! = new Test(); // 这是一个对象声明，`t` 是一个 `Test` 对象, `!` 表示 `t` 不可以为 null, imt 表示 `t` 是不可变的 
+    imt Test t! = new Test(); // 这是一个对象声明，`t` 是一个 `Test` 对象, `!` 表示 `t` 不可以为 null, imt 表示 `t` 是不可变的
     t.test(); // 这是一个对象访问，调用 `t` 的 `test()` 方法
     t.a;
     t.a + b; // 这是一个表达式，表示 `t.a` 加上 `b` 的值
-    // 支持的运算有 + - * / % < > <= >= == != && || & | ^ ! ~ >> << >>> 
+    // 支持的运算有 + - * / % < > <= >= == != && || & | ^ ! ~ >> << >>>
 
 }
 
@@ -96,7 +126,7 @@ class Test {
     }
 
     Test(){
-        // 
+        //
     } // 这是一个构造函数
 }
 
@@ -112,7 +142,7 @@ class Test1 : Test { // 表示继承自 `Test`
             } else {
                 continue;
             }
-    
+
             println(i); // 一个方法，不需要解析println为关键字
         }
 
@@ -122,7 +152,7 @@ class Test1 : Test { // 表示继承自 `Test`
         }
 
         return null; // 返回空
-    } 
+    }
     // 这是一个方法
 }
 
@@ -160,6 +190,6 @@ class Test3 : Test1, Test2 { // 表示继承自 `Test1` 实现了 `Test2`
 //         }
 
         return (10, s); // 返回值，与返回类型匹配
-    } 
+    }
     // 这是一个方法
 }

@@ -1,5 +1,4 @@
 #pragma once
-#include <functional>
 
 inline enum {
     DVAL_INT,

@@ -4,8 +4,6 @@
 
 #include "Package.h"
 
-#include <algorithm>
-
 #include "util/parse_util.h"
 
 Package::Package(const std::string &name, const std::vector<Package *> &children) {
@@ -68,8 +66,7 @@ void Package::add_package(std::vector<std::string> *pkgs) const {
     if (pkgs == nullptr || pkgs->empty()) {
         return;
     }
-    const Package *child = has_child(pkgs->at(0));
-    if (child != nullptr) {
+    if (const Package *child = has_child(pkgs->at(0)); child != nullptr) {
         pkgs->erase(pkgs->begin());
         child->add_package(pkgs);
         return;

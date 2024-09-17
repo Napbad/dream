@@ -3,7 +3,7 @@
 //
 
 #include "parse_util.h"
-#include "./model/reserved.h"
+#include "./common/reserved.h"
 
 #include <iostream>
 #include <stack>
@@ -12,7 +12,7 @@
 #include <tree/ParseTree.h>
 
 #include "check.h"
-#include "model/enum.h"
+#include "common/enum.h"
 
 namespace util::parse {
     std::vector<std::string> *parsePackage(const std::string &full_name) {
@@ -160,11 +160,13 @@ namespace util::parse {
                 return calc_expr(exp->child()->at(0), env);
             }
             if (exp->child()->size() == 2) {
-                return (**exp->child()->at(0)->fun())(env, calc_expr(exp->child()->at(2), env), nullptr);
+                return (**exp->child()->at(0)->fun())(env, {calc_expr(exp->child()->at(2), env), nullptr});
             }
             if (exp->child()->size() == 3) {
-                return (**exp->child()->at(1)->fun())(env, calc_expr(exp->child()->at(0), env),
-                                                      calc_expr(exp->child()->at(2), env));
+                Dval * val1 = calc_expr(exp->child()->at(0), env);
+                Dval * val2 = calc_expr(exp->child()->at(2), env);
+                
+                return (**exp->child()->at(1)->fun())(env, {val1, val2});
             }
             if (exp->child()->size() > 3) {
                 return dval::dval_err("Invalid expression");
@@ -184,13 +186,13 @@ namespace util::parse {
         }
 
         if (exp->type() == DVAL_IDENT) {
-            return env->get(exp);
+            return new Dval(*env->get(exp->identifier()));
         }
 
         if (exp->type() == DVAL_FUN) {
             const builtin *builtin = exp->fun();
 
-            return (**builtin)(env, exp->child()->at(0), exp->child()->at(1));
+            return (**builtin)(env, {exp->child()->at(0), exp->child()->at(1)});
         }
 
         return dval::dval_err("Invalid expression");

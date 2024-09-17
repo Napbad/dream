@@ -18,15 +18,16 @@ public:
     PUBLIC = 20, PRIVATE = 21, PROTECTED = 22, STATIC = 23, NEW = 24, OVERRIDE = 25, 
     SYNCHRONIZED = 26, THROW = 27, STRING_LITERAL = 28, CHAR_LITERAL = 29, 
     INT_LITERAL = 30, FLOAT_LITERAL = 31, TRUE_LITERAL = 32, FALSE_LITERAL = 33, 
-    BYTE = 34, SHORT = 35, INT = 36, LONG = 37, FLOAT = 38, DOUBLE = 39, 
-    BOOL = 40, CHAR = 41, STRING = 42, VOID = 43, AT = 44, ASSIGN = 45, 
-    SEMICOLON = 46, LPAREN = 47, RPAREN = 48, LBRACE = 49, RBRACE = 50, 
-    LBRACK = 51, RBRACK = 52, COMMA = 53, LINE_COMMENT = 54, COMMENT = 55, 
-    WS = 56, DOT = 57, BANG = 58, QUESTION = 59, COLON = 60, MOD = 61, PLUS = 62, 
-    MINUS = 63, MUL = 64, DIV = 65, LT = 66, GT = 67, LE = 68, GE = 69, 
-    EQ = 70, NEQ = 71, AND = 72, OR = 73, BIT_AND = 74, BIT_OR = 75, XOR = 76, 
-    LSHIFT = 77, RSHIFT = 78, URSHIFT = 79, NOT = 80, TIBLE = 81, INC = 82, 
-    DEC = 83, IDENTIFIER = 84
+    BYTE = 34, SHORT = 35, INT = 36, UINT = 37, USHORT = 38, LONG = 39, 
+    ULONG = 40, LONGLONG = 41, ULONGLONG = 42, FLOAT = 43, DOUBLE = 44, 
+    BOOL = 45, CHAR = 46, STRING = 47, VOID = 48, AT = 49, ASSIGN = 50, 
+    SEMICOLON = 51, LPAREN = 52, RPAREN = 53, LBRACE = 54, RBRACE = 55, 
+    LBRACK = 56, RBRACK = 57, COMMA = 58, LINE_COMMENT = 59, COMMENT = 60, 
+    WS = 61, DOT = 62, BANG = 63, QUESTION = 64, COLON = 65, MOD = 66, PLUS = 67, 
+    MINUS = 68, MUL = 69, DIV = 70, LT = 71, GT = 72, LE = 73, GE = 74, 
+    EQ = 75, NEQ = 76, AND = 77, OR = 78, BIT_AND = 79, BIT_OR = 80, XOR = 81, 
+    LSHIFT = 82, RSHIFT = 83, URSHIFT = 84, NOT = 85, TIBLE = 86, INC = 87, 
+    DEC = 88, IDENTIFIER = 89
   };
 
   enum {
@@ -1294,6 +1295,10 @@ public:
     antlr4::tree::TerminalNode *SHORT();
     antlr4::tree::TerminalNode *INT();
     antlr4::tree::TerminalNode *LONG();
+    antlr4::tree::TerminalNode *UINT();
+    antlr4::tree::TerminalNode *ULONG();
+    antlr4::tree::TerminalNode *LONGLONG();
+    antlr4::tree::TerminalNode *ULONGLONG();
     antlr4::tree::TerminalNode *FLOAT();
     antlr4::tree::TerminalNode *DOUBLE();
     antlr4::tree::TerminalNode *BOOL();
@@ -1440,8 +1445,9 @@ public:
     FileCodeBlockContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     antlr4::tree::TerminalNode *LBRACE();
-    FileCodeBlockBodyContext *fileCodeBlockBody();
     antlr4::tree::TerminalNode *RBRACE();
+    std::vector<FileCodeBlockBodyContext *> fileCodeBlockBody();
+    FileCodeBlockBodyContext* fileCodeBlockBody(size_t i);
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
@@ -1454,8 +1460,8 @@ public:
   public:
     FileCodeBlockBodyContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
-    std::vector<FileCodeBlockStmtContext *> fileCodeBlockStmt();
-    FileCodeBlockStmtContext* fileCodeBlockStmt(size_t i);
+    FileCodeBlockStmtContext *fileCodeBlockStmt();
+    FileCodeBlockContext *fileCodeBlock();
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
@@ -1470,6 +1476,7 @@ public:
     virtual size_t getRuleIndex() const override;
     ExprContext *expr();
     antlr4::tree::TerminalNode *SEMICOLON();
+    DeclarationContext *declaration();
     IfStmtContext *ifStmt();
     ForStmtContext *forStmt();
     ReturnStmtContext *returnStmt();

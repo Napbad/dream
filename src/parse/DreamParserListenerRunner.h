@@ -2,16 +2,15 @@
 // Created by napbad on 9/10/24.
 //
 
-#ifndef DREAMCOMMONPARSER_H
-#define DREAMCOMMONPARSER_H
-#include "../model/val.h"
+#ifndef DREAMPARSERLISTENERRUNNER_H
+#define DREAMPARSERLISTENERRUNNER_H
+#include "../obj/val.h"
 
 #include "DreamBaseListener.h"
-#include "../model/Global.h"
-#include "model/enum.h"
+#include "../obj/Global.h"
 
 
-class DreamCommonParserListener final : public DreamBaseListener {
+class DreamParserListenerRunner final : public DreamBaseListener {
     Dval *_dval_package;
     Dval *_dval_import;
     Dval *_dval_body;
@@ -21,7 +20,7 @@ class DreamCommonParserListener final : public DreamBaseListener {
     Denv* _curr_env;
 
 public:
-    DreamCommonParserListener(Dval *dval_package, Dval *dval_import, Dval *dval_body, Global *global)
+    DreamParserListenerRunner(Dval *dval_package, Dval *dval_import, Dval *dval_body, Global *global)
         : _dval_package(dval_package),
           _dval_import(dval_import),
           _dval_body(dval_body),
@@ -30,7 +29,7 @@ public:
         _curr_env = new Denv();
     }
 
-    explicit DreamCommonParserListener(Global *global) {
+    explicit DreamParserListenerRunner(Global *global) {
         _global = global;
         _dval_body = new Dval();
         _dval_package = dval::dval_package(_global->package());

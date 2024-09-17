@@ -7,8 +7,8 @@
 #include <vector>
 #include <tree/ParseTree.h>
 
-#include "model/Package.h"
-#include "parse/DreamCommonParserListener.h"
+#include "obj/Package.h"
+#include "parse/DreamParserListenerRunner.h"
 
 using namespace std;
 

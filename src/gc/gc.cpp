@@ -3,3 +3,7 @@
 //
 
 #include "gc.h"
+
+void GC::collect(DataSource *ds) {
+    // TODO fill this
+}

@@ -77,7 +77,7 @@ namespace dval {
 }
 
 // Define the type for built-in functions
-typedef Dval *(*builtin)(const Denv *, const Dval *, const Dval *);
+typedef Dval *(*builtin)(const Denv *, std::initializer_list<Dval *> vals);
 
 // dval Class
 class Dval {
@@ -95,9 +95,12 @@ class Dval {
     std::string _err;
     builtin *_fun;
     int _count;
+
     std::vector<Dval *> *_child;
     Package *_package;
     Dval *_parent;
+    Denv *_env;
+
     bool _val_mutable;
     bool _val_nullable;
 
@@ -213,6 +216,10 @@ public:
 
     [[nodiscard]] bool is_nullable() const;
 
+    [[nodiscard]] Denv *env() const;
+
+    void set_env(Denv *env);
+
     void set_arr_val(std::vector<Dval *> *arr_val);
 
     void set_string_value(std::string value);
@@ -247,14 +254,16 @@ public:
 // denv Class
 class Denv {
     int _count;
-    std::unordered_map<std::string, const Dval *> *_identifier_str;
-    std::unordered_map<const Dval *, Dval *> *_identifiers;
+    std::string _identifier;
+    std::unordered_map<std::string, Dval *> *_identifiers;
     std::vector<Denv *> *_children;
     Denv *_parent;
 
 public:
     // Constructors
     explicit Denv(int count);
+
+    explicit Denv(const std::string &identifier);
 
     Denv();
 
@@ -264,12 +273,6 @@ public:
     // Accessor methods
     [[nodiscard]] int count() const;
 
-    [[nodiscard]] std::unordered_map<const Dval *, Dval *> *identifiers() const;
-
-    [[nodiscard]] std::unordered_map<std::string, const Dval *> *identifiers_str() const;
-
-    [[nodiscard]] Dval *get(const Dval *identifier) const;
-
     [[nodiscard]] std::vector<Denv *> *children(int index) const;
 
     [[nodiscard]] Denv *parent() const;
@@ -277,8 +280,6 @@ public:
     [[nodiscard]] Dval *get(const std::string &identifier) const;
 
     void set_count(int count);
-
-    void add(const Dval *identifier, Dval *val);
 
     void add_child(Denv *child) const;
 

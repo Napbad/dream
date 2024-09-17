@@ -103,6 +103,13 @@
 #define D_CHAR_GT       '>'
 #define D_CHAR_XOR      '^'
 
+#define D_LBRACE        "{"
+#define D_RBRACE        "}"
+#define D_LPAREN        "("
+#define D_RPAREN        ")"
+# define D_LBRACKET     "["
+# define D_RBRACKET     "]"
+
 #define D_OPERATOR      "OPERATOR"
 
 #define D_SEMICOLON         ";"
@@ -114,7 +121,7 @@
 
 #define D_IDENTIFIER        "IDENTIFIER"
 
-#include        "val.h"
+#include        "./obj/val.h"
 
 extern std::vector<std::string> ops;
 extern std::vector<char> ops_c;
