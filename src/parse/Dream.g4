@@ -383,7 +383,7 @@ paramList
 
 // 参数
 param
-    : type IDENTIFIER (BANG | QUESTION)?
+    : (IMT | VAR)? type IDENTIFIER (BANG | QUESTION)?
     ;
 
 // 类型

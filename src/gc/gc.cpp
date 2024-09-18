@@ -4,6 +4,17 @@
 
 #include "gc.h"
 
-void GC::collect(DataSource *ds) {
-    // TODO fill this
+void GC::collect(const DataSource *ds) {
+    //
+    for (const std::vector<std::pair<Dval *, short>> vector = ds->data();
+        const auto &[fst, snd] : vector) {
+        const Dval *dval = fst;
+        if (snd < 1) {
+            delete dval;
+        }
+    }
+}
+
+void GC::collect(const Dval *val) {
+
 }

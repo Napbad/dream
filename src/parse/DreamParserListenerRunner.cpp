@@ -3,7 +3,12 @@
 //
 
 #include "DreamParserListenerRunner.h"
+
+#include <random>
+
+#include "common/enum.h"
 #include "common/reserved.h"
+#include "gc/gc.h"
 #include "util/parse_util.h"
 
 #define WRONG_INPUT(expected, input) \
@@ -134,8 +139,6 @@ void DreamParserListenerRunner::exitCastExpr(DreamParser::CastExprContext *ctx) 
 }
 
 void DreamParserListenerRunner::enterAssign(DreamParser::AssignContext *ctx) {
-
-
     if (ctx->children.size() == 3) {
         cout << "==================== parsing assign ====================" << endl;
 
@@ -148,8 +151,8 @@ void DreamParserListenerRunner::enterAssign(DreamParser::AssignContext *ctx) {
                 return;
             }
             if (val->is_mutable()) {
-                Dval * tree = util::parse::parse_expr_tree(*ctx->children.at(2));
-                const Dval * res = util::parse::calc_expr(tree, _curr_env);
+                Dval *tree = util::parse::parse_expr_tree(*ctx->children.at(2));
+                const Dval *res = util::parse::calc_expr(tree, _curr_env);
                 val->set_value(res->get_string_value());
             } else {
                 cout << "not mutable: " << ident << endl;
@@ -202,7 +205,6 @@ void DreamParserListenerRunner::exitElseIfClause(DreamParser::ElseIfClauseContex
 }
 
 void DreamParserListenerRunner::enterExpr(DreamParser::ExprContext *ctx) {
-
 }
 
 void DreamParserListenerRunner::exitExpr(DreamParser::ExprContext *ctx) {
@@ -252,26 +254,28 @@ void DreamParserListenerRunner::exitVarModifiers(DreamParser::VarModifiersContex
 }
 
 void DreamParserListenerRunner::enterFunctionDeclaration(DreamParser::FunctionDeclarationContext *ctx) {
+    Dval *fun_val = dval::dval_fun("");
+    _global->ds()->add_data(fun_val);
+    fun_val->set_env(_curr_env);
+
     const vector<antlr4::tree::ParseTree *> children = ctx->children;
 
     for (auto i = 0; i < children.size(); i++) {
         if (const auto child = children.at(i); child->getText() == D_FUN) {
             const string fun_name = children.at(i + 1)->getText();
-            Denv * env = new Denv(fun_name);
+            Denv *env = new Denv(fun_name);
             env->set_parent(_curr_env);
             _curr_env->add_child(env);
             _curr_env = env;
 
             for (auto j = i + 3; j < children.size(); j++) {
-                if (children.at(j)->getText()== D_RPAREN) {
+                if (children.at(j)->getText() == D_RPAREN) {
                     break;
                 }
                 if (children.at(j)->getText() == D_COMMA) {
                     continue;
                 }
-
             }
-
         }
     }
 }
@@ -295,7 +299,6 @@ void DreamParserListenerRunner::enterFunVarDeclaration(DreamParser::FunVarDeclar
 }
 
 void DreamParserListenerRunner::exitFunVarDeclaration(DreamParser::FunVarDeclarationContext *ctx) {
-
 }
 
 void DreamParserListenerRunner::enterFunModifiers(DreamParser::FunModifiersContext *ctx) {
@@ -485,12 +488,59 @@ void DreamParserListenerRunner::exitQualifiedName(DreamParser::QualifiedNameCont
 }
 
 void DreamParserListenerRunner::enterParamList(DreamParser::ParamListContext *ctx) {
+    Denv *_param_curr_env = new Denv();
+    _param_curr_env->set_parent(_curr_env);
+    _curr_env->add_child(_param_curr_env);
+    _curr_env = _param_curr_env;
 }
 
 void DreamParserListenerRunner::exitParamList(DreamParser::ParamListContext *ctx) {
+    const Denv *denv = _curr_env->parent();
+    denv->remove_child(_curr_env);
 }
 
 void DreamParserListenerRunner::enterParam(DreamParser::ParamContext *ctx) {
+    const vector<antlr4::tree::ParseTree *> trees = ctx->children;
+    if (trees.size() == 2) {
+        // immutable, non-null
+        Dval *val = dval::dval_gen("", trees[0]->getText(), trees[1]->getText(), IMMUTABLE, NON_NULLABLE);
+        _curr_env->add(trees[1]->getText(), val);
+        return;
+    }
+    if (trees.size() == 3) {
+        if (trees[0]->getText() == D_IMT || trees[0]->getText() == D_VAR) {
+            // mutable, non-null
+            Dval *val = dval::dval_gen("",
+                                       trees[1]->getText(),
+                                       trees[2]->getText(),
+                                       trees[0]->getText() == D_IMT ? MUTABLE : IMMUTABLE,
+                                       NON_NULLABLE);
+            _curr_env->add(trees[2]->getText(), val);
+        } else if (trees[2]->getText() == D_NULLABLE || trees[2]->getText() == D_NON_NULLABLE) {
+            Dval *val = dval::dval_gen("",
+                                       trees[0]->getText(),
+                                       trees[1]->getText(),
+                                       IMMUTABLE,
+                                       trees[2]->getText() == D_NULLABLE ? NULLABLE : NON_NULLABLE);
+            _curr_env->add(trees[1]->getText(), val);
+        } else {
+            throw std::invalid_argument("Invalid param");
+        }
+    }
+
+    if (trees.size() == 4) {
+        if ((trees[0]->getText() == D_IMT || trees[0]->getText() == D_VAR) &&
+            (trees[3]->getText() == D_NULLABLE || trees[3]->getText() == D_NON_NULLABLE)) {
+            Dval *dval = dval::dval_gen("",
+                                        trees[1]->getText(),
+                                        trees[2]->getText(),
+                                        trees[0]->getText() == D_IMT ? MUTABLE : IMMUTABLE,
+                                        trees[3]->getText() == D_NULLABLE ? NULLABLE : NON_NULLABLE);
+            _curr_env->add(trees[2]->getText(), dval);
+        } else {
+            throw std::invalid_argument("Invalid param");
+        }
+    }
 }
 
 void DreamParserListenerRunner::exitParam(DreamParser::ParamContext *ctx) {

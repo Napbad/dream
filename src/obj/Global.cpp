@@ -22,7 +22,7 @@ Package * Global::get_package(const std::string &packageName) const {
     vector<string> * package = util::parse::parsePackage(packageName);
 
     Package * pkg = _root;
-    for (auto &child : *(pkg -> children())) {
+    for (const auto &child : *(pkg -> children())) {
         if (package->empty()) {
             return pkg;
         }
@@ -38,6 +38,10 @@ Package * Global::get_package(const std::string &packageName) const {
     }
 
     return pkg;
+}
+
+DataSource * Global::ds() const {
+    return _ds;
 }
 
 void Global::add_package(const std::string &string) const {

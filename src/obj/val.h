@@ -9,6 +9,7 @@
 #include <tree/ParseTree.h>
 
 #include "Package.h"
+#include "parse/DreamParserListenerRunner.h"
 
 class Denv;
 class Dval;
@@ -58,6 +59,7 @@ namespace dval {
 
     Dval *dval_import(const std::string &identifier, Denv *env);
 
+    Dval *dval_fun(const std::string &identifier);
 
     Dval *dval_gen(const std::string &val, const std::string &type, const std::string &identifier, int val_mutable,
                    int val_nullable);
@@ -286,5 +288,7 @@ public:
     void set_parent(Denv *parent);
 
     void add(const std::string &identifier, Dval *val);
+
+    void remove_child(const Denv * denv) const;
 };
 #endif

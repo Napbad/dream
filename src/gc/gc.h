@@ -8,7 +8,8 @@
 
 class GC {
 public:
-    void collect(DataSource *ds);
+    static void collect(const DataSource *ds);
+    static void collect(const Dval *val);
 };
 
 #endif //GC_H

@@ -708,6 +708,15 @@ void Denv::add(const std::string &identifier, Dval *val) {
     _identifiers->insert(std::pair(identifier, val));
 }
 
+void Denv::remove_child(const Denv *denv) const {
+        for (auto it = _children->begin(); it != _children->end(); ++it) {
+        if (*it == denv) {
+            _children->erase(it);
+            break;
+        }
+    }
+}
+
 Dval *Denv::get(const std::string &identifier) const {
     if (_identifiers->contains(identifier)) {
         return _identifiers->at(identifier);
@@ -758,6 +767,21 @@ namespace dval {
                            0,
                            nullptr);
         return v;
+    }
+
+    Dval * dval_fun(const std::string &identifier) {
+        return new Dval(DVAL_FUN,
+                           0,
+                           0,
+                           static_cast<std::byte>(0),
+                           0,
+                           0,
+                           0,
+                           identifier,
+                           identifier,
+                           nullptr,
+                           0,
+                           nullptr);
     }
 
     Dval *dval_gen(const std::string &val,

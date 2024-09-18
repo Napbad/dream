@@ -71,7 +71,7 @@ m;
 // 这是一个函数注解，表示这个函数是程序的入口点
 // 但实际上 `main` 函数是默认的入口点
 @Fancy
-fun main(string[] args) {
+fun main(int argc?, string[] args!) {
     // 这是一个函数声明
     // `fun` 表示这是一个函数
     // `main` 是函数名

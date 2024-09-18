@@ -47,6 +47,10 @@ add_executable(dream
         src/gc/gc.h
         src/compile/Compiler.cpp
         src/compile/Compiler.h
+        src/parse/DreamParserListener.cpp
+        src/parse/DreamParserListener.h
+        src/compile/ast/ASTNode.cpp
+        src/compile/ast/ASTNode.h
 )
 
 target_link_libraries(dream ${LIBANTLR})
