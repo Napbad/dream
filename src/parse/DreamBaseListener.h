@@ -1,5 +1,5 @@
 
-// Generated from Dream.g4 by ANTLR 4.13.2
+// Generated from Dream.g4 by ANTLR 4.11.0-SNAPSHOT
 
 #pragma once
 
@@ -31,11 +31,11 @@ public:
   virtual void enterImportName(DreamParser::ImportNameContext * /*ctx*/) override { }
   virtual void exitImportName(DreamParser::ImportNameContext * /*ctx*/) override { }
 
-  virtual void enterStmt(DreamParser::StmtContext * /*ctx*/) override { }
-  virtual void exitStmt(DreamParser::StmtContext * /*ctx*/) override { }
-
   virtual void enterFunCallStmt(DreamParser::FunCallStmtContext * /*ctx*/) override { }
   virtual void exitFunCallStmt(DreamParser::FunCallStmtContext * /*ctx*/) override { }
+
+  virtual void enterStmt(DreamParser::StmtContext * /*ctx*/) override { }
+  virtual void exitStmt(DreamParser::StmtContext * /*ctx*/) override { }
 
   virtual void enterBinaryOpExpr(DreamParser::BinaryOpExprContext * /*ctx*/) override { }
   virtual void exitBinaryOpExpr(DreamParser::BinaryOpExprContext * /*ctx*/) override { }

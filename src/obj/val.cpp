@@ -462,6 +462,10 @@ void Dval::set_value(const std::string &val) {
     }
 }
 
+void Dval::set_parent(Dval *dval) {
+        _parent = dval;
+}
+
 std::string Dval::get_string_value() const {
     switch (_type) {
         case DVAL_INT:

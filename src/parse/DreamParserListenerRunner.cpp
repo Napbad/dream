@@ -9,6 +9,7 @@
 #include "common/enum.h"
 #include "common/reserved.h"
 #include "gc/gc.h"
+#include "util/check.h"
 #include "util/parse_util.h"
 
 #define WRONG_INPUT(expected, input) \
@@ -83,12 +84,21 @@ void DreamParserListenerRunner::exitImportName(DreamParser::ImportNameContext *c
 }
 
 void DreamParserListenerRunner::enterStmt(DreamParser::StmtContext *ctx) {
-    if (ctx->children.size() == 2) {
-        antlr4::tree::ParseTree *value = ctx->children.at(0);
-        const string identifier = value->getText();
-
-        if (Dval *val = _curr_env->get(identifier); val != nullptr) {
-            val->print_value();
+    if (_curr_val->type() != DVAL_FUN) {
+        if (ctx->children.size() == 2) {
+            if (const Dval *res = _curr_env->get(ctx->children.at(0)->getText()); res != nullptr) {
+                cout << res->get_string_value() << endl;
+            } else if (util::check::str_is_num(ctx->children.at(0)->getText()) ||
+                       util::check::str_is_str(ctx->children.at(0)->getText()) ||
+                       util::check::str_is_bool(ctx->children.at(0)->getText()) ||
+                       util::check::str_is_char(ctx->children.at(0)->getText()) ||
+                       util::check::str_is_float(ctx->children.at(0)->getText()) ||
+                       util::check::str_is_num(ctx->children.at(0)->getText())
+            ) {
+                cout << ctx->children.at(0)->getText() << endl;
+            } else {
+                // cout << "not found: " << ctx->children.at(0)->getText() << endl;
+            }
         }
     }
 }
@@ -97,6 +107,19 @@ void DreamParserListenerRunner::exitStmt(DreamParser::StmtContext *ctx) {
 }
 
 void DreamParserListenerRunner::enterFunCallStmt(DreamParser::FunCallStmtContext *ctx) {
+    const vector<antlr4::tree::ParseTree *> children = ctx->children;
+    if (children.size() < 3) {
+            WRONG_INPUT("IDENTIFIER ( ARGS )", ctx->getText());
+    }
+    for (int i = 0; i < children.size(); i++) {
+        if (children[i]->getText() == D_LPAREN) {
+            const Dval * dval = _curr_env->get(children[i - 1]->getText());
+            if ( dval == nullptr || dval->type() != DVAL_FUN) {
+                throw std::invalid_argument("function call not supported");
+            }
+            dval::call(dval);
+        }
+    }
 }
 
 void DreamParserListenerRunner::exitFunCallStmt(DreamParser::FunCallStmtContext *ctx) {
@@ -254,48 +277,82 @@ void DreamParserListenerRunner::exitVarModifiers(DreamParser::VarModifiersContex
 }
 
 void DreamParserListenerRunner::enterFunctionDeclaration(DreamParser::FunctionDeclarationContext *ctx) {
-    Dval *fun_val = dval::dval_fun("");
-    _global->ds()->add_data(fun_val);
-    fun_val->set_env(_curr_env);
-
     const vector<antlr4::tree::ParseTree *> children = ctx->children;
-
-    for (auto i = 0; i < children.size(); i++) {
-        if (const auto child = children.at(i); child->getText() == D_FUN) {
-            const string fun_name = children.at(i + 1)->getText();
-            Denv *env = new Denv(fun_name);
-            env->set_parent(_curr_env);
-            _curr_env->add_child(env);
-            _curr_env = env;
-
-            for (auto j = i + 3; j < children.size(); j++) {
-                if (children.at(j)->getText() == D_RPAREN) {
-                    break;
-                }
-                if (children.at(j)->getText() == D_COMMA) {
-                    continue;
-                }
-            }
+    string val;
+    for (int i = 0; i < children.size(); i++) {
+        if (children[i]->getText() == D_LPAREN) {
+            val = children[i - 1]->getText();
         }
     }
+
+    Dval *fun_val = dval::dval_fun(val);
+    _curr_val->add_child(fun_val);
+    fun_val->set_parent(_curr_val);
+    _curr_val = fun_val;
+
+    _curr_env->add(val, fun_val);
+
+    Denv *_env = new Denv();
+    fun_val->set_env(_env);
+
+    _env->set_parent(_curr_env);
+    _curr_env->add_child(_env);
+    _curr_env = _env;
 }
 
 void DreamParserListenerRunner::exitFunctionDeclaration(DreamParser::FunctionDeclarationContext *ctx) {
+    cout << "==================== function end ====================" << endl;
+    _curr_env = _curr_env->parent();
+    _curr_val = _curr_val->parent();
 }
 
 void DreamParserListenerRunner::enterFunBlock(DreamParser::FunBlockContext *ctx) {
+    Denv *_body_env = new Denv();
+    _body_env->set_parent(_curr_env);
+    _curr_env->add_child(_body_env);
+    _curr_env = _body_env;
 }
 
 void DreamParserListenerRunner::exitFunBlock(DreamParser::FunBlockContext *ctx) {
+    _curr_env = _curr_env->parent();
 }
 
 void DreamParserListenerRunner::enterFunStmt(DreamParser::FunStmtContext *ctx) {
+
+        if (ctx->children.size() == 2) {
+            const string ident = ctx->children.at(0)->getText();
+            Dval * val = dval::dval_gen(ident, D_IDENTIFIER_CALL, ident, IMMUTABLE, NULLABLE);
+            _curr_val->add_child(val);
+            _curr_env->add(ident, val);
+        }
+
 }
 
 void DreamParserListenerRunner::exitFunStmt(DreamParser::FunStmtContext *ctx) {
 }
 
 void DreamParserListenerRunner::enterFunVarDeclaration(DreamParser::FunVarDeclarationContext *ctx) {
+    const std::vector<antlr4::tree::ParseTree *> child = ctx->children;
+
+    const string var_name = child[2]->getText();
+    const string var_mut = child[0]->getText();
+    const string var_type = child[1]->getText();
+    const string var_null = child[3]->getText();
+    const string var_val = child[5]->getText();
+
+    Dval *val;
+    if (var_type.ends_with("[]")) {
+        val = util::parse::parse_array_expr(var_type, *child[5]->children.at(0)->children.at(0), _curr_env);
+    } else {
+        val = util::parse::parse_expr(*child[5], _curr_env);
+    }
+    val->set_identifier(var_name);
+    val->set_val_nullable(var_null == D_NULLABLE);
+    val->set_val_mutable(var_mut == D_VAR);
+
+    _curr_env->add(var_name, val);
+
+    cout << var_name << " : " << val->type() << endl;
 }
 
 void DreamParserListenerRunner::exitFunVarDeclaration(DreamParser::FunVarDeclarationContext *ctx) {

@@ -1,5 +1,5 @@
 
-// Generated from Dream.g4 by ANTLR 4.13.2
+// Generated from Dream.g4 by ANTLR 4.11.0-SNAPSHOT
 
 #pragma once
 
@@ -32,7 +32,7 @@ public:
 
   enum {
     RuleProgram = 0, RulePackageDecl = 1, RuleImportStmt = 2, RulePackageName = 3, 
-    RuleImportName = 4, RuleStmt = 5, RuleFunCallStmt = 6, RuleBinaryOpExpr = 7, 
+    RuleImportName = 4, RuleFunCallStmt = 5, RuleStmt = 6, RuleBinaryOpExpr = 7, 
     RuleAtomExpr = 8, RuleArgList = 9, RuleLiteral = 10, RuleArrayInit = 11, 
     RuleCastExpr = 12, RuleAssign = 13, RuleUnaryOpExpr = 14, RuleIfStmt = 15, 
     RuleIfBlock = 16, RuleIfStmtBody = 17, RuleReturnStmt = 18, RuleElseIfClause = 19, 
@@ -77,8 +77,8 @@ public:
   class ImportStmtContext;
   class PackageNameContext;
   class ImportNameContext;
-  class StmtContext;
   class FunCallStmtContext;
+  class StmtContext;
   class BinaryOpExprContext;
   class AtomExprContext;
   class ArgListContext;
@@ -232,26 +232,6 @@ public:
 
   ImportNameContext* importName();
 
-  class  StmtContext : public antlr4::ParserRuleContext {
-  public:
-    StmtContext(antlr4::ParserRuleContext *parent, size_t invokingState);
-    virtual size_t getRuleIndex() const override;
-    DeclarationContext *declaration();
-    ExprContext *expr();
-    antlr4::tree::TerminalNode *SEMICOLON();
-    IfStmtContext *ifStmt();
-    ForStmtContext *forStmt();
-    TryCatchStmtContext *tryCatchStmt();
-    SynchronizedStmtContext *synchronizedStmt();
-    FunCallStmtContext *funCallStmt();
-
-    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
-    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
-   
-  };
-
-  StmtContext* stmt();
-
   class  FunCallStmtContext : public antlr4::ParserRuleContext {
   public:
     FunCallStmtContext(antlr4::ParserRuleContext *parent, size_t invokingState);
@@ -270,6 +250,26 @@ public:
   };
 
   FunCallStmtContext* funCallStmt();
+
+  class  StmtContext : public antlr4::ParserRuleContext {
+  public:
+    StmtContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    DeclarationContext *declaration();
+    FunCallStmtContext *funCallStmt();
+    antlr4::tree::TerminalNode *SEMICOLON();
+    ExprContext *expr();
+    IfStmtContext *ifStmt();
+    ForStmtContext *forStmt();
+    TryCatchStmtContext *tryCatchStmt();
+    SynchronizedStmtContext *synchronizedStmt();
+
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+   
+  };
+
+  StmtContext* stmt();
 
   class  BinaryOpExprContext : public antlr4::ParserRuleContext {
   public:
@@ -1263,6 +1263,8 @@ public:
     virtual size_t getRuleIndex() const override;
     TypeContext *type();
     antlr4::tree::TerminalNode *IDENTIFIER();
+    antlr4::tree::TerminalNode *IMT();
+    antlr4::tree::TerminalNode *VAR();
     antlr4::tree::TerminalNode *BANG();
     antlr4::tree::TerminalNode *QUESTION();
 

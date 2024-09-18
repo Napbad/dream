@@ -9,7 +9,6 @@
 #include "DreamBaseListener.h"
 #include "../obj/Global.h"
 
-
 class DreamParserListenerRunner final : public DreamBaseListener {
     Dval *_dval_package;
     Dval *_dval_import;
@@ -18,6 +17,7 @@ class DreamParserListenerRunner final : public DreamBaseListener {
     Global *_global;
 
     Denv* _curr_env;
+    Dval* _curr_val;
 
 public:
     DreamParserListenerRunner(Dval *dval_package, Dval *dval_import, Dval *dval_body, Global *global)
@@ -27,6 +27,10 @@ public:
           _global(global) {
 
         _curr_env = new Denv();
+        _curr_val = new Dval();
+        _global->add_env(_curr_env);
+        _global->add_var(_global->package()->name(), _curr_val);
+        _global->ds()->add_data(_curr_val);
     }
 
     explicit DreamParserListenerRunner(Global *global) {
@@ -35,6 +39,8 @@ public:
         _dval_package = dval::dval_package(_global->package());
         _curr_env = new Denv();
         _dval_import = dval::dval_import(_global->package()->name(), _curr_env);
+        _curr_val = new Dval();
+        _global->add_var(_global->package()->name(), _curr_val);
     };
 
     void enterProgram(DreamParser::ProgramContext * /*ctx*/) override;

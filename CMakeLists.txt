@@ -5,9 +5,6 @@ set(CMAKE_CXX_COMPILER "/usr/bin/c++")
 
 set(CMAKE_CXX_STANDARD 20)
 
-#set(CMAKE_CXX_FLAGS "-lstdc++")
-#set(CMAKE_CXX_FLAGS "-std=c++20")
-
 include_directories(
         ${PROJECT_SOURCE_DIR}/libs/antlr4-runtime
         ${PROJECT_SOURCE_DIR}/src
@@ -45,12 +42,8 @@ add_executable(dream
         src/gc/DataSource.h
         src/gc/gc.cpp
         src/gc/gc.h
-        src/compile/Compiler.cpp
-        src/compile/Compiler.h
         src/parse/DreamParserListener.cpp
         src/parse/DreamParserListener.h
-        src/compile/ast/ASTNode.cpp
-        src/compile/ast/ASTNode.h
 )
 
 target_link_libraries(dream ${LIBANTLR})

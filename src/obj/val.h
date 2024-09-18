@@ -9,7 +9,6 @@
 #include <tree/ParseTree.h>
 
 #include "Package.h"
-#include "parse/DreamParserListenerRunner.h"
 
 class Denv;
 class Dval;
@@ -251,6 +250,8 @@ public:
     void set_identifier(const std::string & string);
 
     void set_value(const std::string &val);
+
+    void set_parent(Dval * dval);
 };
 
 // denv Class

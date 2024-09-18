@@ -23,20 +23,20 @@ importName
     : IDENTIFIER (DOT IDENTIFIER)*
     ;
 
+// 函数调用语句
+funCallStmt
+    : IDENTIFIER (DOT IDENTIFIER)* LPAREN paramList? RPAREN
+    ;
+
 // 文件语句
 stmt
     : declaration
+    | funCallStmt SEMICOLON
     | expr SEMICOLON
     | ifStmt
     | forStmt
     | tryCatchStmt
     | synchronizedStmt
-    | funCallStmt SEMICOLON
-    ;
-
-// 函数调用语句
-funCallStmt
-    : IDENTIFIER (DOT IDENTIFIER)* LPAREN paramList? RPAREN
     ;
 
 // 二元运算
