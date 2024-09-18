@@ -1,13 +1,7 @@
-cmake_minimum_required(VERSION 3.5.0)
-project(dream VERSION 0.1.0 LANGUAGES C CXX)
-
-set(CMAKE_CXX_COMPILER "/usr/bin/c++")
+cmake_minimum_required(VERSION 3.29)
+project(dream)
 
 set(CMAKE_CXX_STANDARD 20)
-
-#set(CMAKE_CXX_FLAGS "-lstdc++")
-#set(CMAKE_CXX_FLAGS "-std=c++20")
-
 include_directories(
         ${PROJECT_SOURCE_DIR}/libs/antlr4-runtime
         ${PROJECT_SOURCE_DIR}/src
@@ -16,41 +10,27 @@ include_directories(
 find_library(LIBEDIT libedit.so /usr/lib /usr/lib64)
 find_library(LIBANTLR libantlr4-runtime.so /usr/local/lib64/)
 
-add_executable(dream
-        src/obj/val.cpp
-        src/util/check.cpp
-        src/util/check.h
-        src/parse/DreamBaseListener.cpp
-        src/parse/DreamLexer.cpp
-        src/parse/DreamListener.cpp
-        src/parse/DreamParser.cpp
-        src/parse/DreamParserListenerRunner.cpp
-        src/parse/DreamParserListenerRunner.h
-        src/obj/Package.cpp
-        src/obj/Package.h
-        src/obj/Global.cpp
-        src/obj/Global.h
-        src/common/reserved.h
-        src/util/parse_util.cpp
-        src/util/parse_util.h
-        src/main.cpp
-        src/parse/DreamParser.h
-        src/parse/DreamListener.h
-        src/parse/DreamLexer.h
-        src/parse/DreamBaseListener.h
-        src/obj/val.h
-        src/common/enum.h
-        src/common/reserved.cpp
-        src/gc/DataSource.cpp
-        src/gc/DataSource.h
-        src/gc/gc.cpp
-        src/gc/gc.h
-        src/compile/Compiler.cpp
-        src/compile/Compiler.h
-        src/parse/DreamParserListener.cpp
-        src/parse/DreamParserListener.h
-        src/compile/ast/ASTNode.cpp
-        src/compile/ast/ASTNode.h
+add_executable(dream src/main.cpp
+        src/compiler/Compiler.cpp
+        src/compiler/Compiler.h
+        src/parser/DreamBaseListener.cpp
+        src/parser/DreamLexer.cpp
+        src/parser/DreamListener.cpp
+        src/parser/DreamParser.cpp
+        src/parser/DreamParser.h
+        src/parser/DreamListener.h
+        src/parser/DreamLexer.h
+        src/parser/DreamBaseListener.h
+        src/parser/DreamParserListenerCompiler.cpp
+        src/parser/DreamParserListenerCompiler.h
+        src/util/file_util.cpp
+        src/util/file_util.h
+        src/common/reserve.cpp
+        src/common/reserve.h
+        src/compiler/gen/CodeGenerator.cpp
+        src/compiler/gen/CodeGenerator.h
+        src/util/string_util.cpp
+        src/util/string_util.h
 )
 
 target_link_libraries(dream ${LIBANTLR})

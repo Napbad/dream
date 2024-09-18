@@ -1,51 +1,23 @@
+#include <fstream>
 #include <iostream>
 
-#ifdef _WIN32
+#include "parser/DreamParser.h"
+#include "parser/DreamLexer.h"
+#include "parser/DreamParserListenerCompiler.h"
 
-static char buffer[2048];
-
-char *readline(char *prompt)
-{
-    fputs(prompt, stdout);
-    fgets(buffer, 2048, stdin);
-    char *cpy = malloc(strlen(buffer) + 1);
-    strcpy(cpy, buffer);
-    cpy[strlen(cpy) - 1] = '\0';
-    return cpy;
-}
-
-void add_history(char *unused) {}
-
-#else
-#include <editline/readline.h>
-#endif
-
-#include "obj/val.h"
-#include "parse/DreamBaseListener.h"
-#include "parse/DreamParser.h"
-#include "parse/DreamLexer.h"
-#include "obj/Global.h"
-#include "parse/DreamParserListenerRunner.h"
-
-using namespace std;
+using namespace  std;
 using namespace antlr4;
 
-
-int main(int argc, const char *argv[]) {
+int main(){
     std::ifstream stream;
+    std::string file_path = "../test.drm";
 
-    // stream.open(argv[0], ios::in);
+    stream.open(file_path);
 
-    // cout << argv[0] << endl;
-
-    stream.open("../test.drm", ios::in);
-
-    if (!stream.is_open()) {
-        cout << "Could not open file" << endl;
+    if(!stream.is_open()){
+        cout << "Error opening file" << endl;
         return 1;
     }
-
-    Global * global = init();
 
     ANTLRInputStream inputStream(stream);
     DreamLexer lexer(&inputStream);
@@ -53,25 +25,10 @@ int main(int argc, const char *argv[]) {
     DreamParser parser(&tokens);
 
     tree::ParseTree *tree = parser.program();
-    DreamParserListenerRunner listener(global);
-    tree::ParseTreeWalker::DEFAULT.walk(&listener, tree);
+    DreamParserListenerCompiler listener_compiler(
+        (file_path.substr(file_path.find_last_of('/') + 1,
+            file_path.find(".drm") - file_path.find_last_of('/') -1 ) + ".cpp"));
 
-    // std::ifstream stream2;
-    // stream2.open("../test2.drm", ios::in);
-    //
-    // if (!stream2.is_open()) {
-    //     cout << "Could not open file" << endl;
-    //     return 1;
-    // }
-    //
-    // ANTLRInputStream inputStream2(stream2);
-    // DreamLexer lexer2(&inputStream2);
-    // CommonTokenStream tokens2(&lexer2);
-    // DreamParser parser2(&tokens2);
-    //
-    // tree::ParseTree *tree2 = parser2.program();
-    // DreamParserListenerRunner listener2(global);
-    // tree::ParseTreeWalker::DEFAULT.walk(&listener2, tree2);
-
+    tree::ParseTreeWalker::DEFAULT.walk(&listener_compiler, tree);
     return 0;
 }

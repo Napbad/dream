@@ -3,8 +3,8 @@
 //
 #pragma once
 
-#ifndef RESERVED_H
-#define RESERVED_H
+#ifndef RESERVE_H
+#define RESERVE_H
 
 #define D_RETURN        "return"
 #define D_IF            "if"
@@ -120,29 +120,5 @@
 #define D_COMMA     ","
 
 #define D_IDENTIFIER        "IDENTIFIER"
-
-#include        "./obj/val.h"
-
-extern std::vector<std::string> ops;
-extern std::vector<char> ops_c;
-
-extern builtin add_builtin;
-extern builtin sub_builtin;
-extern builtin mul_builtin;
-extern builtin div_builtin;
-extern builtin mod_builtin;
-extern builtin lt_builtin;
-extern builtin gt_builtin;
-extern builtin lte_builtin;
-extern builtin gte_builtin;
-extern builtin eq_builtin;
-extern builtin neq_builtin;
-extern builtin and_builtin;
-extern builtin or_builtin;
-extern builtin xor_builtin;
-extern builtin lshift_builtin;
-extern builtin rshift_builtin;
-extern builtin urshift_builtin;
-
 
 #endif
