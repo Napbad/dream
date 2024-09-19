@@ -6,9 +6,8 @@
 
 #include <random>
 
-#include "common/enum.h"
+#include "common/dval_enum.h"
 #include "common/reserved.h"
-#include "gc/gc.h"
 #include "util/check.h"
 #include "util/parse_util.h"
 
@@ -109,12 +108,12 @@ void DreamParserListenerRunner::exitStmt(DreamParser::StmtContext *ctx) {
 void DreamParserListenerRunner::enterFunCallStmt(DreamParser::FunCallStmtContext *ctx) {
     const vector<antlr4::tree::ParseTree *> children = ctx->children;
     if (children.size() < 3) {
-            WRONG_INPUT("IDENTIFIER ( ARGS )", ctx->getText());
+        WRONG_INPUT("IDENTIFIER ( ARGS )", ctx->getText());
     }
     for (int i = 0; i < children.size(); i++) {
         if (children[i]->getText() == D_LPAREN) {
-            const Dval * dval = _curr_env->get(children[i - 1]->getText());
-            if ( dval == nullptr || dval->type() != DVAL_FUN) {
+            const Dval *dval = _curr_env->get(children[i - 1]->getText());
+            if (dval == nullptr || dval->type() != DVAL_FUN) {
                 throw std::invalid_argument("function call not supported");
             }
             dval::call(dval);
@@ -163,8 +162,6 @@ void DreamParserListenerRunner::exitCastExpr(DreamParser::CastExprContext *ctx) 
 
 void DreamParserListenerRunner::enterAssign(DreamParser::AssignContext *ctx) {
     if (ctx->children.size() == 3) {
-        cout << "==================== parsing assign ====================" << endl;
-
         const string ident = ctx->children.at(0)->getText();
 
         if (const string expr = ctx->children.at(1)->getText(); expr == D_ASSIGN) {
@@ -277,6 +274,7 @@ void DreamParserListenerRunner::exitVarModifiers(DreamParser::VarModifiersContex
 }
 
 void DreamParserListenerRunner::enterFunctionDeclaration(DreamParser::FunctionDeclarationContext *ctx) {
+    // change the current val to the function val
     const vector<antlr4::tree::ParseTree *> children = ctx->children;
     string val;
     for (int i = 0; i < children.size(); i++) {
@@ -291,47 +289,70 @@ void DreamParserListenerRunner::enterFunctionDeclaration(DreamParser::FunctionDe
     _curr_val = fun_val;
 
     _curr_env->add(val, fun_val);
-
-    Denv *_env = new Denv();
-    fun_val->set_env(_env);
-
-    _env->set_parent(_curr_env);
-    _curr_env->add_child(_env);
-    _curr_env = _env;
+    Denv * env = new Denv();
+    env->set_parent(_curr_env);
+    _curr_val->set_env(env);
+    _curr_env = env;
 }
 
 void DreamParserListenerRunner::exitFunctionDeclaration(DreamParser::FunctionDeclarationContext *ctx) {
-    cout << "==================== function end ====================" << endl;
     _curr_env = _curr_env->parent();
     _curr_val = _curr_val->parent();
+    // return to global env
 }
 
 void DreamParserListenerRunner::enterFunBlock(DreamParser::FunBlockContext *ctx) {
-    Denv *_body_env = new Denv();
-    _body_env->set_parent(_curr_env);
-    _curr_env->add_child(_body_env);
-    _curr_env = _body_env;
+    // new fun body dval and denv
+    // set them to the current function decl dval and denv
+    Denv *body_env = new Denv();
+    Dval *body_val = dval::dval_fun_block(_curr_val->identifier());
+    dval::dval_fun_set_body(_curr_val, body_val);
+    body_val->set_env(body_env);
+    body_val->set_parent(_curr_val);
+    body_env->set_parent(_curr_env);
+    _curr_env->add_child(body_env);
+    _curr_env = body_env;
+    _curr_val = body_val;
 }
 
 void DreamParserListenerRunner::exitFunBlock(DreamParser::FunBlockContext *ctx) {
+    // current dval -> function body dval
+    // current denv -> function body denv
     _curr_env = _curr_env->parent();
+    _curr_val = _curr_val->parent();
+    // current dval -> function decl dval
+    // current denv -> function decl denv
 }
 
 void DreamParserListenerRunner::enterFunStmt(DreamParser::FunStmtContext *ctx) {
-
-        if (ctx->children.size() == 2) {
-            const string ident = ctx->children.at(0)->getText();
-            Dval * val = dval::dval_gen(ident, D_IDENTIFIER_CALL, ident, IMMUTABLE, NULLABLE);
+    // current dval -> function body dval
+    // current denv -> function body denv
+    // separate the native function and the normal function
+    if (ctx->children.size() == 2) {
+        string basic_string = ctx->children.at(0)->getText();
+        if (ctx->children.at(0)->getText() == D_NATIVE) {
+            cout << "native function" << endl;
+            const string ident = _curr_val->identifier();
+            Dval *val = dval::dval_gen(ident, D_NATIVE, ident, IMMUTABLE, NULLABLE);
             _curr_val->add_child(val);
+            val->set_parent(_curr_val);
             _curr_env->add(ident, val);
+        } else {
+            const string ident = ctx->children.at(0)->getText();
+            Dval *val = dval::dval_gen(ident, D_IDENTIFIER_CALL, ident, IMMUTABLE, NULLABLE);
+            _curr_val->add_child(val);
+            val->set_parent(_curr_val);
+            // _curr_env->add(ident, val);
         }
-
+    }
 }
 
 void DreamParserListenerRunner::exitFunStmt(DreamParser::FunStmtContext *ctx) {
 }
 
 void DreamParserListenerRunner::enterFunVarDeclaration(DreamParser::FunVarDeclarationContext *ctx) {
+    // current dval -> function body dval
+    // current denv -> function body denv
     const std::vector<antlr4::tree::ParseTree *> child = ctx->children;
 
     const string var_name = child[2]->getText();
@@ -545,15 +566,30 @@ void DreamParserListenerRunner::exitQualifiedName(DreamParser::QualifiedNameCont
 }
 
 void DreamParserListenerRunner::enterParamList(DreamParser::ParamListContext *ctx) {
-    Denv *_param_curr_env = new Denv();
-    _param_curr_env->set_parent(_curr_env);
-    _curr_env->add_child(_param_curr_env);
-    _curr_env = _param_curr_env;
+    // set the param env to the current val (function val)
+    Denv *param_curr_env = new Denv();
+    param_curr_env->set_parent(_curr_env);
+
+    Dval *param = new Dval();
+    param->set_env(param_curr_env);
+
+    dval::dval_fun_set_args(_curr_val, param);
+
+    _curr_env->add_child(param_curr_env);
+    _curr_env = param_curr_env;
+
+    // and set the current val to the param val,
+    // prepare for param setting
+    param->set_parent(_curr_val);
+    _curr_val = param;
 }
 
 void DreamParserListenerRunner::exitParamList(DreamParser::ParamListContext *ctx) {
     const Denv *denv = _curr_env->parent();
     denv->remove_child(_curr_env);
+    _curr_env = _curr_env->parent();
+    // cause last time we didn't set the child, there is no need to remove the child
+    _curr_val = _curr_val->parent();
 }
 
 void DreamParserListenerRunner::enterParam(DreamParser::ParamContext *ctx) {
@@ -697,6 +733,7 @@ void DreamParserListenerRunner::exitFunCodeBlock(DreamParser::FunCodeBlockContex
 }
 
 void DreamParserListenerRunner::enterFunCodeBlockBody(DreamParser::FunCodeBlockBodyContext *ctx) {
+    // TODO
 }
 
 void DreamParserListenerRunner::exitFunCodeBlockBody(DreamParser::FunCodeBlockBodyContext *ctx) {

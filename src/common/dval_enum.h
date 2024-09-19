@@ -26,8 +26,17 @@ inline enum {
     DVAL_IMPORT,
     DVAL_OP,
     DVAL_BODY,
-    DVAL_PACKAGE
+    DVAL_PACKAGE,
+
+    DVAL_FUN_BODY,
+    DVAL_IDENT_CALL,
+
+    DVAL_NATIVE_VARIABLE
 } DVAL_TYPE;
+
+
+# define  DVAL_NATIVE_TYPE_THREAD "thread"
+
 
 inline enum {
     DERR_DIV_BY_ZERO,

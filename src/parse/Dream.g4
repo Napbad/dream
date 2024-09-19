@@ -190,6 +190,7 @@ funBlock
 // 函数语句
 funStmt
     : tryCatchStmt
+    | NATIVE SEMICOLON
     | ifStmt
     | forStmt
     | funVarDeclaration
@@ -530,7 +531,7 @@ PROTECTED : 'protected';
 STATIC : 'static';
 NEW : 'new';
 OVERRIDE : 'override';
-
+NATIVE : 'native';
 SYNCHRONIZED: 'synchronized';
 THROW : 'throw';
 
