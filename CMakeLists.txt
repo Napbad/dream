@@ -36,7 +36,7 @@ add_executable(dream
         src/parse/DreamLexer.h
         src/parse/DreamBaseListener.h
         src/obj/val.h
-        src/common/enum.h
+        src/common/dval_enum.h
         src/common/reserved.cpp
         src/gc/DataSource.cpp
         src/gc/DataSource.h
@@ -44,6 +44,10 @@ add_executable(dream
         src/gc/gc.h
         src/parse/DreamParserListener.cpp
         src/parse/DreamParserListener.h
+        src/common/native_fun.cpp
+        src/common/native_fun.h
+        src/util/common_util.cpp
+        src/util/common_util.h
 )
 
 target_link_libraries(dream ${LIBANTLR})

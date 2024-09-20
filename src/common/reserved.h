@@ -33,6 +33,7 @@
 #define D_OVERRIDE      "override"
 #define D_SYNCHRONIZED  "synchronized"
 #define D_THROW         "throw"
+#define D_NATIVE        "native"
 
 #define D_IMT       "imt"
 #define D_VAR       "var"
@@ -121,28 +122,12 @@
 
 #define D_IDENTIFIER        "IDENTIFIER"
 
+#define D_IDENTIFIER_CALL   "IDENTIFIER CALL"
+
 #include        "./obj/val.h"
 
 extern std::vector<std::string> ops;
 extern std::vector<char> ops_c;
-
-extern builtin add_builtin;
-extern builtin sub_builtin;
-extern builtin mul_builtin;
-extern builtin div_builtin;
-extern builtin mod_builtin;
-extern builtin lt_builtin;
-extern builtin gt_builtin;
-extern builtin lte_builtin;
-extern builtin gte_builtin;
-extern builtin eq_builtin;
-extern builtin neq_builtin;
-extern builtin and_builtin;
-extern builtin or_builtin;
-extern builtin xor_builtin;
-extern builtin lshift_builtin;
-extern builtin rshift_builtin;
-extern builtin urshift_builtin;
 
 
 #endif

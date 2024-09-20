@@ -1,4 +1,4 @@
-#include "./common/enum.h"
+#include "./common/dval_enum.h"
 #include "val.h"
 #include <cstring>
 #include <cfloat>
@@ -7,8 +7,10 @@
 #include <utility>
 
 #include "./common/reserved.h"
+#include "common/native_fun.h"
 /* =======dval======== */
 
+using namespace  std;
 
 // Constructor implementation
 Dval::Dval(
@@ -116,6 +118,24 @@ Dval::Dval(
     _package = package;
     _parent = parent;
     _env = nullptr;
+}
+
+Dval::Dval(const int type): _long_value(0),
+                            _byte_value(),
+                            _int_value(0),
+                            _char_value(0),
+                            _short_value(0),
+                            _float_value(0),
+                            _arr_val(nullptr),
+                            _fun(nullptr),
+                            _count(0),
+                            _child(nullptr),
+                            _package(nullptr),
+                            _parent(nullptr),
+                            _env(nullptr),
+                            _val_mutable(false),
+                            _val_nullable(false) {
+    _type = type;
 }
 
 Dval::Dval() {
@@ -390,8 +410,9 @@ int Dval::int_value() const {
     return _int_value;
 }
 
-void Dval::add_child(Dval *dval) const {
+void Dval::add_child(Dval *dval) {
     _child->push_back(dval);
+    _count++;
 }
 
 void Dval::set_fun(builtin *builtin) {
@@ -463,7 +484,7 @@ void Dval::set_value(const std::string &val) {
 }
 
 void Dval::set_parent(Dval *dval) {
-        _parent = dval;
+    _parent = dval;
 }
 
 std::string Dval::get_string_value() const {
@@ -649,6 +670,14 @@ Denv *Dval::env() const {
     return _env;
 }
 
+std::any Dval::any_value() const {
+    return _any_value;
+}
+
+void Dval::set_any_value(const std::any &any_value) {
+    _any_value = any_value;
+}
+
 void Dval::set_env(Denv *env) {
     _env = env;
 }
@@ -691,7 +720,11 @@ void Denv::set_count(const int count) {
     _count = count;
 }
 
-std::vector<Denv *> *Denv::children(int index) const {
+Denv *Denv::children(int index) const {
+    return _children->at(index);
+}
+
+std::vector<Denv *> *Denv::children() const {
     return _children;
 }
 
@@ -713,7 +746,7 @@ void Denv::add(const std::string &identifier, Dval *val) {
 }
 
 void Denv::remove_child(const Denv *denv) const {
-        for (auto it = _children->begin(); it != _children->end(); ++it) {
+    for (auto it = _children->begin(); it != _children->end(); ++it) {
         if (*it == denv) {
             _children->erase(it);
             break;
@@ -773,20 +806,44 @@ namespace dval {
         return v;
     }
 
-    Dval * dval_fun(const std::string &identifier) {
+    Dval *dval_fun(const std::string &identifier) {
         return new Dval(DVAL_FUN,
-                           0,
-                           0,
-                           static_cast<std::byte>(0),
-                           0,
-                           0,
-                           0,
-                           identifier,
-                           identifier,
-                           nullptr,
-                           0,
-                           nullptr);
+                        0,
+                        0,
+                        static_cast<std::byte>(0),
+                        0,
+                        0,
+                        0,
+                        identifier,
+                        identifier,
+                        nullptr,
+                        0,
+                        new std::vector<Dval *>(3));
     }
+
+    Dval *dval_fun_native(const std::string &identifier) {
+        Dval * val = new Dval(DVAL_NATIVE_FUN,
+                        0,
+                        0,
+                        static_cast<std::byte>(0),
+                        0,
+                        0,
+                        0,
+                        identifier,
+                        identifier,
+                        nullptr,
+                        0,
+                        new std::vector<Dval *>(3));
+        auto tmp = native_fun::native_map;
+
+        val->set_fun(&native_fun::native_map.at("__" + identifier));
+
+        auto && mapped = native_fun::native_map.at("__" + identifier);
+        *mapped(nullptr, {nullptr});
+
+        return val;
+    }
+
 
     Dval *dval_gen(const std::string &val,
                    const std::string &type,
@@ -855,6 +912,69 @@ namespace dval {
             return dval_op(val);
         }
 
+        if (type == D_IDENTIFIER_CALL) {
+            Dval *dval = dval_identifier_call(val);
+            return dval;
+        }
+
+        if (type == D_NATIVE) {
+            return dval_fun_native(identifier);
+        }
+
+        return nullptr;
+    }
+
+    Dval * dval_gen_default(const std::string &type, const std::string &identifier, int val_mutable, int val_nullable) {
+        if (type == D_BOOL) {
+            return dval_bool(false,
+                             identifier,
+                             val_mutable,
+                             val_nullable);
+        }
+        if (type == D_FLOAT) {
+            return dval_float(0.0,
+                              identifier,
+                              val_mutable,
+                              val_nullable);
+        }
+        if (type == D_INT) {
+            return dval_int(0,
+                            identifier,
+                            val_mutable,
+                            val_nullable);
+        }
+        if (type == D_BYTE) {
+            return dval_byte(static_cast<std::byte>(0),
+                             identifier,
+                             val_mutable,
+                             val_nullable);
+        }
+        if (type == D_SHORT) {
+            return dval_short(0,
+                              identifier,
+                              val_mutable,
+                              val_nullable);
+        }
+        if (type == D_LONG) {
+            return dval_long(0,
+                             identifier,
+                             val_mutable,
+                             val_nullable);
+        }
+        if (type == D_CHAR) {
+            return dval_char('\0',
+                             identifier,
+                             val_mutable,
+                             val_nullable);
+        }
+        if (type == D_STRING) {
+            return dval_str("",
+                            identifier,
+                            val_mutable,
+                            val_nullable);
+        }
+
+
         return nullptr;
     }
 
@@ -882,7 +1002,6 @@ namespace dval {
     }
 
     Dval *dval_op(std::string op) {
-        // std::cout << "Operator: " << op << "    ";
         Dval *val = new Dval(DVAL_FUN,
                              0,
                              0,
@@ -897,25 +1016,25 @@ namespace dval {
                              new std::vector<Dval *>);
 
         if (val->identifier() == D_ADD) {
-            val->set_fun(&add_builtin);
+            val->set_fun(&native_fun::add_builtin);
             // std::cout << "Add operation selected." << std::endl;
         } else if (val->identifier() == D_SUB) {
-            val->set_fun(&sub_builtin);
+            val->set_fun(&native_fun::sub_builtin);
             // std::cout << "Subtraction operation selected." << std::endl;
         } else if (val->identifier() == D_MUL) {
-            val->set_fun(&mul_builtin);
+            val->set_fun(&native_fun::mul_builtin);
             // std::cout << "Multiplication operation selected." << std::endl;
         } else if (val->identifier() == D_DIV) {
-            val->set_fun(&div_builtin);
+            val->set_fun(&native_fun::div_builtin);
             // std::cout << "Division operation selected." << std::endl;
         } else if (val->identifier() == D_MOD) {
-            val->set_fun(&mod_builtin);
+            val->set_fun(&native_fun::mod_builtin);
             // std::cout << "Modulo operation selected." << std::endl;
         } else if (val->identifier() == D_LSHIFT) {
-            val->set_fun(&lshift_builtin);
+            val->set_fun(&native_fun::lshift_builtin);
             // std::cout << "Left shift operation selected." << std::endl;
         } else if (val->identifier() == D_RSHIFT) {
-            val->set_fun(&rshift_builtin);
+            val->set_fun(&native_fun::rshift_builtin);
             // std::cout << "Right shift operation selected." << std::endl;
         }
 
@@ -1017,6 +1136,45 @@ namespace dval {
         return DVAL_ERR;
     }
 
+    void call(const Dval *dval) {
+        if (dval->type() == DVAL_FUN) {
+            const Dval * body = dval_fun_get_body(dval);
+            if (body->type() == DVAL_NATIVE_FUN) {
+                call(body);
+            }
+            for (const auto & i : *body->child()) {
+                call(i);
+            }
+        }
+
+        if (dval->type() == DVAL_NATIVE_FUN) {
+            (**dval->fun())(dval->parent()->env(), {});
+        }
+        if (dval->type() == DVAL_IDENT_CALL) {
+            const Dval *val = dval->parent()->env()->get(dval->identifier());
+            if (val == nullptr) {
+                cout << "not found: " << dval->identifier() << endl;
+                return;
+            }
+        }
+    }
+
+    Dval * dval_fun_block(const std::string &ident) {
+
+        return new Dval(DVAL_FUN_BLOCK,
+                                0,
+                                0,
+                                static_cast<std::byte>(0),
+                                0,
+                                0,
+                                0,
+                                "",
+                                ident,
+                                nullptr,
+                                0,
+                                new std::vector<Dval *>);
+    }
+
 
     Dval *dval_array_gen(const std::string &type,
                          const std::string &identifier,
@@ -1073,6 +1231,31 @@ namespace dval {
         return nullptr;
     }
 
+    Denv * dval_fun_get_args(const Dval *dval) {
+        return dval->child()->at(FUN_ARGS)->env();
+    }
+
+    Dval * dval_fun_get_body(const Dval *dval) {
+        return dval->child()->at(FUN_BODY);
+    }
+
+    Denv * dval_fun_get_return(const Dval *dval) {
+        return dval->child()->at(FUN_RETURN)->env();
+    }
+
+    void dval_fun_set_args(const Dval *sub,Dval *dval) {
+        sub->child()->at(FUN_ARGS) = dval;
+    }
+
+    void dval_fun_set_body(const Dval *sub, Dval *dval) {
+        sub->child()->at(FUN_BODY) = dval;
+    }
+
+    void dval_fun_set_return(const Dval *sub, Dval *dval) {
+        sub->child()->at(FUN_RETURN) = dval;
+    }
+
+
     /* Construct a pointer to a new Symbol dval */
     Dval *dval_identifier(const std::string &s) {
         Dval *v = new Dval(DVAL_IDENT,
@@ -1088,6 +1271,21 @@ namespace dval {
                            0,
                            new std::vector<Dval *>);
         return v;
+    }
+
+    Dval *dval_identifier_call(const std::string &val) {
+        return new Dval(DVAL_IDENT_CALL,
+                        0,
+                        0,
+                        static_cast<std::byte>(0),
+                        0,
+                        0,
+                        0,
+                        "",
+                        val,
+                        nullptr,
+                        0,
+                        new std::vector<Dval *>);
     }
 
     Dval *dval_int(const int x,

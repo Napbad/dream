@@ -14,9 +14,17 @@ class Denv;
 class Dval;
 class Package;
 
+inline enum {
+    FUN_ARGS,
+    FUN_RETURN,
+    FUN_BODY
+} FUN_ELEMENT_POS;
+
 // Helper functions
 namespace dval {
     Dval *dval_identifier(const std::string &s);
+
+    Dval * dval_identifier_call(const std::string & val);
 
     Dval *dval_int(int x, const std::string &identifier, int val_mutable, int val_nullable);
 
@@ -60,11 +68,28 @@ namespace dval {
 
     Dval *dval_fun(const std::string &identifier);
 
+    Dval *dval_fun_native(const std::string &identifier);
+
     Dval *dval_gen(const std::string &val, const std::string &type, const std::string &identifier, int val_mutable,
+                   int val_nullable);
+
+    Dval *dval_gen_default(const std::string &type, const std::string &identifier, int val_mutable,
                    int val_nullable);
 
     Dval *dval_array_gen(const std::string &type, const std::string &identifier, int val_mutable,
                          int val_nullable);
+
+    Denv *dval_fun_get_args(const Dval* dval);
+
+    Dval *dval_fun_get_body(const Dval* dval);
+
+    Denv *dval_fun_get_return(const Dval* dval);
+
+    void dval_fun_set_args(const Dval *sub, Dval* dval);
+
+    void dval_fun_set_body(const Dval* sub, Dval* dval);
+
+    void dval_fun_set_return(const Dval* sub, Dval* dval);
 
     void denv_add_int(const std::string &num, const std::string &identifier, Denv *env);
 
@@ -75,6 +100,10 @@ namespace dval {
     Dval * dval_err(const std::string & err);
 
     int get_type(const std::string & type);
+
+    void call(const Dval * dval);
+
+    Dval * dval_fun_block(const std::string &ident);
 }
 
 // Define the type for built-in functions
@@ -91,6 +120,8 @@ class Dval {
     std::string _string_value;
     float _float_value;
     std::vector<Dval *> *_arr_val;
+
+    std::any _any_value;
 
     std::string _identifier;
     std::string _err;
@@ -152,6 +183,8 @@ public:
          int val_nullable,
          Package *package,
          Dval *parent);
+
+    explicit Dval(int type);
 
     Dval();
 
@@ -219,6 +252,10 @@ public:
 
     [[nodiscard]] Denv *env() const;
 
+    [[nodiscard]] std::any any_value() const;
+
+    void set_any_value(const std::any &any_value);
+
     void set_env(Denv *env);
 
     void set_arr_val(std::vector<Dval *> *arr_val);
@@ -231,7 +268,7 @@ public:
 
     void print_value();
 
-    void add_child(Dval *dval) const;
+    void add_child(Dval *dval);
 
     void set_fun(builtin *builtin);
 
@@ -276,7 +313,9 @@ public:
     // Accessor methods
     [[nodiscard]] int count() const;
 
-    [[nodiscard]] std::vector<Denv *> *children(int index) const;
+    [[nodiscard]] Denv *children(int index) const;
+
+    [[nodiscard]] std::vector<Denv *> *children() const;
 
     [[nodiscard]] Denv *parent() const;
 

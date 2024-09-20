@@ -30,13 +30,34 @@ inline enum {
 
     DVAL_FUN_BODY,
     DVAL_IDENT_CALL,
+    DVAL_FUN_BLOCK,
+    DVAL_FUN_ARGS,
+    DVAL_FUN_RETURN,
 
-    DVAL_NATIVE_VARIABLE
+    DVAL_NATIVE_VAR,
+    DVAL_NATIVE_FUN
 } DVAL_TYPE;
 
 
-# define  DVAL_NATIVE_TYPE_THREAD "thread"
-
+# define DVAL_NATIVE_TYPE_THREAD "thread"
+#define DVAL_NATIVE_FUN_START_THREAD "__start_thread"
+#define DVAL_NATIVE_FUN_ADD "__add"
+#define DVAL_NATIVE_FUN_SUB "__sub"
+#define DVAL_NATIVE_FUN_MUL "__mul"
+#define DVAL_NATIVE_FUN_DIV "__div"
+#define DVAL_NATIVE_FUN_MOD "__mod"
+#define DVAL_NATIVE_FUN_AND "__and"
+#define DVAL_NATIVE_FUN_EQ "__eq"
+#define DVAL_NATIVE_FUN_GT "__gt"
+#define DVAL_NATIVE_FUN_GTE "__gte"
+#define DVAL_NATIVE_FUN_LT "__lt"
+#define DVAL_NATIVE_FUN_LTE "__lte"
+#define DVAL_NATIVE_FUN_NEQ "__neq"
+#define DVAL_NATIVE_FUN_OR "__or"
+#define DVAL_NATIVE_FUN_XOR "__xor"
+#define DVAL_NATIVE_FUN_LSHIFT "__lshift"
+#define DVAL_NATIVE_FUN_RSHIFT "__rshift"
+#define DVAL_NATIVE_FUN_URSHIFT "__urshift"
 
 inline enum {
     DERR_DIV_BY_ZERO,

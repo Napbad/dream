@@ -12,7 +12,7 @@
 #include <tree/ParseTree.h>
 
 #include "check.h"
-#include "common/enum.h"
+#include "common/dval_enum.h"
 
 namespace util::parse {
     std::vector<std::string> *parsePackage(const std::string &full_name) {

@@ -25,6 +25,8 @@ namespace util::check {
     bool str_is_float(const std::string & string);
 
     bool str_is_char(const std::string & string, char c);
+
+    bool str_is_char(const std::string & string);
 }
 
 

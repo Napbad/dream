@@ -20,6 +20,7 @@ void add_history(char *unused) {}
 #include <editline/readline.h>
 #endif
 
+#include "common/native_fun.h"
 #include "obj/val.h"
 #include "parse/DreamBaseListener.h"
 #include "parse/DreamParser.h"
@@ -33,6 +34,8 @@ using namespace antlr4;
 
 int main(int argc, const char *argv[]) {
     std::ifstream stream;
+
+    native_fun::init_native_map();
 
     // stream.open(argv[0], ios::in);
 

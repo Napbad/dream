@@ -6,7 +6,7 @@
 
 #include "check.h"
 
-#include "common/enum.h"
+#include "common/dval_enum.h"
 #include "common/reserved.h"
 
 bool util::check::str_is_num(const std::string &s) {
@@ -70,4 +70,8 @@ bool util::check::str_is_char(const std::string &string, char c) {
         return true;
     }
     return false;
+}
+
+bool util::check::str_is_char(const std::string &string) {
+    return string.size() == 3 && string.at(0) == '\'' && string.at(2) == '\'';
 }
