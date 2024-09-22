@@ -123,6 +123,8 @@
 #define D_IDENTIFIER        "IDENTIFIER"
 
 #define D_IDENTIFIER_CALL   "IDENTIFIER CALL"
+#define D_EXPR_CALL         "EXPR CALL"
+#define D_FUN_ASSIGN        "FUN VAR ASSIGN"
 
 #include        "./obj/val.h"
 

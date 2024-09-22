@@ -26,6 +26,8 @@ namespace dval {
 
     Dval * dval_identifier_call(const std::string & val);
 
+    Dval * dval_expr_call(const std::string & val);
+
     Dval *dval_int(int x, const std::string &identifier, int val_mutable, int val_nullable);
 
     Dval *dval_byte(std::byte x, const std::string &identifier, int val_mutable, int val_nullable);
@@ -79,17 +81,19 @@ namespace dval {
     Dval *dval_array_gen(const std::string &type, const std::string &identifier, int val_mutable,
                          int val_nullable);
 
+    Dval * dval_fun_var_assign(const std::string & string);
+
     Denv *dval_fun_get_args(const Dval* dval);
 
     Dval *dval_fun_get_body(const Dval* dval);
 
     Denv *dval_fun_get_return(const Dval* dval);
 
-    void dval_fun_set_args(const Dval *sub, Dval* dval);
+    void dval_fun_set_args(Dval *sub, Dval *dval);
 
-    void dval_fun_set_body(const Dval* sub, Dval* dval);
+    void dval_fun_set_body(Dval *sub, Dval *dval);
 
-    void dval_fun_set_return(const Dval* sub, Dval* dval);
+    void dval_fun_set_return(Dval *sub, Dval *dval);
 
     void denv_add_int(const std::string &num, const std::string &identifier, Denv *env);
 
@@ -101,9 +105,21 @@ namespace dval {
 
     int get_type(const std::string & type);
 
-    void call(const Dval * dval);
+    std::string type_to_string(int type);
+
+    void call(Dval *dval);
+
+    void call(Dval * body, std::initializer_list<Denv *> envs, const Denv * denv, const Denv * return_);
+
+    Dval *call(const Dval *dval, Denv *envs);
+
+    Dval *call(const Dval *dval, const std::initializer_list<Dval *> *args_input);
+
+    Dval* call(Dval *dval, Denv *envs);
 
     Dval * dval_fun_block(const std::string &ident);
+
+    Dval* dval_fun_var_assign(const std::string & string, Dval * dval);
 }
 
 // Define the type for built-in functions
@@ -289,6 +305,12 @@ public:
     void set_value(const std::string &val);
 
     void set_parent(Dval * dval);
+
+    void set_fun_args(Denv * denv) const;
+
+    void set_fun_return(Denv * denv) const;
+
+    void set_child(Dval * dval);
 };
 
 // denv Class
@@ -296,6 +318,7 @@ class Denv {
     int _count;
     std::string _identifier;
     std::unordered_map<std::string, Dval *> *_identifiers;
+    std::vector<std::string> *_identifiers_index;
     std::vector<Denv *> *_children;
     Denv *_parent;
 
@@ -304,6 +327,8 @@ public:
     explicit Denv(int count);
 
     explicit Denv(const std::string &identifier);
+
+    explicit Denv(const Denv* other);
 
     Denv();
 
@@ -316,6 +341,8 @@ public:
     [[nodiscard]] Denv *children(int index) const;
 
     [[nodiscard]] std::vector<Denv *> *children() const;
+
+    [[nodiscard]] std::unordered_map<std::string, Dval *> *identifiers() const;
 
     [[nodiscard]] Denv *parent() const;
 
@@ -330,5 +357,9 @@ public:
     void add(const std::string &identifier, Dval *val);
 
     void remove_child(const Denv * denv) const;
+
+    void set(const std::string & ident, Dval * dval) const;
+
+    [[nodiscard]] Dval* get(int idx) const;
 };
 #endif

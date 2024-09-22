@@ -11,6 +11,9 @@ fun main(imt int arg) {
     var int b? = 20; // 这是一个变量声明，`b` 可以为 null
 
     b + i + arg; // 这是一个变量访问
+    a = b;
+
+    a;
 }
 
 main(4);

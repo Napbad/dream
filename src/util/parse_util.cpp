@@ -186,6 +186,9 @@ namespace util::parse {
         }
 
         if (exp->type() == DVAL_IDENT) {
+            if (env->get(exp->identifier()) == nullptr) {
+                return dval::dval_err("Undefined variable: " + exp->identifier());
+            }
             return new Dval(*env->get(exp->identifier()));
         }
 

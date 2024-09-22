@@ -75,3 +75,26 @@ bool util::check::str_is_char(const std::string &string, char c) {
 bool util::check::str_is_char(const std::string &string) {
     return string.size() == 3 && string.at(0) == '\'' && string.at(2) == '\'';
 }
+
+bool util::check::str_is_ident(const std::string &ident) {
+    if (ident.empty()) {
+        // Return false if the identifier is empty
+        return false;
+    }
+
+    // Check if the first character is a letter or an underscore
+    if (!std::isalpha(ident[0]) && ident[0] != '_') {
+        return false;
+    }
+
+    // Check if the subsequent characters are letters, digits, or underscores
+    for (size_t i = 1; i < ident.size(); ++i) {
+        if (!std::isalnum(ident[i]) && ident[i] != '_') {
+            return false;
+        }
+    }
+
+    // If all checks pass, the identifier is valid
+    return true;
+}
+

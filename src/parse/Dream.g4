@@ -25,7 +25,7 @@ importName
 
 // 函数调用语句
 funCallStmt
-    : IDENTIFIER (DOT IDENTIFIER)* LPAREN paramList? RPAREN
+    : IDENTIFIER (DOT IDENTIFIER)* LPAREN argList? RPAREN
     ;
 
 // 文件语句
@@ -44,16 +44,7 @@ binaryOpExpr
     : atomExpr (MOD | MUL | DIV  | MINUS| PLUS | LT | GT | LE | GE | EQ | NEQ | AND | OR | BIT_AND | BIT_OR | XOR | LSHIFT | RSHIFT | URSHIFT) atomExpr
     ;
 
-// 原子表达式
-atomExpr
-    : (IDENTIFIER (DOT IDENTIFIER)*)
-    | NEW IDENTIFIER LPAREN argList? RPAREN
-    | IDENTIFIER LPAREN expr RPAREN SEMICOLON
-    | literal
-    | arrayInit
-    | castExpr
-    | assign
-    ;
+
 
 // 参数列表
 argList
@@ -104,6 +95,17 @@ ifStmt
 // if 块
 ifBlock
     : LBRACE (ifStmtBody)* RBRACE
+    ;
+
+// 原子表达式
+atomExpr
+    : (IDENTIFIER (DOT IDENTIFIER)*)
+    | NEW IDENTIFIER LPAREN argList? RPAREN
+    | IDENTIFIER LPAREN expr RPAREN SEMICOLON
+    | literal
+    | arrayInit
+    | castExpr
+    | assign
     ;
 
 // if 语句
@@ -376,6 +378,15 @@ annotation
 qualifiedName
     : IDENTIFIER (DOT IDENTIFIER)*
     ;
+
+//argBody
+//    : argElement (COMMA argElement)*
+//    ;
+//
+//argElement
+//    : expr
+//    | IDENTIFIER
+//    ;
 
 // 参数列表
 paramList

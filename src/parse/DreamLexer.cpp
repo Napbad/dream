@@ -1,5 +1,5 @@
 
-// Generated from Dream.g4 by ANTLR 4.11.0-SNAPSHOT
+// Generated from Dream.g4 by ANTLR 4.13.2
 
 
 #include "DreamLexer.h"
@@ -42,10 +42,19 @@ struct DreamLexerStaticData final {
 };
 
 ::antlr4::internal::OnceFlag dreamlexerLexerOnceFlag;
-DreamLexerStaticData *dreamlexerLexerStaticData = nullptr;
+#if ANTLR4_USE_THREAD_LOCAL_CACHE
+static thread_local
+#endif
+std::unique_ptr<DreamLexerStaticData> dreamlexerLexerStaticData = nullptr;
 
 void dreamlexerLexerInitialize() {
+#if ANTLR4_USE_THREAD_LOCAL_CACHE
+  if (dreamlexerLexerStaticData != nullptr) {
+    return;
+  }
+#else
   assert(dreamlexerLexerStaticData == nullptr);
+#endif
   auto staticData = std::make_unique<DreamLexerStaticData>(
     std::vector<std::string>{
       "RETURN", "IF", "ELSE", "FOR", "WHILE", "PACKAGE", "IMPORT", "BREAK", 
@@ -322,7 +331,7 @@ void dreamlexerLexerInitialize() {
   for (size_t i = 0; i < count; i++) { 
     staticData->decisionToDFA.emplace_back(staticData->atn->getDecisionState(i), i);
   }
-  dreamlexerLexerStaticData = staticData.release();
+  dreamlexerLexerStaticData = std::move(staticData);
 }
 
 }
@@ -368,5 +377,9 @@ const atn::ATN& DreamLexer::getATN() const {
 
 
 void DreamLexer::initialize() {
+#if ANTLR4_USE_THREAD_LOCAL_CACHE
+  dreamlexerLexerInitialize();
+#else
   ::antlr4::internal::call_once(dreamlexerLexerOnceFlag, dreamlexerLexerInitialize);
+#endif
 }

@@ -18,6 +18,7 @@ class DreamParserListenerRunner final : public DreamBaseListener {
 
     Denv* _curr_env;
     Dval* _curr_val;
+    int count = 0;
 
 public:
     DreamParserListenerRunner(Dval *dval_package, Dval *dval_import, Dval *dval_body, Global *global)

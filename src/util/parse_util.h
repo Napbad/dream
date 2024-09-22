@@ -35,6 +35,8 @@ namespace util::parse {
 
     Dval* calc_expr(Dval *exp, const Denv *env);
 
+    Dval *calc_expr(Dval *exp, std::initializer_list<Denv *> *env);
+
     Dval* parse_expr_tree(antlr4::tree::ParseTree &val);
 
     Dval* parse_array_expr(const string & type, const antlr4::tree::ParseTree & tree, const Denv * denv);

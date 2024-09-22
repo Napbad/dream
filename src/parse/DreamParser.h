@@ -1,5 +1,5 @@
 
-// Generated from Dream.g4 by ANTLR 4.11.0-SNAPSHOT
+// Generated from Dream.g4 by ANTLR 4.13.2
 
 #pragma once
 
@@ -33,9 +33,9 @@ public:
   enum {
     RuleProgram = 0, RulePackageDecl = 1, RuleImportStmt = 2, RulePackageName = 3, 
     RuleImportName = 4, RuleFunCallStmt = 5, RuleStmt = 6, RuleBinaryOpExpr = 7, 
-    RuleAtomExpr = 8, RuleArgList = 9, RuleLiteral = 10, RuleArrayInit = 11, 
-    RuleCastExpr = 12, RuleAssign = 13, RuleUnaryOpExpr = 14, RuleIfStmt = 15, 
-    RuleIfBlock = 16, RuleIfStmtBody = 17, RuleReturnStmt = 18, RuleElseIfClause = 19, 
+    RuleArgList = 8, RuleLiteral = 9, RuleArrayInit = 10, RuleCastExpr = 11, 
+    RuleAssign = 12, RuleUnaryOpExpr = 13, RuleIfStmt = 14, RuleIfBlock = 15, 
+    RuleAtomExpr = 16, RuleIfStmtBody = 17, RuleReturnStmt = 18, RuleElseIfClause = 19, 
     RuleExpr = 20, RuleAssignExpr = 21, RuleDeclaration = 22, RuleVarDeclaration = 23, 
     RuleVarModifiers = 24, RuleFunctionDeclaration = 25, RuleFunBlock = 26, 
     RuleFunStmt = 27, RuleFunVarDeclaration = 28, RuleFunModifiers = 29, 
@@ -80,7 +80,6 @@ public:
   class FunCallStmtContext;
   class StmtContext;
   class BinaryOpExprContext;
-  class AtomExprContext;
   class ArgListContext;
   class LiteralContext;
   class ArrayInitContext;
@@ -89,6 +88,7 @@ public:
   class UnaryOpExprContext;
   class IfStmtContext;
   class IfBlockContext;
+  class AtomExprContext;
   class IfStmtBodyContext;
   class ReturnStmtContext;
   class ElseIfClauseContext;
@@ -242,7 +242,7 @@ public:
     antlr4::tree::TerminalNode *RPAREN();
     std::vector<antlr4::tree::TerminalNode *> DOT();
     antlr4::tree::TerminalNode* DOT(size_t i);
-    ParamListContext *paramList();
+    ArgListContext *argList();
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
@@ -303,32 +303,6 @@ public:
   };
 
   BinaryOpExprContext* binaryOpExpr();
-
-  class  AtomExprContext : public antlr4::ParserRuleContext {
-  public:
-    AtomExprContext(antlr4::ParserRuleContext *parent, size_t invokingState);
-    virtual size_t getRuleIndex() const override;
-    std::vector<antlr4::tree::TerminalNode *> IDENTIFIER();
-    antlr4::tree::TerminalNode* IDENTIFIER(size_t i);
-    std::vector<antlr4::tree::TerminalNode *> DOT();
-    antlr4::tree::TerminalNode* DOT(size_t i);
-    antlr4::tree::TerminalNode *NEW();
-    antlr4::tree::TerminalNode *LPAREN();
-    antlr4::tree::TerminalNode *RPAREN();
-    ArgListContext *argList();
-    ExprContext *expr();
-    antlr4::tree::TerminalNode *SEMICOLON();
-    LiteralContext *literal();
-    ArrayInitContext *arrayInit();
-    CastExprContext *castExpr();
-    AssignContext *assign();
-
-    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
-    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
-   
-  };
-
-  AtomExprContext* atomExpr();
 
   class  ArgListContext : public antlr4::ParserRuleContext {
   public:
@@ -471,6 +445,32 @@ public:
   };
 
   IfBlockContext* ifBlock();
+
+  class  AtomExprContext : public antlr4::ParserRuleContext {
+  public:
+    AtomExprContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    std::vector<antlr4::tree::TerminalNode *> IDENTIFIER();
+    antlr4::tree::TerminalNode* IDENTIFIER(size_t i);
+    std::vector<antlr4::tree::TerminalNode *> DOT();
+    antlr4::tree::TerminalNode* DOT(size_t i);
+    antlr4::tree::TerminalNode *NEW();
+    antlr4::tree::TerminalNode *LPAREN();
+    antlr4::tree::TerminalNode *RPAREN();
+    ArgListContext *argList();
+    ExprContext *expr();
+    antlr4::tree::TerminalNode *SEMICOLON();
+    LiteralContext *literal();
+    ArrayInitContext *arrayInit();
+    CastExprContext *castExpr();
+    AssignContext *assign();
+
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+   
+  };
+
+  AtomExprContext* atomExpr();
 
   class  IfStmtBodyContext : public antlr4::ParserRuleContext {
   public:

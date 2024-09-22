@@ -1,5 +1,5 @@
 
-// Generated from Dream.g4 by ANTLR 4.11.0-SNAPSHOT
+// Generated from Dream.g4 by ANTLR 4.13.2
 
 #pragma once
 
@@ -40,9 +40,6 @@ public:
   virtual void enterBinaryOpExpr(DreamParser::BinaryOpExprContext * /*ctx*/) override { }
   virtual void exitBinaryOpExpr(DreamParser::BinaryOpExprContext * /*ctx*/) override { }
 
-  virtual void enterAtomExpr(DreamParser::AtomExprContext * /*ctx*/) override { }
-  virtual void exitAtomExpr(DreamParser::AtomExprContext * /*ctx*/) override { }
-
   virtual void enterArgList(DreamParser::ArgListContext * /*ctx*/) override { }
   virtual void exitArgList(DreamParser::ArgListContext * /*ctx*/) override { }
 
@@ -66,6 +63,9 @@ public:
 
   virtual void enterIfBlock(DreamParser::IfBlockContext * /*ctx*/) override { }
   virtual void exitIfBlock(DreamParser::IfBlockContext * /*ctx*/) override { }
+
+  virtual void enterAtomExpr(DreamParser::AtomExprContext * /*ctx*/) override { }
+  virtual void exitAtomExpr(DreamParser::AtomExprContext * /*ctx*/) override { }
 
   virtual void enterIfStmtBody(DreamParser::IfStmtBodyContext * /*ctx*/) override { }
   virtual void exitIfStmtBody(DreamParser::IfStmtBodyContext * /*ctx*/) override { }
