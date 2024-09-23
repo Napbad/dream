@@ -12,9 +12,9 @@ namespace tree {
 namespace pattern {
 
   /// <summary>
-  /// A <seealso cref="Token"/> object representing an entire subtree matched by a parser
+  /// A <seealso cref="Token"/> object representing an entire subtree matched by a parse
   /// rule; e.g., {@code <expr>}. These tokens are created for <seealso cref="TagChunk"/>
-  /// chunks where the tag corresponds to a parser rule.
+  /// chunks where the tag corresponds to a parse rule.
   /// </summary>
   class ANTLR4CPP_PUBLIC RuleTagToken : public Token {
     /// <summary>
@@ -35,8 +35,8 @@ namespace pattern {
     /// Constructs a new instance of <seealso cref="RuleTagToken"/> with the specified rule
     /// name and bypass token type and no label.
     /// </summary>
-    /// <param name="ruleName"> The name of the parser rule this rule tag matches. </param>
-    /// <param name="bypassTokenType"> The bypass token type assigned to the parser rule.
+    /// <param name="ruleName"> The name of the parse rule this rule tag matches. </param>
+    /// <param name="bypassTokenType"> The bypass token type assigned to the parse rule.
     /// </param>
     /// <exception cref="IllegalArgumentException"> if {@code ruleName} is {@code null}
     /// or empty. </exception>
@@ -46,8 +46,8 @@ namespace pattern {
     /// Constructs a new instance of <seealso cref="RuleTagToken"/> with the specified rule
     /// name, bypass token type, and label.
     /// </summary>
-    /// <param name="ruleName"> The name of the parser rule this rule tag matches. </param>
-    /// <param name="bypassTokenType"> The bypass token type assigned to the parser rule. </param>
+    /// <param name="ruleName"> The name of the parse rule this rule tag matches. </param>
+    /// <param name="bypassTokenType"> The bypass token type assigned to the parse rule. </param>
     /// <param name="label"> The label associated with the rule tag, or {@code null} if
     /// the rule tag is unlabeled.
     /// </param>
@@ -58,7 +58,7 @@ namespace pattern {
     /// <summary>
     /// Gets the name of the rule associated with this rule tag.
     /// </summary>
-    /// <returns> The name of the parser rule associated with this rule tag. </returns>
+    /// <returns> The name of the parse rule associated with this rule tag. </returns>
     std::string getRuleName() const;
 
     /// <summary>

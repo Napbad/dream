@@ -42,7 +42,7 @@ namespace atn {
     /// reached, <seealso cref="Token#EOF"/> is added to the result set.
     /// </summary>
     /// <param name="s"> the ATN state </param>
-    /// <param name="ctx"> the complete parser context, or {@code null} if the context
+    /// <param name="ctx"> the complete parse context, or {@code null} if the context
     /// should be ignored
     /// </param>
     /// <returns> The set of tokens that can follow {@code s} in the ATN in the
@@ -61,7 +61,7 @@ namespace atn {
     /// <param name="s"> the ATN state </param>
     /// <param name="stopState"> the ATN state to stop at. This can be a
     /// <seealso cref="BlockEndState"/> to detect epsilon paths through a closure. </param>
-    /// <param name="ctx"> the complete parser context, or {@code null} if the context
+    /// <param name="ctx"> the complete parse context, or {@code null} if the context
     /// should be ignored
     /// </param>
     /// <returns> The set of tokens that can follow {@code s} in the ATN in the

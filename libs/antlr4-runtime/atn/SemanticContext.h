@@ -28,7 +28,7 @@ namespace atn {
     /// For context independent predicates, we evaluate them without a local
     /// context (i.e., null context). That way, we can evaluate them without
     /// having to create proper rule-specific context during prediction (as
-    /// opposed to the parser, which creates them naturally). In a practical
+    /// opposed to the parse, which creates them naturally). In a practical
     /// sense, this avoids a cast exception from RuleContext to myruleContext.
     /// <p/>
     /// For context dependent predicates, we must pass in a local context so that
@@ -42,7 +42,7 @@ namespace atn {
     /**
      * Evaluate the precedence predicates for the context and reduce the result.
      *
-     * @param parser The parser instance.
+     * @param parse The parse instance.
      * @param parserCallStack
      * @return The simplified semantic context after precedence predicates are
      * evaluated, which will be one of the following values.

@@ -1,0 +1,43 @@
+file(REMOVE_RECURSE
+  "CMakeFiles/dream.dir/src/common/native_fun.cpp.o"
+  "CMakeFiles/dream.dir/src/common/native_fun.cpp.o.d"
+  "CMakeFiles/dream.dir/src/common/reserved.cpp.o"
+  "CMakeFiles/dream.dir/src/common/reserved.cpp.o.d"
+  "CMakeFiles/dream.dir/src/gc/DataSource.cpp.o"
+  "CMakeFiles/dream.dir/src/gc/DataSource.cpp.o.d"
+  "CMakeFiles/dream.dir/src/gc/gc.cpp.o"
+  "CMakeFiles/dream.dir/src/gc/gc.cpp.o.d"
+  "CMakeFiles/dream.dir/src/main.cpp.o"
+  "CMakeFiles/dream.dir/src/main.cpp.o.d"
+  "CMakeFiles/dream.dir/src/obj/Global.cpp.o"
+  "CMakeFiles/dream.dir/src/obj/Global.cpp.o.d"
+  "CMakeFiles/dream.dir/src/obj/Package.cpp.o"
+  "CMakeFiles/dream.dir/src/obj/Package.cpp.o.d"
+  "CMakeFiles/dream.dir/src/obj/val.cpp.o"
+  "CMakeFiles/dream.dir/src/obj/val.cpp.o.d"
+  "CMakeFiles/dream.dir/src/parse/DreamBaseListener.cpp.o"
+  "CMakeFiles/dream.dir/src/parse/DreamBaseListener.cpp.o.d"
+  "CMakeFiles/dream.dir/src/parse/DreamLexer.cpp.o"
+  "CMakeFiles/dream.dir/src/parse/DreamLexer.cpp.o.d"
+  "CMakeFiles/dream.dir/src/parse/DreamListener.cpp.o"
+  "CMakeFiles/dream.dir/src/parse/DreamListener.cpp.o.d"
+  "CMakeFiles/dream.dir/src/parse/DreamParser.cpp.o"
+  "CMakeFiles/dream.dir/src/parse/DreamParser.cpp.o.d"
+  "CMakeFiles/dream.dir/src/parse/DreamParserListener.cpp.o"
+  "CMakeFiles/dream.dir/src/parse/DreamParserListener.cpp.o.d"
+  "CMakeFiles/dream.dir/src/parse/DreamParserListenerRunner.cpp.o"
+  "CMakeFiles/dream.dir/src/parse/DreamParserListenerRunner.cpp.o.d"
+  "CMakeFiles/dream.dir/src/util/check.cpp.o"
+  "CMakeFiles/dream.dir/src/util/check.cpp.o.d"
+  "CMakeFiles/dream.dir/src/util/common_util.cpp.o"
+  "CMakeFiles/dream.dir/src/util/common_util.cpp.o.d"
+  "CMakeFiles/dream.dir/src/util/parse_util.cpp.o"
+  "CMakeFiles/dream.dir/src/util/parse_util.cpp.o.d"
+  "dream"
+  "dream.pdb"
+)
+
+# Per-language clean rules from dependency scanning.
+foreach(lang CXX)
+  include(CMakeFiles/dream.dir/cmake_clean_${lang}.cmake OPTIONAL)
+endforeach()

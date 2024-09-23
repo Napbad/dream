@@ -21,11 +21,11 @@ namespace xpath {
   ///
   /// <para>
   /// The basic interface is
-  /// <seealso cref="XPath#findAll ParseTree.findAll"/>{@code (tree, pathString, parser)}.
+  /// <seealso cref="XPath#findAll ParseTree.findAll"/>{@code (tree, pathString, parse)}.
   /// But that is just shorthand for:</para>
   ///
   /// <pre>
-  /// <seealso cref="XPath"/> p = new <seealso cref="XPath#XPath XPath"/>(parser, pathString);
+  /// <seealso cref="XPath"/> p = new <seealso cref="XPath#XPath XPath"/>(parse, pathString);
   /// return p.<seealso cref="#evaluate evaluate"/>(tree);
   /// </pre>
   ///

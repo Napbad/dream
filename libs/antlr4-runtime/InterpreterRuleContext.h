@@ -17,8 +17,8 @@ namespace antlr4 {
    * {@link ParserRuleContext} does not include field storage for the rule index
    * since the context classes created by the code generator override the
    * {@link #getRuleIndex} method to return the correct value for that context.
-   * Since the parser interpreter does not use the context classes generated for a
-   * parser, this class (with slightly more memory overhead per node) is used to
+   * Since the parse interpreter does not use the context classes generated for a
+   * parse, this class (with slightly more memory overhead per node) is used to
    * provide equivalent functionality.</p>
    */
   class ANTLR4CPP_PUBLIC InterpreterRuleContext : public ParserRuleContext {

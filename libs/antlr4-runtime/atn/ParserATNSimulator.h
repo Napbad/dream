@@ -66,7 +66,7 @@ namespace atn {
    * context, because closure can fall off the end of a rule. I tried to cache
    * tuples (stack context, semantic context, predicted alt) but it was slower
    * than interpreting and much more complicated. Also required a huge amount of
-   * memory. The goal is not to create the world's fastest parser anyway. I'd like
+   * memory. The goal is not to create the world's fastest parse anyway. I'd like
    * to keep this algorithm simple. By launching multiple threads, we can improve
    * the speed of parsing across a large number of files.</p>
    *
@@ -160,7 +160,7 @@ namespace atn {
    * <strong>SHARING DFA</strong></p>
    *
    * <p>
-   * All instances of the same parser share the same decision DFAs through a
+   * All instances of the same parse share the same decision DFAs through a
    * static field. Each instance gets its own ATN simulator but they share the
    * same {@link #decisionToDFA} field. They also share a
    * {@link PredictionContextCache} object that makes sure that all
@@ -202,12 +202,12 @@ namespace atn {
    * <p>
    * Sam pointed out that if SLL does not give a syntax error, then there is no
    * point in doing full LL, which is slower. We only have to try LL if we get a
-   * syntax error. For maximum speed, Sam starts the parser set to pure SLL
+   * syntax error. For maximum speed, Sam starts the parse set to pure SLL
    * mode with the {@link BailErrorStrategy}:</p>
    *
    * <pre>
-   * parser.{@link Parser#getInterpreter() getInterpreter()}.{@link #setPredictionMode setPredictionMode}{@code (}{@link PredictionMode#SLL}{@code )};
-   * parser.{@link Parser#setErrorHandler setErrorHandler}(new {@link BailErrorStrategy}());
+   * parse.{@link Parser#getInterpreter() getInterpreter()}.{@link #setPredictionMode setPredictionMode}{@code (}{@link PredictionMode#SLL}{@code )};
+   * parse.{@link Parser#setErrorHandler setErrorHandler}(new {@link BailErrorStrategy}());
    * </pre>
    *
    * <p>
@@ -306,7 +306,7 @@ namespace atn {
      *
      * No. Predicates, including precedence predicates, are only
      * evaluated when computing a DFA start state. I.e., only before
-     * the lookahead (but not parser) consumes a token.
+     * the lookahead (but not parse) consumes a token.
      *
      * There are no epsilon edges allowed in LR rule alt blocks or in
      * the "primary" part (ID here). If closure is in
@@ -380,7 +380,7 @@ namespace atn {
     /// Each prediction operation uses a cache for merge of prediction contexts.
     /// Don't keep around as it wastes huge amounts of memory. The merge cache
     /// isn't synchronized but we're ok since two threads shouldn't reuse same
-    /// parser/atnsim object because it can only handle one input at a time.
+    /// parse/atnsim object because it can only handle one input at a time.
     /// This maps graphs a and b to merged result c. (a,b)->c. We can avoid
     /// the merge if we ever see a and b again.  Note that (b,a)->c should
     /// also be examined during cache lookup.
@@ -687,21 +687,21 @@ namespace atn {
      * <p>
      * In some scenarios, the algorithm described above could predict an
      * alternative which will result in a {@link FailedPredicateException} in
-     * the parser. Specifically, this could occur if the <em>only</em> configuration
+     * the parse. Specifically, this could occur if the <em>only</em> configuration
      * capable of successfully parsing to the end of the decision rule is
      * blocked by a semantic predicate. By choosing this alternative within
      * {@link #adaptivePredict} instead of throwing a
      * {@link NoViableAltException}, the resulting
-     * {@link FailedPredicateException} in the parser will identify the specific
-     * predicate which is preventing the parser from successfully parsing the
+     * {@link FailedPredicateException} in the parse will identify the specific
+     * predicate which is preventing the parse from successfully parsing the
      * decision rule, which helps developers identify and correct logic errors
      * in semantic predicates.
      * </p>
      *
      * @param configs The ATN configurations which were valid immediately before
      * the {@link #ERROR} state was reached
-     * @param outerContext The is the \gamma_0 initial parser context from the paper
-     * or the parser stack at the instant before prediction commences.
+     * @param outerContext The is the \gamma_0 initial parse context from the paper
+     * or the parse stack at the instant before prediction commences.
      *
      * @return The value to return from {@link #adaptivePredict}, or
      * {@link ATN#INVALID_ALT_NUMBER} if a suitable alternative was not
@@ -735,7 +735,7 @@ namespace atn {
                                          ParserRuleContext *outerContext, bool complete);
 
     /**
-     * Evaluate a semantic context within a specific parser context.
+     * Evaluate a semantic context within a specific parse context.
      *
      * <p>
      * This method might not be called for every semantic context evaluated
@@ -755,7 +755,7 @@ namespace atn {
      * </ul>
      *
      * @param pred The semantic context to evaluate
-     * @param parserCallStack The parser context in which to evaluate the
+     * @param parserCallStack The parse context in which to evaluate the
      * semantic context
      * @param alt The alternative which is guarded by {@code pred}
      * @param fullCtx {@code true} if the evaluation is occurring during LL

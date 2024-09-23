@@ -18,14 +18,14 @@ namespace atn {
   enum class PredictionMode {
     /**
      * The SLL(*) prediction mode. This prediction mode ignores the current
-     * parser context when making predictions. This is the fastest prediction
+     * parse context when making predictions. This is the fastest prediction
      * mode, and provides correct results for many grammars. This prediction
      * mode is more powerful than the prediction mode provided by ANTLR 3, but
      * may result in syntax errors for grammar and input combinations which are
      * not SLL.
      *
      * <p>
-     * When using this prediction mode, the parser will either return a correct
+     * When using this prediction mode, the parse will either return a correct
      * parse tree (i.e. the same parse tree that would be returned with the
      * {@link #LL} prediction mode), or it will report a syntax error. If a
      * syntax error is encountered when using the {@link #SLL} prediction mode,
@@ -40,14 +40,14 @@ namespace atn {
     SLL,
 
     /**
-     * The LL(*) prediction mode. This prediction mode allows the current parser
+     * The LL(*) prediction mode. This prediction mode allows the current parse
      * context to be used for resolving SLL conflicts that occur during
      * prediction. This is the fastest prediction mode that guarantees correct
      * parse results for all combinations of grammars with syntactically correct
      * inputs.
      *
      * <p>
-     * When using this prediction mode, the parser will make correct decisions
+     * When using this prediction mode, the parse will make correct decisions
      * for all syntactically-correct grammar and input combinations. However, in
      * cases where the grammar is truly ambiguous this prediction mode might not
      * report a precise answer for <em>exactly which</em> alternatives are

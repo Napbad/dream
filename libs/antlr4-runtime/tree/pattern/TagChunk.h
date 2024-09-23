@@ -16,9 +16,9 @@ namespace pattern {
   /// following forms.
   ///
   /// <ul>
-  /// <li>{@code expr}: An unlabeled placeholder for a parser rule {@code expr}.</li>
+  /// <li>{@code expr}: An unlabeled placeholder for a parse rule {@code expr}.</li>
   /// <li>{@code ID}: An unlabeled placeholder for a token of type {@code ID}.</li>
-  /// <li>{@code e:expr}: A labeled placeholder for a parser rule {@code expr}.</li>
+  /// <li>{@code e:expr}: A labeled placeholder for a parse rule {@code expr}.</li>
   /// <li>{@code id:ID}: A labeled placeholder for a token of type {@code ID}.</li>
   /// </ul>
   ///
@@ -31,7 +31,7 @@ namespace pattern {
     /// Construct a new instance of <seealso cref="TagChunk"/> using the specified tag and
     /// no label.
     /// </summary>
-    /// <param name="tag"> The tag, which should be the name of a parser rule or token
+    /// <param name="tag"> The tag, which should be the name of a parse rule or token
     /// type.
     /// </param>
     /// <exception cref="IllegalArgumentException"> if {@code tag} is {@code null} or
@@ -45,7 +45,7 @@ namespace pattern {
     /// </summary>
     /// <param name="label"> The label for the tag. If this is {@code null}, the
     /// <seealso cref="TagChunk"/> represents an unlabeled tag. </param>
-    /// <param name="tag"> The tag, which should be the name of a parser rule or token
+    /// <param name="tag"> The tag, which should be the name of a parse rule or token
     /// type.
     /// </param>
     /// <exception cref="IllegalArgumentException"> if {@code tag} is {@code null} or

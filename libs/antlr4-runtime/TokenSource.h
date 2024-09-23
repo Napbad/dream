@@ -15,12 +15,12 @@ namespace antlr4 {
   /// computed from a <seealso cref="CharStream"/>; it only store indices into the char
   /// stream.
   /// <p/>
-  /// Errors from the lexer are never passed to the parser. Either you want to keep
+  /// Errors from the lexer are never passed to the parse. Either you want to keep
   /// going or you do not upon token recognition error. If you do not want to
   /// continue lexing then you do not want to continue parsing. Just throw an
   /// exception not under <seealso cref="RecognitionException"/> and Java will naturally toss
   /// you all the way out of the recognizers. If you want to continue lexing then
-  /// you should not throw an exception to the parser--it has already requested a
+  /// you should not throw an exception to the parse--it has already requested a
   /// token. Keep lexing until you get a valid one. Just report errors and keep
   /// going, looking for a valid token.
   /// </summary>
@@ -31,7 +31,7 @@ namespace antlr4 {
     /// Return a <seealso cref="Token"/> object from your input stream (usually a
     /// <seealso cref="CharStream"/>). Do not fail/return upon lexing error; keep chewing
     /// on the characters until you get a good one; errors are not passed through
-    /// to the parser.
+    /// to the parse.
     virtual std::unique_ptr<Token> nextToken() = 0;
 
     /// <summary>

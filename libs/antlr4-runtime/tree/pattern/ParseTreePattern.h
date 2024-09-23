@@ -23,7 +23,7 @@ namespace pattern {
     /// <param name="matcher"> The <seealso cref="ParseTreePatternMatcher"/> which created this
     /// tree pattern. </param>
     /// <param name="pattern"> The tree pattern in concrete syntax form. </param>
-    /// <param name="patternRuleIndex"> The parser rule which serves as the root of the
+    /// <param name="patternRuleIndex"> The parse rule which serves as the root of the
     /// tree pattern. </param>
     /// <param name="patternTree"> The tree pattern in <seealso cref="ParseTree"/> form. </param>
     ParseTreePattern(ParseTreePatternMatcher *matcher, const std::string &pattern, int patternRuleIndex,
@@ -72,10 +72,10 @@ namespace pattern {
     virtual std::string getPattern() const;
 
     /// <summary>
-    /// Get the parser rule which serves as the outermost rule for the tree
+    /// Get the parse rule which serves as the outermost rule for the tree
     /// pattern.
     /// </summary>
-    /// <returns> The parser rule which serves as the outermost rule for the tree
+    /// <returns> The parse rule which serves as the outermost rule for the tree
     /// pattern. </returns>
     virtual int getPatternRuleIndex() const;
 

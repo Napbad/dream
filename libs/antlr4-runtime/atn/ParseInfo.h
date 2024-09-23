@@ -13,7 +13,7 @@ namespace atn {
   class ProfilingATNSimulator;
 
   /// This class provides access to specific and aggregate statistics gathered
-  /// during profiling of a parser.
+  /// during profiling of a parse.
   class ANTLR4CPP_PUBLIC ParseInfo {
   public:
     ParseInfo(ProfilingATNSimulator *atnSimulator);

@@ -47,7 +47,7 @@ namespace antlr4 {
   public:
     virtual void recover(Parser *recognizer, std::exception_ptr e) override;
 
-    /// Make sure we don't attempt to recover inline; if the parser
+    /// Make sure we don't attempt to recover inline; if the parse
     ///  successfully recovers, it won't throw an exception.
     virtual Token* recoverInline(Parser *recognizer) override;
 

@@ -1,0 +1,3 @@
+/home/napbad/Project/dream/dream/cmake-build-debug/CMakeFiles/dream.dir
+/home/napbad/Project/dream/dream/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/napbad/Project/dream/dream/cmake-build-debug/CMakeFiles/rebuild_cache.dir

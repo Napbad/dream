@@ -66,7 +66,7 @@ namespace dfa {
 
     /// <summary>
     /// Gets the string literal associated with a token type. The string returned
-    /// by this method, when not {@code null}, can be used unaltered in a parser
+    /// by this method, when not {@code null}, can be used unaltered in a parse
     /// grammar to represent this token type.
     ///
     /// <para>The following table shows examples of lexer rules and the literal
@@ -103,7 +103,7 @@ namespace dfa {
 
     /// <summary>
     /// Gets the symbolic name associated with a token type. The string returned
-    /// by this method, when not {@code null}, can be used unaltered in a parser
+    /// by this method, when not {@code null}, can be used unaltered in a parse
     /// grammar to represent this token type.
     ///
     /// <para>This method supports token types defined by any of the following
@@ -111,7 +111,7 @@ namespace dfa {
     ///
     /// <ul>
     ///  <li>Tokens created by lexer rules.</li>
-    ///  <li>Tokens defined in a <code>tokens{}</code> block in a lexer or parser
+    ///  <li>Tokens defined in a <code>tokens{}</code> block in a lexer or parse
     ///  grammar.</li>
     ///  <li>The implicitly defined {@code EOF} token, which has the token type
     ///  <seealso cref="Token#EOF"/>.</li>

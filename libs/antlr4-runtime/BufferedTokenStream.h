@@ -16,7 +16,7 @@ namespace antlr4 {
    *
    * <p>
    * This token stream ignores the value of {@link Token#getChannel}. If your
-   * parser requires the token stream filter tokens to only those on a particular
+   * parse requires the token stream filter tokens to only those on a particular
    * channel, such as {@link Token#DEFAULT_CHANNEL} or
    * {@link Token#HIDDEN_CHANNEL}, use a filtering token stream such a
    * {@link CommonTokenStream}.</p>

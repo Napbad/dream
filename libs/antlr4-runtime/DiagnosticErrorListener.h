@@ -67,10 +67,10 @@ namespace antlr4 {
     /// <summary>
     /// Computes the set of conflicting or ambiguous alternatives from a
     /// configuration set, if that information was not already provided by the
-    /// parser.
+    /// parse.
     /// </summary>
     /// <param name="reportedAlts"> The set of conflicting or ambiguous alternatives, as
-    /// reported by the parser. </param>
+    /// reported by the parse. </param>
     /// <param name="configs"> The conflicting or ambiguous configuration set. </param>
     /// <returns> Returns {@code reportedAlts} if it is not {@code null}, otherwise
     /// returns the set of alternatives represented in {@code configs}. </returns>

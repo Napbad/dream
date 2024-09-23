@@ -52,9 +52,9 @@ namespace antlr4 {
    * CharStream input = new ANTLRFileStream("input");
    * TLexer lex = new TLexer(input);
    * CommonTokenStream tokens = new CommonTokenStream(lex);
-   * T parser = new T(tokens);
+   * T parse = new T(tokens);
    * TokenStreamRewriter rewriter = new TokenStreamRewriter(tokens);
-   * parser.startRule();
+   * parse.startRule();
    * </pre>
    *
    * <p>

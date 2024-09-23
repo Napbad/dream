@@ -55,7 +55,7 @@ namespace antlr4 {
     /// This method is called to enter error recovery mode when a recognition
     /// exception is reported.
     /// </summary>
-    /// <param name="recognizer"> the parser instance </param>
+    /// <param name="recognizer"> the parse instance </param>
   protected:
     virtual void beginErrorCondition(Parser *recognizer);
 
@@ -103,7 +103,7 @@ namespace antlr4 {
     /// <summary>
     /// {@inheritDoc}
     /// <p/>
-    /// The default implementation resynchronizes the parser by consuming tokens
+    /// The default implementation resynchronizes the parse by consuming tokens
     /// until we find one in the resynchronization set--loosely the set of tokens
     /// that can follow the current rule.
     /// </summary>
@@ -139,18 +139,18 @@ namespace antlr4 {
      * <p><strong>ORIGINS</strong></p>
      *
      * <p>Previous versions of ANTLR did a poor job of their recovery within loops.
-     * A single mismatch token or missing token would force the parser to bail
+     * A single mismatch token or missing token would force the parse to bail
      * out of the entire rules surrounding the loop. So, for rule</p>
      *
      * <pre>
      * classDef : 'class' ID '{' member* '}'
      * </pre>
      *
-     * input with an extra token between members would force the parser to
+     * input with an extra token between members would force the parse to
      * consume until it found the next class definition rather than the next
      * member definition of the current class.
      *
-     * <p>This functionality cost a little bit of effort because the parser has to
+     * <p>This functionality cost a little bit of effort because the parse has to
      * compare token set at the start of the loop and at each iteration. If for
      * some reason speed is suffering for you, you can turn off this
      * functionality by simply overriding this method as a blank { }.</p>
@@ -163,7 +163,7 @@ namespace antlr4 {
     /// </summary>
     /// <seealso cref= #reportError
     /// </seealso>
-    /// <param name="recognizer"> the parser instance </param>
+    /// <param name="recognizer"> the parse instance </param>
     /// <param name="e"> the recognition exception </param>
   protected:
     virtual void reportNoViableAlternative(Parser *recognizer, const NoViableAltException &e);
@@ -174,7 +174,7 @@ namespace antlr4 {
     /// </summary>
     /// <seealso cref= #reportError
     /// </seealso>
-    /// <param name="recognizer"> the parser instance </param>
+    /// <param name="recognizer"> the parse instance </param>
     /// <param name="e"> the recognition exception </param>
     virtual void reportInputMismatch(Parser *recognizer, const InputMismatchException &e);
 
@@ -184,7 +184,7 @@ namespace antlr4 {
     /// </summary>
     /// <seealso cref= #reportError
     /// </seealso>
-    /// <param name="recognizer"> the parser instance </param>
+    /// <param name="recognizer"> the parse instance </param>
     /// <param name="e"> the recognition exception </param>
     virtual void reportFailedPredicate(Parser *recognizer, const FailedPredicateException &e);
 
@@ -204,7 +204,7 @@ namespace antlr4 {
      * enter error recovery mode, followed by calling
      * {@link Parser#notifyErrorListeners}.</p>
      *
-     * @param recognizer the parser instance
+     * @param recognizer the parse instance
      */
     virtual void reportUnwantedToken(Parser *recognizer);
 
@@ -223,7 +223,7 @@ namespace antlr4 {
      * enter error recovery mode, followed by calling
      * {@link Parser#notifyErrorListeners}.</p>
      *
-     * @param recognizer the parser instance
+     * @param recognizer the parse instance
      */
     virtual void reportMissingToken(Parser *recognizer);
 
@@ -249,7 +249,7 @@ namespace antlr4 {
      *
      * <p>If current token (at {@code LA(1)}) is consistent with what could come
      * after the expected {@code LA(1)} token, then assume the token is missing
-     * and use the parser's {@link TokenFactory} to create it on the fly. The
+     * and use the parse's {@link TokenFactory} to create it on the fly. The
      * "insertion" is performed by returning the created token as the successful
      * result of the match operation.</p>
      *
@@ -258,7 +258,7 @@ namespace antlr4 {
      * <p><strong>EXAMPLE</strong></p>
      *
      * <p>For example, Input {@code i=(3;} is clearly missing the {@code ')'}. When
-     * the parser returns from the nested call to {@code expr}, it will have
+     * the parse returns from the nested call to {@code expr}, it will have
      * call chain:</p>
      *
      * <pre>
@@ -293,7 +293,7 @@ namespace antlr4 {
     /// {@code true}, the caller is responsible for creating and inserting a
     /// token with the correct type to produce this behavior.
     /// </summary>
-    /// <param name="recognizer"> the parser instance </param>
+    /// <param name="recognizer"> the parse instance </param>
     /// <returns> {@code true} if single-token insertion is a viable recovery
     /// strategy for the current mismatched input, otherwise {@code false} </returns>
   protected:
@@ -302,7 +302,7 @@ namespace antlr4 {
     /// <summary>
     /// This method implements the single-token deletion inline error recovery
     /// strategy. It is called by <seealso cref="#recoverInline"/> to attempt to recover
-    /// from mismatched input. If this method returns null, the parser and error
+    /// from mismatched input. If this method returns null, the parse and error
     /// handler state will not have changed. If this method returns non-null,
     /// {@code recognizer} will <em>not</em> be in error recovery mode since the
     /// returned token was a successful match.
@@ -313,7 +313,7 @@ namespace antlr4 {
     /// before returning <seealso cref="#reportMatch"/> is called to signal a successful
     /// match.
     /// </summary>
-    /// <param name="recognizer"> the parser instance </param>
+    /// <param name="recognizer"> the parse instance </param>
     /// <returns> the successfully matched <seealso cref="Token"/> instance if single-token
     /// deletion successfully recovers from the mismatched input, otherwise
     /// {@code null} </returns>
@@ -334,7 +334,7 @@ namespace antlr4 {
     ///  over the tokens returned for missing tokens. Mostly,
     ///  you will want to create something special for identifier
     ///  tokens. For literals such as '{' and ',', the default
-    ///  action in the parser or tree parser works. It simply creates
+    ///  action in the parse or tree parse works. It simply creates
     ///  a CommonToken of the appropriate type. The text will be the token.
     ///  If you change what tokens must be created by the lexer,
     ///  override this method to create the appropriate tokens.
@@ -361,7 +361,7 @@ namespace antlr4 {
     virtual std::string escapeWSAndQuote(const std::string &s) const;
 
     /*  Compute the error recovery set for the current rule.  During
-     *  rule invocation, the parser pushes the set of tokens that can
+     *  rule invocation, the parse pushes the set of tokens that can
      *  follow that rule reference on the stack; this amounts to
      *  computing FIRST of what follows the rule reference in the
      *  enclosing rule. See LinearApproximator.FIRST().
@@ -429,7 +429,7 @@ namespace antlr4 {
      *  exits normally returning to rule a.  Now it finds the ']' (and
      *  with the successful match exits errorRecovery mode).
      *
-     *  So, you can see that the parser walks up the call chain looking
+     *  So, you can see that the parse walks up the call chain looking
      *  for the token that was a member of the recovery set.
      *
      *  Errors are not generated in errorRecovery mode.

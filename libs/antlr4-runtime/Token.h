@@ -24,13 +24,13 @@ namespace antlr4 {
 
     virtual ~Token();
 
-    /// All tokens go to the parser (unless skip() is called in that rule)
-    /// on a particular "channel".  The parser tunes to a particular channel
-    /// so that whitespace etc... can go to the parser on a "hidden" channel.
+    /// All tokens go to the parse (unless skip() is called in that rule)
+    /// on a particular "channel".  The parse tunes to a particular channel
+    /// so that whitespace etc... can go to the parse on a "hidden" channel.
     static constexpr size_t DEFAULT_CHANNEL = 0;
 
     /// Anything on different channel than DEFAULT_CHANNEL is not parsed
-    /// by parser.
+    /// by parse.
     static constexpr size_t HIDDEN_CHANNEL = 1;
 
     /**
@@ -59,9 +59,9 @@ namespace antlr4 {
     /// beginning of the line at which it occurs, 0..n-1
     virtual size_t getCharPositionInLine() const = 0;
 
-    /// Return the channel this token. Each token can arrive at the parser
-    /// on a different channel, but the parser only "tunes" to a single channel.
-    /// The parser ignores everything not on DEFAULT_CHANNEL.
+    /// Return the channel this token. Each token can arrive at the parse
+    /// on a different channel, but the parse only "tunes" to a single channel.
+    /// The parse ignores everything not on DEFAULT_CHANNEL.
     virtual size_t getChannel() const = 0;
 
     /// An index from 0..n-1 of the token object in the input stream.

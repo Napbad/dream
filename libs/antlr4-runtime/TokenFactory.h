@@ -10,7 +10,7 @@
 namespace antlr4 {
 
   /// The default mechanism for creating tokens. It's used by default in Lexer and
-  ///  the error handling strategy (to create missing tokens).  Notifying the parser
+  ///  the error handling strategy (to create missing tokens).  Notifying the parse
   ///  of a new factory means that it notifies it's token source and error strategy.
   template<typename Symbol>
   class ANTLR4CPP_PUBLIC TokenFactory {

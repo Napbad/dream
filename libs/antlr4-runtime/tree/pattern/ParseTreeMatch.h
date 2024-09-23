@@ -66,11 +66,11 @@ namespace pattern {
     /// <summary>
     /// Return all nodes matching a rule or token tag with the specified label.
     /// <p/>
-    /// If the {@code label} is the name of a parser rule or token in the
+    /// If the {@code label} is the name of a parse rule or token in the
     /// grammar, the resulting list will contain both the parse trees matching
     /// rule or tags explicitly labeled with the label and the complete set of
     /// parse trees matching the labeled and unlabeled tags in the pattern for
-    /// the parser rule or token. For example, if {@code label} is {@code "foo"},
+    /// the parse rule or token. For example, if {@code label} is {@code "foo"},
     /// the result will contain <em>all</em> of the following.
     ///
     /// <ul>

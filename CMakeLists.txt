@@ -13,16 +13,16 @@ find_library(LIBANTLR libantlr4-runtime.so /usr/local/lib64/)
 add_executable(dream src/main.cpp
         src/compiler/Compiler.cpp
         src/compiler/Compiler.h
-        src/parser/DreamBaseListener.cpp
-        src/parser/DreamLexer.cpp
-        src/parser/DreamListener.cpp
-        src/parser/DreamParser.cpp
-        src/parser/DreamParser.h
-        src/parser/DreamListener.h
-        src/parser/DreamLexer.h
-        src/parser/DreamBaseListener.h
-        src/parser/DreamParserListenerCompiler.cpp
-        src/parser/DreamParserListenerCompiler.h
+        src/parse/DreamBaseListener.cpp
+        src/parse/DreamLexer.cpp
+        src/parse/DreamListener.cpp
+        src/parse/DreamParser.cpp
+        src/parse/DreamParser.h
+        src/parse/DreamListener.h
+        src/parse/DreamLexer.h
+        src/parse/DreamBaseListener.h
+        src/parse/DreamParserListenerCompiler.cpp
+        src/parse/DreamParserListenerCompiler.h
         src/util/file_util.cpp
         src/util/file_util.h
         src/common/reserve.cpp

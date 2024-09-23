@@ -14,7 +14,7 @@ namespace atn {
   /// This is the base class for gathering detailed information about prediction
   /// events which occur during parsing.
   ///
-  /// Note that we could record the parser call stack at the time this event
+  /// Note that we could record the parse call stack at the time this event
   /// occurred but in the presence of left recursive rules, the stack is kind of
   /// meaningless. It's better to look at the individual configurations for their
   /// individual stacks. Of course that is a <seealso cref="PredictionContext"/> object

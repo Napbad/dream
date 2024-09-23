@@ -11,7 +11,7 @@ namespace antlr4 {
 
   /// Do not buffer up the entire char stream. It does keep a small buffer
   /// for efficiency and also buffers while a mark exists (set by the
-  /// lookahead prediction in parser). "Unbuffered" here refers to fact
+  /// lookahead prediction in parse). "Unbuffered" here refers to fact
   /// that it doesn't buffer all data, not that's it's on demand loading of char.
   class ANTLR4CPP_PUBLIC UnbufferedCharStream : public CharStream {
   public:

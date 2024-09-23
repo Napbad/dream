@@ -39,7 +39,7 @@ namespace antlr4 {
 
     /// <summary>
     /// For debugging/tracing purposes, we want to track all of the nodes in
-    ///  the ATN traversed by the parser for a particular rule.
+    ///  the ATN traversed by the parse for a particular rule.
     ///  This list indicates the sequence of ATN nodes used to match
     ///  the elements of the children list. This list does not include
     ///  ATN nodes and other rules used to match rule invocations. It
@@ -51,7 +51,7 @@ namespace antlr4 {
     ///  for each element in the children list. For example, for a rule
     ///  invocation there is the invoking state and the following state.
     ///
-    ///  The parser setState() method updates field s and adds it to this list
+    ///  The parse setState() method updates field s and adds it to this list
     ///  if we are debugging/tracing.
     ///
     ///  This does not trace states visited during prediction.

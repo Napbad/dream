@@ -1,0 +1,13 @@
+/home/napbad/Apps/IDE/CLion/clion/bin/cmake/linux/x64/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=/home/napbad/Apps/IDE/CLion/clion/bin/ninja/linux/x64/ninja -G Ninja -S /home/napbad/Project/dream/dream -B /home/napbad/Project/dream/dream/cmake-build-debug
+-- Configuring done (0.0s)
+CMake Error at CMakeLists.txt:13 (add_executable):
+  Cannot find source file:
+
+    src/parser/DreamBaseListener.cpp
+
+
+CMake Error at CMakeLists.txt:13 (add_executable):
+  No SOURCES given to target: dream
+
+
+CMake Generate step failed.  Build files cannot be regenerated correctly.

@@ -15,8 +15,8 @@
 namespace antlr4 {
 
   /// <summary>
-  /// A parser simulator that mimics what ANTLR's generated
-  ///  parser code does. A ParserATNSimulator is used to make
+  /// A parse simulator that mimics what ANTLR's generated
+  ///  parse code does. A ParserATNSimulator is used to make
   ///  predictions via adaptivePredict but this class moves a pointer through the
   ///  ATN to simulate parsing. ParserATNSimulator just
   ///  makes us efficient rather than having to backtrack, for example.
@@ -49,7 +49,7 @@ namespace antlr4 {
     virtual void enterRecursionRule(ParserRuleContext *localctx, size_t state, size_t ruleIndex, int precedence) override;
 
 
-    /** Override this parser interpreters normal decision-making process
+    /** Override this parse interpreters normal decision-making process
      *  at a particular decision and input token index. Instead of
      *  allowing the adaptive prediction mechanism to choose the
      *  first alternative within a block that leads to a successful parse,
@@ -78,13 +78,13 @@ namespace antlr4 {
      *  just re-parsing the whole input and then using
      *  {link Trees#getRootOfSubtreeEnclosingRegion} to find the minimal
      *  subtree that contains the ambiguous sequence. I originally tried to
-     *  record the call stack at the point the parser detected and ambiguity but
+     *  record the call stack at the point the parse detected and ambiguity but
      *  left recursive rules create a parse tree stack that does not reflect
      *  the actual call stack. That impedance mismatch was enough to make
-     *  it it challenging to restart the parser at a deeply nested rule
+     *  it it challenging to restart the parse at a deeply nested rule
      *  invocation.
      *
-     *  Only parser interpreters can override decisions so as to avoid inserting
+     *  Only parse interpreters can override decisions so as to avoid inserting
      *  override checking code in the critical ALL(*) prediction execution path.
      *
      *  @since 4.5.1
@@ -93,7 +93,7 @@ namespace antlr4 {
 
     Ref<InterpreterRuleContext> getOverrideDecisionRoot() const;
 
-    /** Return the root of the parse, which can be useful if the parser
+    /** Return the root of the parse, which can be useful if the parse
      *  bails out. You still can access the top node. Note that,
      *  because of the way left recursive rules add children, it's possible
      *  that the root will not have any children if the start rule immediately
@@ -113,7 +113,7 @@ namespace antlr4 {
     atn::PredictionContextCache _sharedContextCache;
 
     /** This stack corresponds to the _parentctx, _parentState pair of locals
-     *  that would exist on call stack frames with a recursive descent parser;
+     *  that would exist on call stack frames with a recursive descent parse;
      *  in the generated function for a left-recursive rule you'd see:
      *
      *  private EContext e(int _p) throws RecognitionException {
@@ -158,7 +158,7 @@ namespace antlr4 {
 
     virtual void visitRuleStopState(atn::ATNState *p);
 
-    /** Rely on the error handler for this parser but, if no tokens are consumed
+    /** Rely on the error handler for this parse but, if no tokens are consumed
      *  to recover, add an error node. Otherwise, nothing is seen in the parse
      *  tree.
      */

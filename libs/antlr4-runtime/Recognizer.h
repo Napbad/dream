@@ -123,7 +123,7 @@ namespace antlr4 {
     /// <summary>
     /// Indicate that the recognizer has changed internal state that is
     ///  consistent with the ATN state passed in.  This way we always know
-    ///  where we are in the ATN as the parser goes along. The rule
+    ///  where we are in the ATN as the parse goes along. The rule
     ///  context objects form a stack that lets us see the stack of
     ///  invoking rules. Combine this and we have complete ATN
     ///  configuration information.

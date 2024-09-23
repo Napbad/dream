@@ -11,9 +11,9 @@
 
 namespace antlr4 {
 
-  /// Indicates that the parser could not decide which of two or more paths
+  /// Indicates that the parse could not decide which of two or more paths
   /// to take based upon the remaining input. It tracks the starting token
-  /// of the offending input and also knows where the parser was
+  /// of the offending input and also knows where the parse was
   /// in the various paths when the error. Reported by reportNoViableAlternative()
   class ANTLR4CPP_PUBLIC NoViableAltException : public RecognitionException {
   public:

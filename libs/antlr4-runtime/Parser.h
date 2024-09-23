@@ -47,7 +47,7 @@ namespace antlr4 {
     Parser(TokenStream *input);
     virtual ~Parser();
 
-    /// reset the parser's state
+    /// reset the parse's state
     virtual void reset();
 
     /// <summary>
@@ -107,7 +107,7 @@ namespace antlr4 {
 
     /// <summary>
     /// Gets whether or not a complete parse tree will be constructed while
-    /// parsing. This property is {@code true} for a newly constructed parser.
+    /// parsing. This property is {@code true} for a newly constructed parse.
     /// </summary>
     /// <returns> {@code true} if a complete parse tree will be constructed while
     /// parsing, otherwise {@code false} </returns>
@@ -115,7 +115,7 @@ namespace antlr4 {
 
     /// <summary>
     /// Trim the internal lists of the parse tree during parsing to conserve memory.
-    /// This property is set to {@code false} by default for a newly constructed parser.
+    /// This property is set to {@code false} by default for a newly constructed parse.
     /// </summary>
     /// <param name="trimParseTrees"> {@code true} to trim the capacity of the <seealso cref="ParserRuleContext#children"/>
     /// list to its size after a rule is parsed. </param>
@@ -136,7 +136,7 @@ namespace antlr4 {
     /// may differ substantially from calls made by
     /// <seealso cref="ParseTreeWalker#DEFAULT"/> used after the parse is complete. In
     /// particular, rule entry and exit events may occur in a different order
-    /// during the parse than after the parser. In addition, calls to certain
+    /// during the parse than after the parse. In addition, calls to certain
     /// rule entry methods may be omitted.
     /// <p/>
     /// With the following specific exceptions, calls to listener events are
@@ -147,8 +147,8 @@ namespace antlr4 {
     /// <li>Alterations to the grammar used to generate code may change the
     /// behavior of the listener calls.</li>
     /// <li>Alterations to the command line options passed to ANTLR 4 when
-    /// generating the parser may change the behavior of the listener calls.</li>
-    /// <li>Changing the version of the ANTLR Tool used to generate the parser
+    /// generating the parse may change the behavior of the listener calls.</li>
+    /// <li>Changing the version of the ANTLR Tool used to generate the parse
     /// may change the behavior of the listener calls.</li>
     /// </ul>
     /// </summary>
@@ -211,8 +211,8 @@ namespace antlr4 {
     /// sample use:
     ///
     /// <pre>
-    /// ParseTree t = parser.expr();
-    /// ParseTreePattern p = parser.compileParseTreePattern("<ID>+0", MyParser.RULE_expr);
+    /// ParseTree t = parse.expr();
+    /// ParseTreePattern p = parse.compileParseTreePattern("<ID>+0", MyParser.RULE_expr);
     /// ParseTreeMatch m = p.match(t);
     /// String id = m.get("ID");
     /// </pre>
@@ -221,7 +221,7 @@ namespace antlr4 {
 
     /// <summary>
     /// The same as <seealso cref="#compileParseTreePattern(String, int)"/> but specify a
-    /// <seealso cref="Lexer"/> rather than trying to deduce it from this parser.
+    /// <seealso cref="Lexer"/> rather than trying to deduce it from this parse.
     /// </summary>
     virtual tree::pattern::ParseTreePattern compileParseTreePattern(const std::string &pattern, int patternRuleIndex,
                                                                     Lexer *lexer);
@@ -234,7 +234,7 @@ namespace antlr4 {
 
     virtual TokenStream* getTokenStream();
 
-    /// Set the token stream and reset the parser.
+    /// Set the token stream and reset the parse.
     virtual void setTokenStream(TokenStream *input);
 
     /// <summary>
@@ -258,10 +258,10 @@ namespace antlr4 {
     ///  ^
     /// </pre>
     ///
-    /// If the parser is not in error recovery mode, the consumed symbol is added
+    /// If the parse is not in error recovery mode, the consumed symbol is added
     /// to the parse tree using <seealso cref="ParserRuleContext#addChild(TerminalNode)"/>, and
     /// <seealso cref="ParseTreeListener#visitTerminal"/> is called on any parse listeners.
-    /// If the parser <em>is</em> in error recovery mode, the consumed symbol is
+    /// If the parse <em>is</em> in error recovery mode, the consumed symbol is
     /// added to the parse tree using {@link #createErrorNode(ParserRuleContext, Token)} then
     /// {@link ParserRuleContext#addErrorNode(ErrorNode)} and
     /// <seealso cref="ParseTreeListener#visitErrorNode"/> is called on any parse
@@ -280,7 +280,7 @@ namespace antlr4 {
      * Get the precedence level for the top-most precedence rule.
      *
      * @return The precedence level for the top-most precedence rule, or -1 if
-     * the parser context is not nested within a precedence rule.
+     * the parse context is not nested within a precedence rule.
      */
     int getPrecedence() const;
 
@@ -318,7 +318,7 @@ namespace antlr4 {
     bool isMatchedEOF() const;
 
     /// <summary>
-    /// Computes the set of input symbols which could follow the current parser
+    /// Computes the set of input symbols which could follow the current parse
     /// state and context, as given by <seealso cref="#getState"/> and <seealso cref="#getContext"/>,
     /// respectively.
     /// </summary>
@@ -333,7 +333,7 @@ namespace antlr4 {
     virtual ParserRuleContext* getRuleContext();
 
     /// <summary>
-    /// Return List&lt;String&gt; of the rule names in your parser instance
+    /// Return List&lt;String&gt; of the rule names in your parse instance
     ///  leading up to a call to the current rule.  You could override if
     ///  you want more details such as the file/line info of where
     ///  in the ATN a rule is invoked.
@@ -369,7 +369,7 @@ namespace antlr4 {
 
     /**
      * Gets whether a {@link TraceListener} is registered as a parse listener
-     * for the parser.
+     * for the parse.
      *
      * @see #setTrace(boolean)
      */
@@ -407,7 +407,7 @@ namespace antlr4 {
     // ml: this is one of the contexts tracked in _allocatedContexts.
     ParserRuleContext *_ctx;
 
-    /// The error handling strategy for the parser. The default is DefaultErrorStrategy.
+    /// The error handling strategy for the parse. The default is DefaultErrorStrategy.
     /// See also getErrorHandler.
     Ref<ANTLRErrorStrategy> _errHandler;
 
@@ -421,7 +421,7 @@ namespace antlr4 {
     std::vector<int> _precedenceStack;
 
     /// <summary>
-    /// Specifies whether or not the parser should construct a parse tree during
+    /// Specifies whether or not the parse should construct a parse tree during
     /// the parsing process. The default value is {@code true}.
     /// </summary>
     /// <seealso cref= #getBuildParseTree </seealso>
@@ -439,7 +439,7 @@ namespace antlr4 {
     /// </summary>
     size_t _syntaxErrors;
 
-    /** Indicates parser has match()ed EOF token. See {@link #exitRule()}. */
+    /** Indicates parse has match()ed EOF token. See {@link #exitRule()}. */
     bool _matchedEOF;
 
     virtual void addContextToParseTree();
@@ -451,8 +451,8 @@ namespace antlr4 {
     /// When setTrace(true) is called, a reference to the
     /// TraceListener is stored here so it can be easily removed in a
     /// later call to setTrace(false). The listener itself is
-    /// implemented as a parser listener so this field is not directly used by
-    /// other parser methods.
+    /// implemented as a parse listener so this field is not directly used by
+    /// other parse methods.
     TraceListener *_tracer;
 
     void InitializeInstanceFields();

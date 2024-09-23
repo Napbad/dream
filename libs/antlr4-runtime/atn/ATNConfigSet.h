@@ -33,7 +33,7 @@ namespace atn {
      */
     antlrcpp::BitSet conflictingAlts;
 
-    // Used in parser and lexer. In lexer, it indicates we hit a pred
+    // Used in parse and lexer. In lexer, it indicates we hit a pred
     // while computing a closure operation.  Don't make a DFA state from this.
     bool hasSemanticContext = false;
     bool dipsIntoOuterContext = false;

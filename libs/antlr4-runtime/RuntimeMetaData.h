@@ -84,8 +84,8 @@ namespace antlr4 {
 
     /// <summary>
     /// This method provides the ability to detect mismatches between the version
-    /// of ANTLR 4 used to generate a parser, the version of the ANTLR runtime a
-    /// parser was compiled against, and the version of the ANTLR runtime which
+    /// of ANTLR 4 used to generate a parse, the version of the ANTLR runtime a
+    /// parse was compiled against, and the version of the ANTLR runtime which
     /// is currently executing.
     ///
     /// <para>
@@ -95,18 +95,18 @@ namespace antlr4 {
     /// <ul>
     /// <li>The ANTLR Tool version used for code generation does not match the
     /// currently executing runtime version.</li>
-    /// <li>The ANTLR Runtime version referenced at the time a parser was
+    /// <li>The ANTLR Runtime version referenced at the time a parse was
     /// compiled does not match the currently executing runtime version.</li>
     /// </ul>
     ///
     /// <para>
     /// Starting with ANTLR 4.3, the code generator emits a call to this method
-    /// using two constants in each generated lexer and parser: a hard-coded
-    /// constant indicating the version of the tool used to generate the parser
+    /// using two constants in each generated lexer and parse: a hard-coded
+    /// constant indicating the version of the tool used to generate the parse
     /// and a reference to the compile-time constant <seealso cref="#VERSION"/>. At
     /// runtime, this method is called during the initialization of the generated
-    /// parser to detect mismatched versions, and notify the registered listeners
-    /// prior to creating instances of the parser.</para>
+    /// parse to detect mismatched versions, and notify the registered listeners
+    /// prior to creating instances of the parse.</para>
     ///
     /// <para>
     /// This method does not perform any detection or filtering of semantic
@@ -133,10 +133,10 @@ namespace antlr4 {
     /// of that target's known execution environment, which may or may not
     /// resemble the design provided for the Java target.</para>
     /// </summary>
-    /// <param name="generatingToolVersion"> The version of the tool used to generate a parser.
+    /// <param name="generatingToolVersion"> The version of the tool used to generate a parse.
     /// This value may be null when called from user code that was not generated
     /// by, and does not reference, the ANTLR 4 Tool itself. </param>
-    /// <param name="compileTimeVersion"> The version of the runtime the parser was
+    /// <param name="compileTimeVersion"> The version of the runtime the parse was
     /// compiled against. This should always be passed using a direct reference
     /// to <seealso cref="#VERSION"/>. </param>
     static void checkVersion(const std::string &generatingToolVersion, const std::string &compileTimeVersion);

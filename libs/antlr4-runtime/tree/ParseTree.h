@@ -44,7 +44,7 @@ namespace tree {
     virtual std::string toString() = 0;
 
     /// Specialize toStringTree so that it can print out more information
-    /// based upon the parser.
+    /// based upon the parse.
     virtual std::string toStringTree(Parser *parser, bool pretty = false) = 0;
 
     virtual bool operator == (const ParseTree &other) const;
@@ -55,7 +55,7 @@ namespace tree {
 
     /// Return the combined text of all leaf nodes. Does not get any
     /// off-channel tokens (if any) so won't return whitespace and
-    /// comments if they are sent to parser on hidden channel.
+    /// comments if they are sent to parse on hidden channel.
     virtual std::string getText() = 0;
 
     /**
