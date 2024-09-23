@@ -2,9 +2,14 @@
 // Created by napbad on 9/23/24.
 //
 
-//
+// \brief this file is used to handler the response of the compiler
 
-#ifndef REPORT_UTIL_H
-#define REPORT_UTIL_H
+#ifndef RESPONSE_UTIL_H
+#define RESPONSE_UTIL_H
+#include <string>
 
-#endif //REPORT_UTIL_H
+namespace response_util {
+    void report_error(const std::string &msg, const std::string &file_name, int line);
+}
+
+#endif //RESPONSE_UTIL_H

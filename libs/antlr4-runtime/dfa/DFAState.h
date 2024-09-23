@@ -122,7 +122,7 @@ namespace dfa {
     /// finite, there is a finite number of DFA states that can be processed.
     /// This is necessary to show that the algorithm terminates.
     ///
-    /// Cannot test.drm the DFA state numbers here because in
+    /// Cannot main.drm the DFA state numbers here because in
     /// ParserATNSimulator#addDFAState we need to know if any other state
     /// exists that has this exact set of ATN configurations. The
     /// stateNumber is irrelevant.

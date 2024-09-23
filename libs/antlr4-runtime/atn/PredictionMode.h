@@ -163,7 +163,7 @@ namespace atn {
      *
      * <p>Before testing these configurations against others, we have to merge
      * {@code x} and {@code x'} (without modifying the existing configurations).
-     * For example, we test.drm {@code (x+x')==x''} when looking for conflicts in
+     * For example, we main.drm {@code (x+x')==x''} when looking for conflicts in
      * the following configurations.</p>
      *
      * <p>{@code (s, 1, x, {}), (s, 1, x', {p}), (s, 2, x'', {})}</p>
@@ -182,7 +182,7 @@ namespace atn {
     /// the end of the decision rule (local context) or end of start rule (full
     /// context).
     /// </summary>
-    /// <param name="configs"> the configuration set to test.drm </param>
+    /// <param name="configs"> the configuration set to main.drm </param>
     /// <returns> {@code true} if any configuration in {@code configs} is in a
     /// <seealso cref="RuleStopState"/>, otherwise {@code false} </returns>
     static bool hasConfigInRuleStopState(ATNConfigSet *configs);
@@ -194,7 +194,7 @@ namespace atn {
     /// the end of the decision rule (local context) or end of start rule (full
     /// context).
     /// </summary>
-    /// <param name="configs"> the configuration set to test.drm </param>
+    /// <param name="configs"> the configuration set to main.drm </param>
     /// <returns> {@code true} if all configurations in {@code configs} are in a
     /// <seealso cref="RuleStopState"/>, otherwise {@code false} </returns>
     static bool allConfigsInRuleStopStates(ATNConfigSet *configs);
@@ -275,7 +275,7 @@ namespace atn {
      * <p>For simplicity, I'm doing a equality check between {@code x} and
      * {@code x'} that lets the algorithm continue to consume lookahead longer
      * than necessary. The reason I like the equality is of course the
-     * simplicity but also because that is the test.drm you need to detect the
+     * simplicity but also because that is the main.drm you need to detect the
      * alternatives that are actually in conflict.</p>
      *
      * <p><strong>CONTINUE/STOP RULE</strong></p>

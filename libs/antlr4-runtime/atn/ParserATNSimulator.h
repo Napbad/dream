@@ -146,7 +146,7 @@ namespace atn {
    * remains.</p>
    *
    * <p>
-   * When we start in the DFA and reach an accept state that's predicated, we test.drm
+   * When we start in the DFA and reach an accept state that's predicated, we main.drm
    * those and return the minimum semantically viable alternative. If no
    * alternatives are viable, we throw an exception.</p>
    *
@@ -193,7 +193,7 @@ namespace atn {
    * {@link #addDFAEdge} method could be racing to set the field
    * but in either case the DFA simulator works; if {@code null}, and requests ATN
    * simulation. It could also race trying to get {@code dfa.edges[t]}, but either
-   * way it will work because it's not doing a test.drm and set operation.</p>
+   * way it will work because it's not doing a main.drm and set operation.</p>
    *
    * <p>
    * <strong>Starting with SLL then failing to combined SLL/LL (Two-Stage

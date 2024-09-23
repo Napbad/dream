@@ -31,6 +31,12 @@ add_executable(dream src/main.cpp
         src/compiler/gen/CodeGenerator.h
         src/util/string_util.cpp
         src/util/string_util.h
+        src/parse/DreamParserListenerCompiler.cpp
+        src/parse/DreamParserListenerCompiler.h
+        src/obj/Global.cpp
+        src/obj/Global.h
+        src/util/response_util.cpp
+        src/util/response_util.h
 )
 
 target_link_libraries(dream ${LIBANTLR})

@@ -11,7 +11,7 @@ namespace antlr4 {
 
   /// A semantic predicate failed during validation.  Validation of predicates
   /// occurs when normally parsing the alternative just like matching a token.
-  /// Disambiguating predicate evaluation occurs when we test.drm a predicate during
+  /// Disambiguating predicate evaluation occurs when we main.drm a predicate during
   /// prediction.
   class ANTLR4CPP_PUBLIC FailedPredicateException : public RecognitionException {
   public:

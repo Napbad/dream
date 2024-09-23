@@ -49,117 +49,228 @@ cmake_ninja_workdir = /home/napbad/Project/dream/dream/cmake-build-debug/
 
 build cmake_object_order_depends_target_dream: phony || .
 
-build CMakeFiles/dream.dir/src/obj/val.cpp.o: CXX_COMPILER__dream_unscanned_Debug /home/napbad/Project/dream/dream/src/obj/val.cpp || cmake_object_order_depends_target_dream
-  DEP_FILE = CMakeFiles/dream.dir/src/obj/val.cpp.o.d
+build CMakeFiles/dream.dir/src/main.cpp.o.ddi: CXX_SCAN__dream_Debug /home/napbad/Project/dream/dream/src/main.cpp || cmake_object_order_depends_target_dream
+  DEP_FILE = CMakeFiles/dream.dir/src/main.cpp.o.ddi.d
+  DYNDEP_INTERMEDIATE_FILE = CMakeFiles/dream.dir/src/main.cpp.o.ddi
   FLAGS = -g -std=gnu++20 -fdiagnostics-color=always
   INCLUDES = -I/home/napbad/Project/dream/dream/libs/antlr4-runtime -I/home/napbad/Project/dream/dream/src
-  OBJECT_DIR = CMakeFiles/dream.dir
-  OBJECT_FILE_DIR = CMakeFiles/dream.dir/src/obj
+  OBJ_FILE = CMakeFiles/dream.dir/src/main.cpp.o
+  PREPROCESSED_OUTPUT_FILE = CMakeFiles/dream.dir/src/main.cpp.o.ddi.i
 
-build CMakeFiles/dream.dir/src/util/check.cpp.o: CXX_COMPILER__dream_unscanned_Debug /home/napbad/Project/dream/dream/src/util/check.cpp || cmake_object_order_depends_target_dream
-  DEP_FILE = CMakeFiles/dream.dir/src/util/check.cpp.o.d
-  FLAGS = -g -std=gnu++20 -fdiagnostics-color=always
-  INCLUDES = -I/home/napbad/Project/dream/dream/libs/antlr4-runtime -I/home/napbad/Project/dream/dream/src
-  OBJECT_DIR = CMakeFiles/dream.dir
-  OBJECT_FILE_DIR = CMakeFiles/dream.dir/src/util
-
-build CMakeFiles/dream.dir/src/parse/DreamBaseListener.cpp.o: CXX_COMPILER__dream_unscanned_Debug /home/napbad/Project/dream/dream/src/parse/DreamBaseListener.cpp || cmake_object_order_depends_target_dream
-  DEP_FILE = CMakeFiles/dream.dir/src/parse/DreamBaseListener.cpp.o.d
-  FLAGS = -g -std=gnu++20 -fdiagnostics-color=always
-  INCLUDES = -I/home/napbad/Project/dream/dream/libs/antlr4-runtime -I/home/napbad/Project/dream/dream/src
-  OBJECT_DIR = CMakeFiles/dream.dir
-  OBJECT_FILE_DIR = CMakeFiles/dream.dir/src/parse
-
-build CMakeFiles/dream.dir/src/parse/DreamLexer.cpp.o: CXX_COMPILER__dream_unscanned_Debug /home/napbad/Project/dream/dream/src/parse/DreamLexer.cpp || cmake_object_order_depends_target_dream
-  DEP_FILE = CMakeFiles/dream.dir/src/parse/DreamLexer.cpp.o.d
-  FLAGS = -g -std=gnu++20 -fdiagnostics-color=always
-  INCLUDES = -I/home/napbad/Project/dream/dream/libs/antlr4-runtime -I/home/napbad/Project/dream/dream/src
-  OBJECT_DIR = CMakeFiles/dream.dir
-  OBJECT_FILE_DIR = CMakeFiles/dream.dir/src/parse
-
-build CMakeFiles/dream.dir/src/parse/DreamListener.cpp.o: CXX_COMPILER__dream_unscanned_Debug /home/napbad/Project/dream/dream/src/parse/DreamListener.cpp || cmake_object_order_depends_target_dream
-  DEP_FILE = CMakeFiles/dream.dir/src/parse/DreamListener.cpp.o.d
-  FLAGS = -g -std=gnu++20 -fdiagnostics-color=always
-  INCLUDES = -I/home/napbad/Project/dream/dream/libs/antlr4-runtime -I/home/napbad/Project/dream/dream/src
-  OBJECT_DIR = CMakeFiles/dream.dir
-  OBJECT_FILE_DIR = CMakeFiles/dream.dir/src/parse
-
-build CMakeFiles/dream.dir/src/parse/DreamParser.cpp.o: CXX_COMPILER__dream_unscanned_Debug /home/napbad/Project/dream/dream/src/parse/DreamParser.cpp || cmake_object_order_depends_target_dream
-  DEP_FILE = CMakeFiles/dream.dir/src/parse/DreamParser.cpp.o.d
-  FLAGS = -g -std=gnu++20 -fdiagnostics-color=always
-  INCLUDES = -I/home/napbad/Project/dream/dream/libs/antlr4-runtime -I/home/napbad/Project/dream/dream/src
-  OBJECT_DIR = CMakeFiles/dream.dir
-  OBJECT_FILE_DIR = CMakeFiles/dream.dir/src/parse
-
-build CMakeFiles/dream.dir/src/parse/DreamParserListenerRunner.cpp.o: CXX_COMPILER__dream_unscanned_Debug /home/napbad/Project/dream/dream/src/parse/DreamParserListenerRunner.cpp || cmake_object_order_depends_target_dream
-  DEP_FILE = CMakeFiles/dream.dir/src/parse/DreamParserListenerRunner.cpp.o.d
-  FLAGS = -g -std=gnu++20 -fdiagnostics-color=always
-  INCLUDES = -I/home/napbad/Project/dream/dream/libs/antlr4-runtime -I/home/napbad/Project/dream/dream/src
-  OBJECT_DIR = CMakeFiles/dream.dir
-  OBJECT_FILE_DIR = CMakeFiles/dream.dir/src/parse
-
-build CMakeFiles/dream.dir/src/obj/Package.cpp.o: CXX_COMPILER__dream_unscanned_Debug /home/napbad/Project/dream/dream/src/obj/Package.cpp || cmake_object_order_depends_target_dream
-  DEP_FILE = CMakeFiles/dream.dir/src/obj/Package.cpp.o.d
-  FLAGS = -g -std=gnu++20 -fdiagnostics-color=always
-  INCLUDES = -I/home/napbad/Project/dream/dream/libs/antlr4-runtime -I/home/napbad/Project/dream/dream/src
-  OBJECT_DIR = CMakeFiles/dream.dir
-  OBJECT_FILE_DIR = CMakeFiles/dream.dir/src/obj
-
-build CMakeFiles/dream.dir/src/obj/Global.cpp.o: CXX_COMPILER__dream_unscanned_Debug /home/napbad/Project/dream/dream/src/obj/Global.cpp || cmake_object_order_depends_target_dream
-  DEP_FILE = CMakeFiles/dream.dir/src/obj/Global.cpp.o.d
-  FLAGS = -g -std=gnu++20 -fdiagnostics-color=always
-  INCLUDES = -I/home/napbad/Project/dream/dream/libs/antlr4-runtime -I/home/napbad/Project/dream/dream/src
-  OBJECT_DIR = CMakeFiles/dream.dir
-  OBJECT_FILE_DIR = CMakeFiles/dream.dir/src/obj
-
-build CMakeFiles/dream.dir/src/util/parse_util.cpp.o: CXX_COMPILER__dream_unscanned_Debug /home/napbad/Project/dream/dream/src/util/parse_util.cpp || cmake_object_order_depends_target_dream
-  DEP_FILE = CMakeFiles/dream.dir/src/util/parse_util.cpp.o.d
-  FLAGS = -g -std=gnu++20 -fdiagnostics-color=always
-  INCLUDES = -I/home/napbad/Project/dream/dream/libs/antlr4-runtime -I/home/napbad/Project/dream/dream/src
-  OBJECT_DIR = CMakeFiles/dream.dir
-  OBJECT_FILE_DIR = CMakeFiles/dream.dir/src/util
-
-build CMakeFiles/dream.dir/src/main.cpp.o: CXX_COMPILER__dream_unscanned_Debug /home/napbad/Project/dream/dream/src/main.cpp || cmake_object_order_depends_target_dream
+build CMakeFiles/dream.dir/src/main.cpp.o: CXX_COMPILER__dream_scanned_Debug /home/napbad/Project/dream/dream/src/main.cpp | CMakeFiles/dream.dir/src/main.cpp.o.modmap || cmake_object_order_depends_target_dream CMakeFiles/dream.dir/CXX.dd
   DEP_FILE = CMakeFiles/dream.dir/src/main.cpp.o.d
+  DYNDEP_MODULE_MAP_FILE = CMakeFiles/dream.dir/src/main.cpp.o.modmap
   FLAGS = -g -std=gnu++20 -fdiagnostics-color=always
   INCLUDES = -I/home/napbad/Project/dream/dream/libs/antlr4-runtime -I/home/napbad/Project/dream/dream/src
   OBJECT_DIR = CMakeFiles/dream.dir
   OBJECT_FILE_DIR = CMakeFiles/dream.dir/src
+  dyndep = CMakeFiles/dream.dir/CXX.dd
 
-build CMakeFiles/dream.dir/src/common/reserved.cpp.o: CXX_COMPILER__dream_unscanned_Debug /home/napbad/Project/dream/dream/src/common/reserved.cpp || cmake_object_order_depends_target_dream
-  DEP_FILE = CMakeFiles/dream.dir/src/common/reserved.cpp.o.d
+build CMakeFiles/dream.dir/src/compiler/Compiler.cpp.o.ddi: CXX_SCAN__dream_Debug /home/napbad/Project/dream/dream/src/compiler/Compiler.cpp || cmake_object_order_depends_target_dream
+  DEP_FILE = CMakeFiles/dream.dir/src/compiler/Compiler.cpp.o.ddi.d
+  DYNDEP_INTERMEDIATE_FILE = CMakeFiles/dream.dir/src/compiler/Compiler.cpp.o.ddi
+  FLAGS = -g -std=gnu++20 -fdiagnostics-color=always
+  INCLUDES = -I/home/napbad/Project/dream/dream/libs/antlr4-runtime -I/home/napbad/Project/dream/dream/src
+  OBJ_FILE = CMakeFiles/dream.dir/src/compiler/Compiler.cpp.o
+  PREPROCESSED_OUTPUT_FILE = CMakeFiles/dream.dir/src/compiler/Compiler.cpp.o.ddi.i
+
+build CMakeFiles/dream.dir/src/compiler/Compiler.cpp.o: CXX_COMPILER__dream_scanned_Debug /home/napbad/Project/dream/dream/src/compiler/Compiler.cpp | CMakeFiles/dream.dir/src/compiler/Compiler.cpp.o.modmap || cmake_object_order_depends_target_dream CMakeFiles/dream.dir/CXX.dd
+  DEP_FILE = CMakeFiles/dream.dir/src/compiler/Compiler.cpp.o.d
+  DYNDEP_MODULE_MAP_FILE = CMakeFiles/dream.dir/src/compiler/Compiler.cpp.o.modmap
   FLAGS = -g -std=gnu++20 -fdiagnostics-color=always
   INCLUDES = -I/home/napbad/Project/dream/dream/libs/antlr4-runtime -I/home/napbad/Project/dream/dream/src
   OBJECT_DIR = CMakeFiles/dream.dir
-  OBJECT_FILE_DIR = CMakeFiles/dream.dir/src/common
+  OBJECT_FILE_DIR = CMakeFiles/dream.dir/src/compiler
+  dyndep = CMakeFiles/dream.dir/CXX.dd
 
-build CMakeFiles/dream.dir/src/gc/DataSource.cpp.o: CXX_COMPILER__dream_unscanned_Debug /home/napbad/Project/dream/dream/src/gc/DataSource.cpp || cmake_object_order_depends_target_dream
-  DEP_FILE = CMakeFiles/dream.dir/src/gc/DataSource.cpp.o.d
+build CMakeFiles/dream.dir/src/parse/DreamBaseListener.cpp.o.ddi: CXX_SCAN__dream_Debug /home/napbad/Project/dream/dream/src/parse/DreamBaseListener.cpp || cmake_object_order_depends_target_dream
+  DEP_FILE = CMakeFiles/dream.dir/src/parse/DreamBaseListener.cpp.o.ddi.d
+  DYNDEP_INTERMEDIATE_FILE = CMakeFiles/dream.dir/src/parse/DreamBaseListener.cpp.o.ddi
+  FLAGS = -g -std=gnu++20 -fdiagnostics-color=always
+  INCLUDES = -I/home/napbad/Project/dream/dream/libs/antlr4-runtime -I/home/napbad/Project/dream/dream/src
+  OBJ_FILE = CMakeFiles/dream.dir/src/parse/DreamBaseListener.cpp.o
+  PREPROCESSED_OUTPUT_FILE = CMakeFiles/dream.dir/src/parse/DreamBaseListener.cpp.o.ddi.i
+
+build CMakeFiles/dream.dir/src/parse/DreamBaseListener.cpp.o: CXX_COMPILER__dream_scanned_Debug /home/napbad/Project/dream/dream/src/parse/DreamBaseListener.cpp | CMakeFiles/dream.dir/src/parse/DreamBaseListener.cpp.o.modmap || cmake_object_order_depends_target_dream CMakeFiles/dream.dir/CXX.dd
+  DEP_FILE = CMakeFiles/dream.dir/src/parse/DreamBaseListener.cpp.o.d
+  DYNDEP_MODULE_MAP_FILE = CMakeFiles/dream.dir/src/parse/DreamBaseListener.cpp.o.modmap
   FLAGS = -g -std=gnu++20 -fdiagnostics-color=always
   INCLUDES = -I/home/napbad/Project/dream/dream/libs/antlr4-runtime -I/home/napbad/Project/dream/dream/src
   OBJECT_DIR = CMakeFiles/dream.dir
-  OBJECT_FILE_DIR = CMakeFiles/dream.dir/src/gc
+  OBJECT_FILE_DIR = CMakeFiles/dream.dir/src/parse
+  dyndep = CMakeFiles/dream.dir/CXX.dd
 
-build CMakeFiles/dream.dir/src/gc/gc.cpp.o: CXX_COMPILER__dream_unscanned_Debug /home/napbad/Project/dream/dream/src/gc/gc.cpp || cmake_object_order_depends_target_dream
-  DEP_FILE = CMakeFiles/dream.dir/src/gc/gc.cpp.o.d
+build CMakeFiles/dream.dir/src/parse/DreamLexer.cpp.o.ddi: CXX_SCAN__dream_Debug /home/napbad/Project/dream/dream/src/parse/DreamLexer.cpp || cmake_object_order_depends_target_dream
+  DEP_FILE = CMakeFiles/dream.dir/src/parse/DreamLexer.cpp.o.ddi.d
+  DYNDEP_INTERMEDIATE_FILE = CMakeFiles/dream.dir/src/parse/DreamLexer.cpp.o.ddi
+  FLAGS = -g -std=gnu++20 -fdiagnostics-color=always
+  INCLUDES = -I/home/napbad/Project/dream/dream/libs/antlr4-runtime -I/home/napbad/Project/dream/dream/src
+  OBJ_FILE = CMakeFiles/dream.dir/src/parse/DreamLexer.cpp.o
+  PREPROCESSED_OUTPUT_FILE = CMakeFiles/dream.dir/src/parse/DreamLexer.cpp.o.ddi.i
+
+build CMakeFiles/dream.dir/src/parse/DreamLexer.cpp.o: CXX_COMPILER__dream_scanned_Debug /home/napbad/Project/dream/dream/src/parse/DreamLexer.cpp | CMakeFiles/dream.dir/src/parse/DreamLexer.cpp.o.modmap || cmake_object_order_depends_target_dream CMakeFiles/dream.dir/CXX.dd
+  DEP_FILE = CMakeFiles/dream.dir/src/parse/DreamLexer.cpp.o.d
+  DYNDEP_MODULE_MAP_FILE = CMakeFiles/dream.dir/src/parse/DreamLexer.cpp.o.modmap
   FLAGS = -g -std=gnu++20 -fdiagnostics-color=always
   INCLUDES = -I/home/napbad/Project/dream/dream/libs/antlr4-runtime -I/home/napbad/Project/dream/dream/src
   OBJECT_DIR = CMakeFiles/dream.dir
-  OBJECT_FILE_DIR = CMakeFiles/dream.dir/src/gc
+  OBJECT_FILE_DIR = CMakeFiles/dream.dir/src/parse
+  dyndep = CMakeFiles/dream.dir/CXX.dd
 
-build CMakeFiles/dream.dir/src/common/native_fun.cpp.o: CXX_COMPILER__dream_unscanned_Debug /home/napbad/Project/dream/dream/src/common/native_fun.cpp || cmake_object_order_depends_target_dream
-  DEP_FILE = CMakeFiles/dream.dir/src/common/native_fun.cpp.o.d
+build CMakeFiles/dream.dir/src/parse/DreamListener.cpp.o.ddi: CXX_SCAN__dream_Debug /home/napbad/Project/dream/dream/src/parse/DreamListener.cpp || cmake_object_order_depends_target_dream
+  DEP_FILE = CMakeFiles/dream.dir/src/parse/DreamListener.cpp.o.ddi.d
+  DYNDEP_INTERMEDIATE_FILE = CMakeFiles/dream.dir/src/parse/DreamListener.cpp.o.ddi
+  FLAGS = -g -std=gnu++20 -fdiagnostics-color=always
+  INCLUDES = -I/home/napbad/Project/dream/dream/libs/antlr4-runtime -I/home/napbad/Project/dream/dream/src
+  OBJ_FILE = CMakeFiles/dream.dir/src/parse/DreamListener.cpp.o
+  PREPROCESSED_OUTPUT_FILE = CMakeFiles/dream.dir/src/parse/DreamListener.cpp.o.ddi.i
+
+build CMakeFiles/dream.dir/src/parse/DreamListener.cpp.o: CXX_COMPILER__dream_scanned_Debug /home/napbad/Project/dream/dream/src/parse/DreamListener.cpp | CMakeFiles/dream.dir/src/parse/DreamListener.cpp.o.modmap || cmake_object_order_depends_target_dream CMakeFiles/dream.dir/CXX.dd
+  DEP_FILE = CMakeFiles/dream.dir/src/parse/DreamListener.cpp.o.d
+  DYNDEP_MODULE_MAP_FILE = CMakeFiles/dream.dir/src/parse/DreamListener.cpp.o.modmap
   FLAGS = -g -std=gnu++20 -fdiagnostics-color=always
   INCLUDES = -I/home/napbad/Project/dream/dream/libs/antlr4-runtime -I/home/napbad/Project/dream/dream/src
   OBJECT_DIR = CMakeFiles/dream.dir
-  OBJECT_FILE_DIR = CMakeFiles/dream.dir/src/common
+  OBJECT_FILE_DIR = CMakeFiles/dream.dir/src/parse
+  dyndep = CMakeFiles/dream.dir/CXX.dd
 
-build CMakeFiles/dream.dir/src/util/common_util.cpp.o: CXX_COMPILER__dream_unscanned_Debug /home/napbad/Project/dream/dream/src/util/common_util.cpp || cmake_object_order_depends_target_dream
-  DEP_FILE = CMakeFiles/dream.dir/src/util/common_util.cpp.o.d
+build CMakeFiles/dream.dir/src/parse/DreamParser.cpp.o.ddi: CXX_SCAN__dream_Debug /home/napbad/Project/dream/dream/src/parse/DreamParser.cpp || cmake_object_order_depends_target_dream
+  DEP_FILE = CMakeFiles/dream.dir/src/parse/DreamParser.cpp.o.ddi.d
+  DYNDEP_INTERMEDIATE_FILE = CMakeFiles/dream.dir/src/parse/DreamParser.cpp.o.ddi
+  FLAGS = -g -std=gnu++20 -fdiagnostics-color=always
+  INCLUDES = -I/home/napbad/Project/dream/dream/libs/antlr4-runtime -I/home/napbad/Project/dream/dream/src
+  OBJ_FILE = CMakeFiles/dream.dir/src/parse/DreamParser.cpp.o
+  PREPROCESSED_OUTPUT_FILE = CMakeFiles/dream.dir/src/parse/DreamParser.cpp.o.ddi.i
+
+build CMakeFiles/dream.dir/src/parse/DreamParser.cpp.o: CXX_COMPILER__dream_scanned_Debug /home/napbad/Project/dream/dream/src/parse/DreamParser.cpp | CMakeFiles/dream.dir/src/parse/DreamParser.cpp.o.modmap || cmake_object_order_depends_target_dream CMakeFiles/dream.dir/CXX.dd
+  DEP_FILE = CMakeFiles/dream.dir/src/parse/DreamParser.cpp.o.d
+  DYNDEP_MODULE_MAP_FILE = CMakeFiles/dream.dir/src/parse/DreamParser.cpp.o.modmap
+  FLAGS = -g -std=gnu++20 -fdiagnostics-color=always
+  INCLUDES = -I/home/napbad/Project/dream/dream/libs/antlr4-runtime -I/home/napbad/Project/dream/dream/src
+  OBJECT_DIR = CMakeFiles/dream.dir
+  OBJECT_FILE_DIR = CMakeFiles/dream.dir/src/parse
+  dyndep = CMakeFiles/dream.dir/CXX.dd
+
+build CMakeFiles/dream.dir/src/parse/DreamParserListenerCompiler.cpp.o.ddi: CXX_SCAN__dream_Debug /home/napbad/Project/dream/dream/src/parse/DreamParserListenerCompiler.cpp || cmake_object_order_depends_target_dream
+  DEP_FILE = CMakeFiles/dream.dir/src/parse/DreamParserListenerCompiler.cpp.o.ddi.d
+  DYNDEP_INTERMEDIATE_FILE = CMakeFiles/dream.dir/src/parse/DreamParserListenerCompiler.cpp.o.ddi
+  FLAGS = -g -std=gnu++20 -fdiagnostics-color=always
+  INCLUDES = -I/home/napbad/Project/dream/dream/libs/antlr4-runtime -I/home/napbad/Project/dream/dream/src
+  OBJ_FILE = CMakeFiles/dream.dir/src/parse/DreamParserListenerCompiler.cpp.o
+  PREPROCESSED_OUTPUT_FILE = CMakeFiles/dream.dir/src/parse/DreamParserListenerCompiler.cpp.o.ddi.i
+
+build CMakeFiles/dream.dir/src/parse/DreamParserListenerCompiler.cpp.o: CXX_COMPILER__dream_scanned_Debug /home/napbad/Project/dream/dream/src/parse/DreamParserListenerCompiler.cpp | CMakeFiles/dream.dir/src/parse/DreamParserListenerCompiler.cpp.o.modmap || cmake_object_order_depends_target_dream CMakeFiles/dream.dir/CXX.dd
+  DEP_FILE = CMakeFiles/dream.dir/src/parse/DreamParserListenerCompiler.cpp.o.d
+  DYNDEP_MODULE_MAP_FILE = CMakeFiles/dream.dir/src/parse/DreamParserListenerCompiler.cpp.o.modmap
+  FLAGS = -g -std=gnu++20 -fdiagnostics-color=always
+  INCLUDES = -I/home/napbad/Project/dream/dream/libs/antlr4-runtime -I/home/napbad/Project/dream/dream/src
+  OBJECT_DIR = CMakeFiles/dream.dir
+  OBJECT_FILE_DIR = CMakeFiles/dream.dir/src/parse
+  dyndep = CMakeFiles/dream.dir/CXX.dd
+
+build CMakeFiles/dream.dir/src/util/file_util.cpp.o.ddi: CXX_SCAN__dream_Debug /home/napbad/Project/dream/dream/src/util/file_util.cpp || cmake_object_order_depends_target_dream
+  DEP_FILE = CMakeFiles/dream.dir/src/util/file_util.cpp.o.ddi.d
+  DYNDEP_INTERMEDIATE_FILE = CMakeFiles/dream.dir/src/util/file_util.cpp.o.ddi
+  FLAGS = -g -std=gnu++20 -fdiagnostics-color=always
+  INCLUDES = -I/home/napbad/Project/dream/dream/libs/antlr4-runtime -I/home/napbad/Project/dream/dream/src
+  OBJ_FILE = CMakeFiles/dream.dir/src/util/file_util.cpp.o
+  PREPROCESSED_OUTPUT_FILE = CMakeFiles/dream.dir/src/util/file_util.cpp.o.ddi.i
+
+build CMakeFiles/dream.dir/src/util/file_util.cpp.o: CXX_COMPILER__dream_scanned_Debug /home/napbad/Project/dream/dream/src/util/file_util.cpp | CMakeFiles/dream.dir/src/util/file_util.cpp.o.modmap || cmake_object_order_depends_target_dream CMakeFiles/dream.dir/CXX.dd
+  DEP_FILE = CMakeFiles/dream.dir/src/util/file_util.cpp.o.d
+  DYNDEP_MODULE_MAP_FILE = CMakeFiles/dream.dir/src/util/file_util.cpp.o.modmap
   FLAGS = -g -std=gnu++20 -fdiagnostics-color=always
   INCLUDES = -I/home/napbad/Project/dream/dream/libs/antlr4-runtime -I/home/napbad/Project/dream/dream/src
   OBJECT_DIR = CMakeFiles/dream.dir
   OBJECT_FILE_DIR = CMakeFiles/dream.dir/src/util
+  dyndep = CMakeFiles/dream.dir/CXX.dd
+
+build CMakeFiles/dream.dir/src/common/reserve.cpp.o.ddi: CXX_SCAN__dream_Debug /home/napbad/Project/dream/dream/src/common/reserve.cpp || cmake_object_order_depends_target_dream
+  DEP_FILE = CMakeFiles/dream.dir/src/common/reserve.cpp.o.ddi.d
+  DYNDEP_INTERMEDIATE_FILE = CMakeFiles/dream.dir/src/common/reserve.cpp.o.ddi
+  FLAGS = -g -std=gnu++20 -fdiagnostics-color=always
+  INCLUDES = -I/home/napbad/Project/dream/dream/libs/antlr4-runtime -I/home/napbad/Project/dream/dream/src
+  OBJ_FILE = CMakeFiles/dream.dir/src/common/reserve.cpp.o
+  PREPROCESSED_OUTPUT_FILE = CMakeFiles/dream.dir/src/common/reserve.cpp.o.ddi.i
+
+build CMakeFiles/dream.dir/src/common/reserve.cpp.o: CXX_COMPILER__dream_scanned_Debug /home/napbad/Project/dream/dream/src/common/reserve.cpp | CMakeFiles/dream.dir/src/common/reserve.cpp.o.modmap || cmake_object_order_depends_target_dream CMakeFiles/dream.dir/CXX.dd
+  DEP_FILE = CMakeFiles/dream.dir/src/common/reserve.cpp.o.d
+  DYNDEP_MODULE_MAP_FILE = CMakeFiles/dream.dir/src/common/reserve.cpp.o.modmap
+  FLAGS = -g -std=gnu++20 -fdiagnostics-color=always
+  INCLUDES = -I/home/napbad/Project/dream/dream/libs/antlr4-runtime -I/home/napbad/Project/dream/dream/src
+  OBJECT_DIR = CMakeFiles/dream.dir
+  OBJECT_FILE_DIR = CMakeFiles/dream.dir/src/common
+  dyndep = CMakeFiles/dream.dir/CXX.dd
+
+build CMakeFiles/dream.dir/src/compiler/gen/CodeGenerator.cpp.o.ddi: CXX_SCAN__dream_Debug /home/napbad/Project/dream/dream/src/compiler/gen/CodeGenerator.cpp || cmake_object_order_depends_target_dream
+  DEP_FILE = CMakeFiles/dream.dir/src/compiler/gen/CodeGenerator.cpp.o.ddi.d
+  DYNDEP_INTERMEDIATE_FILE = CMakeFiles/dream.dir/src/compiler/gen/CodeGenerator.cpp.o.ddi
+  FLAGS = -g -std=gnu++20 -fdiagnostics-color=always
+  INCLUDES = -I/home/napbad/Project/dream/dream/libs/antlr4-runtime -I/home/napbad/Project/dream/dream/src
+  OBJ_FILE = CMakeFiles/dream.dir/src/compiler/gen/CodeGenerator.cpp.o
+  PREPROCESSED_OUTPUT_FILE = CMakeFiles/dream.dir/src/compiler/gen/CodeGenerator.cpp.o.ddi.i
+
+build CMakeFiles/dream.dir/src/compiler/gen/CodeGenerator.cpp.o: CXX_COMPILER__dream_scanned_Debug /home/napbad/Project/dream/dream/src/compiler/gen/CodeGenerator.cpp | CMakeFiles/dream.dir/src/compiler/gen/CodeGenerator.cpp.o.modmap || cmake_object_order_depends_target_dream CMakeFiles/dream.dir/CXX.dd
+  DEP_FILE = CMakeFiles/dream.dir/src/compiler/gen/CodeGenerator.cpp.o.d
+  DYNDEP_MODULE_MAP_FILE = CMakeFiles/dream.dir/src/compiler/gen/CodeGenerator.cpp.o.modmap
+  FLAGS = -g -std=gnu++20 -fdiagnostics-color=always
+  INCLUDES = -I/home/napbad/Project/dream/dream/libs/antlr4-runtime -I/home/napbad/Project/dream/dream/src
+  OBJECT_DIR = CMakeFiles/dream.dir
+  OBJECT_FILE_DIR = CMakeFiles/dream.dir/src/compiler/gen
+  dyndep = CMakeFiles/dream.dir/CXX.dd
+
+build CMakeFiles/dream.dir/src/util/string_util.cpp.o.ddi: CXX_SCAN__dream_Debug /home/napbad/Project/dream/dream/src/util/string_util.cpp || cmake_object_order_depends_target_dream
+  DEP_FILE = CMakeFiles/dream.dir/src/util/string_util.cpp.o.ddi.d
+  DYNDEP_INTERMEDIATE_FILE = CMakeFiles/dream.dir/src/util/string_util.cpp.o.ddi
+  FLAGS = -g -std=gnu++20 -fdiagnostics-color=always
+  INCLUDES = -I/home/napbad/Project/dream/dream/libs/antlr4-runtime -I/home/napbad/Project/dream/dream/src
+  OBJ_FILE = CMakeFiles/dream.dir/src/util/string_util.cpp.o
+  PREPROCESSED_OUTPUT_FILE = CMakeFiles/dream.dir/src/util/string_util.cpp.o.ddi.i
+
+build CMakeFiles/dream.dir/src/util/string_util.cpp.o: CXX_COMPILER__dream_scanned_Debug /home/napbad/Project/dream/dream/src/util/string_util.cpp | CMakeFiles/dream.dir/src/util/string_util.cpp.o.modmap || cmake_object_order_depends_target_dream CMakeFiles/dream.dir/CXX.dd
+  DEP_FILE = CMakeFiles/dream.dir/src/util/string_util.cpp.o.d
+  DYNDEP_MODULE_MAP_FILE = CMakeFiles/dream.dir/src/util/string_util.cpp.o.modmap
+  FLAGS = -g -std=gnu++20 -fdiagnostics-color=always
+  INCLUDES = -I/home/napbad/Project/dream/dream/libs/antlr4-runtime -I/home/napbad/Project/dream/dream/src
+  OBJECT_DIR = CMakeFiles/dream.dir
+  OBJECT_FILE_DIR = CMakeFiles/dream.dir/src/util
+  dyndep = CMakeFiles/dream.dir/CXX.dd
+
+build CMakeFiles/dream.dir/src/obj/Global.cpp.o.ddi: CXX_SCAN__dream_Debug /home/napbad/Project/dream/dream/src/obj/Global.cpp || cmake_object_order_depends_target_dream
+  DEP_FILE = CMakeFiles/dream.dir/src/obj/Global.cpp.o.ddi.d
+  DYNDEP_INTERMEDIATE_FILE = CMakeFiles/dream.dir/src/obj/Global.cpp.o.ddi
+  FLAGS = -g -std=gnu++20 -fdiagnostics-color=always
+  INCLUDES = -I/home/napbad/Project/dream/dream/libs/antlr4-runtime -I/home/napbad/Project/dream/dream/src
+  OBJ_FILE = CMakeFiles/dream.dir/src/obj/Global.cpp.o
+  PREPROCESSED_OUTPUT_FILE = CMakeFiles/dream.dir/src/obj/Global.cpp.o.ddi.i
+
+build CMakeFiles/dream.dir/src/obj/Global.cpp.o: CXX_COMPILER__dream_scanned_Debug /home/napbad/Project/dream/dream/src/obj/Global.cpp | CMakeFiles/dream.dir/src/obj/Global.cpp.o.modmap || cmake_object_order_depends_target_dream CMakeFiles/dream.dir/CXX.dd
+  DEP_FILE = CMakeFiles/dream.dir/src/obj/Global.cpp.o.d
+  DYNDEP_MODULE_MAP_FILE = CMakeFiles/dream.dir/src/obj/Global.cpp.o.modmap
+  FLAGS = -g -std=gnu++20 -fdiagnostics-color=always
+  INCLUDES = -I/home/napbad/Project/dream/dream/libs/antlr4-runtime -I/home/napbad/Project/dream/dream/src
+  OBJECT_DIR = CMakeFiles/dream.dir
+  OBJECT_FILE_DIR = CMakeFiles/dream.dir/src/obj
+  dyndep = CMakeFiles/dream.dir/CXX.dd
+
+build CMakeFiles/dream.dir/src/util/response_util.cpp.o.ddi: CXX_SCAN__dream_Debug /home/napbad/Project/dream/dream/src/util/response_util.cpp || cmake_object_order_depends_target_dream
+  DEP_FILE = CMakeFiles/dream.dir/src/util/response_util.cpp.o.ddi.d
+  DYNDEP_INTERMEDIATE_FILE = CMakeFiles/dream.dir/src/util/response_util.cpp.o.ddi
+  FLAGS = -g -std=gnu++20 -fdiagnostics-color=always
+  INCLUDES = -I/home/napbad/Project/dream/dream/libs/antlr4-runtime -I/home/napbad/Project/dream/dream/src
+  OBJ_FILE = CMakeFiles/dream.dir/src/util/response_util.cpp.o
+  PREPROCESSED_OUTPUT_FILE = CMakeFiles/dream.dir/src/util/response_util.cpp.o.ddi.i
+
+build CMakeFiles/dream.dir/src/util/response_util.cpp.o: CXX_COMPILER__dream_scanned_Debug /home/napbad/Project/dream/dream/src/util/response_util.cpp | CMakeFiles/dream.dir/src/util/response_util.cpp.o.modmap || cmake_object_order_depends_target_dream CMakeFiles/dream.dir/CXX.dd
+  DEP_FILE = CMakeFiles/dream.dir/src/util/response_util.cpp.o.d
+  DYNDEP_MODULE_MAP_FILE = CMakeFiles/dream.dir/src/util/response_util.cpp.o.modmap
+  FLAGS = -g -std=gnu++20 -fdiagnostics-color=always
+  INCLUDES = -I/home/napbad/Project/dream/dream/libs/antlr4-runtime -I/home/napbad/Project/dream/dream/src
+  OBJECT_DIR = CMakeFiles/dream.dir
+  OBJECT_FILE_DIR = CMakeFiles/dream.dir/src/util
+  dyndep = CMakeFiles/dream.dir/CXX.dd
+
+build CMakeFiles/dream.dir/CXX.dd | /home/napbad/Project/dream/dream/cmake-build-debug/CMakeFiles/dream.dir/CXXModules.json CMakeFiles/dream.dir/src/main.cpp.o.modmap CMakeFiles/dream.dir/src/compiler/Compiler.cpp.o.modmap CMakeFiles/dream.dir/src/parse/DreamBaseListener.cpp.o.modmap CMakeFiles/dream.dir/src/parse/DreamLexer.cpp.o.modmap CMakeFiles/dream.dir/src/parse/DreamListener.cpp.o.modmap CMakeFiles/dream.dir/src/parse/DreamParser.cpp.o.modmap CMakeFiles/dream.dir/src/parse/DreamParserListenerCompiler.cpp.o.modmap CMakeFiles/dream.dir/src/util/file_util.cpp.o.modmap CMakeFiles/dream.dir/src/common/reserve.cpp.o.modmap CMakeFiles/dream.dir/src/compiler/gen/CodeGenerator.cpp.o.modmap CMakeFiles/dream.dir/src/util/string_util.cpp.o.modmap CMakeFiles/dream.dir/src/obj/Global.cpp.o.modmap CMakeFiles/dream.dir/src/util/response_util.cpp.o.modmap: CXX_DYNDEP__dream_Debug CMakeFiles/dream.dir/src/main.cpp.o.ddi CMakeFiles/dream.dir/src/compiler/Compiler.cpp.o.ddi CMakeFiles/dream.dir/src/parse/DreamBaseListener.cpp.o.ddi CMakeFiles/dream.dir/src/parse/DreamLexer.cpp.o.ddi CMakeFiles/dream.dir/src/parse/DreamListener.cpp.o.ddi CMakeFiles/dream.dir/src/parse/DreamParser.cpp.o.ddi CMakeFiles/dream.dir/src/parse/DreamParserListenerCompiler.cpp.o.ddi CMakeFiles/dream.dir/src/util/file_util.cpp.o.ddi CMakeFiles/dream.dir/src/common/reserve.cpp.o.ddi CMakeFiles/dream.dir/src/compiler/gen/CodeGenerator.cpp.o.ddi CMakeFiles/dream.dir/src/util/string_util.cpp.o.ddi CMakeFiles/dream.dir/src/obj/Global.cpp.o.ddi CMakeFiles/dream.dir/src/util/response_util.cpp.o.ddi | /home/napbad/Project/dream/dream/cmake-build-debug/CMakeFiles/dream.dir/CXXDependInfo.json
 
 
 # =============================================================================
@@ -169,7 +280,7 @@ build CMakeFiles/dream.dir/src/util/common_util.cpp.o: CXX_COMPILER__dream_unsca
 #############################################
 # Link the executable dream
 
-build dream: CXX_EXECUTABLE_LINKER__dream_Debug CMakeFiles/dream.dir/src/obj/val.cpp.o CMakeFiles/dream.dir/src/util/check.cpp.o CMakeFiles/dream.dir/src/parse/DreamBaseListener.cpp.o CMakeFiles/dream.dir/src/parse/DreamLexer.cpp.o CMakeFiles/dream.dir/src/parse/DreamListener.cpp.o CMakeFiles/dream.dir/src/parse/DreamParser.cpp.o CMakeFiles/dream.dir/src/parse/DreamParserListenerRunner.cpp.o CMakeFiles/dream.dir/src/obj/Package.cpp.o CMakeFiles/dream.dir/src/obj/Global.cpp.o CMakeFiles/dream.dir/src/util/parse_util.cpp.o CMakeFiles/dream.dir/src/main.cpp.o CMakeFiles/dream.dir/src/common/reserved.cpp.o CMakeFiles/dream.dir/src/gc/DataSource.cpp.o CMakeFiles/dream.dir/src/gc/gc.cpp.o CMakeFiles/dream.dir/src/common/native_fun.cpp.o CMakeFiles/dream.dir/src/util/common_util.cpp.o | /usr/local/lib64/libantlr4-runtime.so /usr/lib64/libedit.so
+build dream: CXX_EXECUTABLE_LINKER__dream_Debug CMakeFiles/dream.dir/src/main.cpp.o CMakeFiles/dream.dir/src/compiler/Compiler.cpp.o CMakeFiles/dream.dir/src/parse/DreamBaseListener.cpp.o CMakeFiles/dream.dir/src/parse/DreamLexer.cpp.o CMakeFiles/dream.dir/src/parse/DreamListener.cpp.o CMakeFiles/dream.dir/src/parse/DreamParser.cpp.o CMakeFiles/dream.dir/src/parse/DreamParserListenerCompiler.cpp.o CMakeFiles/dream.dir/src/util/file_util.cpp.o CMakeFiles/dream.dir/src/common/reserve.cpp.o CMakeFiles/dream.dir/src/compiler/gen/CodeGenerator.cpp.o CMakeFiles/dream.dir/src/util/string_util.cpp.o CMakeFiles/dream.dir/src/obj/Global.cpp.o CMakeFiles/dream.dir/src/util/response_util.cpp.o | /usr/local/lib64/libantlr4-runtime.so /usr/lib64/libedit.so
   FLAGS = -g
   LINK_LIBRARIES = -Wl,-rpath,/usr/local/lib64  /usr/local/lib64/libantlr4-runtime.so  /usr/lib64/libedit.so
   OBJECT_DIR = CMakeFiles/dream.dir

@@ -30,7 +30,7 @@ namespace xpath {
   /// </pre>
   ///
   /// <para>
-  /// See {@code org.antlr.v4.test.drm.TestXPath} for descriptions. In short, this
+  /// See {@code org.antlr.v4.main.drm.TestXPath} for descriptions. In short, this
   /// allows operators:</para>
   ///
   /// <dl>
