@@ -37,6 +37,8 @@ add_executable(dream src/main.cpp
         src/obj/Global.h
         src/util/response_util.cpp
         src/util/response_util.h
+        src/obj/Hierarchy.cpp
+        src/obj/Hierarchy.h
 )
 
 target_link_libraries(dream ${LIBANTLR})

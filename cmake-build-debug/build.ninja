@@ -270,7 +270,24 @@ build CMakeFiles/dream.dir/src/util/response_util.cpp.o: CXX_COMPILER__dream_sca
   OBJECT_FILE_DIR = CMakeFiles/dream.dir/src/util
   dyndep = CMakeFiles/dream.dir/CXX.dd
 
-build CMakeFiles/dream.dir/CXX.dd | /home/napbad/Project/dream/dream/cmake-build-debug/CMakeFiles/dream.dir/CXXModules.json CMakeFiles/dream.dir/src/main.cpp.o.modmap CMakeFiles/dream.dir/src/compiler/Compiler.cpp.o.modmap CMakeFiles/dream.dir/src/parse/DreamBaseListener.cpp.o.modmap CMakeFiles/dream.dir/src/parse/DreamLexer.cpp.o.modmap CMakeFiles/dream.dir/src/parse/DreamListener.cpp.o.modmap CMakeFiles/dream.dir/src/parse/DreamParser.cpp.o.modmap CMakeFiles/dream.dir/src/parse/DreamParserListenerCompiler.cpp.o.modmap CMakeFiles/dream.dir/src/util/file_util.cpp.o.modmap CMakeFiles/dream.dir/src/common/reserve.cpp.o.modmap CMakeFiles/dream.dir/src/compiler/gen/CodeGenerator.cpp.o.modmap CMakeFiles/dream.dir/src/util/string_util.cpp.o.modmap CMakeFiles/dream.dir/src/obj/Global.cpp.o.modmap CMakeFiles/dream.dir/src/util/response_util.cpp.o.modmap: CXX_DYNDEP__dream_Debug CMakeFiles/dream.dir/src/main.cpp.o.ddi CMakeFiles/dream.dir/src/compiler/Compiler.cpp.o.ddi CMakeFiles/dream.dir/src/parse/DreamBaseListener.cpp.o.ddi CMakeFiles/dream.dir/src/parse/DreamLexer.cpp.o.ddi CMakeFiles/dream.dir/src/parse/DreamListener.cpp.o.ddi CMakeFiles/dream.dir/src/parse/DreamParser.cpp.o.ddi CMakeFiles/dream.dir/src/parse/DreamParserListenerCompiler.cpp.o.ddi CMakeFiles/dream.dir/src/util/file_util.cpp.o.ddi CMakeFiles/dream.dir/src/common/reserve.cpp.o.ddi CMakeFiles/dream.dir/src/compiler/gen/CodeGenerator.cpp.o.ddi CMakeFiles/dream.dir/src/util/string_util.cpp.o.ddi CMakeFiles/dream.dir/src/obj/Global.cpp.o.ddi CMakeFiles/dream.dir/src/util/response_util.cpp.o.ddi | /home/napbad/Project/dream/dream/cmake-build-debug/CMakeFiles/dream.dir/CXXDependInfo.json
+build CMakeFiles/dream.dir/src/obj/Hierarchy.cpp.o.ddi: CXX_SCAN__dream_Debug /home/napbad/Project/dream/dream/src/obj/Hierarchy.cpp || cmake_object_order_depends_target_dream
+  DEP_FILE = CMakeFiles/dream.dir/src/obj/Hierarchy.cpp.o.ddi.d
+  DYNDEP_INTERMEDIATE_FILE = CMakeFiles/dream.dir/src/obj/Hierarchy.cpp.o.ddi
+  FLAGS = -g -std=gnu++20 -fdiagnostics-color=always
+  INCLUDES = -I/home/napbad/Project/dream/dream/libs/antlr4-runtime -I/home/napbad/Project/dream/dream/src
+  OBJ_FILE = CMakeFiles/dream.dir/src/obj/Hierarchy.cpp.o
+  PREPROCESSED_OUTPUT_FILE = CMakeFiles/dream.dir/src/obj/Hierarchy.cpp.o.ddi.i
+
+build CMakeFiles/dream.dir/src/obj/Hierarchy.cpp.o: CXX_COMPILER__dream_scanned_Debug /home/napbad/Project/dream/dream/src/obj/Hierarchy.cpp | CMakeFiles/dream.dir/src/obj/Hierarchy.cpp.o.modmap || cmake_object_order_depends_target_dream CMakeFiles/dream.dir/CXX.dd
+  DEP_FILE = CMakeFiles/dream.dir/src/obj/Hierarchy.cpp.o.d
+  DYNDEP_MODULE_MAP_FILE = CMakeFiles/dream.dir/src/obj/Hierarchy.cpp.o.modmap
+  FLAGS = -g -std=gnu++20 -fdiagnostics-color=always
+  INCLUDES = -I/home/napbad/Project/dream/dream/libs/antlr4-runtime -I/home/napbad/Project/dream/dream/src
+  OBJECT_DIR = CMakeFiles/dream.dir
+  OBJECT_FILE_DIR = CMakeFiles/dream.dir/src/obj
+  dyndep = CMakeFiles/dream.dir/CXX.dd
+
+build CMakeFiles/dream.dir/CXX.dd | /home/napbad/Project/dream/dream/cmake-build-debug/CMakeFiles/dream.dir/CXXModules.json CMakeFiles/dream.dir/src/main.cpp.o.modmap CMakeFiles/dream.dir/src/compiler/Compiler.cpp.o.modmap CMakeFiles/dream.dir/src/parse/DreamBaseListener.cpp.o.modmap CMakeFiles/dream.dir/src/parse/DreamLexer.cpp.o.modmap CMakeFiles/dream.dir/src/parse/DreamListener.cpp.o.modmap CMakeFiles/dream.dir/src/parse/DreamParser.cpp.o.modmap CMakeFiles/dream.dir/src/parse/DreamParserListenerCompiler.cpp.o.modmap CMakeFiles/dream.dir/src/util/file_util.cpp.o.modmap CMakeFiles/dream.dir/src/common/reserve.cpp.o.modmap CMakeFiles/dream.dir/src/compiler/gen/CodeGenerator.cpp.o.modmap CMakeFiles/dream.dir/src/util/string_util.cpp.o.modmap CMakeFiles/dream.dir/src/obj/Global.cpp.o.modmap CMakeFiles/dream.dir/src/util/response_util.cpp.o.modmap CMakeFiles/dream.dir/src/obj/Hierarchy.cpp.o.modmap: CXX_DYNDEP__dream_Debug CMakeFiles/dream.dir/src/main.cpp.o.ddi CMakeFiles/dream.dir/src/compiler/Compiler.cpp.o.ddi CMakeFiles/dream.dir/src/parse/DreamBaseListener.cpp.o.ddi CMakeFiles/dream.dir/src/parse/DreamLexer.cpp.o.ddi CMakeFiles/dream.dir/src/parse/DreamListener.cpp.o.ddi CMakeFiles/dream.dir/src/parse/DreamParser.cpp.o.ddi CMakeFiles/dream.dir/src/parse/DreamParserListenerCompiler.cpp.o.ddi CMakeFiles/dream.dir/src/util/file_util.cpp.o.ddi CMakeFiles/dream.dir/src/common/reserve.cpp.o.ddi CMakeFiles/dream.dir/src/compiler/gen/CodeGenerator.cpp.o.ddi CMakeFiles/dream.dir/src/util/string_util.cpp.o.ddi CMakeFiles/dream.dir/src/obj/Global.cpp.o.ddi CMakeFiles/dream.dir/src/util/response_util.cpp.o.ddi CMakeFiles/dream.dir/src/obj/Hierarchy.cpp.o.ddi | /home/napbad/Project/dream/dream/cmake-build-debug/CMakeFiles/dream.dir/CXXDependInfo.json
 
 
 # =============================================================================
@@ -280,7 +297,7 @@ build CMakeFiles/dream.dir/CXX.dd | /home/napbad/Project/dream/dream/cmake-build
 #############################################
 # Link the executable dream
 
-build dream: CXX_EXECUTABLE_LINKER__dream_Debug CMakeFiles/dream.dir/src/main.cpp.o CMakeFiles/dream.dir/src/compiler/Compiler.cpp.o CMakeFiles/dream.dir/src/parse/DreamBaseListener.cpp.o CMakeFiles/dream.dir/src/parse/DreamLexer.cpp.o CMakeFiles/dream.dir/src/parse/DreamListener.cpp.o CMakeFiles/dream.dir/src/parse/DreamParser.cpp.o CMakeFiles/dream.dir/src/parse/DreamParserListenerCompiler.cpp.o CMakeFiles/dream.dir/src/util/file_util.cpp.o CMakeFiles/dream.dir/src/common/reserve.cpp.o CMakeFiles/dream.dir/src/compiler/gen/CodeGenerator.cpp.o CMakeFiles/dream.dir/src/util/string_util.cpp.o CMakeFiles/dream.dir/src/obj/Global.cpp.o CMakeFiles/dream.dir/src/util/response_util.cpp.o | /usr/local/lib64/libantlr4-runtime.so /usr/lib64/libedit.so
+build dream: CXX_EXECUTABLE_LINKER__dream_Debug CMakeFiles/dream.dir/src/main.cpp.o CMakeFiles/dream.dir/src/compiler/Compiler.cpp.o CMakeFiles/dream.dir/src/parse/DreamBaseListener.cpp.o CMakeFiles/dream.dir/src/parse/DreamLexer.cpp.o CMakeFiles/dream.dir/src/parse/DreamListener.cpp.o CMakeFiles/dream.dir/src/parse/DreamParser.cpp.o CMakeFiles/dream.dir/src/parse/DreamParserListenerCompiler.cpp.o CMakeFiles/dream.dir/src/util/file_util.cpp.o CMakeFiles/dream.dir/src/common/reserve.cpp.o CMakeFiles/dream.dir/src/compiler/gen/CodeGenerator.cpp.o CMakeFiles/dream.dir/src/util/string_util.cpp.o CMakeFiles/dream.dir/src/obj/Global.cpp.o CMakeFiles/dream.dir/src/util/response_util.cpp.o CMakeFiles/dream.dir/src/obj/Hierarchy.cpp.o | /usr/local/lib64/libantlr4-runtime.so /usr/lib64/libedit.so
   FLAGS = -g
   LINK_LIBRARIES = -Wl,-rpath,/usr/local/lib64  /usr/local/lib64/libantlr4-runtime.so  /usr/lib64/libedit.so
   OBJECT_DIR = CMakeFiles/dream.dir

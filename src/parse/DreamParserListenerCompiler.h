@@ -23,6 +23,7 @@ private:
     std::string _file_path;
     std::string _file_source;
     std::vector<std::string> _converted_file;
+    Hierarchy *_current_hierarchy;
 
     void enterProgram(DreamParser::ProgramContext * /*ctx*/) override;
     void exitProgram(DreamParser::ProgramContext * /*ctx*/) override;

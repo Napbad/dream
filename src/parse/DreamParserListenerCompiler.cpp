@@ -18,11 +18,13 @@ DreamParserListenerCompiler::DreamParserListenerCompiler(
     _file_name = file_name;
     _global = global;
     _file_source = file_source;
+    _current_hierarchy = _global.hierarchy();
 }
 
 DreamParserListenerCompiler::~DreamParserListenerCompiler() = default;
 
 void DreamParserListenerCompiler::enterProgram(DreamParser::ProgramContext *ctx) {
+    _current_hierarchy = Hierarchy::file_hierarchy(_file_name.substr(0, _file_name.length() - 5));
 }
 
 void DreamParserListenerCompiler::exitProgram(DreamParser::ProgramContext *ctx) {
