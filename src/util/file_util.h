@@ -87,7 +87,7 @@ namespace file_util {
 
     std::string convert_type_to_cpp(std::string &type_name);
 
-    void insert_front_of_file(const std::ofstream &file, const std::string &content);
+    void insert_front_of_file(std::fstream *file, const std::string &content, const std::string& file_name);
 
     std::string read_line(std::fstream *opened_file, std::string &file_name, int line);
 

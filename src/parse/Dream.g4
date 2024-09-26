@@ -89,7 +89,7 @@ unaryOpExpr
 
 // if 表达式
 ifStmt
-    : IF expr ifBlock (elseIfClause)* (ELSE ifBlock)?
+    : IF expr ifBlock (elseIfClause)* (elseClause)?
     ;
 
 // if 块
@@ -133,9 +133,13 @@ elseIfClause
     : ELSE IF expr ifBlock
     ;
 
+elseClause
+    : ELSE ifBlock
+    ;
+
 expr
     : LPAREN expr RPAREN
-    | IDENTIFIER (DOT IDENTIFIER)* LPAREN argList* RPAREN
+    | funCallStmt
     | unaryOpExpr
     | expr (MUL | DIV | MOD) expr
     | expr (PLUS | MINUS) expr
@@ -456,6 +460,7 @@ forBlock
 // for 体
 forBody
     : expr SEMICOLON
+    | funVarDeclaration
     | ifStmt
     | forStmt
     | returnStmt

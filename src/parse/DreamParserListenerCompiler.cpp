@@ -11,21 +11,35 @@
 
 using namespace std;
 
-DreamParserListenerCompiler::DreamParserListenerCompiler(const std::string &file_source, const std::string &file_name,
-                                                         const Global &global) {
+DreamParserListenerCompiler::DreamParserListenerCompiler(
+    const std::string &file_source,
+    const std::string &file_name,
+    const Global &global) {
     _file_name = file_name;
     _global = global;
     _file_source = file_source;
 }
 
+DreamParserListenerCompiler::~DreamParserListenerCompiler() = default;
+
 void DreamParserListenerCompiler::enterProgram(DreamParser::ProgramContext *ctx) {
 }
 
 void DreamParserListenerCompiler::exitProgram(DreamParser::ProgramContext *ctx) {
-    int result = system(("g++ -lstdc++ " + _file_path + " -o " + _file_path.substr(0, _file_path.length() - 4) + ".o").c_str());
-    if (result != 0) {
-            file_util::print(std::cout, "Compile error", file_util::FileColor::RED);
+    // compile the file
+    for (auto &line: _converted_file) {
+        _file_stream << line;
     }
+    _file_stream.close();
+    cout << flush;
+    if (const int result = system(
+            ("g++ -lstdc++ " + _file_path + " -o " + _file_path.substr(0, _file_path.length() - 4) + ".o").c_str());
+        result != 0) {
+        print(std::cout, "Compile error", file_util::FileColor::RED);
+        exit(1);
+    }
+
+    system((_file_path.substr(0, _file_path.length() - 4) + ".o").c_str());
 }
 
 void DreamParserListenerCompiler::enterPackageDecl(DreamParser::PackageDeclContext *ctx) {
@@ -37,8 +51,7 @@ void DreamParserListenerCompiler::enterPackageDecl(DreamParser::PackageDeclConte
 
     _file_stream = std::move(_fstream);
 
-    _file_stream << "// package " << ctx->children.at(1)->getText() << ";\n";
-    _file_stream.flush();
+    _converted_file.push_back("// package " + ctx->children.at(1)->getText() + "\n");
 }
 
 void DreamParserListenerCompiler::exitPackageDecl(DreamParser::PackageDeclContext *ctx) {
@@ -63,6 +76,28 @@ void DreamParserListenerCompiler::exitImportName(DreamParser::ImportNameContext 
 }
 
 void DreamParserListenerCompiler::enterFunCallStmt(DreamParser::FunCallStmtContext *ctx) {
+    string fun_call;
+
+    if (ctx->children.at(0)->getText() == "println") {
+        // file_util::insert_front_of_file(&_file_stream, _file_path, "#include <iostream> \n");
+        vector<string>::iterator it = _converted_file.begin();
+        ++it;
+        _converted_file.insert(it, "#include <iostream> \n");
+
+        fun_call.append("std::cout ");
+
+        for (int i = 2; i < ctx->children.size() - 1; i++) {
+            if (ctx->children.at(i)->getText() != ",") {
+                fun_call.append(" << ")
+                        .append(ctx->children.at(i)->getText());
+            }
+        }
+
+        fun_call.append(" << std::endl;");
+    }
+
+    _converted_file.push_back(fun_call + "\n");
+    _file_stream.flush();
 }
 
 void DreamParserListenerCompiler::exitFunCallStmt(DreamParser::FunCallStmtContext *ctx) {
@@ -117,15 +152,30 @@ void DreamParserListenerCompiler::exitUnaryOpExpr(DreamParser::UnaryOpExprContex
 }
 
 void DreamParserListenerCompiler::enterIfStmt(DreamParser::IfStmtContext *ctx) {
+    string if_stmt = "if";
+
+    if_stmt.append("(")
+            .append(ctx->children.at(1)->getText())
+            .append(")");
+    _converted_file.push_back(if_stmt + "\n");
 }
 
 void DreamParserListenerCompiler::exitIfStmt(DreamParser::IfStmtContext *ctx) {
 }
 
 void DreamParserListenerCompiler::enterIfBlock(DreamParser::IfBlockContext *ctx) {
+    _converted_file.emplace_back("{\n");
 }
 
 void DreamParserListenerCompiler::exitIfBlock(DreamParser::IfBlockContext *ctx) {
+    _converted_file.emplace_back("}\n");
+}
+
+void DreamParserListenerCompiler::enterElseClause(DreamParser::ElseClauseContext * ctx) {
+    _converted_file.emplace_back("else");
+}
+
+void DreamParserListenerCompiler::exitElseClause(DreamParser::ElseClauseContext * ctx) {
 }
 
 void DreamParserListenerCompiler::enterAtomExpr(DreamParser::AtomExprContext *ctx) {
@@ -147,12 +197,18 @@ void DreamParserListenerCompiler::exitReturnStmt(DreamParser::ReturnStmtContext 
 }
 
 void DreamParserListenerCompiler::enterElseIfClause(DreamParser::ElseIfClauseContext *ctx) {
+    _converted_file.emplace_back("else if");
+
+    _converted_file.emplace_back("(")
+            .append(ctx->children.at(2)->getText())
+            .append(")");
 }
 
 void DreamParserListenerCompiler::exitElseIfClause(DreamParser::ElseIfClauseContext *ctx) {
 }
 
 void DreamParserListenerCompiler::enterExpr(DreamParser::ExprContext *ctx) {
+
 }
 
 void DreamParserListenerCompiler::exitExpr(DreamParser::ExprContext *ctx) {
@@ -180,16 +236,16 @@ void DreamParserListenerCompiler::enterVarDeclaration(DreamParser::VarDeclaratio
     string var_type = child[1]->getText();
 
     if (var_type == D_STRING || var_type == D_STRING_ARR) {
-        _file_stream << "#include <string>" << "\n";
+        _converted_file.emplace_back("#include <string> \n");
     }
 
     if (var_mut == D_IMT) {
-        _file_stream << "const "
-                << file_util::convert_type_to_cpp(var_type) << " "
-                << var_name << " = " << var_val << ";\n";
+        _converted_file.push_back("const "
+                                  + file_util::convert_type_to_cpp(var_type) + " "
+                                  + var_name + " = " + var_val + ";\n");
     } else if (var_mut == D_VAR) {
-        _file_stream << file_util::convert_type_to_cpp(var_type) << " "
-                << var_name << " = " << var_val << ";\n";
+        _converted_file.push_back(file_util::convert_type_to_cpp(var_type) + " "
+                                  + var_name + " = " + var_val + ";\n");
     }
 
     if (var_null == D_NON_NULLABLE) {
@@ -226,14 +282,15 @@ void DreamParserListenerCompiler::exitVarModifiers(DreamParser::VarModifiersCont
 
 void DreamParserListenerCompiler::enterFunctionDeclaration(DreamParser::FunctionDeclarationContext *ctx) {
     // get ctx children and compose them
-    vector<antlr4::tree::ParseTree *> trees = ctx->children;
+    const vector<antlr4::tree::ParseTree *> trees = ctx->children;
 
     const string func_name = trees[1]->getText();
     string fun_decl;
 
     int param_list_begin = 0;
     for (auto i = 0; i < trees.size(); i++) {
-        if (trees.at(i)->getText() == D_FUN) continue;
+        if (trees.at(i)->getText() == D_FUN)
+            continue;
         // find the param list
         if (trees.at(i)->getText() == D_LPAREN)
             param_list_begin = i + 1;
@@ -252,13 +309,12 @@ void DreamParserListenerCompiler::enterFunctionDeclaration(DreamParser::Function
     antlr4::tree::ParseTree *params = trees.at(param_list_begin);
     if (params->getText() == D_RPAREN) {
         fun_decl.append(")");
-        _file_stream << fun_decl << "\n";
+        _converted_file.push_back(fun_decl + "\n");
         return;
     }
 
-    vector<antlr4::tree::ParseTree *> single_params = params->children;
-    for (auto i = 0; i < single_params.size(); i++) {
-        antlr4::tree::ParseTree *single_param = single_params.at(i);
+    const vector<antlr4::tree::ParseTree *> single_params = params->children;
+    for (auto single_param: single_params) {
         if (single_param->getText() == D_COMMA) {
             fun_decl.append(", ");
         }
@@ -325,27 +381,75 @@ void DreamParserListenerCompiler::enterFunctionDeclaration(DreamParser::Function
 
     fun_decl.append(")");
 
-    _file_stream << fun_decl << "\n";
+    _converted_file.push_back(fun_decl + "\n");
+    _file_stream.flush();
 }
 
 void DreamParserListenerCompiler::exitFunctionDeclaration(DreamParser::FunctionDeclarationContext *ctx) {
 }
 
 void DreamParserListenerCompiler::enterFunBlock(DreamParser::FunBlockContext *ctx) {
-    _file_stream << "{" << "\n";
+    _converted_file.emplace_back(("{\n"));
+    _file_stream.flush();
 }
 
 void DreamParserListenerCompiler::exitFunBlock(DreamParser::FunBlockContext *ctx) {
-    _file_stream << "}" << "\n";
+    _converted_file.emplace_back(("}\n"));
+    _file_stream.flush();
 }
 
 void DreamParserListenerCompiler::enterFunStmt(DreamParser::FunStmtContext *ctx) {
+    // read lines
+
+    // convert to cpp
 }
 
 void DreamParserListenerCompiler::exitFunStmt(DreamParser::FunStmtContext *ctx) {
 }
 
 void DreamParserListenerCompiler::enterFunVarDeclaration(DreamParser::FunVarDeclarationContext *ctx) {
+    const std::vector<antlr4::tree::ParseTree *> child = ctx->children;
+
+    const string var_name = child[2]->getText();
+    const string var_mut = child[0]->getText();
+    const string var_null = child[3]->getText();
+    const string var_val = child[4]->getText();
+    string var_type = child[1]->getText();
+
+    if (var_type == D_STRING || var_type == D_STRING_ARR) {
+        _converted_file.insert(_converted_file.begin() + 1, "#include <string> \n");
+    }
+
+    if (var_mut == D_IMT) {
+        _converted_file.push_back("const "
+                                  + file_util::convert_type_to_cpp(var_type) + " "
+                                  + var_name + " = " + var_val + ";\n");
+    } else if (var_mut == D_VAR) {
+        _converted_file.push_back(file_util::convert_type_to_cpp(var_type) + " "
+                                  + var_name + " = " + var_val + ";\n");
+    }
+
+    if (var_null == D_NON_NULLABLE) {
+        if (var_val == D_NULL) {
+            cerr << "Cannot assign null to non-nullable variable" << endl;
+        }
+
+        if (string_util::str_is_only_ident(var_val)) {
+            if (_global.is_var_nullable(_package_name + _file_name + var_val)) {
+                response_util::report_error(
+                    "Cannot assign null to non-nullable variable ( " +
+                    var_name + " ) \n because <" +
+                    var_val +
+                    "> might be null \n ",
+                    _file_source,
+                    static_cast<int>(ctx->getStart()->getLine()));
+            }
+        }
+
+        return;
+    }
+
+    _global.add_var_nullable(_package_name + _file_name + var_name, true);
 }
 
 void DreamParserListenerCompiler::exitFunVarDeclaration(DreamParser::FunVarDeclarationContext *ctx) {
@@ -574,21 +678,27 @@ void DreamParserListenerCompiler::exitReturnType(DreamParser::ReturnTypeContext 
 }
 
 void DreamParserListenerCompiler::enterForStmt(DreamParser::ForStmtContext *ctx) {
+    _converted_file.emplace_back("for");
 }
 
 void DreamParserListenerCompiler::exitForStmt(DreamParser::ForStmtContext *ctx) {
 }
 
 void DreamParserListenerCompiler::enterForCondition(DreamParser::ForConditionContext *ctx) {
+    _converted_file.emplace_back("(");
+    _converted_file.push_back(string_util::convert_parser_tree_to_string(ctx));
 }
 
 void DreamParserListenerCompiler::exitForCondition(DreamParser::ForConditionContext *ctx) {
+    _converted_file.emplace_back(")");
 }
 
 void DreamParserListenerCompiler::enterForBlock(DreamParser::ForBlockContext *ctx) {
+    _converted_file.emplace_back("{ \n");
 }
 
 void DreamParserListenerCompiler::exitForBlock(DreamParser::ForBlockContext *ctx) {
+    _converted_file.emplace_back("} \n");
 }
 
 void DreamParserListenerCompiler::enterForBody(DreamParser::ForBodyContext *ctx) {
@@ -638,7 +748,6 @@ void DreamParserListenerCompiler::enterFunCodeBlockStmt(DreamParser::FunCodeBloc
 
 void DreamParserListenerCompiler::exitFunCodeBlockStmt(DreamParser::FunCodeBlockStmtContext *ctx) {
 }
-
 
 void DreamParserListenerCompiler::enterEveryRule(antlr4::ParserRuleContext *ctx) {
 }

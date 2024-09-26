@@ -22,7 +22,9 @@ std::fstream file_util::create_file(const std::string &file_name) {
         throw std::runtime_error("Failed to create directory: " + _parent_path.string());
     }
 
-    std::fstream file_stream(file_name, std::ios::out | std::ios::in);
+    std::fstream file_stream;
+    file_stream.open(file_name, std::ios::out | std::ios::in | std::ios::trunc);
+
 
     if (!file_stream.is_open()) {
         throw std::runtime_error("Failed to create file: " + file_name);
@@ -81,7 +83,6 @@ std::string file_util::convert_type_to_cpp(std::string &type_name) {
     return type_name;
 }
 
-
 std::string file_util::read_line(std::fstream *opened_file, string &file_name, const int line) {
     if (opened_file == nullptr || !opened_file->is_open()) {
         return ""; // Return an empty string if the opened_file pointer is null or the opened_file is not open
@@ -89,7 +90,7 @@ std::string file_util::read_line(std::fstream *opened_file, string &file_name, c
 
     opened_file->close();
 
-    int lines, i = 0;
+    int i = 0;
     string temp;
     fstream file;
     file.open(file_name, ios::in);

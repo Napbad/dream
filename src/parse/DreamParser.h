@@ -1,5 +1,5 @@
 
-// Generated from Dream.g4 by ANTLR 4.13.2
+// Generated from ./Dream.g4 by ANTLR 4.13.2
 
 #pragma once
 
@@ -36,23 +36,23 @@ public:
     RuleArgList = 8, RuleLiteral = 9, RuleArrayInit = 10, RuleCastExpr = 11, 
     RuleAssign = 12, RuleUnaryOpExpr = 13, RuleIfStmt = 14, RuleIfBlock = 15, 
     RuleAtomExpr = 16, RuleIfStmtBody = 17, RuleReturnStmt = 18, RuleElseIfClause = 19, 
-    RuleExpr = 20, RuleAssignExpr = 21, RuleDeclaration = 22, RuleVarDeclaration = 23, 
-    RuleVarModifiers = 24, RuleFunctionDeclaration = 25, RuleFunBlock = 26, 
-    RuleFunStmt = 27, RuleFunVarDeclaration = 28, RuleFunModifiers = 29, 
-    RuleClassDeclaration = 30, RuleClassModifiers = 31, RuleClassModifier = 32, 
-    RuleClassBlock = 33, RuleClassBody = 34, RuleClassVarDecl = 35, RuleClassFuncDecl = 36, 
-    RuleClassMemberModifier = 37, RuleConstructorDecl = 38, RuleClassFunStmtBlock = 39, 
-    RuleThrowStmt = 40, RuleSynchronizedStmt = 41, RuleTryCatchStmt = 42, 
-    RuleCatches = 43, RuleCatchClause = 44, RuleCatchFormalParameter = 45, 
-    RuleCatchType = 46, RuleFinally_ = 47, RuleMemberModifier = 48, RuleVisibilityModifier = 49, 
-    RuleStaticModifier = 50, RuleInterfaceDeclaration = 51, RuleInterfaceBlock = 52, 
-    RuleInterfaceBody = 53, RuleInterfaceVarDecl = 54, RuleInterfaceFuncDecl = 55, 
-    RuleAnnotationDeclaration = 56, RuleAnnotationBlock = 57, RuleAnnotation = 58, 
-    RuleQualifiedName = 59, RuleParamList = 60, RuleParam = 61, RuleType = 62, 
-    RuleSingleType = 63, RuleArrayType = 64, RuleReturnType = 65, RuleForStmt = 66, 
-    RuleForCondition = 67, RuleForBlock = 68, RuleForBody = 69, RuleForVarDecl = 70, 
-    RuleFileCodeBlock = 71, RuleFileCodeBlockBody = 72, RuleFileCodeBlockStmt = 73, 
-    RuleFunCodeBlock = 74, RuleFunCodeBlockBody = 75, RuleFunCodeBlockStmt = 76
+    RuleElseClause = 20, RuleExpr = 21, RuleAssignExpr = 22, RuleDeclaration = 23, 
+    RuleVarDeclaration = 24, RuleVarModifiers = 25, RuleFunctionDeclaration = 26, 
+    RuleFunBlock = 27, RuleFunStmt = 28, RuleFunVarDeclaration = 29, RuleFunModifiers = 30, 
+    RuleClassDeclaration = 31, RuleClassModifiers = 32, RuleClassModifier = 33, 
+    RuleClassBlock = 34, RuleClassBody = 35, RuleClassVarDecl = 36, RuleClassFuncDecl = 37, 
+    RuleClassMemberModifier = 38, RuleConstructorDecl = 39, RuleClassFunStmtBlock = 40, 
+    RuleThrowStmt = 41, RuleSynchronizedStmt = 42, RuleTryCatchStmt = 43, 
+    RuleCatches = 44, RuleCatchClause = 45, RuleCatchFormalParameter = 46, 
+    RuleCatchType = 47, RuleFinally_ = 48, RuleMemberModifier = 49, RuleVisibilityModifier = 50, 
+    RuleStaticModifier = 51, RuleInterfaceDeclaration = 52, RuleInterfaceBlock = 53, 
+    RuleInterfaceBody = 54, RuleInterfaceVarDecl = 55, RuleInterfaceFuncDecl = 56, 
+    RuleAnnotationDeclaration = 57, RuleAnnotationBlock = 58, RuleAnnotation = 59, 
+    RuleQualifiedName = 60, RuleParamList = 61, RuleParam = 62, RuleType = 63, 
+    RuleSingleType = 64, RuleArrayType = 65, RuleReturnType = 66, RuleForStmt = 67, 
+    RuleForCondition = 68, RuleForBlock = 69, RuleForBody = 70, RuleForVarDecl = 71, 
+    RuleFileCodeBlock = 72, RuleFileCodeBlockBody = 73, RuleFileCodeBlockStmt = 74, 
+    RuleFunCodeBlock = 75, RuleFunCodeBlockBody = 76, RuleFunCodeBlockStmt = 77
   };
 
   explicit DreamParser(antlr4::TokenStream *input);
@@ -92,6 +92,7 @@ public:
   class IfStmtBodyContext;
   class ReturnStmtContext;
   class ElseIfClauseContext;
+  class ElseClauseContext;
   class ExprContext;
   class AssignExprContext;
   class DeclarationContext;
@@ -417,11 +418,10 @@ public:
     virtual size_t getRuleIndex() const override;
     antlr4::tree::TerminalNode *IF();
     ExprContext *expr();
-    std::vector<IfBlockContext *> ifBlock();
-    IfBlockContext* ifBlock(size_t i);
+    IfBlockContext *ifBlock();
     std::vector<ElseIfClauseContext *> elseIfClause();
     ElseIfClauseContext* elseIfClause(size_t i);
-    antlr4::tree::TerminalNode *ELSE();
+    ElseClauseContext *elseClause();
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
@@ -530,6 +530,20 @@ public:
 
   ElseIfClauseContext* elseIfClause();
 
+  class  ElseClauseContext : public antlr4::ParserRuleContext {
+  public:
+    ElseClauseContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    antlr4::tree::TerminalNode *ELSE();
+    IfBlockContext *ifBlock();
+
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+   
+  };
+
+  ElseClauseContext* elseClause();
+
   class  ExprContext : public antlr4::ParserRuleContext {
   public:
     ExprContext(antlr4::ParserRuleContext *parent, size_t invokingState);
@@ -538,12 +552,7 @@ public:
     std::vector<ExprContext *> expr();
     ExprContext* expr(size_t i);
     antlr4::tree::TerminalNode *RPAREN();
-    std::vector<antlr4::tree::TerminalNode *> IDENTIFIER();
-    antlr4::tree::TerminalNode* IDENTIFIER(size_t i);
-    std::vector<antlr4::tree::TerminalNode *> DOT();
-    antlr4::tree::TerminalNode* DOT(size_t i);
-    std::vector<ArgListContext *> argList();
-    ArgListContext* argList(size_t i);
+    FunCallStmtContext *funCallStmt();
     UnaryOpExprContext *unaryOpExpr();
     AtomExprContext *atomExpr();
     CastExprContext *castExpr();
@@ -1413,6 +1422,7 @@ public:
     virtual size_t getRuleIndex() const override;
     ExprContext *expr();
     antlr4::tree::TerminalNode *SEMICOLON();
+    FunVarDeclarationContext *funVarDeclaration();
     IfStmtContext *ifStmt();
     ForStmtContext *forStmt();
     ReturnStmtContext *returnStmt();

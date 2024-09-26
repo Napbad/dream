@@ -35,5 +35,6 @@ int main() {
         global);
 
     tree::ParseTreeWalker::DEFAULT.walk(&listener_compiler, tree);
+
     return 0;
 }

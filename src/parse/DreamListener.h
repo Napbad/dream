@@ -1,5 +1,5 @@
 
-// Generated from Dream.g4 by ANTLR 4.13.2
+// Generated from ./Dream.g4 by ANTLR 4.13.2
 
 #pragma once
 
@@ -73,6 +73,9 @@ public:
 
   virtual void enterElseIfClause(DreamParser::ElseIfClauseContext *ctx) = 0;
   virtual void exitElseIfClause(DreamParser::ElseIfClauseContext *ctx) = 0;
+
+  virtual void enterElseClause(DreamParser::ElseClauseContext *ctx) = 0;
+  virtual void exitElseClause(DreamParser::ElseClauseContext *ctx) = 0;
 
   virtual void enterExpr(DreamParser::ExprContext *ctx) = 0;
   virtual void exitExpr(DreamParser::ExprContext *ctx) = 0;

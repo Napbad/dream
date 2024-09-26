@@ -13,6 +13,8 @@ class DreamParserListenerCompiler final : public DreamBaseListener {
 public:
     DreamParserListenerCompiler(const std::string & file_source, const std::string & file_name, const Global & global);
 
+    ~DreamParserListenerCompiler() override;
+
 private:
     std::string _file_name;
     std::string _package_name;
@@ -20,6 +22,7 @@ private:
     Global _global;
     std::string _file_path;
     std::string _file_source;
+    std::vector<std::string> _converted_file;
 
     void enterProgram(DreamParser::ProgramContext * /*ctx*/) override;
     void exitProgram(DreamParser::ProgramContext * /*ctx*/) override;
@@ -65,6 +68,9 @@ private:
 
     void enterIfStmt(DreamParser::IfStmtContext * /*ctx*/) override;
     void exitIfStmt(DreamParser::IfStmtContext * /*ctx*/) override;
+
+    void enterElseClause(DreamParser::ElseClauseContext * /*ctx*/) override;
+    void exitElseClause(DreamParser::ElseClauseContext * /*ctx*/) override;
 
     void enterIfBlock(DreamParser::IfBlockContext * /*ctx*/) override;
     void exitIfBlock(DreamParser::IfBlockContext * /*ctx*/) override;
