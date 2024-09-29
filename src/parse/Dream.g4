@@ -302,7 +302,7 @@ catches
 
 // catch 子句
 catchClause
-    : CATCH LPAREN catchFormalParameter RPAREN funCodeBlock
+    : CATCH catchFormalParameter funCodeBlock
     ;
 
 // catch 形参

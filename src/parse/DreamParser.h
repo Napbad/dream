@@ -1003,9 +1003,7 @@ public:
     CatchClauseContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     antlr4::tree::TerminalNode *CATCH();
-    antlr4::tree::TerminalNode *LPAREN();
     CatchFormalParameterContext *catchFormalParameter();
-    antlr4::tree::TerminalNode *RPAREN();
     FunCodeBlockContext *funCodeBlock();
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;

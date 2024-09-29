@@ -3,12 +3,12 @@ project(dream)
 
 set(CMAKE_CXX_STANDARD 20)
 include_directories(
-        ${PROJECT_SOURCE_DIR}/libs/antlr4-runtime
         ${PROJECT_SOURCE_DIR}/src
+        ${PROJECT_SOURCE_DIR}/libs/antlr4-runtime
 )
 
-find_library(LIBEDIT libedit.so /usr/lib /usr/lib64)
-find_library(LIBANTLR libantlr4-runtime.so /usr/local/lib64/)
+find_library(LIBANTLR NAMES libantlr4-runtime.so
+            HINTS /usr/lib /usr/include /usr/lib64  )
 
 add_executable(dream src/main.cpp
         src/compiler/Compiler.cpp
@@ -39,7 +39,25 @@ add_executable(dream src/main.cpp
         src/util/response_util.h
         src/obj/Hierarchy.cpp
         src/obj/Hierarchy.h
+        src/runtime/gc/DataSource.h
+        src/runtime/gc/DateSource.cpp
+        src/runtime/gc/DataNode.h
+        src/runtime/gc/DataNode.cpp
+        src/runtime/gc/DataCopy.h
+        src/runtime/gc/DataCopy.cpp
+        src/runtime/class/Object.cpp
+        src/runtime/class/Object.h
+        src/runtime/native/thread.cpp
+        src/runtime/native/thread.h
+        src/common/dream_define.cpp
+        src/common/dream_define.h
+        src/common/dream_const.cpp
+        src/common/dream_const.h
+        src/runtime/native/Exception.cpp
+        src/runtime/native/Exception.h
+        src/runtime/reserve/d_define.h
+        src/runtime/reserve/Finally.cpp
+        src/runtime/reserve/Finally.h
 )
 
 target_link_libraries(dream ${LIBANTLR})
-target_link_libraries(dream ${LIBEDIT})

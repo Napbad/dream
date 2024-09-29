@@ -11,6 +11,10 @@
 using namespace std;
 
 vector<string> string_util::split(const string &str, const char delimiter) {
+
+    if (str.empty())
+        return {};
+
     auto pos = str.find(delimiter);
     string _str = str;
     vector<string> result;
