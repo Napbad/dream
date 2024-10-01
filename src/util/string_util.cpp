@@ -4,6 +4,7 @@
 
 #include "string_util.h"
 
+#include <numeric>
 #include <regex>
 
 #include "common/reserve.h"
@@ -116,4 +117,17 @@ std::string string_util::convert_parser_tree_to_string(antlr4::tree::ParseTree *
         text += convert_parser_tree_to_string(child);
     }
     return  text;
+}
+
+std::string string_util::get_text_from_vector(const std::vector<std::string>& vec)
+{
+    string res;
+
+    for (const auto& str : vec)
+    {
+        res += " ";
+        res += str;
+    }
+
+    return res;
 }

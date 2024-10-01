@@ -4,6 +4,8 @@
 
 package main; // 这是一个包声明，指定当前文件属于 `main` 包
 
+import temp;
+
 // import std; // 这是一个导入语句，导入 `com.napbad.std` 包
 // import http; // 这是一个导入语句，导入 `com.napbad.http` 包
 
@@ -28,6 +30,10 @@ var string c? = "Hello, world!";
 imt string d! = "d is a string";
 
 // imt string e! = c;
+
+fun test(imt int a, imt int b) int {
+    return a + b;
+}
 
 fun main() int {
     println(c);
@@ -68,6 +74,9 @@ fun main() int {
     } finally {
         println("finally");
     }
+
+    imt int a! = test(1, 2);
+    println(a);
 }
 
 

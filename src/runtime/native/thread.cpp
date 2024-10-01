@@ -52,21 +52,21 @@ void set_thread_priority(std::thread& t, int priority)
 #endif
 }
 
-// Checks if a thread has been interrupted
-bool is_thread_interrupted(const std::thread& t)
-{
-    try
-    {
-        const std::thread::id res = t.get_id();
-        (void)res;
-        return false;
-    }
-    catch (const std::system_error& e)
-    {
-        if (e.code().value() == EINTR)
-        {
-            return true;
-        }
-        throw;
-    }
-}
+// // Checks if a thread has been interrupted
+// bool is_thread_interrupted(const std::thread& t)
+// {
+//     try
+//     {
+//         const std::thread::id res = t.get_id();
+//         (void)res;
+//         return false;
+//     }
+//     catch (const std::system_error& e)
+//     {
+//         if (e.code().value() == EINTR)
+//         {
+//             return true;
+//         }
+//         throw;
+//     }
+// }

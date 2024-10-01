@@ -43,8 +43,12 @@ void DreamParserListenerCompiler::exitProgram(DreamParser::ProgramContext* ctx)
 
     if (_package_name == MAIN_PACKAGE && _file_name == MAIN_FILE)
     {
+        const string command = ("g++ -lstdc++ " +
+            string_util::get_text_from_vector(_global.file_to_compile_list()) + " -o " + _file_path.substr(
+                0, _file_path.length() - 4) + ".o");
+        cout << command << endl;
         if (const int result = system(
-                ("g++ -lstdc++ " + _file_path + " -o " + _file_path.substr(0, _file_path.length() - 4) + ".o").c_str());
+                command.c_str());
             result != 0)
         {
             print(std::cout, "Compile error", file_util::FileColor::RED);
@@ -61,6 +65,8 @@ void DreamParserListenerCompiler::enterPackageDecl(DreamParser::PackageDeclConte
     _package_name = ctx->children.at(1)->getText();
 
     _file_path = path + _file_name;
+    _global.add_file_compile(_file_path);
+
     std::fstream _fstream = file_util::create_file(path + _file_name);
 
     _file_stream = std::move(_fstream);
@@ -84,6 +90,7 @@ void DreamParserListenerCompiler::enterPackageDecl(DreamParser::PackageDeclConte
     {
         import_stmt.append("../");
     }
+
     _converted_file.insert(_converted_file.begin() + 1, import_stmt + RUNTIME_DIR + "/" + "class/Object.h\" \n");
     _converted_file.insert(_converted_file.begin() + 1, import_stmt + RUNTIME_DIR + "/" + "gc/DataCopy.h\" \n");
     _converted_file.insert(_converted_file.begin() + 1, import_stmt + RUNTIME_DIR + "/" + "gc/DataNode.h\" \n");
@@ -95,6 +102,25 @@ void DreamParserListenerCompiler::enterPackageDecl(DreamParser::PackageDeclConte
 
 void DreamParserListenerCompiler::exitPackageDecl(DreamParser::PackageDeclContext* ctx)
 {
+    std::vector<std::string> import_pack = string_util::split(ctx->children[1]->getText(), '.');
+    std::vector<std::string> pack_hierarchy = string_util::split(_package_name, '.');
+
+    string pack_path;
+
+    for (int i = 0; i < pack_hierarchy.size() && i < import_pack.size(); i++)
+    {
+        if (pack_hierarchy[i] != import_pack[i])
+        {
+            for (int j = 0; j < import_pack.size(); j++)
+            {
+                if (j < i) pack_path.append("../");
+                else if (j != import_pack.size() - 1)
+                    pack_path.append(import_pack[j])
+                             .append("/");
+                else pack_path.append(import_pack[j]);
+            }
+        }
+    }
 }
 
 void DreamParserListenerCompiler::enterImportStmt(DreamParser::ImportStmtContext* ctx)
@@ -145,6 +171,10 @@ void DreamParserListenerCompiler::enterFunCallStmt(DreamParser::FunCallStmtConte
 
         fun_call.append(" << std::endl;");
     }
+    // else
+    // {
+    //     fun_call.append(ctx->getText());
+    // }
 
     _converted_file.push_back(fun_call + "\n");
     _file_stream.flush();
@@ -160,6 +190,7 @@ void DreamParserListenerCompiler::enterStmt(DreamParser::StmtContext* ctx)
 
 void DreamParserListenerCompiler::exitStmt(DreamParser::StmtContext* ctx)
 {
+    _converted_file.emplace_back("; \n ");
 }
 
 void DreamParserListenerCompiler::enterBinaryOpExpr(DreamParser::BinaryOpExprContext* ctx)
@@ -269,6 +300,9 @@ void DreamParserListenerCompiler::exitIfStmtBody(DreamParser::IfStmtBodyContext*
 
 void DreamParserListenerCompiler::enterReturnStmt(DreamParser::ReturnStmtContext* ctx)
 {
+    _converted_file.emplace_back("return ")
+                   .append(ctx->children.at(1)->getText())
+                   .append(";\n");
 }
 
 void DreamParserListenerCompiler::exitReturnStmt(DreamParser::ReturnStmtContext* ctx)
@@ -314,56 +348,173 @@ void DreamParserListenerCompiler::exitDeclaration(DreamParser::DeclarationContex
 
 void DreamParserListenerCompiler::enterVarDeclaration(DreamParser::VarDeclarationContext* ctx)
 {
-    const std::vector<antlr4::tree::ParseTree*> child = ctx->children;
-
-    const string var_name = child[2]->getText();
-    const string var_mut = child[0]->getText();
-    const string var_null = child[3]->getText();
-    const string var_val = child[5]->getText();
-    string var_type = child[1]->getText();
-
-    if (var_type == D_STRING || var_type == D_STRING_ARR)
+    if (ctx->children.size() == 7)
     {
-        _converted_file.emplace_back("#include <string> \n");
+        const std::vector<antlr4::tree::ParseTree*> child = ctx->children;
+
+        const string var_name = child[2]->getText();
+        const string var_mut = child[0]->getText();
+        const string var_null = child[3]->getText();
+        const string var_val = child[5]->getText();
+        string var_type = child[1]->getText();
+
+        if (var_type == D_STRING || var_type == D_STRING_ARR)
+        {
+            _converted_file.emplace_back("#include <string> \n");
+        }
+
+        if (var_mut == D_IMT)
+        {
+            _converted_file.push_back("const "
+                + file_util::convert_type_to_cpp(var_type) + " "
+                + var_name + " = " + var_val + ";\n");
+        }
+        else if (var_mut == D_VAR)
+        {
+            _converted_file.push_back(file_util::convert_type_to_cpp(var_type) + " "
+                + var_name + " = " + var_val + ";\n");
+        }
+
+        if (var_null == D_NON_NULLABLE)
+        {
+            if (var_val == D_NULL)
+            {
+                cerr << "Cannot assign null to non-nullable variable" << endl;
+            }
+
+            if (string_util::str_is_only_ident(var_val))
+            {
+                if (_global.is_var_nullable(_package_name + _file_name + var_val))
+                {
+                    response_util::report_error(
+                        "Cannot assign null to non-nullable variable ( " +
+                        var_name + " ) \n because <" +
+                        var_val +
+                        "> might be null \n ",
+                        _file_source,
+                        static_cast<int>(ctx->getStart()->getLine()));
+                }
+            }
+
+            return;
+        }
+
+        _global.add_var_nullable(_package_name + _file_name + var_name, true);
     }
-
-    if (var_mut == D_IMT)
+    else if (ctx->children.size() == 5)
     {
+        const std::vector<antlr4::tree::ParseTree*> child = ctx->children;
+
+        const string var_name = child[2]->getText();
+        const string var_val = child[3]->getText();
+        string var_type = child[0]->getText();
+
+        if (var_type == D_STRING || var_type == D_STRING_ARR)
+        {
+            _converted_file.emplace_back("#include <string>\n");
+        }
+
         _converted_file.push_back("const "
             + file_util::convert_type_to_cpp(var_type) + " "
             + var_name + " = " + var_val + ";\n");
     }
-    else if (var_mut == D_VAR)
+    else if (ctx->children.size() == 6)
     {
-        _converted_file.push_back(file_util::convert_type_to_cpp(var_type) + " "
-            + var_name + " = " + var_val + ";\n");
-    }
-
-    if (var_null == D_NON_NULLABLE)
-    {
-        if (var_val == D_NULL)
+        if (ctx->children.at(0)->getText() == D_VAR || ctx->children.at(0)->getText() == D_IMT)
         {
-            cerr << "Cannot assign null to non-nullable variable" << endl;
-        }
+            const std::vector<antlr4::tree::ParseTree*> child = ctx->children;
 
-        if (string_util::str_is_only_ident(var_val))
-        {
-            if (_global.is_var_nullable(_package_name + _file_name + var_val))
+            const string var_name = child[2]->getText();
+            const string var_mut = child[0]->getText();
+            const string var_val = child[4]->getText();
+            string var_type = child[1]->getText();
+
+            if (var_type == D_STRING || var_type == D_STRING_ARR)
+            {
+                _converted_file.emplace_back("#include <string> \n");
+            }
+
+            if (var_mut == D_IMT)
+            {
+                _converted_file.push_back("const "
+                    + file_util::convert_type_to_cpp(var_type) + " "
+                    + var_name + " = " + var_val + ";\n");
+            }
+            else if (var_mut == D_VAR)
+            {
+                _converted_file.push_back(file_util::convert_type_to_cpp(var_type) + " "
+                    + var_name + " = " + var_val + ";\n");
+            }
+
+            if (var_val == D_NULL)
             {
                 response_util::report_error(
-                    "Cannot assign null to non-nullable variable ( " +
-                    var_name + " ) \n because <" +
-                    var_val +
-                    "> might be null \n ",
+                    "Cannot assign null to non-nullable variable",
                     _file_source,
                     static_cast<int>(ctx->getStart()->getLine()));
+                return;
             }
+
+            if (string_util::str_is_only_ident(var_val))
+            {
+                if (_global.is_var_nullable(_package_name + _file_name + var_val))
+                {
+                    response_util::report_error(
+                        "Cannot assign null to non-nullable variable ( " +
+                        var_name + " ) \n because <" +
+                        var_val +
+                        "> might be null \n ",
+                        _file_source,
+                        static_cast<int>(ctx->getStart()->getLine()));
+                }
+            }
+
+            _global.add_var_nullable(_package_name + _file_name + var_name, true);
         }
+        else
+        {
+            const std::vector<antlr4::tree::ParseTree*> child = ctx->children;
 
-        return;
+            const string var_name = child[1]->getText();
+            const string var_null = child[2]->getText();
+            const string var_val = child[4]->getText();
+            string var_type = child[0]->getText();
+
+            if (var_type == D_STRING || var_type == D_STRING_ARR)
+            {
+                _converted_file.insert(_converted_file.begin() + 1, "#include <string>\n");
+            }
+            _converted_file.push_back("const "
+                + file_util::convert_type_to_cpp(var_type) + " "
+                + var_name + " = " + var_val + ";\n");
+
+            if (var_null == D_NON_NULLABLE)
+            {
+                if (var_val == D_NULL)
+                {
+                    cerr << "Cannot assign null to non-nullable variable" << endl;
+                }
+
+                if (string_util::str_is_only_ident(var_val))
+                {
+                    if (_global.is_var_nullable(_package_name + _file_name + var_val))
+                    {
+                        response_util::report_error(
+                            "Cannot assign null to non-nullable variable ( " +
+                            var_name + " ) \n because <" +
+                            var_val +
+                            "> might be null \n ",
+                            _file_source,
+                            static_cast<int>(ctx->getStart()->getLine()));
+                    }
+                }
+
+                return;
+            }
+
+            _global.add_var_nullable(_package_name + _file_name + var_name, true);
+        }
     }
-
-    _global.add_var_nullable(_package_name + _file_name + var_name, true);
 }
 
 void DreamParserListenerCompiler::exitVarDeclaration(DreamParser::VarDeclarationContext* ctx)
@@ -416,8 +567,8 @@ void DreamParserListenerCompiler::enterFunctionDeclaration(DreamParser::Function
         return;
     }
 
-    const vector<antlr4::tree::ParseTree*> single_params = params->children;
-    for (auto single_param : single_params)
+    for (const vector<antlr4::tree::ParseTree*> single_params = params->children;
+         const auto single_param : single_params)
     {
         if (single_param->getText() == D_COMMA)
         {
@@ -496,7 +647,6 @@ void DreamParserListenerCompiler::enterFunctionDeclaration(DreamParser::Function
     fun_decl.append(")");
 
     _converted_file.push_back(fun_decl + "\n");
-    _file_stream.flush();
 }
 
 void DreamParserListenerCompiler::exitFunctionDeclaration(DreamParser::FunctionDeclarationContext* ctx)
@@ -528,56 +678,173 @@ void DreamParserListenerCompiler::exitFunStmt(DreamParser::FunStmtContext* ctx)
 
 void DreamParserListenerCompiler::enterFunVarDeclaration(DreamParser::FunVarDeclarationContext* ctx)
 {
-    const std::vector<antlr4::tree::ParseTree*> child = ctx->children;
-
-    const string var_name = child[2]->getText();
-    const string var_mut = child[0]->getText();
-    const string var_null = child[3]->getText();
-    const string var_val = child[4]->getText();
-    string var_type = child[1]->getText();
-
-    if (var_type == D_STRING || var_type == D_STRING_ARR)
+    if (ctx->children.size() == 7)
     {
-        _converted_file.insert(_converted_file.begin() + 1, "#include <string> \n");
+        const std::vector<antlr4::tree::ParseTree*> child = ctx->children;
+
+        const string var_name = child[2]->getText();
+        const string var_mut = child[0]->getText();
+        const string var_null = child[3]->getText();
+        const string var_val = child[5]->getText();
+        string var_type = child[1]->getText();
+
+        if (var_type == D_STRING || var_type == D_STRING_ARR)
+        {
+            _converted_file.emplace_back("#include <string> \n");
+        }
+
+        if (var_mut == D_IMT)
+        {
+            _converted_file.push_back("const "
+                + file_util::convert_type_to_cpp(var_type) + " "
+                + var_name + " = " + var_val + ";\n");
+        }
+        else if (var_mut == D_VAR)
+        {
+            _converted_file.push_back(file_util::convert_type_to_cpp(var_type) + " "
+                + var_name + " = " + var_val + ";\n");
+        }
+
+        if (var_null == D_NON_NULLABLE)
+        {
+            if (var_val == D_NULL)
+            {
+                cerr << "Cannot assign null to non-nullable variable" << endl;
+            }
+
+            if (string_util::str_is_only_ident(var_val))
+            {
+                if (_global.is_var_nullable(_package_name + _file_name + var_val))
+                {
+                    response_util::report_error(
+                        "Cannot assign null to non-nullable variable ( " +
+                        var_name + " ) \n because <" +
+                        var_val +
+                        "> might be null \n ",
+                        _file_source,
+                        static_cast<int>(ctx->getStart()->getLine()));
+                }
+            }
+        }
+        else
+        {
+            _global.add_var_nullable(_package_name + _file_name + var_name, true);
+        }
     }
-
-    if (var_mut == D_IMT)
+    else if (ctx->children.size() == 5)
     {
+        const std::vector<antlr4::tree::ParseTree*> child = ctx->children;
+
+        const string var_name = child[2]->getText();
+        const string var_val = child[3]->getText();
+        string var_type = child[0]->getText();
+
+        if (var_type == D_STRING || var_type == D_STRING_ARR)
+        {
+            _converted_file.emplace_back("#include <string>\n");
+        }
+
         _converted_file.push_back("const "
             + file_util::convert_type_to_cpp(var_type) + " "
             + var_name + " = " + var_val + ";\n");
     }
-    else if (var_mut == D_VAR)
+    else if (ctx->children.size() == 6)
     {
-        _converted_file.push_back(file_util::convert_type_to_cpp(var_type) + " "
-            + var_name + " = " + var_val + ";\n");
-    }
-
-    if (var_null == D_NON_NULLABLE)
-    {
-        if (var_val == D_NULL)
+        if (ctx->children.at(0)->getText() == D_VAR || ctx->children.at(0)->getText() == D_IMT)
         {
-            cerr << "Cannot assign null to non-nullable variable" << endl;
-        }
+            const std::vector<antlr4::tree::ParseTree*> child = ctx->children;
 
-        if (string_util::str_is_only_ident(var_val))
-        {
-            if (_global.is_var_nullable(_package_name + _file_name + var_val))
+            const string var_name = child[2]->getText();
+            const string var_mut = child[0]->getText();
+            const string var_val = child[4]->getText();
+            string var_type = child[1]->getText();
+
+            if (var_type == D_STRING || var_type == D_STRING_ARR)
+            {
+                _converted_file.emplace_back("#include <string> \n");
+            }
+
+            if (var_mut == D_IMT)
+            {
+                _converted_file.push_back("const "
+                    + file_util::convert_type_to_cpp(var_type) + " "
+                    + var_name + " = " + var_val + ";\n");
+            }
+            else if (var_mut == D_VAR)
+            {
+                _converted_file.push_back(file_util::convert_type_to_cpp(var_type) + " "
+                    + var_name + " = " + var_val + ";\n");
+            }
+
+            if (var_val == D_NULL)
             {
                 response_util::report_error(
-                    "Cannot assign null to non-nullable variable ( " +
-                    var_name + " ) \n because <" +
-                    var_val +
-                    "> might be null \n ",
+                    "Cannot assign null to non-nullable variable",
                     _file_source,
                     static_cast<int>(ctx->getStart()->getLine()));
+                return;
+            }
+
+            if (string_util::str_is_only_ident(var_val))
+            {
+                if (_global.is_var_nullable(_package_name + _file_name + var_val))
+                {
+                    response_util::report_error(
+                        "Cannot assign null to non-nullable variable ( " +
+                        var_name + " ) \n because <" +
+                        var_val +
+                        "> might be null \n ",
+                        _file_source,
+                        static_cast<int>(ctx->getStart()->getLine()));
+                }
             }
         }
+        else
+        {
+            const std::vector<antlr4::tree::ParseTree*> child = ctx->children;
 
-        return;
+            const string var_name = child[1]->getText();
+            const string var_null = child[2]->getText();
+            const string var_val = child[4]->getText();
+            string var_type = child[0]->getText();
+
+            if (var_type == D_STRING || var_type == D_STRING_ARR)
+            {
+                _converted_file.insert(_converted_file.begin() + 1, "#include <string>\n");
+            }
+            _converted_file.push_back("const "
+                + file_util::convert_type_to_cpp(var_type) + " "
+                + var_name + " = " + var_val + ";\n");
+
+            if (var_null == D_NON_NULLABLE)
+            {
+                if (var_val == D_NULL)
+                {
+                    cerr << "Cannot assign null to non-nullable variable" << endl;
+                }
+
+                if (string_util::str_is_only_ident(var_val))
+                {
+                    if (_global.is_var_nullable(_package_name + _file_name + var_val))
+                    {
+                        response_util::report_error(
+                            "Cannot assign null to non-nullable variable ( " +
+                            var_name + " ) \n because <" +
+                            var_val +
+                            "> might be null \n ",
+                            _file_source,
+                            static_cast<int>(ctx->getStart()->getLine()));
+                    }
+                }
+
+                return;
+            }
+            else
+            {
+                _global.add_var_nullable(_package_name + _file_name + var_name, true);
+            }
+        }
     }
-
-    _global.add_var_nullable(_package_name + _file_name + var_name, true);
 }
 
 void DreamParserListenerCompiler::exitFunVarDeclaration(DreamParser::FunVarDeclarationContext* ctx)

@@ -9,6 +9,7 @@
 Global::Global() {
     _var_nullable = new std::unordered_map<std::string, bool>();
     _hierarchy = Hierarchy::root_hierarchy();
+    _file_to_compile_list = {};
 }
 
 void Global::add_var_nullable(const std::string &identifier, const bool nullable) const {
@@ -27,5 +28,15 @@ bool Global::is_var_exists_in_nullable_list(const std::string &identifier) const
 
 Hierarchy * Global::hierarchy() const {
     return _hierarchy;
+}
+
+void Global::add_file_compile(const std::string& string)
+{
+    _file_to_compile_list.push_back(string);
+}
+
+std::vector<std::string> Global::file_to_compile_list()
+{
+    return _file_to_compile_list;
 }
 

@@ -28,7 +28,7 @@ public:
     [[nodiscard]] virtual size_t hashCode() const;
 
     // Clone method (pure virtual for polymorphism)
-    [[nodiscard]] virtual Object* clone() const = 0;
+    // [[nodiscard]] virtual Object* clone() const = 0;
 
     // Helper function to compare two objects
     static bool isEqual(const Object* obj1, const Object* obj2);

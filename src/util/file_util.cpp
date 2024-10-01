@@ -163,6 +163,26 @@ Hierarchy* file_util::get_package_hierarchy(const std::string& package_name)
     return hierarchy;
 }
 
+void file_util::collect_files_recursive(const std::string& dir_path, std::vector<std::string>& files)
+{
+    try {
+        for (const auto& entry : filesystem::recursive_directory_iterator(dir_path)) {
+            if (entry.is_regular_file()) {
+                files.push_back(entry.path().string());
+            }
+        }
+    } catch (const filesystem::filesystem_error& e) {
+        std::cerr << "Error: " << e.what() << '\n';
+    }
+}
+
+std::vector<std::string> file_util::get_all_files_in_dir(const std::string& dir_path)
+{
+    std::vector<std::string> files;
+    collect_files_recursive(dir_path, files);
+    return files;
+}
+
 #ifdef _WIN32
 
 int file_util::colorCode(FileColor color) {

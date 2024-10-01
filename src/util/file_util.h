@@ -62,8 +62,11 @@ namespace file_util {
 
     void copy_directory(const std::string &source_dir, const std::string &destination_dir);
 
-
     Hierarchy* get_package_hierarchy(const std::string& package_name);
+
+    void collect_files_recursive(const std::string& dir_path, std::vector<std::string>& files);
+
+    std::vector<std::string> get_all_files_in_dir(const std::string& dir_path);
 }
 
 

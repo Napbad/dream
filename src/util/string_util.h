@@ -33,6 +33,8 @@ namespace string_util {
     bool str_is_only_ident(const std::string & ident);
 
     std::string convert_parser_tree_to_string(antlr4::tree::ParseTree *tree);
+
+    std::string get_text_from_vector(const std::vector<std::string> &vec);
 }
 
 #endif //STRING_UTIL_H

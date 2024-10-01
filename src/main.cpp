@@ -24,6 +24,7 @@ int main() {
     }
 
 
+
     ANTLRInputStream inputStream(stream);
     DreamLexer lexer(&inputStream);
     CommonTokenStream tokens(&lexer);
@@ -32,6 +33,12 @@ int main() {
     tree::ParseTree *tree = parser.program();
 
     file_util::copy_directory("../src/runtime", "../build/runtime");
+
+    std::vector<std::string> files_in_dir = file_util::get_all_files_in_dir("../build/runtime");
+    for (auto &file : files_in_dir) {
+        global.add_file_compile(file);
+    }
+
 
     DreamParserListenerCompiler listener_compiler(
         file_path,
