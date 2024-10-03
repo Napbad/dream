@@ -4,6 +4,7 @@
 
 #ifndef FINALLY_H
 #define FINALLY_H
+
 #include <functional>
 #include <utility>
 
@@ -18,7 +19,5 @@ public:
 private:
     std::function<void()> _cleanupFunc;
 };
-
-
 
 #endif //FINALLY_H

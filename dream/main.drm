@@ -4,7 +4,8 @@
 
 package main; // 这是一个包声明，指定当前文件属于 `main` 包
 
-import temp;
+import stl.vector;
+import net.socket;
 
 // import std; // 这是一个导入语句，导入 `com.napbad.std` 包
 // import http; // 这是一个导入语句，导入 `com.napbad.http` 包
@@ -23,7 +24,7 @@ var int a1! = 20;
 // `?` 表示它可以为 null，例如 `a?`
 
 // 支持的变量有这些类型：
-// byte short int long flo  at double bool char string
+// byte short int long float double bool char string
 
 var string c? = "Hello, world!";
 
@@ -35,48 +36,52 @@ fun test(imt int a, imt int b) int {
     return a + b;
 }
 
+
+
 fun main() int {
-    println(c);
-    println(d);
-    println(a);
-    println(b);
-    println(b1);
+    /println(c);
+    /println(d);
+    /println(a);
+    /println(b);
+    /println(b1);
 
     if b1 == b || a == 10 {
-        println("b1 == b or a == 10!");
+        /println("b1 == b or a == 10!");
     }
 
     if b1 != "he" {
-        println("b1 != \"he\"");
+        /println("b1 != \"he\"");
     } else {
-        println("b1 == \"he\"");
+        /println("b1 == \"he\"");
     }
 
     if a1 > 10 {
-        println("a1 > 10");
+        /println("a1 > 10");
     } else if a1 < 10 {
-        println("a1 < 10");
+        /println("a1 < 10");
     } else {
-        println("a1 == 10");
+        /println("a1 == 10");
     }
 
     for int i = 0; i < 10; i = i + 1 {
         var string j = "i = ";
-        println(j);
-        println(i);
+        /println(j);
+        /println(i);
     }
 
     try {
-        println("try");
+        /println("try");
         throw new Exception("error");
     } catch Exception e {
-        println("failed");
+        /println("failed");
     } finally {
-        println("finally");
+        /println("finally");
     }
 
     imt int a! = test(1, 2);
-    println(a);
+    /println(a);
+
+    Socket sock = new Socket();
 }
 
 

@@ -1,0 +1,3 @@
+package net;
+
+@NATIVE class Socket{}

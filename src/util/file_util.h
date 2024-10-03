@@ -34,10 +34,11 @@ namespace file_util {
     // Define a scoped enum for file colors
     enum class FileColor {
         GREEN,
-        WHITE, // Renamed WRITE to WHITE for clarity
+        WHITE,
         RED,
         YELLOW,
-        BLUE
+        BLUE,
+        BLACK
     };
 
     // Utility function to convert FileColor to Windows console color or ANSI color code
@@ -52,7 +53,6 @@ namespace file_util {
 
     std::string convert_pkg_to_path(const std::string &pkg_name);
 
-    std::string convert_type_to_cpp(std::string &type_name);
 
     void insert_front_of_file(std::fstream *file, const std::string &content, const std::string& file_name);
 
@@ -67,6 +67,10 @@ namespace file_util {
     void collect_files_recursive(const std::string& dir_path, std::vector<std::string>& files);
 
     std::vector<std::string> get_all_files_in_dir(const std::string& dir_path);
+
+    std::vector<std::string> get_file_content(const std::string& file);
+
+    void delete_directory(const std::string& dir_path);
 }
 
 

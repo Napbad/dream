@@ -46,6 +46,7 @@
 #define D_FLOAT     "float"
 #define D_STRING    "string"
 #define D_BOOL      "bool"
+#define D_UINT      "uint"
 
 #define D_INT_ARR           "int[]"
 #define D_BYTE_ARR          "byte[]"
@@ -108,8 +109,10 @@
 #define D_RBRACE        "}"
 #define D_LPAREN        "("
 #define D_RPAREN        ")"
-# define D_LBRACKET     "["
-# define D_RBRACKET     "]"
+#define D_LBRACKET     "["
+#define D_RBRACKET     "]"
+
+#define D_SLASH         "/"
 
 #define D_OPERATOR      "OPERATOR"
 
@@ -121,7 +124,13 @@
 #define D_COMMA     ","
 
 #define D_IDENTIFIER        "IDENTIFIER"
+
+#define CPP_VOID            "void"
+#define D_NATIVE_ANNOTATION "@NATIVE"
+
+
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 
@@ -141,5 +150,17 @@ inline std::vector<std::string> ops = {
     D_MOD_ASSIGN
 };
 
+std::unordered_map<std::string, std::string> type_map = {
+    {D_INT, "int"},
+    {D_BYTE, "char"},
+    {D_SHORT, "short"},
+    {D_LONG, "long"},
+    {D_CHAR, "char"},
+    {D_FLOAT, "float"},
+    {D_STRING, "string"},
+    {D_BOOL, "bool"},
+    {D_NULL, "null"},
+    {D_UINT, "unsigned int"},}
+};
 
 #endif

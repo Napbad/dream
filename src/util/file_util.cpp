@@ -78,19 +78,6 @@ std::string file_util::convert_pkg_to_path(const std::string& pkg_name)
     return res;
 }
 
-std::string file_util::convert_type_to_cpp(std::string& type_name)
-{
-    if (type_name == D_STRING)
-        return "std::string";
-
-    if (type_name == D_STRING_ARR)
-        return "std::string[]";
-
-    if (type_name.starts_with("u"))
-        type_name.replace(0, 1, "unsigned ");
-    return type_name;
-}
-
 std::string file_util::read_line(std::fstream* opened_file, string& file_name, const int line)
 {
     if (opened_file == nullptr || !opened_file->is_open())
@@ -127,9 +114,11 @@ void file_util::print(std::ostream& stream, const std::string& message, FileColo
 #ifdef _WIN32
         setColor(color); // Default white
 #else
-        setColor(colorCode(color).c_str()); // Reset color
+        setColor(colorCode(FileColor::BLACK).c_str()); // Reset color
 #endif
     }
+
+    stream.flush();
 }
 
 void file_util::copy_directory(const std::string& source_dir, const std::string& destination_dir)
@@ -183,6 +172,24 @@ std::vector<std::string> file_util::get_all_files_in_dir(const std::string& dir_
     return files;
 }
 
+std::vector<std::string> file_util::get_file_content(const std::string& file)
+{
+    std::ifstream ifstream(file);
+    std::string line;
+    std::vector<std::string> content;
+
+    while (std::getline(ifstream, line))
+        content.push_back(line);
+
+    ifstream.close();
+    return content;
+}
+
+void file_util::delete_directory(const std::string& dir_path)
+{
+    std::filesystem::remove_all(dir_path);
+}
+
 #ifdef _WIN32
 
 int file_util::colorCode(FileColor color) {
@@ -191,14 +198,8 @@ int file_util::colorCode(FileColor color) {
         {FileColor::WHITE, 7},
         {FileColor::RED, 4},
         {FileColor::YELLOW, 6},
-        {FileColor::BLUE, 1}
-    };
-    static std::map<FileColor, const char*> ansiColors = {
-        {FileColor::GREEN, "\x1b[32m"},
-        {FileColor::WHITE, "\x1b[37m"},
-        {FileColor::RED, "\x1b[31m"},
-        {FileColor::YELLOW, "\x1b[33m"},
-        {FileColor::BLUE, "\x1b[34m"}
+        {FileColor::BLUE, 1},
+        {FileColor::BLACK: 0}
     };
 
     if (const char* ansi = ansiColors.find(color)->second) {
@@ -217,7 +218,8 @@ std::string file_util::colorCode(const FileColor color)
         {FileColor::WHITE, "\x1b[37m"},
         {FileColor::RED, "\x1b[31m"},
         {FileColor::YELLOW, "\x1b[33m"},
-        {FileColor::BLUE, "\x1b[34m"}
+        {FileColor::BLUE, "\x1b[34m"},
+        {FileColor::BLACK, "\x1b[30m"}
     };
 
     if (const char* ansi = ansiColors.find(color)->second)

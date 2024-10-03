@@ -35,6 +35,14 @@ namespace string_util {
     std::string convert_parser_tree_to_string(antlr4::tree::ParseTree *tree);
 
     std::string get_text_from_vector(const std::vector<std::string> &vec);
+
+    std::string get_lines_from_vector(const std::vector<std::string>& vector);
+
+    bool str_is_common_type(const std::string& string);
+
+    std::string convert_type_to_cpp(std::string &type_name);
+
+
 }
 
 #endif //STRING_UTIL_H

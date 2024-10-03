@@ -11,6 +11,7 @@ find_library(LIBANTLR NAMES libantlr4-runtime.so
             HINTS /usr/lib /usr/include /usr/lib64  )
 
 add_executable(dream src/main.cpp
+
         src/compiler/Compiler.cpp
         src/compiler/Compiler.h
         src/parse/DreamBaseListener.cpp
@@ -58,6 +59,11 @@ add_executable(dream src/main.cpp
         src/runtime/reserve/d_define.h
         src/runtime/reserve/Finally.cpp
         src/runtime/reserve/Finally.h
+        src/compiler/gen/ClassCodeGenerator.cpp
+        src/compiler/gen/ClassCodeGenerator.h
+        src/compiler/NativeConverter.cpp
+        src/compiler/NativeConverter.h
+        src/native/net/Socket.cpp
 )
 
 target_link_libraries(dream ${LIBANTLR})

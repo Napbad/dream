@@ -131,3 +131,38 @@ std::string string_util::get_text_from_vector(const std::vector<std::string>& ve
 
     return res;
 }
+
+std::string string_util::get_lines_from_vector(const std::vector<std::string>& vector)
+{
+    string res;
+
+    for (const auto& str : vector)
+    {
+        res += str;
+        res += "\n";
+    }
+
+    return res;
+}
+
+bool string_util::str_is_common_type(const std::string& string)
+{
+    for (const auto &type : common_types)
+    {
+
+    }
+}
+
+
+std::string string_util::convert_type_to_cpp(std::string& type_name)
+{
+    if (type_name == D_STRING)
+        return "std::string";
+
+    if (type_name == D_STRING_ARR)
+        return "std::string[]";
+
+    if (type_name.starts_with("u"))
+        type_name.replace(0, 1, "unsigned ");
+    return type_name;
+}
