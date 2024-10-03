@@ -25,7 +25,7 @@ importName
 
 // 函数调用语句
 funCallStmt
-    : IDENTIFIER (DOT IDENTIFIER)* LPAREN argList? RPAREN
+    : SLASH? IDENTIFIER (DOT IDENTIFIER)* LPAREN argList? RPAREN
     ;
 
 // 文件语句
@@ -160,7 +160,6 @@ expr
 // 赋值表达式
 assignExpr
     : type IDENTIFIER ASSIGN expr
-    | IDENTIFIER IDENTIFIER ASSIGN expr
     | assign
     ;
 
@@ -186,6 +185,16 @@ varModifiers
 // 文件函数声明
 functionDeclaration
     : funModifiers? FUN IDENTIFIER LPAREN (paramList)? RPAREN returnType? funBlock
+    ;
+
+// 类成员变量声明
+classVarDecl
+    : classMemberModifier* (annotation)* (VAR | IMT) type IDENTIFIER (BANG | QUESTION)? ('=' expr)? SEMICOLON
+    ;
+
+// 类成员函数声明
+classFuncDecl
+    : classMemberModifier* (annotation)* FUN IDENTIFIER LPAREN (paramList)? RPAREN returnType? funBlock
     ;
 
 // 函数块
@@ -235,25 +244,19 @@ classModifier
 
 // 类块
 classBlock
-    : LBRACE classBody* RBRACE
+    : LBRACE classBody? RBRACE
     ;
 
 // 类体
 classBody
+    : classStmt*
+    ;
+
+classStmt
     : classVarDecl
     | classFuncDecl
-    | constructorDecl
     ;
 
-// 类成员变量声明
-classVarDecl
-    : classMemberModifier* (annotation)* (VAR | IMT) type IDENTIFIER (BANG | QUESTION)? ('=' expr)? SEMICOLON
-    ;
-
-// 类成员函数声明
-classFuncDecl
-    : classMemberModifier? (annotation)* FUN IDENTIFIER LPAREN (paramList)? RPAREN returnType? funBlock
-    ;
 
 // 类成员修饰符
 classMemberModifier
@@ -581,6 +584,7 @@ STRING : 'string';
 VOID: 'void';
 
 AT : '@';
+SLASH : '/';
 
 // 操作符
 ASSIGN : '=';
@@ -609,7 +613,7 @@ MOD : '%';
 PLUS : '+';
 MINUS : '-';
 MUL : '*';
-DIV : '/';
+DIV : SLASH;
 LT : '<';
 GT : '>';
 LE : '<=';
@@ -629,6 +633,7 @@ TIBLE : '~';
 // 增减操作符
 INC : '++';
 DEC : '--';
+
 
 // 字面量
 IDENTIFIER : [a-zA-Z_][a-zA-Z_0-9]*;

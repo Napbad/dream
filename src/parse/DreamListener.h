@@ -95,6 +95,12 @@ public:
   virtual void enterFunctionDeclaration(DreamParser::FunctionDeclarationContext *ctx) = 0;
   virtual void exitFunctionDeclaration(DreamParser::FunctionDeclarationContext *ctx) = 0;
 
+  virtual void enterClassVarDecl(DreamParser::ClassVarDeclContext *ctx) = 0;
+  virtual void exitClassVarDecl(DreamParser::ClassVarDeclContext *ctx) = 0;
+
+  virtual void enterClassFuncDecl(DreamParser::ClassFuncDeclContext *ctx) = 0;
+  virtual void exitClassFuncDecl(DreamParser::ClassFuncDeclContext *ctx) = 0;
+
   virtual void enterFunBlock(DreamParser::FunBlockContext *ctx) = 0;
   virtual void exitFunBlock(DreamParser::FunBlockContext *ctx) = 0;
 
@@ -122,11 +128,8 @@ public:
   virtual void enterClassBody(DreamParser::ClassBodyContext *ctx) = 0;
   virtual void exitClassBody(DreamParser::ClassBodyContext *ctx) = 0;
 
-  virtual void enterClassVarDecl(DreamParser::ClassVarDeclContext *ctx) = 0;
-  virtual void exitClassVarDecl(DreamParser::ClassVarDeclContext *ctx) = 0;
-
-  virtual void enterClassFuncDecl(DreamParser::ClassFuncDeclContext *ctx) = 0;
-  virtual void exitClassFuncDecl(DreamParser::ClassFuncDeclContext *ctx) = 0;
+  virtual void enterClassStmt(DreamParser::ClassStmtContext *ctx) = 0;
+  virtual void exitClassStmt(DreamParser::ClassStmtContext *ctx) = 0;
 
   virtual void enterClassMemberModifier(DreamParser::ClassMemberModifierContext *ctx) = 0;
   virtual void exitClassMemberModifier(DreamParser::ClassMemberModifierContext *ctx) = 0;

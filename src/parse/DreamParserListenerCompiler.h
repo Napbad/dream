@@ -5,26 +5,51 @@
 #ifndef DREAMPARSERLISTENERCOMPILER_H
 #define DREAMPARSERLISTENERCOMPILER_H
 #include "DreamBaseListener.h"
+#include "compiler/gen/ClassCodeGenerator.h"
 #include "obj/Global.h"
 
 
 class DreamParserListenerCompiler final : public DreamBaseListener {
 
 public:
-    DreamParserListenerCompiler(const std::string & file_source, const std::string & file_name, const Global & global);
+    DreamParserListenerCompiler(const std::string & file_source, const std::string & file_name, Global * global);
 
     ~DreamParserListenerCompiler() override;
 
 private:
+
+    // the file that contains the translated code
     std::string _file_name;
+
+    // the current package name
     std::string _package_name;
+
+    // the file stream, to the _file_name
     std::fstream _file_stream;
-    Global _global;
+
+    // translate global configs
+    Global *_global;
+
+    // the corresponding file path to the _file_name
     std::string _file_path;
+
+    // the source file
     std::string _file_source;
+
+    // the root package path
+    std::string _root_path_to_include;
+
+    // the converted file
     std::vector<std::string> _converted_file;
+
+    // the hierarchy that is resolved currently
     Hierarchy *_current_hierarchy;
+
+    // package's hierarchy
     Hierarchy *_package_hierarchy;
+
+    // class code generator
+    ClassCodeGenerator *_class_code_generator;
 
     void enterProgram(DreamParser::ProgramContext * /*ctx*/) override;
     void exitProgram(DreamParser::ProgramContext * /*ctx*/) override;
