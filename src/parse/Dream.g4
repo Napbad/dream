@@ -41,7 +41,7 @@ stmt
 
 // 二元运算
 binaryOpExpr
-    : atomExpr (MOD | MUL | DIV  | MINUS| PLUS | LT | GT | LE | GE | EQ | NEQ | AND | OR | BIT_AND | BIT_OR | XOR | LSHIFT | RSHIFT | URSHIFT) atomExpr
+    : atomExpr (MOD | MUL | SLASH  | MINUS| PLUS | LT | GT | LE | GE | EQ | NEQ | AND | OR | BIT_AND | BIT_OR | XOR | LSHIFT | RSHIFT | URSHIFT) atomExpr
     ;
 
 
@@ -141,7 +141,7 @@ expr
     : LPAREN expr RPAREN
     | funCallStmt
     | unaryOpExpr
-    | expr (MUL | DIV | MOD) expr
+    | expr (MUL | SLASH | MOD) expr
     | expr (PLUS | MINUS) expr
     | expr (LSHIFT | RSHIFT | URSHIFT) expr
     | expr (LT | GT | LE | GE) expr
@@ -613,7 +613,6 @@ MOD : '%';
 PLUS : '+';
 MINUS : '-';
 MUL : '*';
-DIV : SLASH;
 LT : '<';
 GT : '>';
 LE : '<=';

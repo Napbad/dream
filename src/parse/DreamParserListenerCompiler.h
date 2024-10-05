@@ -21,6 +21,9 @@ private:
     // the file that contains the translated code
     std::string _file_name;
 
+    // identifier for every function and class, struct
+    std::string _identifier;
+
     // the current package name
     std::string _package_name;
 
@@ -50,6 +53,11 @@ private:
 
     // class code generator
     ClassCodeGenerator *_class_code_generator;
+
+    // flags
+    bool _is_in_class = false;
+    bool _is_in_for_loop = false;
+    bool _is_in_for_condition = false;
 
     void enterProgram(DreamParser::ProgramContext * /*ctx*/) override;
     void exitProgram(DreamParser::ProgramContext * /*ctx*/) override;

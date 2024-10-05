@@ -64,6 +64,8 @@ add_executable(dream src/main.cpp
         src/compiler/NativeConverter.cpp
         src/compiler/NativeConverter.h
         src/native/net/Socket.cpp
+        src/runtime/gc/DataPool.cpp
+        src/runtime/gc/DataPool.h
 )
 
 target_link_libraries(dream ${LIBANTLR})

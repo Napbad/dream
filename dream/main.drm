@@ -81,7 +81,7 @@ fun main() int {
     imt int a! = test(1, 2);
     /println(a);
 
-    Socket sock = new Socket();
+    Socket socket = new Socket();
 }
 
 

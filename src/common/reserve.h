@@ -47,6 +47,12 @@
 #define D_STRING    "string"
 #define D_BOOL      "bool"
 #define D_UINT      "uint"
+#define D_USHORT    "ushort"
+#define D_ULONG     "ulong"
+#define D_LLONG     "llong"
+#define D_ULLONG    "ullong"
+#define D_UFLOAT    "ufloat"
+#define D_UDOUBLE   "udouble"
 
 #define D_INT_ARR           "int[]"
 #define D_BYTE_ARR          "byte[]"
@@ -57,6 +63,15 @@
 #define D_STRING_ARR        "string[]"
 #define D_BOOL_ARR          "bool[]"
 #define D_IDENTIFIER_ARR    "identifier[]"
+
+#define D_UINT_ARR      "uint[]"
+#define D_USHORT_ARR    "ushort[]"
+#define D_ULONG_ARR     "ulong[]"
+#define D_LLONG_ARR     "llong[]"
+#define D_ULLONG_ARR    "ullong[]"
+#define D_UFLOAT_ARR    "ufloat[]"
+#define D_UDOUBLE_ARR   "udouble[]"
+
 
 #define D_NULL_STR      "null"
 #define D_NULL          "null"
@@ -150,7 +165,7 @@ inline std::vector<std::string> ops = {
     D_MOD_ASSIGN
 };
 
-std::unordered_map<std::string, std::string> type_map = {
+inline std::unordered_map<std::string, std::string> common_type_map = {
     {D_INT, "int"},
     {D_BYTE, "char"},
     {D_SHORT, "short"},
@@ -160,7 +175,30 @@ std::unordered_map<std::string, std::string> type_map = {
     {D_STRING, "string"},
     {D_BOOL, "bool"},
     {D_NULL, "null"},
-    {D_UINT, "unsigned int"},}
+    {D_UINT, "unsigned int"},
+    {D_USHORT, "unsigned short"},
+    {D_ULONG, "unsigned long"},
+    {D_LLONG, "long long"},
+    {D_ULLONG, "unsigned long long"},
+    {D_UFLOAT, "unsigned float"},
+    {D_UDOUBLE, "unsigned double"},
+
+    {D_INT_ARR, "int[]"},
+    {D_BYTE_ARR, "char[]"},
+    {D_SHORT_ARR, "short[]"},
+    {D_LONG_ARR, "long[]"},
+    {D_CHAR_ARR, "char[]"},
+    {D_FLOAT_ARR, "float[]"},
+    {D_STRING_ARR, "string[]"},
+    {D_BOOL_ARR, "bool[]"},
+    {D_UINT_ARR, "unsigned int[]"},
+    {D_USHORT_ARR, "unsigned short[]"},
+    {D_ULONG_ARR, "unsigned long[]"},
+    {D_LLONG_ARR, "long long[]"},
+    {D_ULLONG_ARR, "unsigned long long[]"},
+    {D_UFLOAT_ARR, "unsigned float[]"},
+    {D_UDOUBLE_ARR, "unsigned double[]"},
 };
+
 
 #endif

@@ -264,12 +264,7 @@ void DreamParserListenerCompiler::exitCastExpr(DreamParser::CastExprContext* ctx
 
 void DreamParserListenerCompiler::enterAssign(DreamParser::AssignContext* ctx)
 {
-    // common type declare and assign (int ...)
-    if (string_util::str_is_common_type(ctx->children.at(0)->getText()))
-    _converted_file.push_back(string_util::convert_parser_tree_to_string(ctx));
-    // custom type declare and assign
 
-    // common assign without declare
 }
 
 void DreamParserListenerCompiler::exitAssign(DreamParser::AssignContext* ctx)
@@ -367,6 +362,71 @@ void DreamParserListenerCompiler::exitExpr(DreamParser::ExprContext* ctx)
 
 void DreamParserListenerCompiler::enterAssignExpr(DreamParser::AssignExprContext* ctx)
 {
+    if (_is_in_for_condition)
+    {
+        return;
+    }
+
+    // common type declare and assign (int ...)
+    if (string_util::str_is_common_type(ctx->children.at(0)->getText()))
+    {
+        _converted_file.push_back(string_util::convert_parser_tree_to_string(ctx));
+        return;
+    }
+
+    // custom type declare and assign
+    string assign_stmt;
+
+    string tmp = string_util::convert_parser_tree_to_string(ctx);
+
+    if (ctx->children.at(1)->getText() != D_COMMA && ctx->children.at(1)->getText() != D_ASSIGN)
+    {
+        int assign_index = -1;
+        for (int i = 0; i < ctx->children.size(); i++)
+            if (ctx->children.at(i)->getText() == D_ASSIGN)
+                assign_index = i;
+
+        if (assign_index == -1)
+        {
+            response_util::report_error("Assign error: \n" + string_util::convert_parser_tree_to_string(ctx) +
+                                        "\nExpect \" = \", but not found", _file_path,
+                                        static_cast<int>(ctx->getStart()->getLine()));
+            return;
+        }
+
+        assign_stmt.append(ctx->children.at(0)->getText() + " ");
+
+        // custom type declaration must be assigned to an object which is a pointer
+        if (!ctx->children.at(assign_index + 1)->getText().starts_with(D_NEW))
+        {
+            response_util::report_error("Assign error: \n" + string_util::convert_parser_tree_to_string(ctx) +
+                                        "\nExpect \" new \" TYPE, but not found", _file_path,
+                                        static_cast<int>(ctx->getStart()->getLine()));
+            return;
+        }
+
+        for (int i = 1; i < assign_index; i++)
+        {
+            assign_stmt.append("*" + ctx->children.at(i)->getText());
+            if (i == assign_index - 1)
+            {
+                assign_stmt.append(" = ");
+            }
+            else
+            {
+                assign_stmt.append(", ");
+            }
+        }
+        assign_stmt.append(string_util::convert_parser_tree_to_string(ctx->children.at(assign_index + 1)));
+        _converted_file.push_back(assign_stmt + ";\n");
+
+        return;
+    }
+
+    // common assign without declare
+    assign_stmt.append(string_util::convert_parser_tree_to_string(ctx));
+
+    _converted_file.push_back(assign_stmt + ";\n");
 }
 
 void DreamParserListenerCompiler::exitAssignExpr(DreamParser::AssignExprContext* ctx)
@@ -1389,15 +1449,18 @@ void DreamParserListenerCompiler::exitReturnType(DreamParser::ReturnTypeContext*
 
 void DreamParserListenerCompiler::enterForStmt(DreamParser::ForStmtContext* ctx)
 {
+    _is_in_for_loop = true;
     _converted_file.emplace_back("for");
 }
 
 void DreamParserListenerCompiler::exitForStmt(DreamParser::ForStmtContext* ctx)
 {
+    _is_in_for_loop = false;
 }
 
 void DreamParserListenerCompiler::enterForCondition(DreamParser::ForConditionContext* ctx)
 {
+    _is_in_for_condition = true;
     _converted_file.emplace_back("(");
     _converted_file.push_back(string_util::convert_parser_tree_to_string(ctx));
 }
@@ -1405,6 +1468,7 @@ void DreamParserListenerCompiler::enterForCondition(DreamParser::ForConditionCon
 void DreamParserListenerCompiler::exitForCondition(DreamParser::ForConditionContext* ctx)
 {
     _converted_file.emplace_back(")");
+    _is_in_for_condition = false;
 }
 
 void DreamParserListenerCompiler::enterForBlock(DreamParser::ForBlockContext* ctx)

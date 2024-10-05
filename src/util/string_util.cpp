@@ -145,12 +145,13 @@ std::string string_util::get_lines_from_vector(const std::vector<std::string>& v
     return res;
 }
 
-bool string_util::str_is_common_type(const std::string& string)
+bool string_util::str_is_common_type(const std::string& type)
 {
-    for (const auto &type : common_types)
-    {
+    for (const auto& type_d : common_type_map | views::keys)
+        if (type == type_d)
+            return true;
 
-    }
+    return false;
 }
 
 
@@ -164,5 +165,6 @@ std::string string_util::convert_type_to_cpp(std::string& type_name)
 
     if (type_name.starts_with("u"))
         type_name.replace(0, 1, "unsigned ");
+
     return type_name;
 }
