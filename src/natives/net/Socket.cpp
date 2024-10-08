@@ -2,6 +2,7 @@
 // Created by napbadsen on 24-10-2.
 //
 
+#include "../../runtime/class/Object.h"
 #ifndef SOCKET_H
 #define SOCKET_H
 // < INCLUDE BEGIN > //
@@ -16,7 +17,7 @@
 
 // < CLASS DEFINE BEGIN > //
 
-class Socket
+class Socket: public Object
 {
     struct
     {

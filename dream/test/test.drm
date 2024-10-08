@@ -12,7 +12,8 @@ class Test{
 }
 
 fun test_main() {
-    Test().test();
+    Test test = new Test();
+    test.test();
 }
 
 fun test_main1(imt int a!) int{
@@ -23,7 +24,8 @@ fun test_main1(imt int a!) int{
 /*
     test_main(); ->
     void test_main() {
-        Test().test();
+        Test test = new Test();
+        test.test();
     }
 
     test_main1(); ->
