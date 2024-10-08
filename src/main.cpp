@@ -18,8 +18,8 @@ int main(int args, char** argv)
     std::string input_dir = "../dream";
     std::string runtime_src_dir = "../src/runtime";
     std::string runtime_dest_dir = "../build/runtime";
-    std::string native_src_dir = "../src/native";
-    std::string native_dest_dir = "../build/native";
+    std::string native_src_dir = "../src/natives";
+    std::string native_dest_dir = "../build/natives";
 
     std::string main_fun_file_path;
     bool is_main_fun_file_found = false;

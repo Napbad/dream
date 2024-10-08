@@ -42,20 +42,18 @@ add_executable(dream src/main.cpp
         src/obj/Hierarchy.h
         src/runtime/gc/DataSource.h
         src/runtime/gc/DateSource.cpp
-        src/runtime/gc/DataNode.h
-        src/runtime/gc/DataNode.cpp
         src/runtime/gc/DataCopy.h
         src/runtime/gc/DataCopy.cpp
         src/runtime/class/Object.cpp
         src/runtime/class/Object.h
-        src/runtime/native/thread.cpp
-        src/runtime/native/thread.h
+        src/natives/thread/thread.cpp
+        src/natives/thread/thread.h
         src/common/dream_define.cpp
         src/common/dream_define.h
         src/common/dream_const.cpp
         src/common/dream_const.h
-        src/runtime/native/Exception.cpp
-        src/runtime/native/Exception.h
+        src/natives/Exception.cpp
+        src/natives/Exception.h
         src/runtime/reserve/d_define.h
         src/runtime/reserve/Finally.cpp
         src/runtime/reserve/Finally.h
@@ -63,7 +61,7 @@ add_executable(dream src/main.cpp
         src/compiler/gen/ClassCodeGenerator.h
         src/compiler/NativeConverter.cpp
         src/compiler/NativeConverter.h
-        src/native/net/Socket.cpp
+        src/natives/net/Socket.cpp
         src/runtime/gc/DataPool.cpp
         src/runtime/gc/DataPool.h
 )

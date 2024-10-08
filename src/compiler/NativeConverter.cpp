@@ -22,7 +22,7 @@ std::vector<std::string> NativeConverter::get_native_class_code(const std::strin
     }
 
     response_util::report_error(
-        "Could not find native class! \n"
+        "Could not find natives class! \n"
         "   class name -> " + class_name + " \n ", class_name, 0);
 
     return {};

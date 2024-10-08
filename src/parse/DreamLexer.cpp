@@ -82,7 +82,7 @@ void dreamlexerLexerInitialize() {
       "'import'", "'break'", "'continue'", "'try'", "'catch'", "'finally'", 
       "'var'", "'imt'", "'fun'", "'class'", "'enum'", "'interface'", "'annotation'", 
       "'public'", "'private'", "'protected'", "'static'", "'new'", "'override'", 
-      "'native'", "'synchronized'", "'throw'", "", "", "", "", "'true'", 
+      "'natives'", "'synchronized'", "'throw'", "", "", "", "", "'true'",
       "'false'", "'byte'", "'short'", "'int'", "", "'ushort'", "'long'", 
       "'ulong'", "'llong'", "'ullong'", "'float'", "'double'", "'bool'", 
       "'char'", "'string'", "'void'", "'@'", "'/'", "'='", "';'", "'('", 

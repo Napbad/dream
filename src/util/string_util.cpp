@@ -168,3 +168,16 @@ std::string string_util::convert_type_to_cpp(std::string& type_name)
 
     return type_name;
 }
+
+void string_util::replace_all(std::string& str, const std::string& from, const std::string& to)
+{
+    size_t start_pos = 0;
+    while (true)
+    {
+        start_pos = str.find(from, start_pos);
+        if (start_pos == std::string::npos)
+            break;
+        str.replace(start_pos, from.length(), to);
+        start_pos += to.length();
+    }
+}

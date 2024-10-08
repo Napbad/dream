@@ -5,7 +5,6 @@
 
 #include <vector>
 
-#include "DataNode.h"
 
 enum class HierarchyType {
     ROOT,
@@ -16,7 +15,6 @@ enum class HierarchyType {
 class DataSource
 {
     HierarchyType _hierarchy;
-    std::vector<DataNode*> _data_nodes;
 public:
     DataSource();
     ~DataSource();

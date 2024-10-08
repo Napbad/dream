@@ -1,6 +1,6 @@
 package test;
 
-import net.socket;
+import natives.net.socket;
 
 imt string dream_version! = "v0.0.1";
 

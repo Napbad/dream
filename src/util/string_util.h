@@ -42,7 +42,7 @@ namespace string_util {
 
     std::string convert_type_to_cpp(std::string &type_name);
 
-
+    void replace_all(std::string &str, const std::string &from, const std::string &to);
 }
 
 #endif //STRING_UTIL_H

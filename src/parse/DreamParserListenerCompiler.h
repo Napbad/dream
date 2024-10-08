@@ -24,7 +24,7 @@ private:
     // identifier for every function and class, struct
     std::string _identifier;
 
-    // the current package name
+    // the current package class_name
     std::string _package_name;
 
     // the file stream, to the _file_name

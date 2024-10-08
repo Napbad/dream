@@ -50,9 +50,11 @@ public:
 
     [[nodiscard]] std::string generate_code() const;
 
-    std::vector<std::string> *current_converting() const;
+    [[nodiscard]] std::vector<std::string> *current_converting() const;
 
     void add_current();
+
+    std::string class_name();
 };
 
 

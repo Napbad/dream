@@ -1,5 +1,3 @@
 package stl;
 
-import net.socket;
-
 imt string name! = "vector";

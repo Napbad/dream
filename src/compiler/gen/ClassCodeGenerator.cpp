@@ -176,3 +176,9 @@ void ClassCodeGenerator::add_current()
         break;
     }
 }
+
+std::string ClassCodeGenerator::class_name()
+{
+    return _class_name;
+}
+

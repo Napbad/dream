@@ -36,9 +36,9 @@ class Hierarchy
 
 public:
     /**
-     * Constructs a new hierarchy node with a given name, type, and parent.
+     * Constructs a new hierarchy node with a given class_name, type, and parent.
      *
-     * This constructor initializes a new hierarchy node with the specified name, type, and parent node.
+     * This constructor initializes a new hierarchy node with the specified class_name, type, and parent node.
      * It also associates the node with a list of children nodes.
      *
      * @param name The name of the node.
@@ -58,9 +58,9 @@ public:
 
 
     /**
-     * Find a child by name
+     * Find a child by class_name
      *
-     * This function searches for the first matching child element using the provided name string within the current object's children.
+     * This function searches for the first matching child element using the provided class_name string within the current object's children.
      * If a matching child is found, it returns a pointer to that child; otherwise, it returns a null pointer.
      *
      * @param name The name of the child element to search for

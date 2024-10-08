@@ -8,9 +8,9 @@
 #include <string>
 #include <vector>
 
-// this file is used to generate the native code from native folder
+// this file is used to generate the natives code from natives folder
 
-const std::string native_file_path = "../build/native";
+const std::string native_file_path = "../build/natives";
 
 
 class NativeConverter {

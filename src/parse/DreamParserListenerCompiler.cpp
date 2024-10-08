@@ -46,7 +46,7 @@ void DreamParserListenerCompiler::exitProgram(DreamParser::ProgramContext* ctx)
 
     if (_package_name == MAIN_PACKAGE && _file_name == MAIN_FILE)
     {
-        const string command = ("g++ -lstdc++ " +
+        const string command = ("g++ -lstdc++ -std=c++14" +
             string_util::get_text_from_vector(_global->file_to_compile_list()) + " -o " + _file_path.substr(
                 0, _file_path.length() - 4) + ".o");
 
@@ -109,9 +109,8 @@ void DreamParserListenerCompiler::enterPackageDecl(DreamParser::PackageDeclConte
     // include the runtime files
     _converted_file.insert(_converted_file.begin() + 1, import_stmt + RUNTIME_DIR + "/" + "class/Object.h\" \n");
     _converted_file.insert(_converted_file.begin() + 1, import_stmt + RUNTIME_DIR + "/" + "gc/DataCopy.h\" \n");
-    _converted_file.insert(_converted_file.begin() + 1, import_stmt + RUNTIME_DIR + "/" + "gc/DataNode.h\" \n");
     _converted_file.insert(_converted_file.begin() + 1, import_stmt + RUNTIME_DIR + "/" + "gc/DataSource.h\" \n");
-    _converted_file.insert(_converted_file.begin() + 1, import_stmt + RUNTIME_DIR + "/" + "native/Exception.h\" \n");
+    _converted_file.insert(_converted_file.begin() + 1, import_stmt + "natives/Exception.h\" \n");
     _converted_file.insert(_converted_file.begin() + 1, import_stmt + RUNTIME_DIR + "/" + "reserve/d_define.h\" \n");
     _converted_file.insert(_converted_file.begin() + 1, import_stmt + RUNTIME_DIR + "/" + "reserve/Finally.h\" \n");
 }
@@ -196,6 +195,8 @@ void DreamParserListenerCompiler::enterFunCallStmt(DreamParser::FunCallStmtConte
             fun_call.append(" << std::endl;");
         }
 
+        string_util::replace_all(fun_call, ".", "->");
+
         if (_class_code_generator)
             _class_code_generator->current_converting()->push_back(fun_call + "\n");
         else
@@ -203,10 +204,16 @@ void DreamParserListenerCompiler::enterFunCallStmt(DreamParser::FunCallStmtConte
         return;
     }
 
+
+    std::string stmt = string_util::convert_parser_tree_to_string(ctx);
+    string_util::replace_all(stmt, ".", "->");
     if (_class_code_generator)
-        _class_code_generator->current_converting()->push_back(string_util::convert_parser_tree_to_string(ctx) + ";\n");
+    {
+        _class_code_generator->current_converting()->push_back(stmt );
+        _class_code_generator->current_converting()->emplace_back(";\n");
+    }
     else
-        _converted_file.push_back(string_util::convert_parser_tree_to_string(ctx) + ";\n");
+    _converted_file.push_back(stmt + ";\n");
 }
 
 void DreamParserListenerCompiler::exitFunCallStmt(DreamParser::FunCallStmtContext* ctx)
@@ -264,7 +271,6 @@ void DreamParserListenerCompiler::exitCastExpr(DreamParser::CastExprContext* ctx
 
 void DreamParserListenerCompiler::enterAssign(DreamParser::AssignContext* ctx)
 {
-
 }
 
 void DreamParserListenerCompiler::exitAssign(DreamParser::AssignContext* ctx)
@@ -644,10 +650,17 @@ void DreamParserListenerCompiler::enterFunctionDeclaration(DreamParser::Function
         if (trees.at(i)->getText().starts_with(D_LBRACE))
         {
             // only one return type
-            if (vector<antlr4::tree::ParseTree*> return_tree = trees.at(i - 1)->children; return_tree.size() == 1)
+            vector<antlr4::tree::ParseTree*> return_tree = trees.at(i - 1)->children;
+            if (return_tree.size() == 1)
             {
                 fun_decl.append(return_tree.at(0)->getText())
                         .append(" ")
+                        .append(func_name)
+                        .append("(");
+            }
+            else if (return_tree.empty())
+            {
+                fun_decl.append("void ")
                         .append(func_name)
                         .append("(");
             }
@@ -694,8 +707,15 @@ void DreamParserListenerCompiler::enterFunctionDeclaration(DreamParser::Function
             if (single_param->children.at(2)->getText() == D_NON_NULLABLE ||
                 single_param->children.at(2)->getText() == D_NULLABLE)
             {
-                fun_decl.append(string_util::convert_parser_tree_to_string(single_param->children.at(1)))
-                        .append(single_param->children.at(1)->getText());
+                // fun_decl.append(string_util::convert_parser_tree_to_string(single_param->children.at(1)))
+                //         .append(single_param->children.at(1)->getText());
+
+                string type = single_param->children.at(1)->getText();
+
+                fun_decl.append("const ")
+                        .append(string_util::convert_type_to_cpp(type))
+                        .append(" ")
+                        .append(single_param->children.at(2)->getText());
 
                 if (single_param->children.at(2)->getText() == D_NULLABLE)
                 {
@@ -719,14 +739,12 @@ void DreamParserListenerCompiler::enterFunctionDeclaration(DreamParser::Function
             {
                 fun_decl.append(single_param->children.at(0)->getText() == D_IMT ? "const " : "")
                         .append(single_param->children.at(1)->getText())
+                        .append(" ")
                         .append(single_param->children.at(2)->getText());
             }
             if (single_param->children.at(3)->getText() == D_NON_NULLABLE ||
                 single_param->children.at(3)->getText() == D_NULLABLE)
             {
-                fun_decl.append(single_param->children.at(0)->getText())
-                        .append(single_param->children.at(1)->getText());
-
                 if (single_param->children.at(3)->getText() == D_NULLABLE)
                 {
                     _global->add_var_nullable(
@@ -962,7 +980,7 @@ void DreamParserListenerCompiler::exitFunModifiers(DreamParser::FunModifiersCont
 
 void DreamParserListenerCompiler::enterClassDeclaration(DreamParser::ClassDeclarationContext* ctx)
 {
-    // add the class name to the file
+    // add the class class_name to the file
     if (ctx->children.at(0)->getText() == D_NATIVE_ANNOTATION)
     {
         vector<string> content = NativeConverter::get_native_class_code(ctx->children.at(2)->getText());
@@ -998,6 +1016,7 @@ void DreamParserListenerCompiler::exitClassDeclaration(DreamParser::ClassDeclara
         _converted_file.push_back(_class_code_generator->generate_code());
 
         delete _class_code_generator;
+        _class_code_generator = nullptr;
     }
 }
 
@@ -1160,35 +1179,28 @@ void DreamParserListenerCompiler::enterClassFuncDecl(DreamParser::ClassFuncDeclC
         if (single_param->children.size() == 4)
         {
             string val_type = single_param->children.at(1)->getText();
-            if (single_param->children.at(0)->getText() == D_IMT ||
-                single_param->children.at(0)->getText() == D_VAR)
-            {
-                fun_decl.append(single_param->children.at(0)->getText() == D_IMT ? "const " : "")
-                        .append(string_util::convert_type_to_cpp(val_type))
-                        .append(" ")
-                        .append(single_param->children.at(2)->getText());
-            }
-            else
+            if (!(single_param->children.at(0)->getText() == D_IMT ||
+                single_param->children.at(0)->getText() == D_VAR))
             {
                 response_util::report_error("Invalid parameter declaration ", _file_source,
                                             static_cast<int>(ctx->getStart()->getLine()));
             }
+
+            fun_decl.append(single_param->children.at(0)->getText() == D_IMT ? "const " : "")
+                    .append(string_util::convert_type_to_cpp(val_type))
+                    .append(" ")
+                    .append(single_param->children.at(2)->getText());
             if (single_param->children.at(3)->getText() == D_NON_NULLABLE ||
                 single_param->children.at(3)->getText() == D_NULLABLE)
             {
                 if (single_param->children.at(3)->getText() == D_NULLABLE)
                 {
                     _global->add_var_nullable(
-                        _package_name + _file_name + func_name + single_param->children.at(1)->getText(), true);
+                        _package_name + _file_name + _class_code_generator->class_name() + func_name + single_param->
+                        children.at(1)->getText(), true);
                 }
                 continue;
             }
-            else
-            {
-                response_util::report_error("Invalid parameter declaration ", _file_source,
-                                            static_cast<int>(ctx->getStart()->getLine()));
-            }
-
             response_util::report_error("Invalid parameter declaration ", _file_source,
                                         static_cast<int>(ctx->getStart()->getLine()));
         }
