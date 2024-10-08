@@ -142,3 +142,14 @@ bool Hierarchy::exist_child(const Hierarchy* hierarchy) const
 
     return false;
 }
+
+std::string Hierarchy::get_full_hierarchy_name() const
+{
+    const Hierarchy* tmp = this;
+    if (tmp->parent() == nullptr)
+    {
+        return tmp->name();
+    }
+
+    return tmp->parent()->get_full_hierarchy_name() + "." + tmp->name();
+}

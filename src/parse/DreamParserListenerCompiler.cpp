@@ -46,7 +46,6 @@ void DreamParserListenerCompiler::exitProgram(DreamParser::ProgramContext* ctx)
 
     if (_package_name == MAIN_PACKAGE && _file_name == MAIN_FILE)
     {
-
         // add the runtime stmts:
 
         const string command = ("g++ -lstdc++ -std=c++17" +
@@ -74,7 +73,7 @@ void DreamParserListenerCompiler::exitProgram(DreamParser::ProgramContext* ctx)
 
 void DreamParserListenerCompiler::enterPackageDecl(DreamParser::PackageDeclContext* ctx)
 {
-    // create correspond package directory and file
+    // create correspond package directory and file in build directory
     const std::string path = file_util::convert_pkg_to_path(ctx->children.at(1)->getText());
     _package_name = ctx->children.at(1)->getText();
 
@@ -91,15 +90,18 @@ void DreamParserListenerCompiler::enterPackageDecl(DreamParser::PackageDeclConte
     // set up the hierarchy, merge the current hierarchy into the global hierarchy
     Hierarchy* tmp = _package_hierarchy;
     tmp = Hierarchy::merge_hierarchy(_global->hierarchy(), tmp);
-    _current_hierarchy = tmp;
+    _current_hierarchy = new Hierarchy(_file_name, HierarchyType::FILE, tmp, {});
+    tmp->add_child(_current_hierarchy);
 
+    string full_hierarchy_name = _current_hierarchy->get_full_hierarchy_name();
+
+    // find the root directory, to make the import path easier to generate
     int count = 0;
     while (tmp->parent() != _global->hierarchy())
     {
         count++;
         tmp = tmp->parent();
     }
-
     string import_stmt = "#include \"";
     for (int i = 0; i <= count; i++)
     {
@@ -133,11 +135,13 @@ void DreamParserListenerCompiler::exitPackageDecl(DreamParser::PackageDeclContex
         {
             for (int j = 0; j < import_pack.size(); j++)
             {
-                if (j < i) pack_path.append("../");
+                if (j < i)
+                    pack_path.append("../");
                 else if (j != import_pack.size() - 1)
                     pack_path.append(import_pack[j])
                              .append("/");
-                else pack_path.append(import_pack[j]);
+                else
+                    pack_path.append(import_pack[j]);
             }
         }
     }
@@ -214,11 +218,11 @@ void DreamParserListenerCompiler::enterFunCallStmt(DreamParser::FunCallStmtConte
     string_util::replace_all(stmt, ".", "->");
     if (_class_code_generator)
     {
-        _class_code_generator->current_converting()->push_back(stmt );
+        _class_code_generator->current_converting()->push_back(stmt);
         _class_code_generator->current_converting()->emplace_back(";\n");
     }
     else
-    _converted_file.push_back(stmt + ";\n");
+        _converted_file.push_back(stmt + ";\n");
 }
 
 void DreamParserListenerCompiler::exitFunCallStmt(DreamParser::FunCallStmtContext* ctx)

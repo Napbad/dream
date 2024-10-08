@@ -68,6 +68,10 @@ add_executable(dream src/main.cpp
         src/runtime/gc/DataPath.h
         src/runtime/gc/GCable.cpp
         src/runtime/gc/GCable.h
+        src/runtime/run/ExecuteUnit.cpp
+        src/runtime/run/ExecuteUnit.h
+        src/runtime/run/ExecutePool.cpp
+        src/runtime/run/ExecutePool.h
 )
 
 target_link_libraries(dream ${LIBANTLR})

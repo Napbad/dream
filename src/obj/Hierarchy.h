@@ -150,6 +150,8 @@ public:
      * @return True if the child node exists, false otherwise.
      */
     [[nodiscard]] bool exist_child(const Hierarchy* hierarchy) const;
+
+    [[nodiscard]] std::string get_full_hierarchy_name() const;
 };
 
 #endif //HIERARCHY_H
