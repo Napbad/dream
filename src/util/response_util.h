@@ -10,6 +10,7 @@
 
 namespace response_util {
     void report_error(const std::string &msg, const std::string &file_name, int line);
+    void report_error(const std::string& msg);
 }
 
 #endif //RESPONSE_UTIL_H

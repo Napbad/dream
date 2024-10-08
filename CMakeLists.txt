@@ -64,6 +64,10 @@ add_executable(dream src/main.cpp
         src/natives/net/Socket.cpp
         src/runtime/gc/DataPool.cpp
         src/runtime/gc/DataPool.h
+        src/runtime/gc/DataPath.cpp
+        src/runtime/gc/DataPath.h
+        src/runtime/gc/GCable.cpp
+        src/runtime/gc/GCable.h
 )
 
 target_link_libraries(dream ${LIBANTLR})

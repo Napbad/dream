@@ -3,7 +3,11 @@
 #ifndef DATASOURCE_H
 #define DATASOURCE_H
 
+#include <any>
+#include <string>
 #include <vector>
+
+#include "DataPool.h"
 
 
 enum class HierarchyType {
@@ -12,15 +16,22 @@ enum class HierarchyType {
     CLASS
 };
 
-class DataSource
+class DataSource: public GCable
 {
     HierarchyType _hierarchy;
+
+    std::vector<GCable*> _data_pools;
+
+    std::string _name;
 public:
-    DataSource();
-    ~DataSource();
+    DataSource(HierarchyType type, const std::string& name);
+    ~DataSource() override;
 
     [[nodiscard]] HierarchyType hierarchy() const;
 
+    void link_data(GCable* data_pool);
+
+    void gc() override;
 };
 
 #endif

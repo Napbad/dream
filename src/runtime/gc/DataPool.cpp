@@ -4,19 +4,36 @@
 
 #include "DataPool.h"
 
-DataPool::DataPool(const DataPoolType type, const std::string& name)
+#include <utility>
+
+#include "DataPath.h"
+
+template <typename T>
+DataPool<T>::DataPool(const DataPoolType type, std::string name)
+    : _type(type), _name(std::move(name))
 {
-    _type = type;
-    _name = name;
 }
 
-bool DataPool::link_data(void* data, std::string name)
+template <typename T>
+DataPool<T>::~DataPool()
 {
-    _data.insert(std::pair<std::string, void*>(name, data));
-    return true;
+    gc();
+    for (auto data : _data)
+    {
+        delete data.second;
+    }
 }
 
-void* DataPool::get_data(const std::string& name)
+template <typename T>
+bool DataPool<T>::link_data(T* data, const std::string& name)
+{
+    _data[name] = data;
+    _data_status[data] = USING;
+    return false;
+}
+
+template <typename T>
+T* DataPool<T>::get_data(const std::string& name)
 {
     if (_data.find(name) == _data.end())
         return nullptr;
@@ -24,17 +41,44 @@ void* DataPool::get_data(const std::string& name)
     return _data[name];
 }
 
-void DataPool::add_child(const DataPool& child)
+template <typename T>
+void DataPool<T>::add_child(const DataPool<T>& child)
 {
     _childs.push_back(child);
 }
 
-DataPoolType DataPool::type() const
+template <typename T>
+DataPoolType DataPool<T>::type() const
 {
     return _type;
 }
 
-std::string DataPool::name() const
+template <typename T>
+std::string DataPool<T>::name() const
 {
     return _name;
+}
+
+template <typename T>
+void DataPool<T>::deserve_data(const std::string& name, DataPool<T>* to)
+{
+    T* data = get_data(name);
+    if (data != nullptr)
+    {
+        to->link_data(data, name);
+        _data.erase(name);
+    }
+}
+
+template <typename T>
+void DataPool<T>::gc()
+{
+    for (auto& [name, data] : _data)
+    {
+        if (data_path::data_end(name, _name) && _data_status.at(data))
+        {
+            delete data;
+            _data.erase(name);
+        }
+    }
 }

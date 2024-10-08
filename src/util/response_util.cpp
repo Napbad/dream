@@ -13,3 +13,10 @@ void response_util::report_error(const std::string &msg, const std::string &file
                      file_util::FileColor::WHITE);
     print(std::cout, "=============================\n", file_util::FileColor::YELLOW);
 }
+
+void response_util::report_error(const std::string& msg)
+{
+    print(std::cout, "===========ERROR=============\n", file_util::FileColor::YELLOW);
+    print(std::cout, msg, file_util::FileColor::RED);
+    print(std::cout, "=============================\n", file_util::FileColor::YELLOW);
+}

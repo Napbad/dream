@@ -46,9 +46,12 @@ void DreamParserListenerCompiler::exitProgram(DreamParser::ProgramContext* ctx)
 
     if (_package_name == MAIN_PACKAGE && _file_name == MAIN_FILE)
     {
-        const string command = ("g++ -lstdc++ -std=c++14" +
+
+        // add the runtime stmts:
+
+        const string command = ("g++ -lstdc++ -std=c++17" +
             string_util::get_text_from_vector(_global->file_to_compile_list()) + " -o " + _file_path.substr(
-                0, _file_path.length() - 4) + ".o");
+                0, _file_path.length() - 4) + ".o \n");
 
         print(cout,
               "========================= Compiling ========================= \n" + command
@@ -62,7 +65,7 @@ void DreamParserListenerCompiler::exitProgram(DreamParser::ProgramContext* ctx)
             exit(1);
         }
         file_util::print(cout,
-                         "\n========================= Compiling End ========================= \n",
+                         "========================= Compiling End ========================= \n",
                          file_util::FileColor::GREEN);
 
         system((_file_path.substr(0, _file_path.length() - 4) + ".o").c_str());
@@ -109,6 +112,8 @@ void DreamParserListenerCompiler::enterPackageDecl(DreamParser::PackageDeclConte
     // include the runtime files
     _converted_file.insert(_converted_file.begin() + 1, import_stmt + RUNTIME_DIR + "/" + "class/Object.h\" \n");
     _converted_file.insert(_converted_file.begin() + 1, import_stmt + RUNTIME_DIR + "/" + "gc/DataCopy.h\" \n");
+    _converted_file.insert(_converted_file.begin() + 1, import_stmt + RUNTIME_DIR + "/" + "gc/DataPool.h\" \n");
+    _converted_file.insert(_converted_file.begin() + 1, import_stmt + RUNTIME_DIR + "/" + "gc/DataPath.h\" \n");
     _converted_file.insert(_converted_file.begin() + 1, import_stmt + RUNTIME_DIR + "/" + "gc/DataSource.h\" \n");
     _converted_file.insert(_converted_file.begin() + 1, import_stmt + "natives/Exception.h\" \n");
     _converted_file.insert(_converted_file.begin() + 1, import_stmt + RUNTIME_DIR + "/" + "reserve/d_define.h\" \n");
