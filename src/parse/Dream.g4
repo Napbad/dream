@@ -45,6 +45,10 @@ binaryOpExpr
     ;
 
 
+// 函数变量声明
+funVarDeclaration
+    : (VAR | IMT) varModifiers? type IDENTIFIER (BANG | QUESTION)? (ASSIGN expr)? SEMICOLON
+    ;
 
 // 参数列表
 argList
@@ -194,7 +198,7 @@ classVarDecl
 
 // 类成员函数声明
 classFuncDecl
-    : classMemberModifier* (annotation)* FUN IDENTIFIER LPAREN (paramList)? RPAREN returnType? funBlock
+    : classMemberModifier* (annotation)* CONST? FUN IDENTIFIER LPAREN (paramList)? RPAREN returnType? funBlock
     ;
 
 // 函数块
@@ -215,10 +219,6 @@ funStmt
     | fileCodeBlock
     ;
 
-// 函数变量声明
-funVarDeclaration
-    : (VAR | IMT) varModifiers? type IDENTIFIER (BANG | QUESTION)? (ASSIGN expr)? SEMICOLON
-    ;
 
 // 函数修饰符
 funModifiers
@@ -583,6 +583,9 @@ CHAR : 'char';
 STRING : 'string';
 VOID: 'void';
 
+CONST : 'const';
+
+
 AT : '@';
 SLASH : '/';
 
@@ -636,3 +639,4 @@ DEC : '--';
 
 // 字面量
 IDENTIFIER : [a-zA-Z_][a-zA-Z_0-9]*;
+

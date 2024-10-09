@@ -4,6 +4,7 @@
 
 #ifndef HIERARCHY_H
 #define HIERARCHY_H
+
 #include <string>
 #include <vector>
 

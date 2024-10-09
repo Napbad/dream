@@ -1,13 +1,10 @@
 //
-// Created by napbadsen on 24-9-28.
+// Created by napbadsen on 24-10-9.
 //
 
-#ifndef DREAM_CONST_H
-#define DREAM_CONST_H
+#ifndef COMMON_CONST_H
+#define COMMON_CONST_H
 #include <string>
-
-#include "reserve.h"
-#include "util/response_util.h"
 
 inline const std::string DREAM_VERSION = "0.1";
 
@@ -27,27 +24,4 @@ inline const std::string CONVERT_SOURCE_FILE_TYPE = ".dream";
 
 inline const std::string ROOT_DATASOURCE = "ROOT";
 
-
-enum class ClassMemberVisibility
-{
-    PUBLIC,
-    PRIVATE,
-    PROTECTED
-};
-
-enum class ClassType
-{
-    CLASS,
-    INTERFACE
-};
-
-enum class ClassMemberType
-{
-    FIELD,
-    METHOD
-};
-
-ClassMemberVisibility getClassMemberVisibility(const std::string& value);
-
-
-#endif //DREAM_CONST_H
+#endif //COMMON_CONST_H

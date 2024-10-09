@@ -1,9 +1,9 @@
-#include "time/data_pool_test.cpp"
+#include "time/object_assign_test.cpp"
 
 
 int main() {
 
-    data_pool_test();
+    object_assign_test();
 
     return 0;
 }

@@ -38,6 +38,9 @@ public:
   virtual void enterBinaryOpExpr(DreamParser::BinaryOpExprContext *ctx) = 0;
   virtual void exitBinaryOpExpr(DreamParser::BinaryOpExprContext *ctx) = 0;
 
+  virtual void enterFunVarDeclaration(DreamParser::FunVarDeclarationContext *ctx) = 0;
+  virtual void exitFunVarDeclaration(DreamParser::FunVarDeclarationContext *ctx) = 0;
+
   virtual void enterArgList(DreamParser::ArgListContext *ctx) = 0;
   virtual void exitArgList(DreamParser::ArgListContext *ctx) = 0;
 
@@ -106,9 +109,6 @@ public:
 
   virtual void enterFunStmt(DreamParser::FunStmtContext *ctx) = 0;
   virtual void exitFunStmt(DreamParser::FunStmtContext *ctx) = 0;
-
-  virtual void enterFunVarDeclaration(DreamParser::FunVarDeclarationContext *ctx) = 0;
-  virtual void exitFunVarDeclaration(DreamParser::FunVarDeclarationContext *ctx) = 0;
 
   virtual void enterFunModifiers(DreamParser::FunModifiersContext *ctx) = 0;
   virtual void exitFunModifiers(DreamParser::FunModifiersContext *ctx) = 0;

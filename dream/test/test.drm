@@ -5,14 +5,14 @@ import natives.net.socket;
 imt string dream_version! = "v0.0.1";
 
 class Test{
-    public fun test() {
+    public const fun test() {
         /println("Hello!");
         /println(("Dream Version: " + dream_version));
     }
 }
 
 fun test_main() {
-    Test test = new Test();
+    imt Test test! = new Test();
     test.test();
 }
 
@@ -24,7 +24,7 @@ fun test_main1(imt int a!) int{
 /*
     test_main(); ->
     void test_main() {
-        Test test = new Test();
+        imt Test test! = new Test();
         test.test();
     }
 

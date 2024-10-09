@@ -4,6 +4,4 @@
 
 #include "CodeGenerator.h"
 
-#include <fstream>
-#include <ostream>
 

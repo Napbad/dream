@@ -6,7 +6,9 @@
 #define DREAMPARSERLISTENERCOMPILER_H
 #include "DreamBaseListener.h"
 #include "compiler/gen/ClassCodeGenerator.h"
+#include "compiler/gen/StructDataCodeGenerator.h"
 #include "obj/Global.h"
+
 
 
 class DreamParserListenerCompiler final : public DreamBaseListener {
@@ -53,6 +55,10 @@ private:
 
     // class code generator
     ClassCodeGenerator *_class_code_generator;
+
+    // struct data code generator
+    StructDataCodeGenerator *_input_struct_data_code_generator;
+    StructDataCodeGenerator *_own_struct_data_code_generator;
 
     // flags
     bool _is_in_class = false;

@@ -47,7 +47,7 @@ int main(int args, char** argv)
             }
             main_fun_file_path = file_path;
             is_main_fun_file_found = true;
-            continue;
+            continue;   
         }
 
         cout << file_path << endl;

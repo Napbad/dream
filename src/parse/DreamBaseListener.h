@@ -40,6 +40,9 @@ public:
   virtual void enterBinaryOpExpr(DreamParser::BinaryOpExprContext * /*ctx*/) override { }
   virtual void exitBinaryOpExpr(DreamParser::BinaryOpExprContext * /*ctx*/) override { }
 
+  virtual void enterFunVarDeclaration(DreamParser::FunVarDeclarationContext * /*ctx*/) override { }
+  virtual void exitFunVarDeclaration(DreamParser::FunVarDeclarationContext * /*ctx*/) override { }
+
   virtual void enterArgList(DreamParser::ArgListContext * /*ctx*/) override { }
   virtual void exitArgList(DreamParser::ArgListContext * /*ctx*/) override { }
 
@@ -108,9 +111,6 @@ public:
 
   virtual void enterFunStmt(DreamParser::FunStmtContext * /*ctx*/) override { }
   virtual void exitFunStmt(DreamParser::FunStmtContext * /*ctx*/) override { }
-
-  virtual void enterFunVarDeclaration(DreamParser::FunVarDeclarationContext * /*ctx*/) override { }
-  virtual void exitFunVarDeclaration(DreamParser::FunVarDeclarationContext * /*ctx*/) override { }
 
   virtual void enterFunModifiers(DreamParser::FunModifiersContext * /*ctx*/) override { }
   virtual void exitFunModifiers(DreamParser::FunModifiersContext * /*ctx*/) override { }

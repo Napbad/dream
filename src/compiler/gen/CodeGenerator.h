@@ -14,6 +14,8 @@ const string PACKAGE = "// package ";
 
 class CodeGenerator {
 public:
+    virtual ~CodeGenerator() = default;
+    [[nodiscard]] virtual  std::string generate_code() const = 0;
 };
 
 

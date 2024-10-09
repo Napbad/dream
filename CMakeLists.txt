@@ -72,6 +72,14 @@ add_executable(dream src/main.cpp
         src/runtime/run/ExecuteUnit.h
         src/runtime/run/ExecutePool.cpp
         src/runtime/run/ExecutePool.h
+        src/runtime/global/global_runtime_depen.cpp
+        src/runtime/global/global_runtime_depen.h
+        src/runtime/common/common_const.cpp
+        src/runtime/common/common_const.h
+        src/util/parser_util.cpp
+        src/util/parser_util.h
+        src/compiler/gen/StructDataCodeGenerator.cpp
+        src/compiler/gen/StructDataCodeGenerator.h
 )
 
 target_link_libraries(dream ${LIBANTLR})

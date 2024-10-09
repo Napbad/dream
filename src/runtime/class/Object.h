@@ -9,7 +9,7 @@
 #include <iostream>
 #include <string>
 
-// Base class mimicking Java's Object class
+// Base class
 class Object {
 public:
     // Constructor
