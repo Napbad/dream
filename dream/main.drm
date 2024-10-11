@@ -34,9 +34,49 @@ imt string d! = "d is a string";
 // imt string e! = c;
 
 fun test(imt int a, imt int b) int {
+
+    Test test = new Test();
+
+    Test test2 = new Test();
+
     return a + b;
 }
 
+fun main() {
+    test(1, 2);
+}
+
+/*
+
+struct struct_data_test_transfer {
+
+} struct_data_test_transfer_;
+
+struct struct_data_test_own {
+    Test* test;
+    Test* test2;
+} struct_data_test_own_;
+
+DataPool<struct_data_test_own> data_pool_test(struct_data_test_own_);
+
+int test(int a, int b) {
+
+    Test *test = new Test();
+    Test *test2 = new Test();
+
+    struct_data_test_transfer_.test = test;
+    struct_data_test_transfer_.test2 = test2;
+
+    return a + b;
+}
+
+int main() {
+    RootDataPool.link(data_pool_test);
+
+    test(1, 2);
+}
+
+ */
 
 
 fun main() int {
