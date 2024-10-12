@@ -13,7 +13,6 @@ using namespace antlr4;
 
 int main(int args, char** argv)
 {
-    Global *global = new Global(); // init global object
     std::ifstream stream;
     std::string input_dir = "../dream";
     std::string runtime_src_dir = "../src/runtime";

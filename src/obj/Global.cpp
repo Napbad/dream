@@ -6,6 +6,8 @@
 
 #include "util/file_util.h"
 
+Global *global = new Global();
+
 Global::Global() {
     _var_nullable = new std::unordered_map<std::string, bool>();
     _hierarchy = Hierarchy::root_hierarchy();

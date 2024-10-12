@@ -15,11 +15,13 @@ class StructDataCodeGenerator final : public CodeGenerator{
     vector<std::string> _fields;
 
 public:
-    StructDataCodeGenerator(const std::string& struct_name);
+    explicit StructDataCodeGenerator(const std::string& struct_name);
 
     [[nodiscard]] std::string generate_code() const override;
 
     void add_field(std::string type, const std::string& name);
+
+    void remove(const std::string& field);
 };
 
 

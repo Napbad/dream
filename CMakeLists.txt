@@ -80,6 +80,14 @@ add_executable(dream src/main.cpp
         src/util/parser_util.h
         src/compiler/gen/StructDataCodeGenerator.cpp
         src/compiler/gen/StructDataCodeGenerator.h
+        src/compiler/gen/FunVarGenerator.cpp
+        src/compiler/gen/FunVarGenerator.h
+        src/compiler/gen/FileVarGenerator.cpp
+        src/compiler/gen/FileVarGenerator.h
+        src/compiler/gen/FunGenerator.cpp
+        src/compiler/gen/FunGenerator.h
+        src/compiler/gen/ClassFunGenerator.cpp
+        src/compiler/gen/ClassFunGenerator.h
 )
 
 target_link_libraries(dream ${LIBANTLR})

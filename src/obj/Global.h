@@ -32,4 +32,6 @@ public:
 
 };
 
+extern Global* global;
+
 #endif //GLOBAL_H

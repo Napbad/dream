@@ -6,10 +6,15 @@
 #define DREAMPARSERLISTENERCOMPILER_H
 #include "DreamBaseListener.h"
 #include "compiler/gen/ClassCodeGenerator.h"
+#include "compiler/gen/FunVarGenerator.h"
+#include "compiler/gen/FileVarGenerator.h"
+#include "compiler/gen/FunGenerator.h"
 #include "compiler/gen/StructDataCodeGenerator.h"
 #include "obj/Global.h"
 
-
+class ClassFunGenerator;
+class FileVarGenerator;
+class FunVarGenerator;
 
 class DreamParserListenerCompiler final : public DreamBaseListener {
 
@@ -17,6 +22,10 @@ public:
     DreamParserListenerCompiler(const std::string & file_source, const std::string & file_name, Global * global);
 
     ~DreamParserListenerCompiler() override;
+
+    string file_source();
+    Hierarchy* current_hierarchy() const;
+
 
 private:
 
@@ -59,11 +68,16 @@ private:
     // struct data code generator
     StructDataCodeGenerator *_input_struct_data_code_generator;
     StructDataCodeGenerator *_own_struct_data_code_generator;
+    FunVarGenerator *_fun_var_generator;
+    FileVarGenerator *_file_var_generator;
+    FunGenerator *_fun_generator;
+    ClassFunGenerator *_class_fun_generator;
 
     // flags
     bool _is_in_class = false;
     bool _is_in_for_loop = false;
     bool _is_in_for_condition = false;
+
 
     void enterProgram(DreamParser::ProgramContext * /*ctx*/) override;
     void exitProgram(DreamParser::ProgramContext * /*ctx*/) override;

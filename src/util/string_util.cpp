@@ -6,6 +6,7 @@
 
 #include <numeric>
 #include <regex>
+#include <utility>
 
 #include "common/reserve.h"
 
@@ -132,6 +133,22 @@ std::string string_util::get_text_from_vector(const std::vector<std::string>& ve
     return res;
 }
 
+std::string string_util::get_str_from_param_vector(
+    const std::vector<std::tuple<std::string, std::string, bool, bool>>& vector, std::string delimiter)
+{
+    string res;
+
+    for (const auto& param : vector)
+    {
+        auto [type, name, nullable, mutable_] = param;
+        res += (mutable_ ? "const ": " ") +  type + " " + name;
+        res += delimiter;
+    }
+
+    return res;
+}
+
+
 std::string string_util::get_lines_from_vector(const std::vector<std::string>& vector)
 {
     string res;
@@ -154,20 +171,6 @@ bool string_util::str_is_common_type(const std::string& type)
     return false;
 }
 
-
-std::string string_util::convert_type_to_cpp(std::string& type_name)
-{
-    if (type_name == D_STRING)
-        return "std::string";
-
-    if (type_name == D_STRING_ARR)
-        return "std::string[]";
-
-    if (type_name.starts_with("u"))
-        type_name.replace(0, 1, "unsigned ");
-
-    return type_name;
-}
 
 void string_util::replace_all(std::string& str, const std::string& from, const std::string& to)
 {

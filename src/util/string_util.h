@@ -9,6 +9,8 @@
 #include <vector>
 #include <tree/ParseTree.h>
 
+#include "parser_util.h"
+
 namespace string_util {
     std::vector<std::string> split(const std::string& str, char delimiter);
 
@@ -36,11 +38,12 @@ namespace string_util {
 
     std::string get_text_from_vector(const std::vector<std::string> &vec);
 
+    std::string get_str_from_param_vector(const std::vector<FUN_PARAM_TYPE>& vector, std::string delimiter);
+
     std::string get_lines_from_vector(const std::vector<std::string>& vector);
 
     bool str_is_common_type(const std::string& string);
 
-    std::string convert_type_to_cpp(std::string &type_name);
 
     void replace_all(std::string &str, const std::string &from, const std::string &to);
 }
