@@ -6,6 +6,7 @@ package main; // 这是一个包声明，指定当前文件属于 `main` 包
 
 import stl.vector;
 import natives.net.socket;
+import test.test;
 
 // import std; // 这是一个导入语句，导入 `com.napbad.std` 包
 // import http; // 这是一个导入语句，导入 `com.napbad.http` 包
@@ -40,10 +41,6 @@ fun test(imt int a, imt int b) int {
     Test test2 = new Test();
 
     return a + b;
-}
-
-fun main() {
-    test(1, 2);
 }
 
 /*

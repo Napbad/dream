@@ -7,4 +7,6 @@
 
 #define DREAM
 
+#define DEBUG_COMPILE_MODE global_flag_is_debug
+
 #endif //DREAM_DEFINE_H

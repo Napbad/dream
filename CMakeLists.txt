@@ -88,6 +88,8 @@ add_executable(dream src/main.cpp
         src/compiler/gen/FunGenerator.h
         src/compiler/gen/ClassFunGenerator.cpp
         src/compiler/gen/ClassFunGenerator.h
+        src/compiler/gen/DataPoolGenerator.cpp
+        src/compiler/gen/DataPoolGenerator.h
 )
 
 target_link_libraries(dream ${LIBANTLR})

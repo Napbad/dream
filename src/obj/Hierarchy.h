@@ -21,7 +21,14 @@ enum class HierarchyType
     FILE_FUN, //!< Function within a file
     FILE_CLASS_FUN, //!< Function within a class
     FILE_CLASS_FUN_BLOCK, //!< Block within a function
-    FILE_VAR //!< Variable within a file
+    FILE_VAR, //!< Variable within a file
+    FOR_STMT, //!< For loop statement
+    WHILE_STMT, //!< While loop statement
+    IF_STMT, //!< If condition statement
+    ELSE_STMT, //!< Else condition statement
+    SWITCH_STMT, //!< Switch statement
+    CASE_STMT, //!< Case statement block
+    DEFAULT_STMT, //!< Default statement block
 };
 
 /**
@@ -146,13 +153,23 @@ public:
     /**
      * @brief Checks if a child node exists.
      *
+     * This function checks for the existence of a specified child node within the hierarchy.
+     *
      * @param hierarchy The child node to check for existence.
      *
      * @return True if the child node exists, false otherwise.
      */
     [[nodiscard]] bool exist_child(const Hierarchy* hierarchy) const;
 
+    /**
+     * @brief Gets the full name of the hierarchy.
+     *
+     * This function constructs and returns the full name of the current node within the hierarchy.
+     *
+     * @return The full name of the hierarchy.
+     */
     [[nodiscard]] std::string get_full_hierarchy_name() const;
+
 };
 
 #endif //HIERARCHY_H

@@ -4,10 +4,12 @@
 
 #include "parser_util.h"
 
+#include "file_util.h"
 #include "response_util.h"
 #include "string_util.h"
 #include "common/reserve.h"
 #include "obj/Global.h"
+#include "common/dream_define.h"
 
 using namespace std;
 
@@ -23,13 +25,31 @@ std::vector<std::string> parser_util::gen_data_pool_define(const std::string& na
 bool parser_util::find_nullable(Hierarchy* hierarchy, antlr4::tree::ParseTree* expr)
 {
     bool result = true;
+
+    if (global_flag_is_debug) // if debug mode
+    {
+        std::string expr_str = string_util::convert_parser_tree_to_string(expr);
+        dbg_print(cout, "find_nullable: " + expr_str
+              + "\n\tunder hierarchy: "
+              + hierarchy->get_full_hierarchy_name() + "\n",
+              file_util::FileColor::WHITE);
+    }
+
     for (const auto child : expr->children)
     {
+        // if child has children, then it is not a leaf node, so we need to check its children
         if (!child->children.empty())
         {
             result = find_nullable(hierarchy, child) && result;
         }
 
+        // if child is a common type, then it must not be null
+        if (string_util::str_val_is_common_type(child->getText()))
+        {
+            return false;
+        }
+
+        // if child is an identifier, then we need to check its value
         if (string_util::str_is_only_ident(child->getText()))
         {
             const Hierarchy* tmp = hierarchy;
@@ -46,7 +66,11 @@ bool parser_util::find_nullable(Hierarchy* hierarchy, antlr4::tree::ParseTree* e
             }
 
             response_util::report_error(
-                "Cannot find variable: " + child->getText() + " in hierarchy: " + hierarchy->get_full_hierarchy_name()
+                "Cannot find variable: "
+                + child->getText() +
+                " in hierarchy: "
+                + hierarchy->get_full_hierarchy_name() +
+                "\n"
             );
 
             return false;

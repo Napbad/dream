@@ -31,6 +31,8 @@ DreamParserListenerCompiler::DreamParserListenerCompiler(
     _input_struct_data_code_generator = nullptr;
     _fun_var_generator = nullptr;
     _file_var_generator = nullptr;
+    _fun_generator = nullptr;
+    _class_fun_generator = nullptr;
 }
 
 DreamParserListenerCompiler::~DreamParserListenerCompiler() = default;
@@ -79,7 +81,7 @@ void DreamParserListenerCompiler::exitProgram(DreamParser::ProgramContext* ctx)
             print(std::cout, "Compile error", file_util::FileColor::RED);
             exit(1);
         }
-        file_util::print(cout,
+        print(cout,
                          "========================= Compiling End ========================= \n",
                          file_util::FileColor::GREEN);
 
@@ -482,173 +484,6 @@ void DreamParserListenerCompiler::exitDeclaration(DreamParser::DeclarationContex
 
 void DreamParserListenerCompiler::enterVarDeclaration(DreamParser::VarDeclarationContext* ctx)
 {
-    // if (ctx->children.size() == 7)
-    // {
-    //     const std::vector<antlr4::tree::ParseTree*> child = ctx->children;
-    //
-    //     const string var_name = child[2]->getText();
-    //     const string var_mut = child[0]->getText();
-    //     const string var_null = child[3]->getText();
-    //     const string var_val = child[5]->getText();
-    //     string var_type = child[1]->getText();
-    //
-    //     if (var_type == D_STRING || var_type == D_STRING_ARR)
-    //     {
-    //         _converted_file.emplace_back("#include <string> \n");
-    //     }
-    //
-    //     if (var_mut == D_IMT)
-    //     {
-    //         _converted_file.push_back("const "
-    //             + parser_util::convert_type_to_cpp(var_type) + " "
-    //             + var_name + " = " + var_val + ";\n");
-    //     }
-    //     else if (var_mut == D_VAR)
-    //     {
-    //         _converted_file.push_back(parser_util::convert_type_to_cpp(var_type) + " "
-    //             + var_name + " = " + var_val + ";\n");
-    //     }
-    //
-    //     if (var_null == D_NON_NULLABLE)
-    //     {
-    //         if (var_val == D_NULL)
-    //         {
-    //             cerr << "Cannot assign null to non-nullable variable" << endl;
-    //         }
-    //
-    //         if (string_util::str_is_only_ident(var_val))
-    //         {
-    //             if (_global->is_var_nullable(_package_name + _file_name + var_val))
-    //             {
-    //                 response_util::report_error(
-    //                     "Cannot assign null to non-nullable variable ( " +
-    //                     var_name + " ) \n because <" +
-    //                     var_val +
-    //                     "> might be null \n ",
-    //                     _file_source,
-    //                     static_cast<int>(ctx->getStart()->getLine()));
-    //             }
-    //         }
-    //
-    //         return;
-    //     }
-    //
-    //     _global->add_var_nullable(_package_name + _file_name + var_name, true);
-    // }
-    // else if (ctx->children.size() == 5)
-    // {
-    //     const std::vector<antlr4::tree::ParseTree*> child = ctx->children;
-    //
-    //     const string var_name = child[2]->getText();
-    //     const string var_val = child[3]->getText();
-    //     string var_type = child[0]->getText();
-    //
-    //     if (var_type == D_STRING || var_type == D_STRING_ARR)
-    //     {
-    //         _converted_file.emplace_back("#include <string>\n");
-    //     }
-    //
-    //     _converted_file.push_back("const "
-    //         + parser_util::convert_type_to_cpp(var_type) + " "
-    //         + var_name + " = " + var_val + ";\n");
-    // }
-    // else if (ctx->children.size() == 6)
-    // {
-    //     if (ctx->children.at(0)->getText() == D_VAR || ctx->children.at(0)->getText() == D_IMT)
-    //     {
-    //         const std::vector<antlr4::tree::ParseTree*> child = ctx->children;
-    //
-    //         const string var_name = child[2]->getText();
-    //         const string var_mut = child[0]->getText();
-    //         const string var_val = child[4]->getText();
-    //         string var_type = child[1]->getText();
-    //
-    //         if (var_type == D_STRING || var_type == D_STRING_ARR)
-    //         {
-    //             _converted_file.emplace_back("#include <string> \n");
-    //         }
-    //
-    //         if (var_mut == D_IMT)
-    //         {
-    //             _converted_file.push_back("const "
-    //                 + parser_util::convert_type_to_cpp(var_type) + " "
-    //                 + var_name + " = " + var_val + ";\n");
-    //         }
-    //         else if (var_mut == D_VAR)
-    //         {
-    //             _converted_file.push_back(parser_util::convert_type_to_cpp(var_type) + " "
-    //                 + var_name + " = " + var_val + ";\n");
-    //         }
-    //
-    //         if (var_val == D_NULL)
-    //         {
-    //             response_util::report_error(
-    //                 "Cannot assign null to non-nullable variable",
-    //                 _file_source,
-    //                 static_cast<int>(ctx->getStart()->getLine()));
-    //             return;
-    //         }
-    //
-    //         if (string_util::str_is_only_ident(var_val))
-    //         {
-    //             if (_global->is_var_nullable(_package_name + _file_name + var_val))
-    //             {
-    //                 response_util::report_error(
-    //                     "Cannot assign null to non-nullable variable ( " +
-    //                     var_name + " ) \n because <" +
-    //                     var_val +
-    //                     "> might be null \n ",
-    //                     _file_source,
-    //                     static_cast<int>(ctx->getStart()->getLine()));
-    //             }
-    //         }
-    //
-    //         _global->add_var_nullable(_package_name + _file_name + var_name, true);
-    //     }
-    //     else
-    //     {
-    //         const std::vector<antlr4::tree::ParseTree*> child = ctx->children;
-    //
-    //         const string var_name = child[1]->getText();
-    //         const string var_null = child[2]->getText();
-    //         const string var_val = child[4]->getText();
-    //         string var_type = child[0]->getText();
-    //
-    //         if (var_type == D_STRING || var_type == D_STRING_ARR)
-    //         {
-    //             _converted_file.insert(_converted_file.begin() + 1, "#include <string>\n");
-    //         }
-    //         _converted_file.push_back("const "
-    //             + parser_util::convert_type_to_cpp(var_type) + " "
-    //             + var_name + " = " + var_val + ";\n");
-    //
-    //         if (var_null == D_NON_NULLABLE)
-    //         {
-    //             if (var_val == D_NULL)
-    //             {
-    //                 cerr << "Cannot assign null to non-nullable variable" << endl;
-    //             }
-    //
-    //             if (string_util::str_is_only_ident(var_val))
-    //             {
-    //                 if (_global->is_var_nullable(_package_name + _file_name + var_val))
-    //                 {
-    //                     response_util::report_error(
-    //                         "Cannot assign null to non-nullable variable ( " +
-    //                         var_name + " ) \n because <" +
-    //                         var_val +
-    //                         "> might be null \n ",
-    //                         _file_source,
-    //                         static_cast<int>(ctx->getStart()->getLine()));
-    //                 }
-    //             }
-    //
-    //             return;
-    //         }
-    //
-    //         _global->add_var_nullable(_package_name + _file_name + var_name, true);
-    //     }
-    // }
     _file_var_generator = new FileVarGenerator(this);
     _file_var_generator->init(ctx);
 
@@ -1008,153 +843,6 @@ void DreamParserListenerCompiler::enterClassFuncDecl(DreamParser::ClassFuncDeclC
     _class_fun_generator->init(ctx);
     fun_decl = _class_fun_generator->generate_code();
 
-    // int param_list_begin = 0;
-    // for (auto i = 0; i < trees.size(); i++)
-    // {
-    //     // check out the reserves for function
-    //     if (trees.at(i)->getText() == D_FUN)
-    //     {
-    //         func_name = trees[i + 1]->getText();
-    //         continue;
-    //     }
-    //     if (trees.at(i)->getText() == D_PUBLIC
-    //         || trees.at(i)->getText() == D_PRIVATE
-    //         || trees.at(i)->getText() == D_PROTECTED)
-    //     {
-    //         _class_code_generator->set_current_visibility(getClassMemberVisibility(trees.at(i)->getText()));
-    //         continue;
-    //     }
-    //
-    //     // find the param list
-    //     if (trees.at(i)->getText() == D_LPAREN)
-    //         param_list_begin = i + 1;
-    //
-    //     if (trees.at(i)->getText().starts_with(D_LBRACE))
-    //     {
-    //         // only one return type
-    //
-    //         if (antlr4::tree::ParseTree* return_tree = trees.at(i - 1);
-    //             return_tree->getText().starts_with(D_RPAREN))
-    //         {
-    //             fun_decl.append(CPP_VOID)
-    //                     .append(" ")
-    //                     .append(func_name)
-    //                     .append("(");
-    //         }
-    //         else if (return_tree->children.size() == 1)
-    //         {
-    //             fun_decl.append(return_tree->children.at(0)->getText())
-    //                     .append(" ")
-    //                     .append(func_name)
-    //                     .append("(");
-    //         }
-    //         else // multiple return types
-    //         {
-    //         }
-    //     }
-    // }
-    //
-    // antlr4::tree::ParseTree* params = trees.at(param_list_begin);
-    // if (params->getText() == D_RPAREN)
-    // {
-    //     fun_decl.append(")");
-    //     if (ctx->getText().find("const") != string::npos)
-    //     {
-    //         fun_decl.append(" const ");
-    //     }
-    //     _class_code_generator->current_converting()->push_back(fun_decl + "\n");
-    //     return;
-    // }
-    //
-    // for (const vector<antlr4::tree::ParseTree*> single_params = params->children;
-    //      const auto single_param : single_params)
-    // {
-    //     if (single_param->getText() == D_COMMA)
-    //     {
-    //         fun_decl.append(", ");
-    //     }
-    //     // format like < int a >, default it is non-nullable and immutable
-    //     if (single_param->children.size() == 2)
-    //     {
-    //         string param_decl = single_param->getText();
-    //         fun_decl.append("const ");
-    //         fun_decl.append(string_util::convert_parser_tree_to_string(single_param));
-    //
-    //         continue;
-    //     }
-    //     // format like < int a ! > or < imt int a>, default it is non-nullable and immutable
-    //     if (single_param->children.size() == 3)
-    //     {
-    //         string val_type = single_param->children.at(1)->getText();
-    //         if (single_param->children.at(0)->getText() == D_IMT ||
-    //             single_param->children.at(0)->getText() == D_VAR)
-    //         {
-    //             fun_decl.append(single_param->children.at(0)->getText() == D_IMT ? "const " : "")
-    //                     .append(parser_util::convert_type_to_cpp(val_type))
-    //                     .append(" ")
-    //                     .append(single_param->children.at(2)->getText());
-    //
-    //             continue;
-    //         }
-    //
-    //         if (single_param->children.at(2)->getText() == D_NON_NULLABLE ||
-    //             single_param->children.at(2)->getText() == D_NULLABLE)
-    //         {
-    //             fun_decl.append(string_util::convert_parser_tree_to_string(single_param->children.at(1)))
-    //                     .append(parser_util::convert_type_to_cpp(val_type));
-    //
-    //             if (single_param->children.at(2)->getText() == D_NULLABLE)
-    //             {
-    //                 _global->add_var_nullable(
-    //                     _package_name + _file_name + func_name + single_param->children.at(1)->getText(), true);
-    //             }
-    //             continue;
-    //         }
-    //
-    //         response_util::report_error("Invalid parameter declaration ", _file_source,
-    //                                     static_cast<int>(ctx->getStart()->getLine()));
-    //
-    //         continue;
-    //     }
-    //
-    //     // format like < imt int a ! > or < var int a? >
-    //     if (single_param->children.size() == 4)
-    //     {
-    //         string val_type = single_param->children.at(1)->getText();
-    //         if (!(single_param->children.at(0)->getText() == D_IMT ||
-    //             single_param->children.at(0)->getText() == D_VAR))
-    //         {
-    //             response_util::report_error("Invalid parameter declaration ", _file_source,
-    //                                         static_cast<int>(ctx->getStart()->getLine()));
-    //         }
-    //
-    //         fun_decl.append(single_param->children.at(0)->getText() == D_IMT ? "const " : "")
-    //                 .append(parser_util::convert_type_to_cpp(val_type))
-    //                 .append(" ")
-    //                 .append(single_param->children.at(2)->getText());
-    //         if (single_param->children.at(3)->getText() == D_NON_NULLABLE ||
-    //             single_param->children.at(3)->getText() == D_NULLABLE)
-    //         {
-    //             if (single_param->children.at(3)->getText() == D_NULLABLE)
-    //             {
-    //                 _global->add_var_nullable(
-    //                     _package_name + _file_name + _class_code_generator->class_name() + func_name + single_param->
-    //                     children.at(1)->getText(), true);
-    //             }
-    //             continue;
-    //         }
-    //         response_util::report_error("Invalid parameter declaration ", _file_source,
-    //                                     static_cast<int>(ctx->getStart()->getLine()));
-    //     }
-    // }
-    //
-    // fun_decl.append(")");
-    //
-    // if (ctx->getText().find("const") != string::npos)
-    // {
-    //     fun_decl.append(" const ");
-    // }
-
     _class_code_generator->current_converting()->push_back(fun_decl + "\n");
 }
 
@@ -1412,11 +1100,15 @@ void DreamParserListenerCompiler::enterForStmt(DreamParser::ForStmtContext* ctx)
 {
     _is_in_for_loop = true;
     _converted_file.emplace_back("for");
+    Hierarchy* hierarchy = new Hierarchy(FOR_STMT + string_util::gen_unique_name() ,
+        HierarchyType::FOR_STMT, _current_hierarchy, {});
+    _current_hierarchy = hierarchy;
 }
 
 void DreamParserListenerCompiler::exitForStmt(DreamParser::ForStmtContext* ctx)
 {
     _is_in_for_loop = false;
+    _current_hierarchy = _current_hierarchy->parent();
 }
 
 void DreamParserListenerCompiler::enterForCondition(DreamParser::ForConditionContext* ctx)

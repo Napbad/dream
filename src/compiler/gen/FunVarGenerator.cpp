@@ -11,7 +11,7 @@
 
 using namespace std;
 
-void FunVarGenerator::init_with_7_part(DreamParser::FunVarDeclarationContext* ctx)
+void FunVarGenerator::init_with_7_part(const DreamParser::FunVarDeclarationContext* ctx)
 {
     const std::vector<antlr4::tree::ParseTree*> child = ctx->children;
 
@@ -35,7 +35,7 @@ void FunVarGenerator::init_with_7_part(DreamParser::FunVarDeclarationContext* ct
         _is_nullable = false;
 }
 
-void FunVarGenerator::init_with_5_part(DreamParser::FunVarDeclarationContext* ctx)
+void FunVarGenerator::init_with_5_part(const DreamParser::FunVarDeclarationContext* ctx)
 {
     const std::vector<antlr4::tree::ParseTree*> child = ctx->children;
 
@@ -52,20 +52,23 @@ void FunVarGenerator::init_with_5_part(DreamParser::FunVarDeclarationContext* ct
     _value = string_util::convert_parser_tree_to_string(child[3]);
 }
 
-void FunVarGenerator::init_with_6_part(DreamParser::FunVarDeclarationContext* ctx)
+void FunVarGenerator::init_with_6_part(const DreamParser::FunVarDeclarationContext* ctx)
 {
-    const std::vector<antlr4::tree::ParseTree*> children = ctx->children;
-    if (children.at(0)->getText() == D_VAR || children.at(0)->getText() == D_IMT)
+    if (const std::vector<antlr4::tree::ParseTree*> children = ctx->children;
+        children.at(0)->getText() == D_VAR || children.at(0)->getText() == D_IMT)
     {
-        const string var_name = children[2]->getText();
+        _name = children[2]->getText();
         const string var_mut = children[0]->getText();
         const string var_val = children[4]->getText();
         string var_type = children[1]->getText();
 
-        if (var_mut == D_IMT)
-            _is_mutable = false;
-        else
+        _value = var_val;
+        _type = parser_util::convert_type_to_cpp(var_type);
+        if (var_mut == D_VAR)
+        {
             _is_mutable = true;
+            return;
+        }
 
         if (var_val == D_NULL)
         {
@@ -76,10 +79,10 @@ void FunVarGenerator::init_with_6_part(DreamParser::FunVarDeclarationContext* ct
             return;
         }
 
-        if (parser_util::find_nullable(_listener_compiler->current_hierarchy(), ctx))
+        if (parser_util::find_nullable(_listener_compiler->current_hierarchy(), ctx->children[4]))
             response_util::report_error(
                 "Cannot assign null to non-nullable variable ( " +
-                var_name + " ) \n because <" +
+                _name + " ) \n because <" +
                 var_val +
                 "> might be null \n ",
                 _listener_compiler->file_source(),
@@ -93,6 +96,10 @@ void FunVarGenerator::init_with_6_part(DreamParser::FunVarDeclarationContext* ct
     const string var_null = child[2]->getText();
     const string var_val = child[4]->getText();
     string var_type = child[0]->getText();
+
+    _name = var_name;
+    _value = var_val;
+    _type = parser_util::convert_type_to_cpp(var_type);
 
     if (var_null == D_NON_NULLABLE)
     {
@@ -111,10 +118,11 @@ void FunVarGenerator::init_with_6_part(DreamParser::FunVarDeclarationContext* ct
                 "> might be null \n ",
                 _listener_compiler->file_source(),
                 static_cast<int>(ctx->getStart()->getLine()));
+
     }
 }
 
-void FunVarGenerator::init(DreamParser::FunVarDeclarationContext* ctx)
+void FunVarGenerator::init(const DreamParser::FunVarDeclarationContext* ctx)
 {
     if (ctx->children.size() == 7)
         init_with_7_part(ctx);
@@ -130,22 +138,27 @@ std::string FunVarGenerator::generate_code() const
 }
 
 
-[[nodiscard]] const std::string& FunVarGenerator::name() const {
+[[nodiscard]] const std::string& FunVarGenerator::name() const
+{
     return _name;
 }
 
-[[nodiscard]] const std::string& FunVarGenerator::type() const {
+[[nodiscard]] const std::string& FunVarGenerator::type() const
+{
     return _type;
 }
 
-[[nodiscard]] const std::string& FunVarGenerator::value() const {
+[[nodiscard]] const std::string& FunVarGenerator::value() const
+{
     return _value;
 }
 
-[[nodiscard]] bool FunVarGenerator::is_mutable() const {
+[[nodiscard]] bool FunVarGenerator::is_mutable() const
+{
     return _is_mutable;
 }
 
-[[nodiscard]] bool FunVarGenerator::is_nullable() const {
+[[nodiscard]] bool FunVarGenerator::is_nullable() const
+{
     return _is_nullable;
 }

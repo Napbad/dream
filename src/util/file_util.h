@@ -12,7 +12,6 @@
 #include <map>
 #include <string>
 #include <vector>
-
 #include "obj/Hierarchy.h"
 
 // Platform-specific color setting functions
@@ -28,10 +27,12 @@ inline void setColor(const char *ansiCode) {
 }
 #endif
 
-
 namespace file_util {
 
-    // Define a scoped enum for file colors
+    /**
+     * @enum FileColor
+     * @brief Enum for file colors.
+     */
     enum class FileColor {
         GREEN,
         WHITE,
@@ -41,37 +42,102 @@ namespace file_util {
         BLACK
     };
 
-    // Utility function to convert FileColor to Windows console color or ANSI color code
+    /**
+     * @brief Converts FileColor to Windows console color or ANSI color code.
+     * @param color The FileColor enum value.
+     * @return On Windows, returns an integer color code; on other platforms, returns an ANSI color code.
+     */
 #ifdef _WIN32
     inline int colorCode(FileColor color);
 #else
     std::string colorCode(FileColor color);
 #endif
+
+    /**
+     * @brief Creates a new file and returns a file stream.
+     * @param file_name Name of the file to create.
+     * @return A file stream object.
+     */
     std::fstream create_file(const std::string &file_name);
 
+    /**
+     * @brief Creates a directory for a package.
+     * @param pkg_dir_name Name of the package directory to create.
+     */
     void create_package_dir(std::string pkg_dir_name);
 
+    /**
+     * @brief Converts a package name to a path.
+     * @param pkg_name Name of the package.
+     * @return The corresponding path.
+     */
     std::string convert_pkg_to_path(const std::string &pkg_name);
 
+    /**
+     * @brief Prints a debug message with a specified color.
+     * @param stream Output stream.
+     * @param message Message to print.
+     * @param color Color of the message.
+     */
+    void dbg_print(std::ostream& stream, const std::string& message, FileColor color);
 
-    void insert_front_of_file(std::fstream *file, const std::string &content, const std::string& file_name);
-
+    /**
+     * @brief Reads a line from an opened file.
+     * @param opened_file Pointer to the opened file.
+     * @param file_name Name of the file.
+     * @param line Line number.
+     * @return The read line.
+     */
     std::string read_line(std::fstream *opened_file, std::string &file_name, int line);
 
+    /**
+     * @brief Prints a message with a specified color.
+     * @param stream Output stream.
+     * @param message Message to print.
+     * @param color Color of the message.
+     */
     void print(std::ostream &stream, const std::string &message, FileColor color);
 
+    /**
+     * @brief Copies a directory recursively.
+     * @param source_dir Source directory path.
+     * @param destination_dir Destination directory path.
+     */
     void copy_directory(const std::string &source_dir, const std::string &destination_dir);
 
+    /**
+     * @brief Gets the hierarchy for a package.
+     * @param package_name Name of the package.
+     * @return Pointer to the hierarchy structure.
+     */
     Hierarchy* get_package_hierarchy(const std::string& package_name);
 
+    /**
+     * @brief Collects all files recursively in a directory.
+     * @param dir_path Directory path.
+     * @param files Reference to a vector to store the collected files.
+     */
     void collect_files_recursive(const std::string& dir_path, std::vector<std::string>& files);
 
+    /**
+     * @brief Gets all files in a directory.
+     * @param dir_path Directory path.
+     * @return A vector of file paths.
+     */
     std::vector<std::string> get_all_files_in_dir(const std::string& dir_path);
 
+    /**
+     * @brief Gets the content of a file.
+     * @param file Path to the file.
+     * @return A vector of strings representing the lines of the file.
+     */
     std::vector<std::string> get_file_content(const std::string& file);
 
+    /**
+     * @brief Deletes a directory recursively.
+     * @param dir_path Directory path.
+     */
     void delete_directory(const std::string& dir_path);
 }
-
 
 #endif //FILE_UTIL_H

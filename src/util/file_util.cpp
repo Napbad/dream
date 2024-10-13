@@ -98,6 +98,12 @@ std::string file_util::read_line(std::fstream* opened_file, string& file_name, c
     return temp;
 }
 
+void file_util::dbg_print(std::ostream& stream, const std::string& message, FileColor color)
+{
+    print(stream, "DEBUG: ", FileColor::YELLOW);
+    print(stream, message, color);
+}
+
 void file_util::print(std::ostream& stream, const std::string& message, FileColor color)
 {
     if (stream.rdbuf() == std::cout.rdbuf())

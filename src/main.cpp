@@ -13,8 +13,31 @@ using namespace antlr4;
 
 int main(int args, char** argv)
 {
-    std::ifstream stream;
     std::string input_dir = "../dream";
+    for (int i = 1; i < args; ++i) {
+        if (argv[i][0] == '-') {
+            switch (argv[i][1]) {
+            case 'd':
+                print(cout, "DEBUG mode compiling \n", file_util::FileColor::GREEN);
+                global_flag_is_debug = true;
+                break;
+            default:
+                response_util::report_error("Invalid argument input at: " + std::string(argv[i]));
+                return 1;
+            }
+        } else if (std::string(argv[i]).find('/') != std::string::npos)
+        {
+            // argv[i] is a directory to compile
+            input_dir = argv[i];
+        }
+        else {
+            response_util::report_error("Invalid argument format: " + std::string(argv[i]));
+            return 1;
+        }
+    }
+
+    std::ifstream stream;
+
     std::string runtime_src_dir = "../src/runtime";
     std::string runtime_dest_dir = "../build/runtime";
     std::string native_src_dir = "../src/natives";
@@ -41,7 +64,8 @@ int main(int args, char** argv)
         {
             if (is_main_fun_file_found)
             {
-                response_util::report_error("Multiple main.drm files found, first found in file: " + main_fun_file_path, file_path, 0);
+                response_util::report_error("Multiple main.drm files found, first found in file: "
+                    + main_fun_file_path, file_path, 0);
                 return 1;
             }
             main_fun_file_path = file_path;
@@ -49,7 +73,8 @@ int main(int args, char** argv)
             continue;   
         }
 
-        cout << file_path << endl;
+        if (global_flag_is_debug)
+            dbg_print(cout, "handling: " + file_path + "\n", file_util::FileColor::WHITE);
         stream.open(file_path);
 
         if (!stream.is_open())

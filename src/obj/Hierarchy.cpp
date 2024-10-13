@@ -62,13 +62,15 @@ Hierarchy* Hierarchy::merge_hierarchy(Hierarchy* root, Hierarchy* package)
         return nullptr;
     }
 
+
     while (root_tmp->name() == package_tmp->name())
     {
+        // from root to package hierarchy, merge them one by one
         Hierarchy* tmp = package_tmp->get_child(0);
         if (tmp == nullptr)
         {
-            throw std::runtime_error("merge_hierarchy: package hierarchy is empty at: " +
-                package_tmp->name() + "'s child");
+            delete package_tmp;
+            return root_tmp;
         }
         delete package_tmp;
         package_tmp = tmp;

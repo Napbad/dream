@@ -6,6 +6,7 @@
 
 #include <numeric>
 
+#include "common/reserve.h"
 #include "util/parser_util.h"
 #include "util/string_util.h"
 
@@ -18,7 +19,14 @@ void FunGenerator::init(DreamParser::FunctionDeclarationContext* ctx)
 {
     _name = ctx->IDENTIFIER()->getText();
 
-    _return_type = convert_type_list_to_tuple(ctx->returnType());
+    if (ctx->IDENTIFIER()->getText() == "main")
+        _return_type = "int";
+    else if (ctx->returnType() == nullptr)
+        _return_type = CPP_VOID;
+    else if (ctx->returnType()->children.size() == 1)
+        _return_type = ctx->returnType()->getText();
+    else
+        _return_type = convert_type_list_to_tuple(ctx->returnType());
 
     if (ctx->paramList() == nullptr)
         return;
@@ -42,7 +50,6 @@ void FunGenerator::init(DreamParser::FunctionDeclarationContext* ctx)
             mutable_
         );
     }
-
 }
 
 std::string FunGenerator::generate_code() const

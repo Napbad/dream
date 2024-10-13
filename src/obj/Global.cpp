@@ -8,6 +8,8 @@
 
 Global *global = new Global();
 
+bool global_flag_is_debug = false;
+
 Global::Global() {
     _var_nullable = new std::unordered_map<std::string, bool>();
     _hierarchy = Hierarchy::root_hierarchy();
