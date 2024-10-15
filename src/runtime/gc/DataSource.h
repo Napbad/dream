@@ -4,6 +4,7 @@
 #define DATASOURCE_H
 
 #include <any>
+#include <bitset>
 #include <string>
 #include <vector>
 
