@@ -11,7 +11,7 @@ class GCable
 public:
     virtual ~GCable() = default;
 
-    virtual void gc() = 0;
+    virtual void gc() {};
 };
 
 

@@ -129,23 +129,33 @@ std::string FileVarGenerator::generate_code() const
     return (_is_mutable ? "const " : "") + _type + " " + _name + " = " + _value + ";\n";
 }
 
+std::string FileVarGenerator::generate_decl() const
+{
+    return static_cast<std::string>("extern ") + (_is_mutable ? "const " : "") + _type + " " + _name + ";\n";
+}
 
-[[nodiscard]] const std::string& FileVarGenerator::name() const {
+
+[[nodiscard]] const std::string& FileVarGenerator::name() const
+{
     return _name;
 }
 
-[[nodiscard]] const std::string& FileVarGenerator::type() const {
+[[nodiscard]] const std::string& FileVarGenerator::type() const
+{
     return _type;
 }
 
-[[nodiscard]] const std::string& FileVarGenerator::value() const {
+[[nodiscard]] const std::string& FileVarGenerator::value() const
+{
     return _value;
 }
 
-[[nodiscard]] bool FileVarGenerator::is_mutable() const {
+[[nodiscard]] bool FileVarGenerator::is_mutable() const
+{
     return _is_mutable;
 }
 
-[[nodiscard]] bool FileVarGenerator::is_nullable() const {
+[[nodiscard]] bool FileVarGenerator::is_nullable() const
+{
     return _is_nullable;
 }

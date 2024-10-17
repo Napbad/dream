@@ -253,6 +253,9 @@ public:
   virtual void enterFunCodeBlockStmt(DreamParser::FunCodeBlockStmtContext * /*ctx*/) override { }
   virtual void exitFunCodeBlockStmt(DreamParser::FunCodeBlockStmtContext * /*ctx*/) override { }
 
+  virtual void enterDeleteStmt(DreamParser::DeleteStmtContext * /*ctx*/) override { }
+  virtual void exitDeleteStmt(DreamParser::DeleteStmtContext * /*ctx*/) override { }
+
 
   virtual void enterEveryRule(antlr4::ParserRuleContext * /*ctx*/) override { }
   virtual void exitEveryRule(antlr4::ParserRuleContext * /*ctx*/) override { }

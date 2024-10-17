@@ -13,14 +13,6 @@
 
 using namespace std;
 
-std::vector<std::string> parser_util::gen_data_pool_define(const std::string& name, const DataPoolType type)
-{
-    return {
-        "DataPool<" + name + ">* datapool_" + name +
-        " = new DataPool(DataPoolType::" + (type == DataPoolType::INPUT ? "INPUT" : "OWN") + ", \"" + name + "\");"
-    };
-}
-
 // TODO support Ternary symbol
 bool parser_util::find_nullable(Hierarchy* hierarchy, antlr4::tree::ParseTree* expr)
 {

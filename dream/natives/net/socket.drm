@@ -1,3 +1,0 @@
-package natives.net;
-
-@NATIVE class Socket{}

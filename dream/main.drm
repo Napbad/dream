@@ -4,8 +4,8 @@
 
 package main; // 这是一个包声明，指定当前文件属于 `main` 包
 
-import stl.vector;
-import natives.net.socket;
+import stl.Vector;
+import natives.net.Socket;
 import test.test;
 
 // import std; // 这是一个导入语句，导入 `com.napbad.std` 包

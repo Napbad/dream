@@ -251,6 +251,9 @@ public:
   virtual void enterFunCodeBlockStmt(DreamParser::FunCodeBlockStmtContext *ctx) = 0;
   virtual void exitFunCodeBlockStmt(DreamParser::FunCodeBlockStmtContext *ctx) = 0;
 
+  virtual void enterDeleteStmt(DreamParser::DeleteStmtContext *ctx) = 0;
+  virtual void exitDeleteStmt(DreamParser::DeleteStmtContext *ctx) = 0;
+
 
 };
 

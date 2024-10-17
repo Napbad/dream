@@ -1,27 +1,21 @@
-/**
- * @file ClassCodeGenerator.h
- * @brief Defines the ClassCodeGenerator class, which is responsible for generating class code.
- * Created by napbadsen on 24-10-2.
- */
+//
+// Created by napbadsen on 24-10-17.
+//
 
-#ifndef CLASSCODEGENERATOR_H
-#define CLASSCODEGENERATOR_H
-
+#ifndef CLASSSTRUCTGENERATOR_H
+#define CLASSSTRUCTGENERATOR_H
 #include <string>
 #include <vector>
 
-#include "ClassStructGenerator.h"
-#include "CodeGenerator.h"
 #include "common/dream_const.h"
+#include "./CodeGenerator.h"
+#include "ClassFunGenerator.h"
 
-/**
- * @class ClassCodeGenerator
- * @brief A specialized code generator for generating class code.
- * This class extends CodeGenerator and provides functionality to manage and generate code for class members.
- */
-class ClassCodeGenerator final : public CodeGenerator
+// record the class definition to be used in the generation of header file
+
+class ClassStructGenerator final : public CodeGenerator
 {
-public:
+    std::string _class_name;
     /// Public methods list
     std::vector<std::string> _public_methods;
     /// Private methods list
@@ -42,23 +36,17 @@ public:
     /// Current member type
     ClassMemberType _current_member_type;
 
-    /// Class name
-    std::string _class_name;
-
-    /// ClassStructGenerator instance
-    ClassStructGenerator _class_struct;
-
 public:
     /**
-     * @brief Constructs a ClassCodeGenerator instance with the specified class name.
+     * @brief Constructs a ClassStructGenerator instance with the specified class name.
      * @param class_name The name of the class to generate code for.
      */
-    explicit ClassCodeGenerator(const std::string& class_name);
+    explicit ClassStructGenerator(const std::string& class_name);
 
     /**
-     * @brief Destructor for ClassCodeGenerator.
+     * @brief Destructor for ClassStructGenerator.
      */
-    ~ClassCodeGenerator() override;
+    ~ClassStructGenerator() override;
 
     /**
      * @brief Adds a public method to the class.
@@ -133,23 +121,6 @@ public:
     [[nodiscard]] std::vector<std::string>* current_converting() const;
 
     /**
-    * @brief Returns an instance of ClassStructGenerator.
-    * This method provides access to the ClassStructGenerator instance, which can be used to generate or manipulate class structures.
-    * @return An instance of ClassStructGenerator.
-    */
-    [[nodiscard]] ClassStructGenerator class_struct() const;
-
-    /**
-    * @brief Adds the stmt to the current converting list.
-    */
-    void add_to_current(const std::string& stmt) const;
-
- /**
-    * @brief Adds the stmt to the current converting list.
-    */
-    void add_to_current(const char * stmt) const;
-
-    /**
      * @brief Adds the current member to the appropriate list.
      */
     void add_current();
@@ -158,7 +129,23 @@ public:
      * @brief Gets the class name.
      * @return The name of the class.
      */
-    std::string class_name() const;
+    std::string class_name();
+
+    /**
+       * @brief Adds the stmt to the current converting list.
+       */
+    void add_to_current(const char* stmt) const;
+
+    /**
+      * @brief Adds the stmt to the current converting list.
+      */
+    void add_to_current(const string& stmt) const;
+
+    /**
+     * @brief Adds the stmt to the current converting list.
+     */
+    void add_to_current(ClassMemberVisibility visibility, const string& stmt);
 };
 
-#endif //CLASSCODEGENERATOR_H
+
+#endif //CLASSSTRUCTGENERATOR_H

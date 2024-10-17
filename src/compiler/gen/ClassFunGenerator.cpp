@@ -11,10 +11,24 @@
 
 using namespace parser_util;
 
-void ClassFunGenerator::init(DreamParser::ClassFuncDeclContext* ctx)
+void ClassFunGenerator::init(DreamParser::ClassFuncDeclContext* ctx, const std::string& class_name)
 {
     _name = ctx->IDENTIFIER()->getText();
     _const = ctx->CONST() != nullptr;
+    _class_name = class_name;
+
+    for (const auto modifier : ctx->classMemberModifier())
+    {
+        if (modifier->visibilityModifier() != nullptr)
+            if (modifier->visibilityModifier()->PRIVATE())
+                _visibility = ClassMemberVisibility::PRIVATE;
+            else if (modifier->visibilityModifier()->PROTECTED())
+                _visibility = ClassMemberVisibility::PROTECTED;
+            else if (modifier->visibilityModifier()->PUBLIC())
+                _visibility = ClassMemberVisibility::PUBLIC;
+        if (modifier->staticModifier() != nullptr && modifier->staticModifier()->STATIC())
+            _static = true;
+    }
 
     _return_type = convert_type_list_to_tuple(ctx->returnType());
 
@@ -47,9 +61,23 @@ void ClassFunGenerator::init(DreamParser::ClassFuncDeclContext* ctx)
 
 std::string ClassFunGenerator::generate_code() const
 {
-    return _return_type + " " + _name
+    return _return_type + " " + _class_name + "::" + _name
         + "("
         + string_util::get_str_from_param_vector(_params, ", ")
         + ")"
         + (_const ? " const" : "");
+}
+
+std::string ClassFunGenerator::generate_decl_code() const
+{
+        return _return_type + " " + _name
+        + "("
+        + string_util::get_str_from_param_vector(_params, ", ")
+        + ")"
+        + (_const ? " const" : "");
+}
+
+ClassMemberVisibility ClassFunGenerator::visibility() const
+{
+    return _visibility;
 }

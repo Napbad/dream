@@ -8,6 +8,7 @@
 
 
 ClassCodeGenerator::ClassCodeGenerator(const std::string& class_name)
+    : _class_struct(ClassStructGenerator(class_name))
 {
     _public_methods = {};
     _private_methods = {};
@@ -81,30 +82,30 @@ ClassMemberVisibility ClassCodeGenerator::current_visibility() const
 
 std::string ClassCodeGenerator::generate_code() const
 {
-    std::string code = "class " + _class_name + "\n{\n";
+    std::string code;
 
     if (!_public_fields.empty() || !_public_methods.empty())
     {
-        code += "public:\n";
-        code += string_util::get_lines_from_vector(_public_fields);
+        // code += "public:\n";
+        // code += string_util::get_lines_from_vector(_public_fields);
         code += string_util::get_lines_from_vector(_public_methods);
     }
 
     if (!_protected_fields.empty() || !_protected_methods.empty())
     {
-        code += "protected:\n";
-        code += string_util::get_lines_from_vector(_protected_fields);
+        // code += "protected:\n";
+        // code += string_util::get_lines_from_vector(_protected_fields);
         code += string_util::get_lines_from_vector(_protected_methods);
     }
 
     if (!_private_fields.empty() || !_private_methods.empty())
     {
-        code += "private:\n";
-        code += string_util::get_lines_from_vector(_private_fields);
+        // code += "private:\n";
+        // code += string_util::get_lines_from_vector(_private_fields);
         code += string_util::get_lines_from_vector(_private_methods);
     }
 
-    code += "};\n";
+    // code += "};\n";
 
     return code;
 }
@@ -114,71 +115,85 @@ std::vector<std::string>* ClassCodeGenerator::current_converting() const
     return _current_converting;
 }
 
+ClassStructGenerator ClassCodeGenerator::class_struct() const
+{
+    return _class_struct;
+}
+
+void ClassCodeGenerator::add_to_current(const std::string& stmt) const
+{
+    _current_converting->push_back(stmt);
+}
+
+void ClassCodeGenerator::add_to_current(const char* stmt) const
+{
+    _current_converting->emplace_back(stmt);
+}
+
 void ClassCodeGenerator::add_current()
 {
     switch (_current_visibility)
     {
     case ClassMemberVisibility::PUBLIC:
-        switch (_current_member_type)
-        {
-        case ClassMemberType::FIELD:
-            add_public_field(string_util::get_text_from_vector(*_current_converting));
-            current_converting()->clear();
-
-            break;
-        case ClassMemberType::METHOD:
+        // switch (_current_member_type)
+        // {
+        // case ClassMemberType::FIELD:
+        //     add_public_field(string_util::get_text_from_vector(*_current_converting));
+        //     current_converting()->clear();
+        //
+        //     break;
+        // case ClassMemberType::METHOD:
             add_public_method(string_util::get_text_from_vector(*_current_converting));
             current_converting()->clear();
 
-            break;
-        default: current_converting()->clear();
+            // break;
+        // default: current_converting()->clear();
 
-            response_util::report_error("Unknown visibility", "ClassCodeGenerator", 0);
-        }
+            // response_util::report_error("Unknown visibility", "ClassCodeGenerator", 0);
+        // }
         break;
 
     case ClassMemberVisibility::PRIVATE:
-        switch (_current_member_type)
-        {
-        case ClassMemberType::FIELD:
-            add_private_field(string_util::get_text_from_vector(*_current_converting));
-            current_converting()->clear();
-
-            break;
-        case ClassMemberType::METHOD:
+        // switch (_current_member_type)
+        // {
+        // case ClassMemberType::FIELD:
+        //     add_private_field(string_util::get_text_from_vector(*_current_converting));
+        //     current_converting()->clear();
+        //
+        //     break;
+        // case ClassMemberType::METHOD:
             add_private_method(string_util::get_text_from_vector(*_current_converting));
             current_converting()->clear();
-
-            break;
-        default:
-            current_converting()->clear();
-            response_util::report_error("Unknown visibility", "ClassCodeGenerator", 0);
-        }
+        //
+        //     break;
+        // default:
+        //     current_converting()->clear();
+        //     response_util::report_error("Unknown visibility", "ClassCodeGenerator", 0);
+        // }
         break;
 
     case ClassMemberVisibility::PROTECTED:
-        switch (_current_member_type)
-        {
-        case ClassMemberType::FIELD:
-            add_protected_field(string_util::get_text_from_vector(*_current_converting));
-            current_converting()->clear();
-
-            break;
-        case ClassMemberType::METHOD:
+        // switch (_current_member_type)
+        // {
+        // case ClassMemberType::FIELD:
+        //     add_protected_field(string_util::get_text_from_vector(*_current_converting));
+        //     current_converting()->clear();
+        //
+        //     break;
+        // case ClassMemberType::METHOD:
             add_protected_method(string_util::get_text_from_vector(*_current_converting));
             current_converting()->clear();
-
-            break;
-        default:
-            current_converting()->clear();
-            response_util::report_error("Unknown visibility", "ClassCodeGenerator", 0);
-        }
+        //
+        //     break;
+        // default:
+        //     current_converting()->clear();
+        //     response_util::report_error("Unknown visibility", "ClassCodeGenerator", 0);
+        // }
         break;
     }
 }
 
-std::string ClassCodeGenerator::class_name()
+std::string ClassCodeGenerator::class_name() const
 {
     return _class_name;
 }
-

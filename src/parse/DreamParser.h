@@ -16,18 +16,18 @@ public:
     BREAK = 8, CONTINUE = 9, TRY = 10, CATCH = 11, FINALLY = 12, VAR = 13, 
     IMT = 14, FUN = 15, CLASS = 16, ENUM = 17, INTERFACE = 18, ANNOTATION = 19, 
     PUBLIC = 20, PRIVATE = 21, PROTECTED = 22, STATIC = 23, NEW = 24, OVERRIDE = 25, 
-    NATIVE = 26, SYNCHRONIZED = 27, THROW = 28, STRING_LITERAL = 29, CHAR_LITERAL = 30, 
-    INT_LITERAL = 31, FLOAT_LITERAL = 32, TRUE_LITERAL = 33, FALSE_LITERAL = 34, 
-    BYTE = 35, SHORT = 36, INT = 37, UINT = 38, USHORT = 39, LONG = 40, 
-    ULONG = 41, LONGLONG = 42, ULONGLONG = 43, FLOAT = 44, DOUBLE = 45, 
-    BOOL = 46, CHAR = 47, STRING = 48, VOID = 49, CONST = 50, AT = 51, SLASH = 52, 
-    ASSIGN = 53, SEMICOLON = 54, LPAREN = 55, RPAREN = 56, LBRACE = 57, 
-    RBRACE = 58, LBRACK = 59, RBRACK = 60, COMMA = 61, LINE_COMMENT = 62, 
-    COMMENT = 63, WS = 64, DOT = 65, BANG = 66, QUESTION = 67, COLON = 68, 
-    MOD = 69, PLUS = 70, MINUS = 71, MUL = 72, LT = 73, GT = 74, LE = 75, 
-    GE = 76, EQ = 77, NEQ = 78, AND = 79, OR = 80, BIT_AND = 81, BIT_OR = 82, 
-    XOR = 83, LSHIFT = 84, RSHIFT = 85, URSHIFT = 86, NOT = 87, TIBLE = 88, 
-    INC = 89, DEC = 90, IDENTIFIER = 91
+    NATIVE = 26, SYNCHRONIZED = 27, THROW = 28, DELETE = 29, STRING_LITERAL = 30, 
+    CHAR_LITERAL = 31, INT_LITERAL = 32, FLOAT_LITERAL = 33, TRUE_LITERAL = 34, 
+    FALSE_LITERAL = 35, BYTE = 36, SHORT = 37, INT = 38, UINT = 39, USHORT = 40, 
+    LONG = 41, ULONG = 42, LONGLONG = 43, ULONGLONG = 44, FLOAT = 45, DOUBLE = 46, 
+    BOOL = 47, CHAR = 48, STRING = 49, VOID = 50, CONST = 51, AT = 52, SLASH = 53, 
+    ASSIGN = 54, SEMICOLON = 55, LPAREN = 56, RPAREN = 57, LBRACE = 58, 
+    RBRACE = 59, LBRACK = 60, RBRACK = 61, COMMA = 62, LINE_COMMENT = 63, 
+    COMMENT = 64, WS = 65, DOT = 66, BANG = 67, QUESTION = 68, COLON = 69, 
+    MOD = 70, PLUS = 71, MINUS = 72, MUL = 73, LT = 74, GT = 75, LE = 76, 
+    GE = 77, EQ = 78, NEQ = 79, AND = 80, OR = 81, BIT_AND = 82, BIT_OR = 83, 
+    XOR = 84, LSHIFT = 85, RSHIFT = 86, URSHIFT = 87, NOT = 88, TIBLE = 89, 
+    INC = 90, DEC = 91, IDENTIFIER = 92
   };
 
   enum {
@@ -53,7 +53,8 @@ public:
     RuleSingleType = 65, RuleArrayType = 66, RuleReturnType = 67, RuleForStmt = 68, 
     RuleForCondition = 69, RuleForBlock = 70, RuleForBody = 71, RuleForVarDecl = 72, 
     RuleFileCodeBlock = 73, RuleFileCodeBlockBody = 74, RuleFileCodeBlockStmt = 75, 
-    RuleFunCodeBlock = 76, RuleFunCodeBlockBody = 77, RuleFunCodeBlockStmt = 78
+    RuleFunCodeBlock = 76, RuleFunCodeBlockBody = 77, RuleFunCodeBlockStmt = 78, 
+    RuleDeleteStmt = 79
   };
 
   explicit DreamParser(antlr4::TokenStream *input);
@@ -151,7 +152,8 @@ public:
   class FileCodeBlockStmtContext;
   class FunCodeBlockContext;
   class FunCodeBlockBodyContext;
-  class FunCodeBlockStmtContext; 
+  class FunCodeBlockStmtContext;
+  class DeleteStmtContext; 
 
   class  ProgramContext : public antlr4::ParserRuleContext {
   public:
@@ -267,6 +269,7 @@ public:
     ForStmtContext *forStmt();
     TryCatchStmtContext *tryCatchStmt();
     SynchronizedStmtContext *synchronizedStmt();
+    DeleteStmtContext *deleteStmt();
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
@@ -943,6 +946,7 @@ public:
     ReturnStmtContext *returnStmt();
     TryCatchStmtContext *tryCatchStmt();
     ThrowStmtContext *throwStmt();
+    DeleteStmtContext *deleteStmt();
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
@@ -1443,6 +1447,7 @@ public:
     antlr4::tree::TerminalNode *BREAK();
     antlr4::tree::TerminalNode *CONTINUE();
     FunCallStmtContext *funCallStmt();
+    DeleteStmtContext *deleteStmt();
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
@@ -1563,6 +1568,7 @@ public:
     FunCallStmtContext *funCallStmt();
     ThrowStmtContext *throwStmt();
     TryCatchStmtContext *tryCatchStmt();
+    DeleteStmtContext *deleteStmt();
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
@@ -1570,6 +1576,23 @@ public:
   };
 
   FunCodeBlockStmtContext* funCodeBlockStmt();
+
+  class  DeleteStmtContext : public antlr4::ParserRuleContext {
+  public:
+    DeleteStmtContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    antlr4::tree::TerminalNode *DELETE();
+    ExprContext *expr();
+    antlr4::tree::TerminalNode *SEMICOLON();
+    std::vector<antlr4::tree::TerminalNode *> RBRACK();
+    antlr4::tree::TerminalNode* RBRACK(size_t i);
+
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+   
+  };
+
+  DeleteStmtContext* deleteStmt();
 
 
   bool sempred(antlr4::RuleContext *_localctx, size_t ruleIndex, size_t predicateIndex) override;

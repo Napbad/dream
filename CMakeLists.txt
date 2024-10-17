@@ -40,8 +40,6 @@ add_executable(dream src/main.cpp
         src/util/response_util.h
         src/obj/Hierarchy.cpp
         src/obj/Hierarchy.h
-        src/runtime/gc/DataSource.h
-        src/runtime/gc/DateSource.cpp
         src/runtime/gc/DataCopy.h
         src/runtime/gc/DataCopy.cpp
         src/runtime/class/Object.cpp
@@ -62,8 +60,6 @@ add_executable(dream src/main.cpp
         src/compiler/NativeConverter.cpp
         src/compiler/NativeConverter.h
         src/natives/net/Socket.cpp
-        src/runtime/gc/DataPool.cpp
-        src/runtime/gc/DataPool.h
         src/runtime/gc/DataPath.cpp
         src/runtime/gc/DataPath.h
         src/runtime/gc/GCable.cpp
@@ -88,8 +84,17 @@ add_executable(dream src/main.cpp
         src/compiler/gen/FunGenerator.h
         src/compiler/gen/ClassFunGenerator.cpp
         src/compiler/gen/ClassFunGenerator.h
-        src/compiler/gen/DataPoolGenerator.cpp
-        src/compiler/gen/DataPoolGenerator.h
+        src/runtime/gc/DataNode.cpp
+        src/runtime/gc/DataNode.h
+        src/runtime/gc/DataRoot.cpp
+        src/runtime/gc/DataRoot.h
+        src/runtime/gc/FunDataRoot.cpp
+        src/runtime/gc/FunDataRoot.h
+        src/compiler/gen/FileStructGenerator.cpp
+        src/compiler/gen/FileStructGenerator.h
+        src/compiler/gen/ClassStructGenerator.cpp
+        src/compiler/gen/ClassStructGenerator.h
+        src/natives/net/Socket.h
 )
 
 target_link_libraries(dream ${LIBANTLR})

@@ -16,6 +16,7 @@
 
 // Include necessary headers for the code generation framework
 #include "CodeGenerator.h"
+#include "common/dream_const.h"
 #include "parse/DreamParser.h"
 #include "util/parser_util.h"
 
@@ -29,14 +30,20 @@ class ClassFunGenerator final : public CodeGenerator
     // Stores parameters of the function
     std::vector<FUN_PARAM_TYPE> _params{};
 
+    ClassMemberVisibility _visibility = ClassMemberVisibility::PROTECTED;
+
     // Indicates whether the function is const
     bool _const = false;
 
     // Name of the function
     std::string _name;
 
+    bool _static = false;
+
     // Return type of the function
     std::string _return_type;
+
+    std::string _class_name;
 
 public:
 
@@ -45,7 +52,7 @@ public:
      *
      * @param ctx Parsing context for the class function declaration
      */
-    void init(DreamParser::ClassFuncDeclContext* ctx);
+    void init(DreamParser::ClassFuncDeclContext* ctx, const std::string& class_name);
 
     /**
      * @brief Generates the source code for the method
@@ -53,6 +60,15 @@ public:
      * @return Generated source code as a string
      */
     [[nodiscard]] std::string generate_code() const override;
+
+ /**
+     * @brief Generates the source code for the method
+     *
+     * @return Generated source code as a string
+     */
+    [[nodiscard]] std::string generate_decl_code() const;
+
+    [[nodiscard]] ClassMemberVisibility visibility() const;
 };
 
 #endif //METHODGENERATOR_H

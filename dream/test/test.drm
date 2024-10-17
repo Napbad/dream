@@ -1,13 +1,11 @@
 package test;
 
-import natives.net.socket;
-
-imt string dream_version! = "v0.0.1";
+import natives.net.Socket;
 
 class Test{
     public const fun test() {
         /println("Hello!");
-        /println(("Dream Version: " + dream_version));
+        /println(("Dream Version: 0.0.1"));
     }
 }
 

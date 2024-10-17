@@ -38,6 +38,8 @@ int main(int args, char** argv)
 
     std::ifstream stream;
 
+    file_util::delete_directory("../build/");
+
     std::string runtime_src_dir = "../src/runtime";
     std::string runtime_dest_dir = "../build/runtime";
     std::string native_src_dir = "../src/natives";
@@ -54,6 +56,14 @@ int main(int args, char** argv)
     {
         global->add_file_compile(file);
     }
+
+    for (std::vector<std::string> files_in_dir = file_util::get_all_files_in_dir("../build/natives");
+         auto& file : files_in_dir)
+    {
+        global->add_file_compile(file);
+    }
+
+
 
 
     for (std::vector<std::string> files = file_util::get_all_files_in_dir(input_dir);

@@ -8,7 +8,6 @@
 #include <functional>
 #include <utility>
 
-
 class Finally {
 public:
     explicit Finally(std::function<void()> cleanupFunc) : _cleanupFunc(std::move(cleanupFunc)) {}

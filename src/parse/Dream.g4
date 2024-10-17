@@ -37,6 +37,7 @@ stmt
     | forStmt
     | tryCatchStmt
     | synchronizedStmt
+    | deleteStmt
     ;
 
 // 二元运算
@@ -244,7 +245,8 @@ classModifier
 
 // 类块
 classBlock
-    : LBRACE classBody? RBRACE
+    : LBRACE RBRACE
+    | LBRACE classBody RBRACE
     ;
 
 // 类体
@@ -279,6 +281,7 @@ classFunStmtBlock
     | returnStmt
     | tryCatchStmt
     | throwStmt
+    | deleteStmt
     ;
 
 
@@ -470,6 +473,7 @@ forBody
     | BREAK SEMICOLON
     | CONTINUE SEMICOLON
     | funCallStmt SEMICOLON
+    | deleteStmt
     ;
 
 // for 变量声明
@@ -520,6 +524,12 @@ funCodeBlockStmt
     | funCallStmt SEMICOLON
     | throwStmt
     | tryCatchStmt
+    | deleteStmt
+    ;
+
+deleteStmt
+    : DELETE expr SEMICOLON
+    | DELETE RBRACK RBRACK SEMICOLON
     ;
 
 // 关键字
@@ -553,6 +563,8 @@ OVERRIDE : 'override';
 NATIVE : 'native';
 SYNCHRONIZED: 'synchronized';
 THROW : 'throw';
+
+DELETE: 'delete';
 
 // 字符串字面量
 STRING_LITERAL : '"' (~[\n\r"\\]|'\\"'|'\\u'('0'..'9'|'a'..'f'|'A'..'F')+)* '"';

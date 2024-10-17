@@ -6,5 +6,4 @@
 
 #include "../../runtime/common/common_const.h"
 
-DataSource* global_data_source = new DataSource(HierarchyType::ROOT, ROOT_DATASOURCE);
 

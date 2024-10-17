@@ -12,7 +12,6 @@
 #include "util/parser_util.h"
 #include "util/response_util.h"
 #include "util/string_util.h"
-
 using namespace std;
 
 DreamParserListenerCompiler::DreamParserListenerCompiler(
@@ -33,6 +32,7 @@ DreamParserListenerCompiler::DreamParserListenerCompiler(
     _file_var_generator = nullptr;
     _fun_generator = nullptr;
     _class_fun_generator = nullptr;
+    _file_struct_generator = new FileStructGenerator(file_name);
 }
 
 DreamParserListenerCompiler::~DreamParserListenerCompiler() = default;
@@ -55,12 +55,22 @@ void DreamParserListenerCompiler::enterProgram(DreamParser::ProgramContext* ctx)
 void DreamParserListenerCompiler::exitProgram(DreamParser::ProgramContext* ctx)
 {
     // compile the file
+    _header_file_stream << "#pragma once \n";
+
     for (auto& line : _converted_file)
     {
         _file_stream << line;
+
+        if (line.starts_with("#include ") && !line.starts_with("#include \"" + _file_name.substr(0, _file_name.length() - 4) + ".h\""))
+            _header_file_stream << line;
     }
     _file_stream.close();
+
+    _header_file_stream << _file_struct_generator->generate_code();
+    _header_file_stream.close();
+
     cout << flush;
+
 
     if (_package_name == MAIN_PACKAGE && _file_name == MAIN_FILE)
     {
@@ -82,8 +92,8 @@ void DreamParserListenerCompiler::exitProgram(DreamParser::ProgramContext* ctx)
             exit(1);
         }
         print(cout,
-                         "========================= Compiling End ========================= \n",
-                         file_util::FileColor::GREEN);
+              "========================= Compiling End ========================= \n",
+              file_util::FileColor::GREEN);
 
         system((_file_path.substr(0, _file_path.length() - 4) + ".o").c_str());
     }
@@ -99,6 +109,7 @@ void DreamParserListenerCompiler::enterPackageDecl(DreamParser::PackageDeclConte
     _global->add_file_compile(_file_path);
 
     std::fstream _fstream = file_util::create_file(path + _file_name);
+    _header_file_stream = file_util::create_file(path + _file_name.substr(0, _file_name.length() - 4) + ".h");
 
     _file_stream = std::move(_fstream);
 
@@ -132,9 +143,9 @@ void DreamParserListenerCompiler::enterPackageDecl(DreamParser::PackageDeclConte
     // include the runtime files
     _converted_file.insert(_converted_file.begin() + 1, import_stmt + RUNTIME_DIR + "/" + "class/Object.h\" \n");
     _converted_file.insert(_converted_file.begin() + 1, import_stmt + RUNTIME_DIR + "/" + "gc/DataCopy.h\" \n");
-    _converted_file.insert(_converted_file.begin() + 1, import_stmt + RUNTIME_DIR + "/" + "gc/DataPool.h\" \n");
+    _converted_file.insert(_converted_file.begin() + 1, import_stmt + RUNTIME_DIR + "/" + "gc/FunDataRoot.h\" \n");
     _converted_file.insert(_converted_file.begin() + 1, import_stmt + RUNTIME_DIR + "/" + "gc/DataPath.h\" \n");
-    _converted_file.insert(_converted_file.begin() + 1, import_stmt + RUNTIME_DIR + "/" + "gc/DataSource.h\" \n");
+    _converted_file.insert(_converted_file.begin() + 1, import_stmt + RUNTIME_DIR + "/" + "gc/DataNode.h\" \n");
     _converted_file.insert(_converted_file.begin() + 1, import_stmt + "natives/Exception.h\" \n");
     _converted_file.insert(_converted_file.begin() + 1, import_stmt + RUNTIME_DIR + "/" + "reserve/d_define.h\" \n");
     _converted_file.insert(_converted_file.begin() + 1, import_stmt + RUNTIME_DIR + "/" + "reserve/Finally.h\" \n");
@@ -142,6 +153,8 @@ void DreamParserListenerCompiler::enterPackageDecl(DreamParser::PackageDeclConte
                            import_stmt + RUNTIME_DIR + "/" + "global/global_runtime_depen.h\" \n");
 
     _converted_file.insert(_converted_file.begin() + 1, "#include <string> \n");
+    _converted_file.insert(_converted_file.begin() + 1,
+                           "#include \"" + _file_name.substr(0, _file_name.size() - 4) + ".h\" \n");
 }
 
 void DreamParserListenerCompiler::exitPackageDecl(DreamParser::PackageDeclContext* ctx)
@@ -177,14 +190,14 @@ void DreamParserListenerCompiler::enterImportStmt(DreamParser::ImportStmtContext
         path.pop_back();
     }
     _converted_file.insert(_converted_file.begin() + 1,
-                           _root_path_to_include + path + ".cpp\"\n");
+                           _root_path_to_include + path + ".h\"\n");
 }
 
 void DreamParserListenerCompiler::exitImportStmt(DreamParser::ImportStmtContext* ctx)
 {
     // begin the real file
     // fill the file metadata
-    _converted_file.emplace_back("// file meta data:\n");
+    // _converted_file.emplace_back("// file meta data:\n");
 }
 
 void DreamParserListenerCompiler::enterPackageName(DreamParser::PackageNameContext* ctx)
@@ -232,7 +245,7 @@ void DreamParserListenerCompiler::enterFunCallStmt(DreamParser::FunCallStmtConte
         string_util::replace_all(fun_call, ".", "->");
 
         if (_class_code_generator)
-            _class_code_generator->current_converting()->push_back(fun_call + "\n");
+            _class_code_generator->add_to_current(fun_call + "\n");
         else
             _converted_file.push_back(fun_call + "\n");
         return;
@@ -243,8 +256,8 @@ void DreamParserListenerCompiler::enterFunCallStmt(DreamParser::FunCallStmtConte
     string_util::replace_all(stmt, ".", "->");
     if (_class_code_generator)
     {
-        _class_code_generator->current_converting()->push_back(stmt);
-        _class_code_generator->current_converting()->emplace_back(";\n");
+        _class_code_generator->add_to_current(stmt);
+        _class_code_generator->add_to_current(";\n");
     }
     else
         _converted_file.push_back(stmt + ";\n");
@@ -260,7 +273,7 @@ void DreamParserListenerCompiler::enterStmt(DreamParser::StmtContext* ctx)
 
 void DreamParserListenerCompiler::exitStmt(DreamParser::StmtContext* ctx)
 {
-    _converted_file.emplace_back("; \n ");
+    _converted_file.emplace_back("\n ");
 }
 
 void DreamParserListenerCompiler::enterBinaryOpExpr(DreamParser::BinaryOpExprContext* ctx)
@@ -489,6 +502,8 @@ void DreamParserListenerCompiler::enterVarDeclaration(DreamParser::VarDeclaratio
 
     _converted_file.push_back(_file_var_generator->generate_code());
 
+    _file_struct_generator->add_var_decl(_file_var_generator->generate_decl());
+
     if (_file_var_generator->is_nullable())
         _global->add_var_nullable(_current_hierarchy->get_full_hierarchy_name() +
                                   _file_var_generator->name(), true);
@@ -517,8 +532,6 @@ void DreamParserListenerCompiler::enterFunctionDeclaration(DreamParser::Function
     _current_hierarchy = new Hierarchy(func_name, HierarchyType::FILE_FUN, _current_hierarchy, {});
     string hierarchy_name = _current_hierarchy->get_full_hierarchy_name();
     string_util::replace_all(hierarchy_name, ".", "_");
-    _own_struct_data_code_generator = new StructDataCodeGenerator(hierarchy_name + "_own");
-    _input_struct_data_code_generator = new StructDataCodeGenerator(hierarchy_name + "_input");
 
     _fun_generator = new FunGenerator();
     _fun_generator->init(ctx);
@@ -526,166 +539,15 @@ void DreamParserListenerCompiler::enterFunctionDeclaration(DreamParser::Function
 
     string full_hierarchy_name = _current_hierarchy->get_full_hierarchy_name();
 
-
-
-    // int param_list_begin = 0;
-    // for (auto i = 0; i < trees.size(); i++)
-    // {
-    //     if (trees.at(i)->getText() == D_FUN)
-    //         continue;
-    //     // find the param list
-    //     if (trees.at(i)->getText() == D_LPAREN)
-    //         param_list_begin = i + 1;
-    //
-    //     if (trees.at(i)->getText().starts_with(D_LBRACE))
-    //     {
-    //         // only one return type
-    //         vector<antlr4::tree::ParseTree*> return_tree = trees.at(i - 1)->children;
-    //         if (return_tree.size() == 1)
-    //         {
-    //             fun_decl.append(return_tree.at(0)->getText())
-    //                     .append(" ")
-    //                     .append(func_name)
-    //                     .append("(");
-    //         }
-    //         else if (return_tree.empty())
-    //         {
-    //             fun_decl.append("void ")
-    //                     .append(func_name)
-    //                     .append("(");
-    //         }
-    //     }
-    // }
-    //
-    // antlr4::tree::ParseTree* params = trees.at(param_list_begin);
-    // if (params->getText() == D_RPAREN)
-    // {
-    //     fun_decl.append(")");
-    //     _converted_file.push_back(fun_decl + "\n");
-    //     return;
-    // }
-    //
-    // for (const vector<antlr4::tree::ParseTree*> single_params = params->children;
-    //      const auto single_param : single_params)
-    // {
-    //     if (single_param->getText() == D_COMMA)
-    //     {
-    //         fun_decl.append(", ");
-    //     }
-    //     // format like < int a >, default it is non-nullable and immutable
-    //     if (single_param->children.size() == 2)
-    //     {
-    //         string param_decl = single_param->getText();
-    //         fun_decl.append("const ");
-    //         string type = single_param->children.at(0)->getText();
-    //         fun_decl.append(parser_util::convert_type_to_cpp(type))
-    //                 .append(" ")
-    //                 .append(single_param->children.at(1)->getText());
-    //
-    //         _input_struct_data_code_generator->add_field(parser_util::convert_type_to_cpp(type),
-    //                                                      single_param->children.at(1)->getText());
-    //
-    //         continue;
-    //     }
-    //
-    //     // format like < int a ! > or < imt int a>, default it is non-nullable and immutable
-    //     if (single_param->children.size() == 3)
-    //     {
-    //         if (single_param->children.at(0)->getText() == D_IMT ||
-    //             single_param->children.at(0)->getText() == D_VAR)
-    //         {
-    //             string type = single_param->children.at(1)->getText();
-    //
-    //             fun_decl.append(single_param->children.at(0)->getText() == D_IMT ? "const " : "")
-    //                     .append(parser_util::convert_type_to_cpp(type))
-    //                     .append(" ")
-    //                     .append(single_param->children.at(2)->getText());
-    //
-    //             _input_struct_data_code_generator->add_field(
-    //                 parser_util::convert_type_to_cpp(type),
-    //                 single_param->children.at(2)->getText());
-    //
-    //             continue;
-    //         }
-    //
-    //         if (single_param->children.at(2)->getText() == D_NON_NULLABLE ||
-    //             single_param->children.at(2)->getText() == D_NULLABLE)
-    //         {
-    //             string type = single_param->children.at(1)->getText();
-    //
-    //             fun_decl.append("const ")
-    //                     .append(parser_util::convert_type_to_cpp(type))
-    //                     .append(" ")
-    //                     .append(single_param->children.at(2)->getText());
-    //
-    //             _input_struct_data_code_generator->add_field(
-    //                 parser_util::convert_type_to_cpp(type),
-    //                 single_param->children.at(1)->getText());
-    //
-    //             if (single_param->children.at(2)->getText() == D_NULLABLE)
-    //             {
-    //                 _global->add_var_nullable(
-    //                     _package_name + _file_name + func_name + single_param->children.at(1)->getText(), true);
-    //             }
-    //             continue;
-    //         }
-    //
-    //         response_util::report_error("Invalid parameter declaration ", _file_source,
-    //                                     static_cast<int>(ctx->getStart()->getLine()));
-    //
-    //         continue;
-    //     }
-    //
-    //     // format like < imt int a ! > or < var int a? >
-    //     if (single_param->children.size() == 4)
-    //     {
-    //         if (single_param->children.at(0)->getText() == D_IMT ||
-    //             single_param->children.at(0)->getText() == D_VAR)
-    //         {
-    //             string type = single_param->children.at(1)->getText();
-    //
-    //             fun_decl.append(single_param->children.at(0)->getText() == D_IMT ? "const " : "")
-    //                     .append(parser_util::convert_type_to_cpp(type))
-    //                     .append(" ")
-    //                     .append(single_param->children.at(2)->getText());
-    //
-    //             _input_struct_data_code_generator->add_field(
-    //                 parser_util::convert_type_to_cpp(type),
-    //                 single_param->children.at(2)->getText());
-    //         }
-    //         if (single_param->children.at(3)->getText() == D_NON_NULLABLE ||
-    //             single_param->children.at(3)->getText() == D_NULLABLE)
-    //         {
-    //             if (single_param->children.at(3)->getText() == D_NULLABLE)
-    //             {
-    //                 _global->add_var_nullable(
-    //                     _package_name + _file_name + func_name + single_param->children.at(1)->getText(), true);
-    //             }
-    //
-    //             continue;
-    //         }
-    //
-    //         response_util::report_error("Invalid parameter declaration ", _file_source,
-    //                                     static_cast<int>(ctx->getStart()->getLine()));
-    //     }
-    // }
-    //
-    // fun_decl.append(")");
-
     _converted_file.push_back(fun_decl + "\n");
+    _file_struct_generator->add_fun_decl(fun_decl + ";\n");
 }
 
 void DreamParserListenerCompiler::exitFunctionDeclaration(DreamParser::FunctionDeclarationContext* ctx)
 {
     string hierarchy_name = _current_hierarchy->get_full_hierarchy_name();
     string_util::replace_all(hierarchy_name, ".", "_");
-    std::vector<std::string> pool_define_own = parser_util::gen_data_pool_define(
-        hierarchy_name, DataPoolType::OWN);
-    std::vector<std::string> pool_define_input = parser_util::gen_data_pool_define(
-        hierarchy_name, DataPoolType::INPUT);
 
-    _converted_file.insert(_converted_file.end() - 1, pool_define_own.begin(), pool_define_own.end());
-    _converted_file.insert(_converted_file.end() - 1, pool_define_input.begin(), pool_define_input.end());
 
     _current_hierarchy = _current_hierarchy->parent();
 
@@ -698,7 +560,7 @@ void DreamParserListenerCompiler::enterFunBlock(DreamParser::FunBlockContext* ct
     if (!_class_code_generator)
         _converted_file.emplace_back(("{ \n"));
     else
-        _class_code_generator->current_converting()->emplace_back("{\n");
+        _class_code_generator->add_to_current("{\n");
 }
 
 void DreamParserListenerCompiler::exitFunBlock(DreamParser::FunBlockContext* ctx)
@@ -706,7 +568,7 @@ void DreamParserListenerCompiler::exitFunBlock(DreamParser::FunBlockContext* ctx
     if (!_class_code_generator)
         _converted_file.emplace_back(("\n } \n"));
     else
-        _class_code_generator->current_converting()->emplace_back("}\n");
+        _class_code_generator->add_to_current("}\n");
 }
 
 void DreamParserListenerCompiler::enterFunStmt(DreamParser::FunStmtContext* ctx)
@@ -730,7 +592,6 @@ void DreamParserListenerCompiler::enterFunVarDeclaration(DreamParser::FunVarDecl
     if (_fun_var_generator->is_nullable())
         _global->add_var_nullable(_current_hierarchy->get_full_hierarchy_name() +
                                   _fun_var_generator->name(), true);
-
 }
 
 void DreamParserListenerCompiler::exitFunVarDeclaration(DreamParser::FunVarDeclarationContext* ctx)
@@ -760,7 +621,6 @@ void DreamParserListenerCompiler::enterClassDeclaration(DreamParser::ClassDeclar
             _converted_file.emplace_back("\n");
         }
 
-
         return;
     }
 
@@ -768,6 +628,8 @@ void DreamParserListenerCompiler::enterClassDeclaration(DreamParser::ClassDeclar
     for (int i = 0; i < trees.size(); i++)
         if (trees.at(i)->getText() == D_CLASS)
             _class_code_generator = new ClassCodeGenerator(trees.at(i + 1)->getText());
+
+    _file_struct_generator->add_new_class_code_generator(_class_code_generator->class_name());
 
     if (!_class_code_generator)
     {
@@ -781,7 +643,7 @@ void DreamParserListenerCompiler::exitClassDeclaration(DreamParser::ClassDeclara
 {
     if (_class_code_generator)
     {
-        _class_code_generator->current_converting()->emplace_back("}; \"");
+        // _class_code_generator->add_to_current("}; \"");
         _converted_file.push_back(_class_code_generator->generate_code());
 
         delete _class_code_generator;
@@ -834,21 +696,23 @@ void DreamParserListenerCompiler::enterClassFuncDecl(DreamParser::ClassFuncDeclC
     // get ctx children and compose them
     const vector<antlr4::tree::ParseTree*> trees = ctx->children;
 
-    string fun_decl;
     string func_name;
 
     string fun_type;
 
     _class_fun_generator = new ClassFunGenerator();
-    _class_fun_generator->init(ctx);
-    fun_decl = _class_fun_generator->generate_code();
+    _class_fun_generator->init(ctx, _class_code_generator->class_name());
+    const string fun_decl = _class_fun_generator->generate_code();
 
-    _class_code_generator->current_converting()->push_back(fun_decl + "\n");
+    _class_code_generator->add_to_current(fun_decl + "\n");
+    _file_struct_generator->get_newest_class_struct_generator().add_to_current(
+        _class_fun_generator->visibility(), _class_fun_generator->generate_decl_code() + ";\n");
 }
 
 void DreamParserListenerCompiler::exitClassFuncDecl(DreamParser::ClassFuncDeclContext* ctx)
 {
     _class_code_generator->add_current();
+    _file_struct_generator->get_newest_class_struct_generator().add_current();
     delete _class_fun_generator;
     _class_fun_generator = nullptr;
 }
@@ -1100,8 +964,8 @@ void DreamParserListenerCompiler::enterForStmt(DreamParser::ForStmtContext* ctx)
 {
     _is_in_for_loop = true;
     _converted_file.emplace_back("for");
-    Hierarchy* hierarchy = new Hierarchy(FOR_STMT + string_util::gen_unique_name() ,
-        HierarchyType::FOR_STMT, _current_hierarchy, {});
+    Hierarchy* hierarchy = new Hierarchy(FOR_STMT + string_util::gen_unique_name(),
+                                         HierarchyType::FOR_STMT, _current_hierarchy, {});
     _current_hierarchy = hierarchy;
 }
 
@@ -1199,6 +1063,15 @@ void DreamParserListenerCompiler::enterFunCodeBlockStmt(DreamParser::FunCodeBloc
 void DreamParserListenerCompiler::exitFunCodeBlockStmt(DreamParser::FunCodeBlockStmtContext* ctx)
 {
 }
+
+void DreamParserListenerCompiler::enterDeleteStmt(DreamParser::DeleteStmtContext* ctx)
+{
+}
+
+void DreamParserListenerCompiler::exitDeleteStmt(DreamParser::DeleteStmtContext* ctx)
+{
+}
+
 
 void DreamParserListenerCompiler::enterEveryRule(antlr4::ParserRuleContext* ctx)
 {

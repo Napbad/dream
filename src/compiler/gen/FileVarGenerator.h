@@ -96,6 +96,15 @@ public:
      * @return Generated source code as a string
      */
     [[nodiscard]] std::string generate_code() const override;
+
+    /**
+     * @brief Generates the declaration for the variable
+     *
+     * @return Declaration code as a string
+     */
+    [[nodiscard]] std::string generate_decl() const;
+
+
 };
 
 #endif //FILEVARGENERATOR_H

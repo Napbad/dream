@@ -6,6 +6,7 @@
 #define DREAMPARSERLISTENERCOMPILER_H
 #include "DreamBaseListener.h"
 #include "compiler/gen/ClassCodeGenerator.h"
+#include "compiler/gen/FileStructGenerator.h"
 #include "compiler/gen/FunVarGenerator.h"
 #include "compiler/gen/FileVarGenerator.h"
 #include "compiler/gen/FunGenerator.h"
@@ -41,6 +42,9 @@ private:
     // the file stream, to the _file_name
     std::fstream _file_stream;
 
+    // the header file steam, to the _header_file_name
+    std::fstream _header_file_stream;
+
     // translate global configs
     Global *_global;
 
@@ -72,12 +76,12 @@ private:
     FileVarGenerator *_file_var_generator;
     FunGenerator *_fun_generator;
     ClassFunGenerator *_class_fun_generator;
+    FileStructGenerator *_file_struct_generator;
 
     // flags
     bool _is_in_class = false;
     bool _is_in_for_loop = false;
     bool _is_in_for_condition = false;
-
 
     void enterProgram(DreamParser::ProgramContext * /*ctx*/) override;
     void exitProgram(DreamParser::ProgramContext * /*ctx*/) override;
@@ -313,6 +317,8 @@ private:
     void enterFunCodeBlockStmt(DreamParser::FunCodeBlockStmtContext * /*ctx*/) override;
     void exitFunCodeBlockStmt(DreamParser::FunCodeBlockStmtContext * /*ctx*/) override;
 
+    void enterDeleteStmt(DreamParser::DeleteStmtContext* ctx) override;
+    void exitDeleteStmt(DreamParser::DeleteStmtContext* ctx) override;
 
     void enterEveryRule(antlr4::ParserRuleContext * /*ctx*/) override;
     void exitEveryRule(antlr4::ParserRuleContext * /*ctx*/) override;

@@ -17,7 +17,6 @@
 
 #include "obj/Hierarchy.h"
 #include "parse/DreamParser.h"
-#include "runtime/gc/DataPool.h"
 
 /// Macros for function parameter types and properties
 #define FUN_PARAM_TYPE_NAME std::string
@@ -36,14 +35,6 @@
 
 namespace parser_util {
 
-/**
- * Generates a data pool definition.
- *
- * @param name The name of the data pool.
- * @param type The type of the data pool.
- * @return A vector containing strings that define the data pool.
- */
-std::vector<std::string> gen_data_pool_define(const std::string& name, DataPoolType type);
 
 /**
  * Checks if an expression is nullable within a given hierarchy.

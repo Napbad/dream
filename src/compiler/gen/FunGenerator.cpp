@@ -54,7 +54,7 @@ void FunGenerator::init(DreamParser::FunctionDeclarationContext* ctx)
 
 std::string FunGenerator::generate_code() const
 {
-    return _return_type + " " + _name
+    return (_return_type.empty() ? "" : _return_type + " ") + _name
         + "("
         + string_util::get_str_from_param_vector(_params, ", ")
         + ")";
