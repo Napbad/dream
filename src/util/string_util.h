@@ -175,6 +175,7 @@ namespace string_util
      * @return Returns a unique string name.
      */
     std::string gen_unique_name();
+    void replace_all_without_str(std::string& str, const char* from, const char* to);
 } // namespace string_util
 
 #endif // STRING_UTIL_H

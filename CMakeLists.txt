@@ -97,6 +97,8 @@ add_executable(dream src/main.cpp
         src/natives/net/Socket.h
         src/compiler/gen/ClassVarGenerator.cpp
         src/compiler/gen/ClassVarGenerator.h
+        src/util/gc_relative_util.cpp
+        src/util/gc_relative_util.h
 )
 
 target_link_libraries(dream ${LIBANTLR})

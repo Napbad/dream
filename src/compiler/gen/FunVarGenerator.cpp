@@ -159,7 +159,9 @@ void FunVarGenerator::init(const DreamParser::FunVarDeclarationContext* ctx)
 
 std::string FunVarGenerator::generate_code() const
 {
-    return (_is_mutable ? "const " : "") + _type + " " + _name + " = " + _value + ";\n";
+    string tmp = _value;
+    string_util::replace_all_without_str(tmp, ".", "->");
+    return (_is_mutable ? "const " : "") + _type + " " + _name + " = " + tmp + ";\n";
 }
 
 

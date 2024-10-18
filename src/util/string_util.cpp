@@ -164,9 +164,9 @@ std::string string_util::get_str_from_param_vector(
     {
         auto [type, name, nullable, mutable_] = vector.at(i);
         res.append(mutable_ ? "const " : " ")
-        .append(type)
-        .append(" ")
-        .append(name);
+           .append(type)
+           .append(" ")
+           .append(name);
 
         res += (i == (vector.size() - 1) ? "" : delimiter);
     }
@@ -229,4 +229,20 @@ std::string string_util::gen_unique_name()
     ss << timestamp << "_" << random_num;
 
     return ss.str();
+}
+
+void string_util::replace_all_without_str(std::string& str, const char* from, const char* to)
+{
+    bool in_str = false;
+    for (int i = 0; i < str.size(); i++)
+    {
+        if (str.at(i) == '"')
+            in_str = !in_str;
+        if (in_str)
+            continue;
+        if (str.substr(i, strlen(from)) == from)
+        {
+            str.replace(i, strlen(from), to);
+        }
+    }
 }

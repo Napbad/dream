@@ -11,5 +11,7 @@ class URL {
 
     public fun sendHttpRequest(imt string method!, imt string path!, imt string data?) {
         imt Socket sock = new Socket();
+
+        sock.connect(_host, _port);
     }
 }

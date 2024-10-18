@@ -154,6 +154,7 @@ void DreamParserListenerCompiler::enterPackageDecl(DreamParser::PackageDeclConte
                            import_stmt + RUNTIME_DIR + "/" + "global/global_runtime_depen.h\" \n");
 
     _converted_file.insert(_converted_file.begin() + 1, "#include <string> \n");
+    _converted_file.insert(_converted_file.begin() + 1, "#include <cstdint> \n");
     _converted_file.insert(_converted_file.begin() + 1,
                            "#include \"" + _file_name.substr(0, _file_name.size() - 4) + ".h\" \n");
 }
@@ -254,7 +255,8 @@ void DreamParserListenerCompiler::enterFunCallStmt(DreamParser::FunCallStmtConte
 
 
     std::string fun_call = string_util::convert_parser_tree_to_string(ctx);
-    string_util::replace_all(fun_call, ".", "->");
+    string_util::replace_all_without_str(fun_call, ".", "->");
+
     if (_class_fun_generator)
         _class_fun_generator->add_stmt(fun_call + ";\n");
     else

@@ -51,6 +51,20 @@ funVarDeclaration
     : (VAR | IMT)? varModifiers? type IDENTIFIER (BANG | QUESTION)? (ASSIGN expr)? SEMICOLON
     ;
 
+
+// 字符串字面量
+STRING_LITERAL
+    : '"' (~["\\\r\n] | EscapeSequence)* '"'
+    ;
+
+fragment EscapeSequence:
+    '\\' 'u005c'? [btnfr"'\\]
+    | '\\' 'u005c'? ([0-3]? [0-7])? [0-7]
+    | '\\' 'u'+ HexDigit HexDigit HexDigit HexDigit
+    ;
+
+fragment HexDigit: [0-9a-fA-F];
+
 // 参数列表
 argList
     : expr (COMMA expr)*
@@ -391,14 +405,7 @@ qualifiedName
     : IDENTIFIER (DOT IDENTIFIER)*
     ;
 
-//argBody
-//    : argElement (COMMA argElement)*
-//    ;
-//
-//argElement
-//    : expr
-//    | IDENTIFIER
-//    ;
+
 
 // 参数列表
 paramList
@@ -569,17 +576,6 @@ THROW : 'throw';
 
 DELETE: 'delete';
 
-// 字符串字面量
-STRING_LITERAL : '"' (~[\n\r"\\]|'\\"'|'\\u'('0'..'9'|'a'..'f'|'A'..'F')+)* '"';
-
-// 字符字面量
-CHAR_LITERAL : '\'' (~[\n\r'\\]|'\''|'\\u'('0'..'9'|'a'..'f'|'A'..'F')+)* '\'';
-
-// 数字字面量
-INT_LITERAL : ('0'..'9')+;
-FLOAT_LITERAL : ('0'..'9')+ '.' ('0'..'9')*;
-TRUE_LITERAL : 'true';
-FALSE_LITERAL : 'false';
 
 // 类型关键字
 BYTE : 'byte';
@@ -599,6 +595,16 @@ STRING : 'string';
 VOID: 'void';
 
 CONST : 'const';
+
+
+// 字符字面量
+CHAR_LITERAL : '\'' (~[\n\r'\\]|'\''|'\\u'('0'..'9'|'a'..'f'|'A'..'F')+)* '\'';
+
+// 数字字面量
+INT_LITERAL : ('0'..'9')+;
+FLOAT_LITERAL : ('0'..'9')+ '.' ('0'..'9')*;
+TRUE_LITERAL : 'true';
+FALSE_LITERAL : 'false';
 
 
 AT : '@';
@@ -654,4 +660,3 @@ DEC : '--';
 
 // 字面量
 IDENTIFIER : [a-zA-Z_][a-zA-Z_0-9]*;
-
