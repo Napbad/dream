@@ -65,12 +65,15 @@ std::string ClassFunGenerator::generate_code() const
         + "("
         + string_util::get_str_from_param_vector(_params, ", ")
         + ")"
-        + (_const ? " const" : "");
+        + (_const ? " const" : "")
+        + "{ \n"
+        + string_util::get_lines_from_vector(_stmts)
+        + "\n}\n";
 }
 
 std::string ClassFunGenerator::generate_decl_code() const
 {
-        return _return_type + " " + _name
+    return _return_type + " " + _name
         + "("
         + string_util::get_str_from_param_vector(_params, ", ")
         + ")"
@@ -80,4 +83,9 @@ std::string ClassFunGenerator::generate_decl_code() const
 ClassMemberVisibility ClassFunGenerator::visibility() const
 {
     return _visibility;
+}
+
+void ClassFunGenerator::add_stmt(const string& string)
+{
+    _stmts.push_back(string);
 }

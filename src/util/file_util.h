@@ -7,6 +7,7 @@
 
 #define OUTPUT_DIR "../build/"
 
+#include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <string>
@@ -21,24 +22,35 @@ inline void setColor(int color) {
     SetConsoleTextAttribute(hConsole, color);
 }
 #else
-inline void setColor(const char *ansiCode) {
+inline void setColor(const char* ansiCode)
+{
     std::cout << ansiCode;
 }
 #endif
 
-namespace file_util {
-
+namespace file_util
+{
     /**
      * @enum FileColor
      * @brief Enum for file colors.
      */
-    enum class FileColor {
+    enum class FileColor
+    {
         GREEN,
         WHITE,
         RED,
         YELLOW,
         BLUE,
-        BLACK
+        BLACK,
+        MAGENTA,
+        CYAN,
+        BRIGHT_GREEN,
+        BRIGHT_WHITE,
+        BRIGHT_RED,
+        BRIGHT_YELLOW,
+        BRIGHT_BLUE,
+        BRIGHT_MAGENTA,
+        BRIGHT_CYAN
     };
 
     /**
@@ -52,12 +64,75 @@ namespace file_util {
     std::string colorCode(FileColor color);
 #endif
 
+
+    /**
+     * @brief Prints a message with a specified color.
+     * @param stream Output stream.
+     * @param message Message to print.
+     * @param color Color of the message.
+     */
+    void print(std::ostream& stream, const std::string& message, FileColor color);
+
+    /**
+     * @brief Prints a debug message with a specified color.
+     * @param stream Output stream.
+     * @param message Message to print.
+     * @param color Color of the message.
+     */
+    void dbg_print(std::ostream& stream, const std::string& message, FileColor color);
+
+    /**
+     * @brief Prints a warning message with a specified color.
+     * @param stream Output stream.
+     * @param message Message to print.
+     * @param color Color of the message.
+     */
+    void warn_print(std::ostream& stream, const std::string& message, FileColor color);
+
+    /**
+     * @brief Prints an error message with a specified color.
+     * @param stream Output stream.
+     * @param message Message to print.
+     * @param color Color of the message.
+     */
+    void err_print(std::ostream& stream, const std::string& message, FileColor color);
+
+    /**
+     * @brief Prints a debug message with default color (WHITE).
+     * @param stream Output stream.
+     * @param message Message to print.
+     */
+    void dbg_print(std::ostream& stream, const std::string& message);
+
+    /**
+     * @brief Prints a warning message with default color (WHITE).
+     * @param stream Output stream.
+     * @param message Message to print.
+     */
+    void warn_print(std::ostream& stream, const std::string& message);
+
+    /**
+     * @brief Prints an error message with default color (WHITE).
+     * @param stream Output stream.
+     * @param message Message to print.
+     */
+    void err_print(std::ostream& stream, const std::string& message);
+
+    /**
+     * @brief Reads a line from an opened file.
+     * @param opened_file Pointer to the opened file.
+     * @param file_name Name of the file.
+     * @param line Line number.
+     * @return The read line.
+     */
+    std::string read_line(std::fstream* opened_file, std::string& file_name, int line);
+
     /**
      * @brief Creates a new file and returns a file stream.
      * @param file_name Name of the file to create.
      * @return A file stream object.
      */
-    std::fstream create_file(const std::string &file_name);
+    std::fstream create_file(const std::string& file_name);
 
     /**
      * @brief Creates a directory for a package.
@@ -70,39 +145,15 @@ namespace file_util {
      * @param pkg_name Name of the package.
      * @return The corresponding path.
      */
-    std::string convert_pkg_to_path(const std::string &pkg_name);
+    std::string convert_pkg_to_path(const std::string& pkg_name);
 
-    /**
-     * @brief Prints a debug message with a specified color.
-     * @param stream Output stream.
-     * @param message Message to print.
-     * @param color Color of the message.
-     */
-    void dbg_print(std::ostream& stream, const std::string& message, FileColor color);
-
-    /**
-     * @brief Reads a line from an opened file.
-     * @param opened_file Pointer to the opened file.
-     * @param file_name Name of the file.
-     * @param line Line number.
-     * @return The read line.
-     */
-    std::string read_line(std::fstream *opened_file, std::string &file_name, int line);
-
-    /**
-     * @brief Prints a message with a specified color.
-     * @param stream Output stream.
-     * @param message Message to print.
-     * @param color Color of the message.
-     */
-    void print(std::ostream &stream, const std::string &message, FileColor color);
 
     /**
      * @brief Copies a directory recursively.
      * @param source_dir Source directory path.
      * @param destination_dir Destination directory path.
      */
-    void copy_directory(const std::string &source_dir, const std::string &destination_dir);
+    void copy_directory(const std::string& source_dir, const std::string& destination_dir);
 
     /**
      * @brief Gets the hierarchy for a package.
@@ -137,6 +188,23 @@ namespace file_util {
      * @param dir_path Directory path.
      */
     void delete_directory(const std::string& dir_path);
+
+#ifdef _WIN32
+ const std::string DEV_NULL = "NUL";   // Windows null device
+#else
+    const std::string DEV_NULL = "/dev/null"; // Unix-like null device
+#endif
+
+    // Recursively scan the directory to find all .cpp files
+    std::vector<std::filesystem::path> find_cpp_files(const std::filesystem::path& directory);
+
+    // Check if clang-format is installed on the system
+    bool is_clang_format_available();
+
+    // Format a single .cpp file using clang-format
+    void format_file(const std::filesystem::path& filePath);
+
+    void format_all_cpp_files(const std::filesystem::path& directory);
 }
 
 #endif //FILE_UTIL_H

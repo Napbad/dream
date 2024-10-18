@@ -9,7 +9,6 @@
 #include "compiler/NativeConverter.h"
 #include "compiler/gen/ClassFunGenerator.h"
 #include "util/file_util.h"
-#include "util/parser_util.h"
 #include "util/response_util.h"
 #include "util/string_util.h"
 using namespace std;
@@ -33,6 +32,7 @@ DreamParserListenerCompiler::DreamParserListenerCompiler(
     _fun_generator = nullptr;
     _class_fun_generator = nullptr;
     _file_struct_generator = new FileStructGenerator(file_name);
+    _class_var_generator = nullptr;
 }
 
 DreamParserListenerCompiler::~DreamParserListenerCompiler() = default;
@@ -61,7 +61,8 @@ void DreamParserListenerCompiler::exitProgram(DreamParser::ProgramContext* ctx)
     {
         _file_stream << line;
 
-        if (line.starts_with("#include ") && !line.starts_with("#include \"" + _file_name.substr(0, _file_name.length() - 4) + ".h\""))
+        if (line.starts_with("#include ") && !line.starts_with(
+            "#include \"" + _file_name.substr(0, _file_name.length() - 4) + ".h\""))
             _header_file_stream << line;
     }
     _file_stream.close();
@@ -141,14 +142,14 @@ void DreamParserListenerCompiler::enterPackageDecl(DreamParser::PackageDeclConte
     _root_path_to_include = import_stmt;
 
     // include the runtime files
-    _converted_file.insert(_converted_file.begin() + 1, import_stmt + RUNTIME_DIR + "/" + "class/Object.h\" \n");
-    _converted_file.insert(_converted_file.begin() + 1, import_stmt + RUNTIME_DIR + "/" + "gc/DataCopy.h\" \n");
-    _converted_file.insert(_converted_file.begin() + 1, import_stmt + RUNTIME_DIR + "/" + "gc/FunDataRoot.h\" \n");
-    _converted_file.insert(_converted_file.begin() + 1, import_stmt + RUNTIME_DIR + "/" + "gc/DataPath.h\" \n");
-    _converted_file.insert(_converted_file.begin() + 1, import_stmt + RUNTIME_DIR + "/" + "gc/DataNode.h\" \n");
-    _converted_file.insert(_converted_file.begin() + 1, import_stmt + "natives/Exception.h\" \n");
-    _converted_file.insert(_converted_file.begin() + 1, import_stmt + RUNTIME_DIR + "/" + "reserve/d_define.h\" \n");
-    _converted_file.insert(_converted_file.begin() + 1, import_stmt + RUNTIME_DIR + "/" + "reserve/Finally.h\" \n");
+    _converted_file.insert(_converted_file.begin() + 1, import_stmt + RUNTIME_DIR + "/class/Object.h\" \n");
+    _converted_file.insert(_converted_file.begin() + 1, import_stmt + RUNTIME_DIR + "/gc/DataCopy.h\" \n");
+    _converted_file.insert(_converted_file.begin() + 1, import_stmt + RUNTIME_DIR + "/gc/FunDataRoot.h\" \n");
+    _converted_file.insert(_converted_file.begin() + 1, import_stmt + RUNTIME_DIR + "/gc/DataPath.h\" \n");
+    _converted_file.insert(_converted_file.begin() + 1, import_stmt + RUNTIME_DIR + "/gc/DataNode.h\" \n");
+    _converted_file.insert(_converted_file.begin() + 1, import_stmt + "/natives/exception/Exception.h\" \n");
+    _converted_file.insert(_converted_file.begin() + 1, import_stmt + RUNTIME_DIR + "/reserve/d_define.h\" \n");
+    _converted_file.insert(_converted_file.begin() + 1, import_stmt + RUNTIME_DIR + "/reserve/Finally.h\" \n");
     _converted_file.insert(_converted_file.begin() + 1,
                            import_stmt + RUNTIME_DIR + "/" + "global/global_runtime_depen.h\" \n");
 
@@ -218,9 +219,9 @@ void DreamParserListenerCompiler::exitImportName(DreamParser::ImportNameContext*
 
 void DreamParserListenerCompiler::enterFunCallStmt(DreamParser::FunCallStmtContext* ctx)
 {
-    string fun_call;
     if (ctx->children.at(0)->getText().starts_with(D_SLASH))
     {
+        string fun_call;
         if (ctx->children.at(1)->getText() == "println")
         {
             // file_util::insert_front_of_file(&_file_stream, _file_path, "#include <iostream> \n");
@@ -244,23 +245,20 @@ void DreamParserListenerCompiler::enterFunCallStmt(DreamParser::FunCallStmtConte
 
         string_util::replace_all(fun_call, ".", "->");
 
-        if (_class_code_generator)
-            _class_code_generator->add_to_current(fun_call + "\n");
+        if (_class_fun_generator)
+            _class_fun_generator->add_stmt(fun_call + ";\n");
         else
-            _converted_file.push_back(fun_call + "\n");
+            _converted_file.push_back(fun_call + ";\n");
         return;
     }
 
 
-    std::string stmt = string_util::convert_parser_tree_to_string(ctx);
-    string_util::replace_all(stmt, ".", "->");
-    if (_class_code_generator)
-    {
-        _class_code_generator->add_to_current(stmt);
-        _class_code_generator->add_to_current(";\n");
-    }
+    std::string fun_call = string_util::convert_parser_tree_to_string(ctx);
+    string_util::replace_all(fun_call, ".", "->");
+    if (_class_fun_generator)
+        _class_fun_generator->add_stmt(fun_call + ";\n");
     else
-        _converted_file.push_back(stmt + ";\n");
+        _converted_file.push_back(fun_call + ";\n");
 }
 
 void DreamParserListenerCompiler::exitFunCallStmt(DreamParser::FunCallStmtContext* ctx)
@@ -471,7 +469,7 @@ void DreamParserListenerCompiler::enterAssignExpr(DreamParser::AssignExprContext
             }
         }
         assign_stmt.append(string_util::convert_parser_tree_to_string(ctx->children.at(assign_index + 1)));
-        _converted_file.push_back(assign_stmt + ";\n");
+        // _converted_file.push_back(assign_stmt + ";\n");
 
 
         return;
@@ -497,6 +495,11 @@ void DreamParserListenerCompiler::exitDeclaration(DreamParser::DeclarationContex
 
 void DreamParserListenerCompiler::enterVarDeclaration(DreamParser::VarDeclarationContext* ctx)
 {
+    if (global_flag_is_debug)
+    {
+        dbg_print(std::cout, "VarDeclaration: " + string_util::convert_parser_tree_to_string(ctx) + "\n",
+                  file_util::FileColor::WHITE);
+    }
     _file_var_generator = new FileVarGenerator(this);
     _file_var_generator->init(ctx);
 
@@ -535,7 +538,7 @@ void DreamParserListenerCompiler::enterFunctionDeclaration(DreamParser::Function
 
     _fun_generator = new FunGenerator();
     _fun_generator->init(ctx);
-    string fun_decl = _fun_generator->generate_code();
+    const string fun_decl = _fun_generator->generate_code();
 
     string full_hierarchy_name = _current_hierarchy->get_full_hierarchy_name();
 
@@ -557,18 +560,14 @@ void DreamParserListenerCompiler::exitFunctionDeclaration(DreamParser::FunctionD
 
 void DreamParserListenerCompiler::enterFunBlock(DreamParser::FunBlockContext* ctx)
 {
-    if (!_class_code_generator)
-        _converted_file.emplace_back(("{ \n"));
-    else
-        _class_code_generator->add_to_current("{\n");
+    if (!_class_fun_generator)
+        _converted_file.emplace_back("{ \n");
 }
 
 void DreamParserListenerCompiler::exitFunBlock(DreamParser::FunBlockContext* ctx)
 {
-    if (!_class_code_generator)
-        _converted_file.emplace_back(("\n } \n"));
-    else
-        _class_code_generator->add_to_current("}\n");
+    if (!_class_fun_generator)
+        _converted_file.emplace_back("\n } \n");
 }
 
 void DreamParserListenerCompiler::enterFunStmt(DreamParser::FunStmtContext* ctx)
@@ -587,8 +586,6 @@ void DreamParserListenerCompiler::enterFunVarDeclaration(DreamParser::FunVarDecl
     _fun_var_generator = new FunVarGenerator(this);
     _fun_var_generator->init(ctx);
 
-    _converted_file.push_back(_fun_var_generator->generate_code());
-
     if (_fun_var_generator->is_nullable())
         _global->add_var_nullable(_current_hierarchy->get_full_hierarchy_name() +
                                   _fun_var_generator->name(), true);
@@ -596,6 +593,10 @@ void DreamParserListenerCompiler::enterFunVarDeclaration(DreamParser::FunVarDecl
 
 void DreamParserListenerCompiler::exitFunVarDeclaration(DreamParser::FunVarDeclarationContext* ctx)
 {
+    if (!_class_code_generator)
+        _converted_file.push_back(_fun_var_generator->generate_code());
+    else
+        _class_fun_generator->add_stmt(_fun_var_generator->generate_code());
     delete _fun_var_generator;
     _fun_var_generator = nullptr;
 }
@@ -613,9 +614,8 @@ void DreamParserListenerCompiler::enterClassDeclaration(DreamParser::ClassDeclar
     // add the class class_name to the file
     if (ctx->children.at(0)->getText() == D_NATIVE_ANNOTATION)
     {
-        vector<string> content = NativeConverter::get_native_class_code(ctx->children.at(2)->getText());
-
-        for (auto& line : content)
+        for (vector<string> content = NativeConverter::get_native_class_code(ctx->children.at(2)->getText());
+             auto& line : content)
         {
             _converted_file.push_back(line);
             _converted_file.emplace_back("\n");
@@ -629,21 +629,22 @@ void DreamParserListenerCompiler::enterClassDeclaration(DreamParser::ClassDeclar
         if (trees.at(i)->getText() == D_CLASS)
             _class_code_generator = new ClassCodeGenerator(trees.at(i + 1)->getText());
 
-    _file_struct_generator->add_new_class_code_generator(_class_code_generator->class_name());
-
     if (!_class_code_generator)
     {
         response_util::report_error("Class Declaration Error", _file_source,
                                     static_cast<int>(ctx->getStart()->getLine()));
         exit(1);
     }
+    // add a class definition to file
+    _file_struct_generator->add_new_class_code_generator(_class_code_generator->class_name());
+
 }
 
 void DreamParserListenerCompiler::exitClassDeclaration(DreamParser::ClassDeclarationContext* ctx)
 {
     if (_class_code_generator)
     {
-        // _class_code_generator->add_to_current("}; \"");
+        // push all method implementations to source file
         _converted_file.push_back(_class_code_generator->generate_code());
 
         delete _class_code_generator;
@@ -685,10 +686,23 @@ void DreamParserListenerCompiler::exitClassBody(DreamParser::ClassBodyContext* c
 
 void DreamParserListenerCompiler::enterClassVarDecl(DreamParser::ClassVarDeclContext* ctx)
 {
+    _class_var_generator = new ClassVarGenerator();
+
+    _class_var_generator->init(ctx);
 }
 
 void DreamParserListenerCompiler::exitClassVarDecl(DreamParser::ClassVarDeclContext* ctx)
 {
+    if (_class_var_generator)
+        // add class member to header file, class definition
+        _file_struct_generator->get_newest_class_struct_generator().add_to_current(
+            _class_var_generator->visibility(),
+            _class_var_generator->generate_code());
+    _file_struct_generator->get_newest_class_struct_generator().add_current();
+
+    delete _class_var_generator;
+
+    _class_var_generator = nullptr;
 }
 
 void DreamParserListenerCompiler::enterClassFuncDecl(DreamParser::ClassFuncDeclContext* ctx)
@@ -696,23 +710,23 @@ void DreamParserListenerCompiler::enterClassFuncDecl(DreamParser::ClassFuncDeclC
     // get ctx children and compose them
     const vector<antlr4::tree::ParseTree*> trees = ctx->children;
 
-    string func_name;
-
-    string fun_type;
-
+    // generate the class function generator
     _class_fun_generator = new ClassFunGenerator();
     _class_fun_generator->init(ctx, _class_code_generator->class_name());
     const string fun_decl = _class_fun_generator->generate_code();
 
-    _class_code_generator->add_to_current(fun_decl + "\n");
+    // add declaration to the class struct
     _file_struct_generator->get_newest_class_struct_generator().add_to_current(
-        _class_fun_generator->visibility(), _class_fun_generator->generate_decl_code() + ";\n");
+        _class_fun_generator->visibility(),
+        _class_fun_generator->generate_decl_code() + ";\n");
+    _file_struct_generator->get_newest_class_struct_generator().add_current();
 }
 
 void DreamParserListenerCompiler::exitClassFuncDecl(DreamParser::ClassFuncDeclContext* ctx)
 {
+    // add implementation to the class source code
+    _class_code_generator->add_to_current(_class_fun_generator->generate_code());
     _class_code_generator->add_current();
-    _file_struct_generator->get_newest_class_struct_generator().add_current();
     delete _class_fun_generator;
     _class_fun_generator = nullptr;
 }

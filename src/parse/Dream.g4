@@ -48,7 +48,7 @@ binaryOpExpr
 
 // 函数变量声明
 funVarDeclaration
-    : (VAR | IMT) varModifiers? type IDENTIFIER (BANG | QUESTION)? (ASSIGN expr)? SEMICOLON
+    : (VAR | IMT)? varModifiers? type IDENTIFIER (BANG | QUESTION)? (ASSIGN expr)? SEMICOLON
     ;
 
 // 参数列表
@@ -179,12 +179,19 @@ declaration
 
 // 变量声明
 varDeclaration
-    : (VAR | IMT) varModifiers? type IDENTIFIER (BANG | QUESTION)? (ASSIGN expr)? SEMICOLON
+    : (VAR | IMT)? varModifiers? type IDENTIFIER (BANG | QUESTION)? (ASSIGN expr)? SEMICOLON
     ;
 
 // 变量修饰符
 varModifiers
     : annotation+
+    ;
+
+// 类成员修饰符
+classMemberModifier
+    : memberModifier
+    | visibilityModifier
+    | staticModifier
     ;
 
 // 文件函数声明
@@ -260,12 +267,7 @@ classStmt
     ;
 
 
-// 类成员修饰符
-classMemberModifier
-    : memberModifier
-    | visibilityModifier
-    | staticModifier
-    ;
+
 
 // 构造函数声明
 constructorDecl
@@ -420,6 +422,7 @@ singleType
     | SHORT
     | INT
     | LONG
+    | USHORT
     | UINT
     | ULONG
     | LONG

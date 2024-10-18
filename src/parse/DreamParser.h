@@ -318,11 +318,11 @@ public:
     TypeContext *type();
     antlr4::tree::TerminalNode *IDENTIFIER();
     antlr4::tree::TerminalNode *SEMICOLON();
-    antlr4::tree::TerminalNode *VAR();
-    antlr4::tree::TerminalNode *IMT();
     VarModifiersContext *varModifiers();
     antlr4::tree::TerminalNode *ASSIGN();
     ExprContext *expr();
+    antlr4::tree::TerminalNode *VAR();
+    antlr4::tree::TerminalNode *IMT();
     antlr4::tree::TerminalNode *BANG();
     antlr4::tree::TerminalNode *QUESTION();
 
@@ -653,11 +653,11 @@ public:
     TypeContext *type();
     antlr4::tree::TerminalNode *IDENTIFIER();
     antlr4::tree::TerminalNode *SEMICOLON();
-    antlr4::tree::TerminalNode *VAR();
-    antlr4::tree::TerminalNode *IMT();
     VarModifiersContext *varModifiers();
     antlr4::tree::TerminalNode *ASSIGN();
     ExprContext *expr();
+    antlr4::tree::TerminalNode *VAR();
+    antlr4::tree::TerminalNode *IMT();
     antlr4::tree::TerminalNode *BANG();
     antlr4::tree::TerminalNode *QUESTION();
 
@@ -1325,6 +1325,7 @@ public:
     antlr4::tree::TerminalNode *SHORT();
     antlr4::tree::TerminalNode *INT();
     antlr4::tree::TerminalNode *LONG();
+    antlr4::tree::TerminalNode *USHORT();
     antlr4::tree::TerminalNode *UINT();
     antlr4::tree::TerminalNode *ULONG();
     antlr4::tree::TerminalNode *LONGLONG();

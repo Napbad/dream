@@ -33,42 +33,55 @@
             FUN_PARAM_MUTABLE \
         >
 
-namespace parser_util {
+namespace parser_util
+{
+    /**
+     * Checks if an expression is nullable within a given hierarchy.
+     *
+     * @param hierarchy The hierarchy object to check against.
+     * @param expr The parse tree node representing the expression.
+     * @return True if the expression is nullable, false otherwise.
+     */
+    bool find_nullable(Hierarchy* hierarchy, antlr4::tree::ParseTree* expr);
 
+    /**
+     * Determines if a parse tree node represents a null value.
+     *
+     * @param expr The parse tree node to check.
+     * @return True if the parse tree node is null, false otherwise.
+     */
+    bool parse_tree_is_null(antlr4::tree::ParseTree* expr);
 
-/**
- * Checks if an expression is nullable within a given hierarchy.
- *
- * @param hierarchy The hierarchy object to check against.
- * @param expr The parse tree node representing the expression.
- * @return True if the expression is nullable, false otherwise.
- */
-bool find_nullable(Hierarchy* hierarchy, antlr4::tree::ParseTree* expr);
+    /**
+     * Converts a type name to its C++ representation.
+     *
+     * @param type_name The original type name as a string.
+     * @return The C++ representation of the type name.
+     */
+    std::string convert_type_to_cpp(std::string& type_name);
 
-/**
- * Determines if a parse tree node represents a null value.
- *
- * @param expr The parse tree node to check.
- * @return True if the parse tree node is null, false otherwise.
- */
-bool parse_tree_is_null(antlr4::tree::ParseTree* expr);
+    /**
+     * Converts a list of return types to a tuple representation.
+     *
+     * @param ctx The context containing the return type information.
+     * @return A string representing the tuple of return types.
+     */
+    std::string convert_type_list_to_tuple(DreamParser::ReturnTypeContext* ctx);
 
-/**
- * Converts a type name to its C++ representation.
- *
- * @param type_name The original type name as a string.
- * @return The C++ representation of the type name.
- */
-std::string convert_type_to_cpp(std::string& type_name);
-
-/**
- * Converts a list of return types to a tuple representation.
- *
- * @param ctx The context containing the return type information.
- * @return A string representing the tuple of return types.
- */
-std::string convert_type_list_to_tuple(DreamParser::ReturnTypeContext* ctx);
-
+    /**
+     * @brief Generates the default value for a specified type.
+     *
+     * This function generates a default value based on the provided type name. Supported types include but are not limited to `int`, `float`, `std::string`, etc.
+     *
+     * @param type The type name, e.g., "int", "float", "std::string".
+     * @return The generated default value as a string.
+     *
+     * @note If the provided type is not supported, an empty string is returned.
+     *
+     * @example
+     *
+      */
+    std::string generate_default_value(std::string& type);
 } // namespace parser_util
 
 #endif // PARSER_UTIL_H

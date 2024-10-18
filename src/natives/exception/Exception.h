@@ -8,7 +8,7 @@
 #include <string>
 #include <utility>
 
-#include "../runtime/class/Object.h"
+#include "../../runtime/class/Object.h"
 
 class Exception : public std::exception, public Object {
 public:

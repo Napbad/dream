@@ -1,0 +1,15 @@
+package net;
+
+import natives.net.Socket;
+
+class URL {
+
+    private imt string _scheme;
+    private imt string _host;
+    private imt int _port;
+    private imt string _path;
+
+    public fun sendHttpRequest(imt string method!, imt string path!, imt string data?) {
+        imt Socket sock = new Socket();
+    }
+}

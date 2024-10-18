@@ -6,7 +6,7 @@ package main; // 这是一个包声明，指定当前文件属于 `main` 包
 
 import stl.Vector;
 import natives.net.Socket;
-import test.test;
+import test.Test;
 
 // import std; // 这是一个导入语句，导入 `com.napbad.std` 包
 // import http; // 这是一个导入语句，导入 `com.napbad.http` 包
@@ -19,7 +19,6 @@ var string b? = "he";
  // + (true & a | "ab");
 
 var string b1? = b;
-var int a! = 10; // 这是一个变量声明
 var int     a1! = 20;
 // `var` 表示 `a` 是一个可变变量
 // `!` 表示 `a` 不可以为 null，并且初始化为 10

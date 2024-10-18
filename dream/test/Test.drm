@@ -1,0 +1,236 @@
+package test;
+
+import natives.net.Socket;
+
+// 字符串类型 (string)
+// 可变且可空
+var string str1?;
+str1 = "Hello, world!";
+
+// 可变且不可空
+var string str2!;
+str2 = "Hello, world!";
+
+// 不可变且可空
+imt string str3? = "Hello, world!"; // 不可变变量只能在声明时赋值一次
+
+// 不可变且不可空
+imt string str4! = "Hello, world!"; // 不可变变量只能在声明时赋值一次
+
+// 整数类型 (int)
+// 可变且可空
+var int num1?;
+num1 = 10;
+
+imt int a = 1;
+
+// 可变且不可空
+var int num2!;
+num2 = 20;
+
+// 不可变且可空
+imt int num3? = 30; // 不可变变量只能在声明时赋值一次
+
+// 不可变且不可空
+imt int num4! = 40; // 不可变变量只能在声明时赋值一次
+
+// 浮点数类型 (float)
+// 可变且可空
+var float flt1?;
+flt1 = 3.14;
+
+// 可变且不可空
+var float flt2!;
+flt2 = 2.718;
+
+// 不可变且可空
+imt float flt3? = 1.618; // 不可变变量只能在声明时赋值一次
+
+// 不可变且不可空
+imt float flt4! = 0.5; // 不可变变量只能在声明时赋值一次
+
+// 双精度浮点数类型 (double)
+// 可变且可空
+var double dbl1?;
+dbl1 = 3.14159;
+
+// 可变且不可空
+var double dbl2!;
+dbl2 = 2.71828;
+
+// 不可变且可空
+imt double dbl3? = 1.61803; // 不可变变量只能在声明时赋值一次
+
+// 不可变且不可空
+imt double dbl4! = 0.57721; // 不可变变量只能在声明时赋值一次
+
+// 布尔类型 (bool)
+// 可变且可空
+var bool bool1?;
+bool1 = true;
+
+// 可变且不可空
+var bool bool2!;
+bool2 = false;
+
+// 不可变且可空
+imt bool bool3? = true; // 不可变变量只能在声明时赋值一次
+
+// 不可变且不可空
+imt bool bool4! = false; // 不可变变量只能在声明时赋值一次
+
+// 字符类型 (char)
+// 可变且可空
+var char ch1?;
+ch1 = 'A';
+
+// 可变且不可空
+var char ch2!;
+ch2 = 'B';
+
+// 不可变且可空
+imt char ch3? = 'C'; // 不可变变量只能在声明时赋值一次
+
+// 不可变且不可空
+imt char ch4! = 'D'; // 不可变变量只能在声明时赋值一次
+
+// 字节类型 (byte)
+// 可变且可空
+var byte by1?;
+by1 = 127;
+
+// 可变且不可空
+var byte by2!;
+by2 = -128;
+
+// 不可变且可空
+imt byte by3? = 0; // 不可变变量只能在声明时赋值一次
+
+// 不可变且不可空
+imt byte by4! = 64; // 不可变变量只能在声明时赋值一次
+
+// 短整数类型 (short)
+// 可变且可空
+var short sh1?;
+sh1 = 32767;
+
+// 可变且不可空
+var short sh2!;
+sh2 = -32768;
+
+// 不可变且可空
+imt short sh3? = 0; // 不可变变量只能在声明时赋值一次
+
+// 不可变且不可空
+imt short sh4! = 1000; // 不可变变量只能在声明时赋值一次
+
+// 长整数类型 (long)
+// 可变且可空
+var long lng1?;
+lng1 = 9223372036854775807;
+
+// 可变且不可空
+var long lng2!;
+lng2 = -9223372036854775807;
+
+// 不可变且可空
+imt long lng3? = 0; // 不可变变量只能在声明时赋值一次
+
+// 不可变且不可空
+imt long lng4! = 1000000000000000000; // 不可变变量只能在声明时赋值一次
+
+// 无符号整数类型 (uint)
+// 可变且可空
+var uint uint1?;
+uint1 = 4294967295;
+
+// 可变且不可空
+var uint uint2!;
+uint2 = 0;
+
+// 不可变且可空
+imt uint uint3? = 1000000000; // 不可变变量只能在声明时赋值一次
+
+// 不可变且不可空
+imt uint uint4! = 2000000000; // 不可变变量只能在声明时赋值一次
+
+// 无符号短整数类型 (ushort)
+// 可变且可空
+var ushort ush1?;
+ush1 = 65535;
+
+// 可变且不可空
+var ushort ush2!;
+ush2 = 0;
+
+// 不可变且可空
+imt ushort ush3? = 10000; // 不可变变量只能在声明时赋值一次
+
+// 不可变且不可空
+imt ushort ush4! = 20000; // 不可变变量只能在声明时赋值一次
+
+// 长长整数类型 (llong)
+// 可变且可空
+var llong llng1?;
+llng1 = 9223372036854775807;
+
+// 可变且不可空
+var llong llng2!;
+llng2 = -9223372036854775807;
+
+// 不可变且可空
+imt llong llng3? = 0; // 不可变变量只能在声明时赋值一次
+
+// 不可变且不可空
+imt llong llng4! = 1000000000000000000; // 不可变变量只能在声明时赋值一次
+
+// 无符号长长整数类型 (ullong)
+// 可变且可空
+var ullong ullng1?;
+ullng1 = 18446744073709551615;
+
+// 可变且不可空
+var ullong ullng2!;
+ullng2 = 0;
+
+// 不可变且可空
+imt ullong ullng3? = 1000000000000000000; // 不可变变量只能在声明时赋值一次
+
+// 不可变且不可空
+imt ullong ullng4! = 2000000000000000000; // 不可变变量只能在声明时赋值一次
+
+
+class Test{
+    public const fun test() {
+        /println("Hello!");
+        /println(("Dream Version: 0.0.1"));
+    }
+}
+
+fun test_main() {
+    imt Test test! = new Test();
+    test.test();
+}
+
+fun test_main1(imt int a!) int{
+    /println("Hello!");
+    return a + 1;
+}
+
+/*
+    test_main(); ->
+    void test_main() {
+        imt Test test! = new Test();
+        test.test();
+    }
+
+    test_main1(); ->
+    int _test_main1(int a) {
+        return a + 1;
+    }
+    int test_main1(int a) {
+        while (flags_test_main1) {
+            int a = _test_main1(data_pool_test_main1.pop());
+        }
+    }
+*/

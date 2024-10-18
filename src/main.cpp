@@ -14,23 +14,45 @@ using namespace antlr4;
 int main(int args, char** argv)
 {
     std::string input_dir = "../dream";
-    for (int i = 1; i < args; ++i) {
-        if (argv[i][0] == '-') {
-            switch (argv[i][1]) {
+
+    // handler arguments
+    for (int i = 1; i < args; ++i)
+    {
+        if (argv[i][0] == '-')
+        {
+            switch (argv[i][1])
+            {
             case 'd':
-                print(cout, "DEBUG mode compiling \n", file_util::FileColor::GREEN);
-                global_flag_is_debug = true;
-                break;
+                {
+                    print(cout, "DEBUG mode compiling \n", file_util::FileColor::GREEN);
+                    global_flag_is_debug = true;
+                    break;
+                }
+            case 'h':
+                {
+                    print(cout, "Usage: \n "
+                          "\tdream + <dir> \n\t\t ex: 'dream ./' build current directory\n",
+                          file_util::FileColor::BLACK);
+                    print(cout, "Options \n", file_util::FileColor::BLACK);
+                    print(cout, "\t-d: enable debug mode \n\t\t make all the compile info printed\n",
+                          file_util::FileColor::BLACK);
+                    print(cout, "\t-h: print help\t\t\t\n", file_util::FileColor::BLACK);
+                    return 0;
+                }
             default:
-                response_util::report_error("Invalid argument input at: " + std::string(argv[i]));
-                return 1;
+                {
+                    response_util::report_error("Invalid argument input at: " + std::string(argv[i]));
+                    return 1;
+                }
             }
-        } else if (std::string(argv[i]).find('/') != std::string::npos)
+        }
+        else if (std::string(argv[i]).find('/') != std::string::npos)
         {
             // argv[i] is a directory to compile
             input_dir = argv[i];
         }
-        else {
+        else
+        {
             response_util::report_error("Invalid argument format: " + std::string(argv[i]));
             return 1;
         }
@@ -38,8 +60,10 @@ int main(int args, char** argv)
 
     std::ifstream stream;
 
+    // delete build directory
     file_util::delete_directory("../build/");
 
+    // copy runtime and native files
     std::string runtime_src_dir = "../src/runtime";
     std::string runtime_dest_dir = "../build/runtime";
     std::string native_src_dir = "../src/natives";
@@ -63,24 +87,21 @@ int main(int args, char** argv)
         global->add_file_compile(file);
     }
 
-
-
-
+    // compile the files in the directory
     for (std::vector<std::string> files = file_util::get_all_files_in_dir(input_dir);
-        auto& file_path : files)
+         auto& file_path : files)
     {
-
         if (file_path.ends_with("/main.drm"))
         {
             if (is_main_fun_file_found)
             {
                 response_util::report_error("Multiple main.drm files found, first found in file: "
-                    + main_fun_file_path, file_path, 0);
+                                            + main_fun_file_path, file_path, 0);
                 return 1;
             }
             main_fun_file_path = file_path;
             is_main_fun_file_found = true;
-            continue;   
+            continue;
         }
 
         if (global_flag_is_debug)
@@ -130,13 +151,15 @@ int main(int args, char** argv)
     DreamParserListenerCompiler listener_compiler(
         main_fun_file_path,
         main_fun_file_path.substr(main_fun_file_path.find_last_of('/') + 1,
-                         main_fun_file_path.find(".drm") - main_fun_file_path.find_last_of('/') - 1) + ".cpp",
+                                  main_fun_file_path.find(".drm") - main_fun_file_path.find_last_of('/') - 1) + ".cpp",
         global);
 
     tree::ParseTreeWalker::DEFAULT.walk(&listener_compiler, tree);
     stream.close();
 
-    file_util::delete_directory(native_dest_dir);
+    // file_util::delete_directory(native_dest_dir);
+
+    file_util::format_all_cpp_files("../build/");
 
     return 0;
 }

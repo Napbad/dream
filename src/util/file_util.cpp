@@ -9,6 +9,7 @@
 
 #include "string_util.h"
 #include "common/reserve.h"
+#include "obj/Global.h"
 
 using namespace std;
 
@@ -100,8 +101,38 @@ std::string file_util::read_line(std::fstream* opened_file, string& file_name, c
 
 void file_util::dbg_print(std::ostream& stream, const std::string& message, FileColor color)
 {
-    print(stream, "DEBUG: ", FileColor::YELLOW);
+    print(stream, "DEBUG: ", FileColor::BRIGHT_YELLOW);
     print(stream, message, color);
+}
+
+void file_util::warn_print(std::ostream& stream, const std::string& message, FileColor color)
+{
+    print(stream, ">>>>WARNING:\n", FileColor::YELLOW);
+    print(stream, message, color);
+}
+
+void file_util::err_print(std::ostream& stream, const std::string& message, FileColor color)
+{
+    print(stream, ">>>>>>>>ERROR:\n", FileColor::BRIGHT_RED);
+    print(stream, message, color);
+}
+
+void file_util::dbg_print(std::ostream& stream, const std::string& message)
+{
+    print(stream, "DEBUG: ", FileColor::BRIGHT_YELLOW);
+    print(stream, message, FileColor::WHITE);
+}
+
+void file_util::warn_print(std::ostream& stream, const std::string& message)
+{
+    print(stream, ">>>>WARNING:\n", FileColor::YELLOW);
+    print(stream, message, FileColor::WHITE);
+}
+
+void file_util::err_print(std::ostream& stream, const std::string& message)
+{
+    print(stream, ">>>>>>>>ERROR:\n", FileColor::BRIGHT_RED);
+    print(stream, message, FileColor::WHITE);
 }
 
 void file_util::print(std::ostream& stream, const std::string& message, FileColor color)
@@ -160,13 +191,18 @@ Hierarchy* file_util::get_package_hierarchy(const std::string& package_name)
 
 void file_util::collect_files_recursive(const std::string& dir_path, std::vector<std::string>& files)
 {
-    try {
-        for (const auto& entry : filesystem::recursive_directory_iterator(dir_path)) {
-            if (entry.is_regular_file()) {
+    try
+    {
+        for (const auto& entry : filesystem::recursive_directory_iterator(dir_path))
+        {
+            if (entry.is_regular_file())
+            {
                 files.push_back(entry.path().string());
             }
         }
-    } catch (const filesystem::filesystem_error& e) {
+    }
+    catch (const filesystem::filesystem_error& e)
+    {
         std::cerr << "Error: " << e.what() << '\n';
     }
 }
@@ -196,43 +232,126 @@ void file_util::delete_directory(const std::string& dir_path)
     std::filesystem::remove_all(dir_path);
 }
 
-#ifdef _WIN32
-
-int file_util::colorCode(FileColor color) {
-    static std::map<FileColor, int> winColors = {
-        {FileColor::GREEN, 2},
-        {FileColor::WHITE, 7},
-        {FileColor::RED, 4},
-        {FileColor::YELLOW, 6},
-        {FileColor::BLUE, 1},
-        {FileColor::BLACK: 0}
-    };
-
-    if (const char* ansi = ansiColors.find(color)->second) {
-        return *ansi;
-    }
-    return winColors.at(color);
-
-    return -1; // ANSI colors are handled via string return
-}
-
-#else
-std::string file_util::colorCode(const FileColor color)
+std::vector<std::filesystem::path> file_util::find_cpp_files(const std::filesystem::path& directory)
 {
-    static std::map<FileColor, const char*> ansiColors = {
-        {FileColor::GREEN, "\x1b[32m"},
-        {FileColor::WHITE, "\x1b[37m"},
-        {FileColor::RED, "\x1b[31m"},
-        {FileColor::YELLOW, "\x1b[33m"},
-        {FileColor::BLUE, "\x1b[34m"},
-        {FileColor::BLACK, "\x1b[30m"}
-    };
+    std::vector<std::filesystem::path> cppFiles;
 
-    if (const char* ansi = ansiColors.find(color)->second)
-        return ansi;
+    // Iterate over all files and subdirectories
+    for (const auto& entry : std::filesystem::recursive_directory_iterator(directory))
+    {
+        // Check if the file has a .cpp extension and is a regular file
+        if (entry.is_regular_file() && entry.path().extension() == ".cpp")
+        {
+            cppFiles.push_back(entry.path());
+        }
+    }
 
-    return "\x1b[34m";
+    return cppFiles;
 }
 
+bool file_util::is_clang_format_available()
+{
+#ifdef _WIN32
+    // On Windows, redirect output to NUL
+    int result = std::system(("clang-format --version > " + DEV_NULL + " 2>&1").c_str());
+#else
+    // On Unix-like systems, redirect output to /dev/null
+    int result = std::system(("clang-format --version > " + DEV_NULL + " 2>&1").c_str());
+#endif
+    return result == 0;
+}
 
+void file_util::format_file(const std::filesystem::path& filePath)
+{
+    // Construct the clang-format command
+    const std::string command = "clang-format -i \"" + filePath.string() + "\"";
+
+    // Execute the command
+
+    if (const int result = std::system(command.c_str()); result == 0)
+    {
+        if (global_flag_is_debug)
+            dbg_print(cout, "Formatted: " + filePath.string() + "\n");
+    }
+    else
+        dbg_print(cout, "Failed to format: " + filePath.string() + "\n");
+}
+
+void file_util::format_all_cpp_files(const std::filesystem::path& directory)
+{
+    // First, check if clang-format is available
+    if (!is_clang_format_available())
+    {
+        warn_print(
+            cout,
+            "Warn: clang-format is not available on this system."
+            " The generated code can not be formatted automatically. "
+            "If you want to format is automatically"
+            "Please install it.");
+        return;
+    }
+
+    // Check if the provided path is a valid directory
+    if (!exists(directory) || !is_directory(directory))
+    {
+        err_print(cout, "Invalid directory path: " + directory.string());
+        return;
+    }
+
+    // Find all .cpp files in the directory
+
+    // Format each .cpp file found
+    for (std::vector<filesystem::path> cppFiles = find_cpp_files(directory);
+         const auto& file : cppFiles)
+    {
+        format_file(file);
+    }
+
+    print(cout, "All .cpp files in directory \"" + directory.string() + "\" have been formatted.", FileColor::WHITE);
+}
+
+#ifdef _WIN32
+inline int file_util::colorCode(FileColor color) {
+    switch (color) {
+        case FileColor::GREEN: return FOREGROUND_GREEN;
+        case FileColor::WHITE: return FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE;
+        case FileColor::RED: return FOREGROUND_RED;
+        case FileColor::YELLOW: return FOREGROUND_RED | FOREGROUND_GREEN;
+        case FileColor::BLUE: return FOREGROUND_BLUE;
+        case FileColor::BLACK: return 0;
+        case FileColor::MAGENTA: return FOREGROUND_RED | FOREGROUND_BLUE;
+        case FileColor::CYAN: return FOREGROUND_GREEN | FOREGROUND_BLUE;
+        case FileColor::BRIGHT_GREEN: return FOREGROUND_GREEN | FOREGROUND_INTENSITY;
+        case FileColor::BRIGHT_WHITE: return FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY;
+        case FileColor::BRIGHT_RED: return FOREGROUND_RED | FOREGROUND_INTENSITY;
+        case FileColor::BRIGHT_YELLOW: return FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY;
+        case FileColor::BRIGHT_BLUE: return FOREGROUND_BLUE | FOREGROUND_INTENSITY;
+        case FileColor::BRIGHT_MAGENTA: return FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_INTENSITY;
+        case FileColor::BRIGHT_CYAN: return FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY;
+        default: return FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE;
+    }
+}
+#else
+std::string file_util::colorCode(FileColor color)
+{
+    switch (color)
+    {
+    case FileColor::GREEN: return "\033[32m";
+    case FileColor::WHITE: return "\033[37m";
+    case FileColor::RED: return "\033[31m";
+    case FileColor::YELLOW: return "\033[33m";
+    case FileColor::BLUE: return "\033[34m";
+    case FileColor::BLACK: return "\033[30m";
+    case FileColor::MAGENTA: return "\033[35m";
+    case FileColor::CYAN: return "\033[36m";
+    case FileColor::BRIGHT_GREEN: return "\033[92m";
+    case FileColor::BRIGHT_WHITE: return "\033[97m";
+    case FileColor::BRIGHT_RED: return "\033[91m";
+    case FileColor::BRIGHT_YELLOW: return "\033[93m";
+    case FileColor::BRIGHT_BLUE: return "\033[94m";
+    case FileColor::BRIGHT_MAGENTA: return "\033[95m";
+    case FileColor::BRIGHT_CYAN: return "\033[96m";
+    default: return "\033[37m";
+    }
+}
 #endif

@@ -18,11 +18,11 @@ class DreamParserListenerCompiler;
 
 class FunVarGenerator final : public CodeGenerator
 {
-    std::string _name;          /**< Variable name */
-    std::string _type;          /**< Variable type */
-    std::string _value;         /**< Variable value or initialization expression */
-    bool _is_mutable = false;   /**< Indicates if the variable is mutable */
-    bool _is_nullable = false;  /**< Indicates if the variable can be null */
+    std::string _name; /**< Variable name */
+    std::string _type; /**< Variable type */
+    std::string _value; /**< Variable value or initialization expression */
+    bool _is_mutable = false; /**< Indicates if the variable is mutable */
+    bool _is_nullable = false; /**< Indicates if the variable can be null */
 
     DreamParserListenerCompiler* _listener_compiler; /**< Pointer to the listener compiler */
 
@@ -43,6 +43,19 @@ class FunVarGenerator final : public CodeGenerator
      * @param ctx Pointer to the declaration context.
      */
     void init_with_6_part(const DreamParser::FunVarDeclarationContext* ctx);
+    /**
+    * @brief Initializes the generator with a parsing context
+    *
+    * @param ctx Parsing context for the variable declaration
+    */
+    void init_with_4_part(const DreamParser::FunVarDeclarationContext* ctx);
+
+    /**
+    * @brief Initializes the generator with a parsing context
+    *
+    * @param ctx Parsing context for the variable declaration
+    */
+    void init_with_3_part(const DreamParser::FunVarDeclarationContext* ctx);
 
 public:
     /**

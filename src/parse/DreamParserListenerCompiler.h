@@ -6,6 +6,7 @@
 #define DREAMPARSERLISTENERCOMPILER_H
 #include "DreamBaseListener.h"
 #include "compiler/gen/ClassCodeGenerator.h"
+#include "compiler/gen/ClassVarGenerator.h"
 #include "compiler/gen/FileStructGenerator.h"
 #include "compiler/gen/FunVarGenerator.h"
 #include "compiler/gen/FileVarGenerator.h"
@@ -77,6 +78,7 @@ private:
     FunGenerator *_fun_generator;
     ClassFunGenerator *_class_fun_generator;
     FileStructGenerator *_file_struct_generator;
+    ClassVarGenerator *_class_var_generator;
 
     // flags
     bool _is_in_class = false;

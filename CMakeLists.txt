@@ -50,8 +50,8 @@ add_executable(dream src/main.cpp
         src/common/dream_define.h
         src/common/dream_const.cpp
         src/common/dream_const.h
-        src/natives/Exception.cpp
-        src/natives/Exception.h
+        src/natives/exception/Exception.cpp
+        src/natives/exception/Exception.h
         src/runtime/reserve/d_define.h
         src/runtime/reserve/Finally.cpp
         src/runtime/reserve/Finally.h
@@ -95,6 +95,8 @@ add_executable(dream src/main.cpp
         src/compiler/gen/ClassStructGenerator.cpp
         src/compiler/gen/ClassStructGenerator.h
         src/natives/net/Socket.h
+        src/compiler/gen/ClassVarGenerator.cpp
+        src/compiler/gen/ClassVarGenerator.h
 )
 
 target_link_libraries(dream ${LIBANTLR})

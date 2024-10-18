@@ -5,6 +5,7 @@
 #include "FileVarGenerator.h"
 
 #include "common/reserve.h"
+#include "util/file_util.h"
 #include "util/parser_util.h"
 #include "util/response_util.h"
 #include "util/string_util.h"
@@ -15,14 +16,10 @@ void FileVarGenerator::init_with_7_part(DreamParser::VarDeclarationContext* ctx)
 {
     const std::vector<antlr4::tree::ParseTree*> child = ctx->children;
 
-
     const string var_mut = child[0]->getText();
     const string var_null = child[3]->getText();
     const string var_val = child[5]->getText();
     string var_type = child[1]->getText();
-
-    if (var_val.starts_with("new"))
-        var_type = var_type + "*";
 
     _name = child[2]->getText();
     _type = parser_util::convert_type_to_cpp(var_type);
@@ -38,36 +35,44 @@ void FileVarGenerator::init_with_7_part(DreamParser::VarDeclarationContext* ctx)
 void FileVarGenerator::init_with_5_part(DreamParser::VarDeclarationContext* ctx)
 {
     const std::vector<antlr4::tree::ParseTree*> child = ctx->children;
+    // this is a variable declaration with an initial value like <int a = 10 ;>
+    if (ctx->ASSIGN())
+    {
+        const string var_val = child[3]->getText();
+        string var_type = child[0]->getText();
+        _name = child[2]->getText();
 
+        _type = parser_util::convert_type_to_cpp(var_type);
 
-    const string var_val = child[3]->getText();
-    string var_type = child[0]->getText();
+        _value = string_util::convert_parser_tree_to_string(child[3]);
+    }
+    // this is a variable declaration with no initial value like <var int a?;>
+    // set the attributes
+    if (ctx->VAR())
+        _is_mutable = true;
+    string var_type = child[1]->getText();
     _name = child[2]->getText();
-
-    if (var_val.starts_with("new"))
-        var_type = var_type + "*";
+    if (ctx->QUESTION())
+        _is_nullable = true;
 
     _type = parser_util::convert_type_to_cpp(var_type);
-
-    _value = string_util::convert_parser_tree_to_string(child[3]);
+    _value = parser_util::generate_default_value(var_type);
 }
 
 void FileVarGenerator::init_with_6_part(DreamParser::VarDeclarationContext* ctx)
 {
-    const std::vector<antlr4::tree::ParseTree*> children = ctx->children;
-    if (children.at(0)->getText() == D_VAR || children.at(0)->getText() == D_IMT)
+    if (const std::vector<antlr4::tree::ParseTree*> children = ctx->children;
+        children.at(0)->getText() == D_VAR || children.at(0)->getText() == D_IMT)
     {
-        const string var_name = children[2]->getText();
+        _name = children[2]->getText();
         const string var_mut = children[0]->getText();
-        const string var_val = children[4]->getText();
-        string var_type = children[1]->getText();
+        _value = children[4]->getText();
+        _type = children[1]->getText();
 
-        if (var_mut == D_IMT)
-            _is_mutable = false;
-        else
+        if (var_mut == D_VAR)
             _is_mutable = true;
 
-        if (var_val == D_NULL)
+        if (_value == D_NULL)
         {
             response_util::report_error(
                 "Cannot assign null to non-nullable variable",
@@ -76,11 +81,11 @@ void FileVarGenerator::init_with_6_part(DreamParser::VarDeclarationContext* ctx)
             return;
         }
 
-        if (parser_util::find_nullable(_listener_compiler->current_hierarchy(), ctx))
+        if (parser_util::find_nullable(_listener_compiler->current_hierarchy(), ctx->expr()))
             response_util::report_error(
                 "Cannot assign null to non-nullable variable ( " +
-                var_name + " ) \n because <" +
-                var_val +
+                _name + " ) \n because <" +
+                _value +
                 "> might be null \n ",
                 _listener_compiler->file_source(),
                 static_cast<int>(ctx->getStart()->getLine()));
@@ -89,15 +94,15 @@ void FileVarGenerator::init_with_6_part(DreamParser::VarDeclarationContext* ctx)
     }
     const std::vector<antlr4::tree::ParseTree*> child = ctx->children;
 
-    const string var_name = child[1]->getText();
+    _name = child[1]->getText();
     const string var_null = child[2]->getText();
-    const string var_val = child[4]->getText();
-    string var_type = child[0]->getText();
+    _value = child[4]->getText();
+    _type = child[0]->getText();
 
     if (var_null == D_NON_NULLABLE)
     {
         _is_nullable = false;
-        if (var_val == D_NULL)
+        if (_value == D_NULL)
             response_util::report_error(
                 "Cannot assign null to non-nullable variable",
                 _listener_compiler->file_source(),
@@ -106,12 +111,40 @@ void FileVarGenerator::init_with_6_part(DreamParser::VarDeclarationContext* ctx)
         if (parser_util::find_nullable(_listener_compiler->current_hierarchy(), ctx->children[4]))
             response_util::report_error(
                 "Cannot assign null to non-nullable variable ( " +
-                var_name + " ) \n because <" +
-                var_val +
+                _name + " ) \n because <" +
+                _value +
                 "> might be null \n ",
                 _listener_compiler->file_source(),
                 static_cast<int>(ctx->getStart()->getLine()));
     }
+}
+
+void FileVarGenerator::init_with_4_part(const DreamParser::VarDeclarationContext* ctx)
+{
+    const std::vector<antlr4::tree::ParseTree*> child = ctx->children;
+
+    const string var_mut = child[0]->getText();
+    _name = child[2]->getText();
+    _type = child[1]->getText();
+
+    if (var_mut == D_IMT)
+        file_util::warn_print(cout, "declare a immutable object with no value, will use default value\n");
+    else
+        _is_mutable = true;
+
+    _type = parser_util::convert_type_to_cpp(_type);
+
+    _value = parser_util::generate_default_value(_type);
+}
+
+void FileVarGenerator::init_with_3_part(const DreamParser::VarDeclarationContext* ctx)
+{
+    file_util::warn_print(cout, "declare a immutable variable with no value, will use default value\n");
+    const std::vector<antlr4::tree::ParseTree*> child = ctx->children;
+    _name = child[1]->getText();
+    string var_type = child[0]->getText();
+    _type = parser_util::convert_type_to_cpp(var_type);
+    _value = parser_util::generate_default_value(_type);
 }
 
 void FileVarGenerator::init(DreamParser::VarDeclarationContext* ctx)
@@ -122,6 +155,10 @@ void FileVarGenerator::init(DreamParser::VarDeclarationContext* ctx)
         init_with_6_part(ctx);
     else if (ctx->children.size() == 5)
         init_with_5_part(ctx);
+    else if (ctx->children.size() == 4)
+        init_with_4_part(ctx);
+    else if (ctx->children.size() == 3)
+        init_with_3_part(ctx);
 }
 
 std::string FileVarGenerator::generate_code() const

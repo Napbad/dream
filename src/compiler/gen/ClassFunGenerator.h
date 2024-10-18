@@ -45,8 +45,9 @@ class ClassFunGenerator final : public CodeGenerator
 
     std::string _class_name;
 
-public:
+    std::vector<std::string> _stmts{};
 
+public:
     /**
      * @brief Initializes the generator with a parsing context
      *
@@ -61,7 +62,7 @@ public:
      */
     [[nodiscard]] std::string generate_code() const override;
 
- /**
+    /**
      * @brief Generates the source code for the method
      *
      * @return Generated source code as a string
@@ -69,6 +70,7 @@ public:
     [[nodiscard]] std::string generate_decl_code() const;
 
     [[nodiscard]] ClassMemberVisibility visibility() const;
+    void add_stmt(const string& string);
 };
 
 #endif //METHODGENERATOR_H

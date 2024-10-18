@@ -16,15 +16,21 @@ using namespace std;
 // TODO support Ternary symbol
 bool parser_util::find_nullable(Hierarchy* hierarchy, antlr4::tree::ParseTree* expr)
 {
+    if (expr == nullptr)
+        return true;
+
+    if (expr->getText().starts_with("new"))
+        return false;
+
     bool result = true;
 
     if (global_flag_is_debug) // if debug mode
     {
         std::string expr_str = string_util::convert_parser_tree_to_string(expr);
         dbg_print(cout, "find_nullable: " + expr_str
-              + "\n\tunder hierarchy: "
-              + hierarchy->get_full_hierarchy_name() + "\n",
-              file_util::FileColor::WHITE);
+                  + "\n\tunder hierarchy: "
+                  + hierarchy->get_full_hierarchy_name() + "\n",
+                  file_util::FileColor::WHITE);
     }
 
     for (const auto child : expr->children)
@@ -88,10 +94,33 @@ std::string parser_util::convert_type_to_cpp(std::string& type_name)
     if (type_name == D_STRING_ARR)
         return "std::string[]";
 
-    if (type_name.starts_with("u"))
-        type_name.replace(0, 1, "unsigned ");
 
-    return type_name;
+    // Type mapping from dream types to C++ types
+    static const std::unordered_map<std::string, std::string> type_mapping = {
+        {"byte", "uint8_t"},
+        {"short", "short"},
+        {"int", "int"},
+        {"uint", "unsigned int"},
+        {"ushort", "unsigned short"},
+        {"long", "long"},
+        {"ulong", "unsigned long"},
+        {"llong", "long long"},
+        {"ullong", "unsigned long long"},
+        {"float", "float"},
+        {"double", "double"},
+        {"bool", "bool"},
+        {"char", "char"},
+        {"string", "std::string"},
+        {"void", "void"}
+    };
+
+
+    if (const auto it = type_mapping.find(type_name); it != type_mapping.end())
+    {
+        return it->second;
+    }
+
+    return type_name + "*";
 }
 
 std::string parser_util::convert_type_list_to_tuple(DreamParser::ReturnTypeContext* ctx)
@@ -114,4 +143,35 @@ std::string parser_util::convert_type_list_to_tuple(DreamParser::ReturnTypeConte
     }
 
     return res;
+}
+
+std::string parser_util::generate_default_value(std::string& type)
+{
+    // Map of supported types and their default values
+    static const std::unordered_map<std::string, std::string> default_values = {
+        {"int", "0"},
+        {"float", "0.0"},
+        {"double", "0.0"},
+        {"std::string", "\"\""},
+        {"char", "'\\0'"},
+        {"bool", "false"},
+        {"byte", "0"},
+        {"short", "0"},
+        {"long", "0L"},
+        {"unsigned int", "0U"},
+        {"unsigned short", "0U"},
+        {"long long", "0LL"},
+        {"unsigned long long", "0ULL"}
+    };
+
+    // Find the default value for the given type
+    if (const auto it = default_values.find(type); it != default_values.end())
+        return it->second;
+
+    const string type_to_cpp = convert_type_to_cpp(type);
+    if (const auto it = default_values.find(type_to_cpp); it != default_values.end())
+        return it->second;
+
+    // Return an empty string if the type is not supported
+    return "new " + type + "()";
 }

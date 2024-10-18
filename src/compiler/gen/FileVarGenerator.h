@@ -22,20 +22,33 @@ class DreamParserListenerCompiler;
  *
  * This class generates code for file variables based on the provided parsing context.
  */
-class FileVarGenerator : public CodeGenerator
+class FileVarGenerator final : public CodeGenerator
 {
-    std::string _name;          // Name of the variable
-    std::string _type;          // Type of the variable
-    std::string _value;         // Value of the variable
-    bool _is_mutable = false;   // Indicates if the variable is mutable
-    bool _is_nullable = false;  // Indicates if the variable is nullable
+    std::string _name; // Name of the variable
+    std::string _type; // Type of the variable
+    std::string _value; // Value of the variable
+    bool _is_mutable = false; // Indicates if the variable is mutable
+    bool _is_nullable = false; // Indicates if the variable is nullable
 
-    DreamParserListenerCompiler* _listener_compiler;  // Listener compiler for parsing
+    DreamParserListenerCompiler* _listener_compiler; // Listener compiler for parsing
 
     // Initialization functions for different parts of the variable declaration
     void init_with_7_part(DreamParser::VarDeclarationContext* ctx);
     void init_with_5_part(DreamParser::VarDeclarationContext* ctx);
     void init_with_6_part(DreamParser::VarDeclarationContext* ctx);
+    /**
+    * @brief Initializes the generator with a parsing context
+    *
+    * @param ctx Parsing context for the variable declaration
+    */
+    void init_with_4_part(const DreamParser::VarDeclarationContext* ctx);
+
+    /**
+    * @brief Initializes the generator with a parsing context
+    *
+    * @param ctx Parsing context for the variable declaration
+    */
+    void init_with_3_part(const DreamParser::VarDeclarationContext* ctx);
 
 public:
     /**
@@ -47,6 +60,7 @@ public:
         _listener_compiler(listener_compiler)
     {
     }
+
 
     /**
      * @brief Initializes the generator with a parsing context
@@ -103,8 +117,6 @@ public:
      * @return Declaration code as a string
      */
     [[nodiscard]] std::string generate_decl() const;
-
-
 };
 
 #endif //FILEVARGENERATOR_H

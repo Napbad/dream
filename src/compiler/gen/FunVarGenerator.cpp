@@ -5,6 +5,7 @@
 #include "FunVarGenerator.h"
 
 #include "common/reserve.h"
+#include "util/file_util.h"
 #include "util/parser_util.h"
 #include "util/response_util.h"
 #include "util/string_util.h"
@@ -21,9 +22,6 @@ void FunVarGenerator::init_with_7_part(const DreamParser::FunVarDeclarationConte
     const string var_val = child[5]->getText();
     string var_type = child[1]->getText();
 
-    if (var_val.starts_with("new"))
-        var_type = var_type + "*";
-
     _name = child[2]->getText();
     _type = parser_util::convert_type_to_cpp(var_type);
     _value = string_util::convert_parser_tree_to_string(child[5]);
@@ -39,13 +37,9 @@ void FunVarGenerator::init_with_5_part(const DreamParser::FunVarDeclarationConte
 {
     const std::vector<antlr4::tree::ParseTree*> child = ctx->children;
 
-
     const string var_val = child[3]->getText();
     string var_type = child[0]->getText();
-    _name = child[2]->getText();
-
-    if (var_val.starts_with("new"))
-        var_type = var_type + "*";
+    _name = child[1]->getText();
 
     _type = parser_util::convert_type_to_cpp(var_type);
 
@@ -59,7 +53,7 @@ void FunVarGenerator::init_with_6_part(const DreamParser::FunVarDeclarationConte
     {
         _name = children[2]->getText();
         const string var_mut = children[0]->getText();
-        const string var_val = children[4]->getText();
+        const string var_val = string_util::convert_parser_tree_to_string(children[4]);
         string var_type = children[1]->getText();
 
         _value = var_val;
@@ -94,7 +88,7 @@ void FunVarGenerator::init_with_6_part(const DreamParser::FunVarDeclarationConte
 
     const string var_name = child[1]->getText();
     const string var_null = child[2]->getText();
-    const string var_val = child[4]->getText();
+    const string var_val = string_util::convert_parser_tree_to_string(child[4]);
     string var_type = child[0]->getText();
 
     _name = var_name;
@@ -118,8 +112,35 @@ void FunVarGenerator::init_with_6_part(const DreamParser::FunVarDeclarationConte
                 "> might be null \n ",
                 _listener_compiler->file_source(),
                 static_cast<int>(ctx->getStart()->getLine()));
-
     }
+}
+
+void FunVarGenerator::init_with_4_part(const DreamParser::FunVarDeclarationContext* ctx)
+{
+    const std::vector<antlr4::tree::ParseTree*> child = ctx->children;
+
+    const string var_mut = child[0]->getText();
+    _name = child[2]->getText();
+    _type = child[1]->getText();
+
+    if (var_mut == D_IMT)
+        file_util::warn_print(cout, "declare a immutable object with no value, will use default value\n");
+    else
+        _is_mutable = true;
+
+    _type = parser_util::convert_type_to_cpp(_type);
+
+    _value = parser_util::generate_default_value(_type);
+}
+
+void FunVarGenerator::init_with_3_part(const DreamParser::FunVarDeclarationContext* ctx)
+{
+    file_util::warn_print(cout, "declare a immutable variable with no value, will use default value\n");
+    const std::vector<antlr4::tree::ParseTree*> child = ctx->children;
+    _name = child[1]->getText();
+    string var_type = child[0]->getText();
+    _type = parser_util::convert_type_to_cpp(var_type);
+    _value = parser_util::generate_default_value(_type);
 }
 
 void FunVarGenerator::init(const DreamParser::FunVarDeclarationContext* ctx)
@@ -130,6 +151,10 @@ void FunVarGenerator::init(const DreamParser::FunVarDeclarationContext* ctx)
         init_with_6_part(ctx);
     else if (ctx->children.size() == 5)
         init_with_5_part(ctx);
+    else if (ctx->children.size() == 4)
+        init_with_4_part(ctx);
+    else if (ctx->children.size() == 3)
+        init_with_3_part(ctx);
 }
 
 std::string FunVarGenerator::generate_code() const
