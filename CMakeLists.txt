@@ -108,6 +108,10 @@ add_executable(dream src/main.cpp
         test/time/hash_vector_cmp.cpp
         src/compiler/gen/DataNodeGenerator.cpp
         src/compiler/gen/DataNodeGenerator.h
+        src/natives/net/SocketServer.cpp
+        src/natives/net/SocketServer.h
+        src/natives/io/FileBaseClass.cpp
+        src/natives/io/FileBaseClass.h
 )
 
 target_link_libraries(dream ${LIBANTLR})
