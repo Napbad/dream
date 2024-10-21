@@ -10,6 +10,7 @@
 #include "compiler/gen/FileStructGenerator.h"
 #include "compiler/gen/FunVarGenerator.h"
 #include "compiler/gen/FileVarGenerator.h"
+#include "compiler/gen/FunDataRootGenerator.h"
 #include "compiler/gen/FunGenerator.h"
 #include "compiler/gen/StructDataCodeGenerator.h"
 #include "obj/Global.h"
@@ -79,11 +80,13 @@ private:
     ClassFunGenerator *_class_fun_generator;
     FileStructGenerator *_file_struct_generator;
     ClassVarGenerator *_class_var_generator;
+    FunDataRootGenerator *_fun_data_root_generator;
 
     // flags
     bool _is_in_class = false;
     bool _is_in_for_loop = false;
     bool _is_in_for_condition = false;
+    size_t _curr_fun_begin_pos = 0;
 
     void enterProgram(DreamParser::ProgramContext * /*ctx*/) override;
     void exitProgram(DreamParser::ProgramContext * /*ctx*/) override;

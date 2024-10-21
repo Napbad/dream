@@ -176,6 +176,7 @@ namespace string_util
      */
     std::string gen_unique_name();
     void replace_all_without_str(std::string& str, const char* from, const char* to);
+    bool find_expect_str(std::string value, const std::string& basic_string);
 } // namespace string_util
 
 #endif // STRING_UTIL_H

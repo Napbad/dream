@@ -89,3 +89,8 @@ void ClassFunGenerator::add_stmt(const string& string)
 {
     _stmts.push_back(string);
 }
+
+std::string ClassFunGenerator::name()
+{
+    return _name;
+}

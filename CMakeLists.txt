@@ -99,6 +99,15 @@ add_executable(dream src/main.cpp
         src/compiler/gen/ClassVarGenerator.h
         src/util/gc_relative_util.cpp
         src/util/gc_relative_util.h
+        src/compiler/gen/FunDataRootGenerator.cpp
+        src/compiler/gen/FunDataRootGenerator.h
+        src/compiler/gen/GCStartGenerator.cpp
+        src/compiler/gen/GCStartGenerator.h
+        src/runtime/dbg/debug_util.cpp
+        src/runtime/dbg/debug_util.h
+        test/time/hash_vector_cmp.cpp
+        src/compiler/gen/DataNodeGenerator.cpp
+        src/compiler/gen/DataNodeGenerator.h
 )
 
 target_link_libraries(dream ${LIBANTLR})

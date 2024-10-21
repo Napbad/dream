@@ -163,6 +163,7 @@ std::string string_util::get_str_from_param_vector(
     for (auto i = 0; i < vector.size(); i++)
     {
         auto [type, name, nullable, mutable_] = vector.at(i);
+        if (!str_is_common_type(type)) { type = "DataNode<" + type + ">"; }
         res.append(mutable_ ? "const " : " ")
            .append(type)
            .append(" ")
@@ -245,4 +246,24 @@ void string_util::replace_all_without_str(std::string& str, const char* from, co
             str.replace(i, strlen(from), to);
         }
     }
+}
+
+bool string_util::find_expect_str(std::string value, const std::string& basic_string)
+{
+    bool is_in_str = false;
+    for (int i = 0;i < value.size(); i++)
+    {
+        if (value.at(i) == '"')
+            is_in_str = !is_in_str;
+        if (is_in_str)
+            continue;
+        if (basic_string.starts_with(value.at(i)))
+        {
+            if (value.substr(i, basic_string.size()) == basic_string)
+            {
+                return true;
+            }
+        }
+    }
+    return false;
 }

@@ -12,6 +12,8 @@ public:
     virtual ~GCable() = default;
 
     virtual void gc() {};
+
+    virtual void destroy() {};
 };
 
 

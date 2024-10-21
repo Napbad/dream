@@ -6,6 +6,7 @@
 
 #include <numeric>
 
+#include "common/dream_define.h"
 #include "common/reserve.h"
 #include "util/parser_util.h"
 #include "util/string_util.h"
@@ -59,3 +60,14 @@ std::string FunGenerator::generate_code() const
         + string_util::get_str_from_param_vector(_params, ", ")
         + ")";
 }
+
+std::string FunGenerator::name() const
+{
+    return _name;
+}
+
+std::vector<FUN_PARAM_TYPE> FunGenerator::params()
+{
+    return _params;
+}
+

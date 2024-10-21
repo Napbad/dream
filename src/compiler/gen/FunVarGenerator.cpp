@@ -4,7 +4,9 @@
 
 #include "FunVarGenerator.h"
 
+#include "DataNodeGenerator.h"
 #include "common/reserve.h"
+#include "runtime/gc/DataNode.h"
 #include "util/file_util.h"
 #include "util/parser_util.h"
 #include "util/response_util.h"
@@ -161,6 +163,11 @@ std::string FunVarGenerator::generate_code() const
 {
     string tmp = _value;
     string_util::replace_all_without_str(tmp, ".", "->");
+    if (_type.ends_with('*'))
+        return (_is_mutable ? "const " : "") + _type + " " + _name + " = " + tmp + ";\n"
+            + DataNodeGenerator::generate(_type, _name)
+            + FunDataRootGenerator::generate_root_link_code(_type, _name);
+
     return (_is_mutable ? "const " : "") + _type + " " + _name + " = " + tmp + ";\n";
 }
 

@@ -5,6 +5,6 @@
 #ifndef D_DEFINE_H
 #define D_DEFINE_H
 
-
+#define DEBUG_MODE 1
 
 #endif //D_DEFINE_H

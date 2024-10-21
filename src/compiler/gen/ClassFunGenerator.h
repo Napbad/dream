@@ -17,6 +17,7 @@
 // Include necessary headers for the code generation framework
 #include "CodeGenerator.h"
 #include "common/dream_const.h"
+#include "common/dream_define.h"
 #include "parse/DreamParser.h"
 #include "util/parser_util.h"
 
@@ -71,6 +72,7 @@ public:
 
     [[nodiscard]] ClassMemberVisibility visibility() const;
     void add_stmt(const string& string);
+    std::string name();
 };
 
 #endif //METHODGENERATOR_H

@@ -1,8 +1,10 @@
 #include "DataPath.h"
 
+#include <utility>
+
 
 // Constructor
-DataPath::DataPath(const std::string& name) : _name(name)
+DataPath::DataPath(std::string  name) : _name(std::move(name))
 {
 }
 

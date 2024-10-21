@@ -39,7 +39,7 @@ class DataPath {
     std::string _name;
 
 public:
-    explicit DataPath(const std::string& name);
+    explicit DataPath(std::string name);
     std::string name();
 };
 

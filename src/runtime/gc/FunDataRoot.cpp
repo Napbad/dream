@@ -3,16 +3,27 @@
 //
 
 #include "FunDataRoot.h"
+#include "../reserve/d_define.h"
+#include "../dbg/debug_util.h"
 
-void FunDataRoot::add_data(const GCable& data)
+void FunDataRoot::add_data(GCable* data)
 {
     _data.push_back(data);
 }
 
 void FunDataRoot::gc()
 {
-    for (auto& d : _data)
-    {
-        d.gc();
-    }
+    for (const auto& d : _data)
+        d->gc();
+}
+
+void FunDataRoot::destroy()
+{
+#ifdef DEBUG_MODE
+    char buffer[50];
+    sprintf(buffer, "Destroy FunDataRoot: %p \n\0", this);
+    dbg_util::dbg_print(std::cout, buffer);
+#endif
+    for (const auto data : _data)
+        data->destroy();
 }

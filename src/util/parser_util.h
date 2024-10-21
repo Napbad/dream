@@ -18,20 +18,6 @@
 #include "obj/Hierarchy.h"
 #include "parse/DreamParser.h"
 
-/// Macros for function parameter types and properties
-#define FUN_PARAM_TYPE_NAME std::string
-#define FUN_PARAM_NAME std::string
-#define FUN_PARAM_NULLABLE bool
-#define FUN_PARAM_MUTABLE bool
-
-/// Macro for a tuple representing a function parameter
-#define FUN_PARAM_TYPE \
-        std::tuple< \
-            FUN_PARAM_TYPE_NAME, \
-            FUN_PARAM_NAME, \
-            FUN_PARAM_NULLABLE, \
-            FUN_PARAM_MUTABLE \
-        >
 
 namespace parser_util
 {

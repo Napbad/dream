@@ -118,14 +118,11 @@ fun main() int {
     imt int a! = test(1, 2);
     /println(a);
 
-    Socket socket = new Socket();
-
-    socket.connect("127.0.0.1", 8080);
-
-    socket.send("GET / HTTP/1.1\r\nHost: 127.0.0.1:8080\r\nConnection: close\r\n\r\n");
-
-     string res = socket.receive(2048);
-     /println(res);
+    // Socket socket = new Socket();
+    // socket.connect("127.0.0.1", 8080);
+    // socket.send("GET / HTTP/1.1\r\nHost: 127.0.0.1:8080\r\nConnection: close\r\n\r\n");
+    // string res = socket.receive(2048);
+    // /println(res);
 }
 
 

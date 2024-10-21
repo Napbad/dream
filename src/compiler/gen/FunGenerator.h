@@ -10,6 +10,7 @@
 
 // Include the base code generator class and necessary parsing utilities
 #include "CodeGenerator.h"
+#include "common/dream_define.h"
 #include "parse/DreamParser.h"
 #include "util/parser_util.h"
 
@@ -30,7 +31,6 @@ class FunGenerator : public CodeGenerator
     std::string _return_type;
 
 public:
-
     /**
      * @brief Default constructor for FunGenerator
      */
@@ -49,6 +49,9 @@ public:
      * @return Generated source code as a string
      */
     [[nodiscard]] std::string generate_code() const override;
+
+    [[nodiscard]] std::string name() const;
+    std::vector<FUN_PARAM_TYPE> params();
 };
 
 #endif //FUNGENERATOR_H

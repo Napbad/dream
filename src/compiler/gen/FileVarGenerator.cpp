@@ -163,6 +163,9 @@ void FileVarGenerator::init(DreamParser::VarDeclarationContext* ctx)
 
 std::string FileVarGenerator::generate_code() const
 {
+    if (_type.ends_with('*'))
+        return (_is_mutable ? "const " : "") + _type + " " + _name + " = " + _value + ";\n"
+            + FunDataRootGenerator::generate_root_link_code(_type, _name);
     return (_is_mutable ? "const " : "") + _type + " " + _name + " = " + _value + ";\n";
 }
 

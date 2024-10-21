@@ -8,23 +8,24 @@
 #include <vector>
 
 #include "DataNode.h"
+#include "FunDataRoot.h"
+#define GLOBAL_DATA_ROOT global_data_root
 
-class FunDataRoot;
 
 class DataRoot final : public GCable{
     std::string _name;
-    std::vector<GCable> _data;
-    std::vector<FunDataRoot> _fun_data;
-
-    explicit DataRoot(const std::string& name);
+    std::vector<GCable*> _data;
+    std::vector<FunDataRoot*> _fun_data;
 
 public:
-    void add_data(const GCable& data);
-    void add_fun_data_root(FunDataRoot& data);
+    explicit DataRoot(const std::string& name);
+    void add_data(GCable* data);
+    void add_fun_data_root(FunDataRoot* data);
 
+    void destroy() override;
     void gc() override;
 };
 
-
+extern DataRoot *GLOBAL_DATA_ROOT;
 
 #endif //DATAROOT_H
