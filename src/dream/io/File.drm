@@ -3,7 +3,42 @@ package io;
 import natives.io.FileBaseClass;
 
 class File : public FileBaseClass{
+
+    
+
     public File (imt string path!) {
         super (path);
+    }
+
+    public fun exists() bool {
+        return FileBaseClass.exists(path);
+    }
+
+    public fun isDirectory() bool {
+        return FileBaseClass.isDirectory(path);
+    }
+
+    public fun isFile() bool {
+        return FileBaseClass.isFile(path);
+    }
+
+    public fun createDirectory() bool {
+        return FileBaseClass.createDirectory(path);
+    }
+
+    public fun length() int {
+        return FileBaseClass.length(path);
+    }
+
+    public fun deleteDirectory() bool {
+        return FileBaseClass.deleteFile(path);
+    }
+
+    public fun deleteFile() bool {
+        return FileBaseClass.deleteFile(path);
+    }
+
+    public fun listFiles() string[] {
+        return FileBaseClass.listFiles(path);
     }
 }

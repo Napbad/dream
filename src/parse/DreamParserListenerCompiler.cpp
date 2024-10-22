@@ -238,7 +238,7 @@ void DreamParserListenerCompiler::enterFunCallStmt(DreamParser::FunCallStmtConte
     if (ctx->argList() != nullptr)
     {
         for (vector<antlr4::tree::ParseTree*> args = ctx->argList()->children;
-            const auto arg : args)
+             const auto arg : args)
         {
             bool arg_converted = false;
             for (size_t pos = _curr_fun_begin_pos; pos < _converted_file.size(); pos++)
@@ -265,7 +265,7 @@ void DreamParserListenerCompiler::enterFunCallStmt(DreamParser::FunCallStmtConte
 
             fun_call.append("std::cout ");
 
-            for (const auto & real_arg : real_args)
+            for (const auto& real_arg : real_args)
             {
                 if (real_arg != ",")
                 {
@@ -438,9 +438,16 @@ void DreamParserListenerCompiler::exitIfStmtBody(DreamParser::IfStmtBodyContext*
 
 void DreamParserListenerCompiler::enterReturnStmt(DreamParser::ReturnStmtContext* ctx)
 {
-    _converted_file.emplace_back("return ")
-                   .append(ctx->children.at(1)->getText())
-                   .append(";\n");
+    if (_class_fun_generator)
+    {
+        _class_fun_generator->add_stmt("return "
+            + ctx->children.at(1)->getText()
+            + ";\n");
+    }
+    else
+        _converted_file.emplace_back("return ")
+                       .append(ctx->children.at(1)->getText())
+                       .append(";\n");
 }
 
 void DreamParserListenerCompiler::exitReturnStmt(DreamParser::ReturnStmtContext* ctx)

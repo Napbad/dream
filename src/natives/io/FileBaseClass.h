@@ -43,7 +43,7 @@ public:
     // Get the file size
     [[nodiscard]] uintmax_t length() const;
 
-private:
+protected:
     std::string path;
 };
 

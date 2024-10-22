@@ -1,0 +1,159 @@
+Date : 2024-10-22 20:10:31
+Directory : /home/napbad/Projects/dream/src
+Total : 107 files,  14824 codes, 1443 comments, 3850 blanks, all 20117 lines
+
+Languages
++----------+------------+------------+------------+------------+------------+
+| language | files      | code       | comment    | blank      | total      |
++----------+------------+------------+------------+------------+------------+
+| C++      |        102 |     14,680 |      1,361 |      3,768 |     19,809 |
+| dream    |          5 |        144 |         82 |         82 |        308 |
++----------+------------+------------+------------+------------+------------+
+
+Directories
++--------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                     | files      | code       | comment    | blank      | total      |
++--------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                        |        107 |     14,824 |      1,443 |      3,850 |     20,117 |
+| . (Files)                                                                |          1 |        138 |          6 |         35 |        179 |
+| common                                                                   |          6 |        305 |         19 |         72 |        396 |
+| compiler                                                                 |         30 |      1,275 |        468 |        437 |      2,180 |
+| compiler (Files)                                                         |          4 |         37 |         31 |         21 |         89 |
+| compiler/gen                                                             |         26 |      1,238 |        437 |        416 |      2,091 |
+| dream                                                                    |          5 |        144 |         82 |         82 |        308 |
+| dream/io                                                                 |          1 |         31 |          0 |         13 |         44 |
+| dream/net                                                                |          1 |         12 |          0 |          5 |         17 |
+| dream/stl                                                                |          2 |          6 |          0 |          5 |         11 |
+| dream/test                                                               |          1 |         95 |         82 |         59 |        236 |
+| natives                                                                  |         14 |        449 |         77 |        141 |        667 |
+| natives/exception                                                        |          2 |         17 |          8 |         11 |         36 |
+| natives/io                                                               |          4 |         82 |         22 |         40 |        144 |
+| natives/net                                                              |          4 |        178 |         15 |         48 |        241 |
+| natives/system                                                           |          2 |        101 |         16 |         21 |        138 |
+| natives/thread                                                           |          2 |         71 |         16 |         21 |        108 |
+| obj                                                                      |          4 |        224 |        157 |         80 |        461 |
+| parse                                                                    |         10 |     10,868 |        159 |      2,542 |     13,569 |
+| runtime                                                                  |         27 |        545 |        133 |        214 |        892 |
+| runtime/class                                                            |          2 |         32 |         24 |         21 |         77 |
+| runtime/common                                                           |          2 |         14 |          6 |         14 |         34 |
+| runtime/dbg                                                              |          2 |        128 |         33 |         23 |        184 |
+| runtime/gc                                                               |         12 |        305 |         43 |        110 |        458 |
+| runtime/global                                                           |          2 |          5 |          6 |          9 |         20 |
+| runtime/reserve                                                          |          3 |         19 |          9 |         12 |         40 |
+| runtime/run                                                              |          4 |         42 |         12 |         25 |         79 |
+| util                                                                     |         10 |        876 |        342 |        247 |      1,465 |
++--------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++--------------------------------------------------------------------------+----------+------------+------------+------------+------------+
+| filename                                                                 | language | code       | comment    | blank      | total      |
++--------------------------------------------------------------------------+----------+------------+------------+------------+------------+
+| /home/napbad/Projects/dream/src/common/dream_const.cpp                   | C++      |         21 |          3 |          3 |         27 |
+| /home/napbad/Projects/dream/src/common/dream_const.h                     | C++      |         39 |          3 |         20 |         62 |
+| /home/napbad/Projects/dream/src/common/dream_define.cpp                  | C++      |          1 |          3 |          2 |          6 |
+| /home/napbad/Projects/dream/src/common/dream_define.h                    | C++      |         24 |          5 |         12 |         41 |
+| /home/napbad/Projects/dream/src/common/reserve.cpp                       | C++      |          1 |          3 |          4 |          8 |
+| /home/napbad/Projects/dream/src/common/reserve.h                         | C++      |        219 |          2 |         31 |        252 |
+| /home/napbad/Projects/dream/src/compiler/Compiler.cpp                    | C++      |          1 |          3 |          2 |          6 |
+| /home/napbad/Projects/dream/src/compiler/Compiler.h                      | C++      |          5 |          3 |          5 |         13 |
+| /home/napbad/Projects/dream/src/compiler/NativeConverter.cpp             | C++      |         20 |          3 |          7 |         30 |
+| /home/napbad/Projects/dream/src/compiler/NativeConverter.h               | C++      |         11 |         22 |          7 |         40 |
+| /home/napbad/Projects/dream/src/compiler/gen/ClassCodeGenerator.cpp      | C++      |         44 |          4 |         18 |         66 |
+| /home/napbad/Projects/dream/src/compiler/gen/ClassCodeGenerator.h        | C++      |         26 |         46 |         18 |         90 |
+| /home/napbad/Projects/dream/src/compiler/gen/ClassFunGenerator.cpp       | C++      |        144 |          3 |         24 |        171 |
+| /home/napbad/Projects/dream/src/compiler/gen/ClassFunGenerator.h         | C++      |         34 |         35 |         16 |         85 |
+| /home/napbad/Projects/dream/src/compiler/gen/ClassStructGenerator.cpp    | C++      |        157 |          3 |         39 |        199 |
+| /home/napbad/Projects/dream/src/compiler/gen/ClassStructGenerator.h      | C++      |         41 |         84 |         27 |        152 |
+| /home/napbad/Projects/dream/src/compiler/gen/ClassVarGenerator.cpp       | C++      |        100 |         11 |         23 |        134 |
+| /home/napbad/Projects/dream/src/compiler/gen/ClassVarGenerator.h         | C++      |         35 |          3 |          9 |         47 |
+| /home/napbad/Projects/dream/src/compiler/gen/CodeGenerator.cpp           | C++      |          1 |          3 |          4 |          8 |
+| /home/napbad/Projects/dream/src/compiler/gen/CodeGenerator.h             | C++      |         11 |         19 |          8 |         38 |
+| /home/napbad/Projects/dream/src/compiler/gen/DataNodeGenerator.cpp       | C++      |         26 |          6 |          7 |         39 |
+| /home/napbad/Projects/dream/src/compiler/gen/DataNodeGenerator.h         | C++      |         11 |          3 |          9 |         23 |
+| /home/napbad/Projects/dream/src/compiler/gen/FileStructGenerator.cpp     | C++      |         35 |          3 |         11 |         49 |
+| /home/napbad/Projects/dream/src/compiler/gen/FileStructGenerator.h       | C++      |         21 |          3 |         16 |         40 |
+| /home/napbad/Projects/dream/src/compiler/gen/FileVarGenerator.cpp        | C++      |        160 |          6 |         36 |        202 |
+| /home/napbad/Projects/dream/src/compiler/gen/FileVarGenerator.h          | C++      |         34 |         69 |         20 |        123 |
+| /home/napbad/Projects/dream/src/compiler/gen/FunDataRootGenerator.cpp    | C++      |         23 |          3 |          8 |         34 |
+| /home/napbad/Projects/dream/src/compiler/gen/FunDataRootGenerator.h      | C++      |         14 |          3 |         11 |         28 |
+| /home/napbad/Projects/dream/src/compiler/gen/FunGenerator.cpp            | C++      |         58 |          3 |         16 |         77 |
+| /home/napbad/Projects/dream/src/compiler/gen/FunGenerator.h              | C++      |         20 |         26 |         12 |         58 |
+| /home/napbad/Projects/dream/src/compiler/gen/FunVarGenerator.cpp         | C++      |        158 |          3 |         38 |        199 |
+| /home/napbad/Projects/dream/src/compiler/gen/FunVarGenerator.h           | C++      |         33 |         62 |         19 |        114 |
+| /home/napbad/Projects/dream/src/compiler/gen/GCStartGenerator.cpp        | C++      |          6 |          3 |          3 |         12 |
+| /home/napbad/Projects/dream/src/compiler/gen/GCStartGenerator.h          | C++      |          8 |          3 |          8 |         19 |
+| /home/napbad/Projects/dream/src/compiler/gen/StructDataCodeGenerator.cpp | C++      |         23 |          3 |          7 |         33 |
+| /home/napbad/Projects/dream/src/compiler/gen/StructDataCodeGenerator.h   | C++      |         15 |         27 |          9 |         51 |
+| /home/napbad/Projects/dream/src/dream/io/File.drm                        | dream    |         31 |          0 |         13 |         44 |
+| /home/napbad/Projects/dream/src/dream/net/URL.drm                        | dream    |         12 |          0 |          5 |         17 |
+| /home/napbad/Projects/dream/src/dream/stl/Math.drm                       | dream    |          4 |          0 |          3 |          7 |
+| /home/napbad/Projects/dream/src/dream/stl/Vector.drm                     | dream    |          2 |          0 |          2 |          4 |
+| /home/napbad/Projects/dream/src/dream/test/Test.drm                      | dream    |         95 |         82 |         59 |        236 |
+| /home/napbad/Projects/dream/src/main.cpp                                 | C++      |        138 |          6 |         35 |        179 |
+| /home/napbad/Projects/dream/src/natives/exception/Exception.cpp          | C++      |          1 |          3 |          2 |          6 |
+| /home/napbad/Projects/dream/src/natives/exception/Exception.h            | C++      |         16 |          5 |          9 |         30 |
+| /home/napbad/Projects/dream/src/natives/io/File.cpp                      | C++      |          5 |          3 |          4 |         12 |
+| /home/napbad/Projects/dream/src/natives/io/File.h                        | C++      |          7 |          3 |          7 |         17 |
+| /home/napbad/Projects/dream/src/natives/io/FileBaseClass.cpp             | C++      |         48 |          3 |         12 |         63 |
+| /home/napbad/Projects/dream/src/natives/io/FileBaseClass.h               | C++      |         22 |         13 |         17 |         52 |
+| /home/napbad/Projects/dream/src/natives/net/Socket.cpp                   | C++      |         43 |          0 |          8 |         51 |
+| /home/napbad/Projects/dream/src/natives/net/Socket.h                     | C++      |         14 |          0 |          6 |         20 |
+| /home/napbad/Projects/dream/src/natives/net/SocketServer.cpp             | C++      |         97 |         12 |         25 |        134 |
+| /home/napbad/Projects/dream/src/natives/net/SocketServer.h               | C++      |         24 |          3 |          9 |         36 |
+| /home/napbad/Projects/dream/src/natives/system/System.cpp                | C++      |         88 |         10 |         13 |        111 |
+| /home/napbad/Projects/dream/src/natives/system/System.h                  | C++      |         13 |          6 |          8 |         27 |
+| /home/napbad/Projects/dream/src/natives/thread/thread.cpp                | C++      |         55 |          6 |         10 |         71 |
+| /home/napbad/Projects/dream/src/natives/thread/thread.h                  | C++      |         16 |         10 |         11 |         37 |
+| /home/napbad/Projects/dream/src/obj/Global.cpp                           | C++      |         31 |          3 |         13 |         47 |
+| /home/napbad/Projects/dream/src/obj/Global.h                             | C++      |         22 |         43 |         15 |         80 |
+| /home/napbad/Projects/dream/src/obj/Hierarchy.cpp                        | C++      |        126 |          5 |         27 |        158 |
+| /home/napbad/Projects/dream/src/obj/Hierarchy.h                          | C++      |         45 |        106 |         25 |        176 |
+| /home/napbad/Projects/dream/src/parse/DreamBaseListener.cpp              | C++      |          1 |          1 |          6 |          8 |
+| /home/napbad/Projects/dream/src/parse/DreamBaseListener.h                | C++      |        172 |          6 |         92 |        270 |
+| /home/napbad/Projects/dream/src/parse/DreamLexer.cpp                     | C++      |        372 |          1 |         31 |        404 |
+| /home/napbad/Projects/dream/src/parse/DreamLexer.h                       | C++      |         34 |          6 |         25 |         65 |
+| /home/napbad/Projects/dream/src/parse/DreamListener.cpp                  | C++      |          1 |          1 |          6 |          8 |
+| /home/napbad/Projects/dream/src/parse/DreamListener.h                    | C++      |        168 |          4 |         91 |        263 |
+| /home/napbad/Projects/dream/src/parse/DreamParser.cpp                    | C++      |      7,681 |         82 |      1,590 |      9,353 |
+| /home/napbad/Projects/dream/src/parse/DreamParser.h                      | C++      |      1,301 |          4 |        349 |      1,654 |
+| /home/napbad/Projects/dream/src/parse/DreamParserListenerCompiler.cpp    | C++      |        925 |         36 |        245 |      1,206 |
+| /home/napbad/Projects/dream/src/parse/DreamParserListenerCompiler.h      | C++      |        213 |         18 |        107 |        338 |
+| /home/napbad/Projects/dream/src/runtime/class/Object.cpp                 | C++      |         18 |         12 |          8 |         38 |
+| /home/napbad/Projects/dream/src/runtime/class/Object.h                   | C++      |         14 |         12 |         13 |         39 |
+| /home/napbad/Projects/dream/src/runtime/common/common_const.cpp          | C++      |          1 |          3 |          2 |          6 |
+| /home/napbad/Projects/dream/src/runtime/common/common_const.h            | C++      |         13 |          3 |         12 |         28 |
+| /home/napbad/Projects/dream/src/runtime/dbg/debug_util.cpp               | C++      |         77 |          3 |          9 |         89 |
+| /home/napbad/Projects/dream/src/runtime/dbg/debug_util.h                 | C++      |         51 |         30 |         14 |         95 |
+| /home/napbad/Projects/dream/src/runtime/gc/DataCopy.cpp                  | C++      |          1 |          1 |          2 |          4 |
+| /home/napbad/Projects/dream/src/runtime/gc/DataCopy.h                    | C++      |         10 |          2 |          7 |         19 |
+| /home/napbad/Projects/dream/src/runtime/gc/DataNode.cpp                  | C++      |          1 |          3 |          3 |          7 |
+| /home/napbad/Projects/dream/src/runtime/gc/DataNode.h                    | C++      |         89 |          3 |         23 |        115 |
+| /home/napbad/Projects/dream/src/runtime/gc/DataPath.cpp                  | C++      |         60 |          6 |         12 |         78 |
+| /home/napbad/Projects/dream/src/runtime/gc/DataPath.h                    | C++      |         23 |         10 |         14 |         47 |
+| /home/napbad/Projects/dream/src/runtime/gc/DataRoot.cpp                  | C++      |         45 |          3 |          9 |         57 |
+| /home/napbad/Projects/dream/src/runtime/gc/DataRoot.h                    | C++      |         20 |          3 |          9 |         32 |
+| /home/napbad/Projects/dream/src/runtime/gc/FunDataRoot.cpp               | C++      |         30 |          3 |          8 |         41 |
+| /home/napbad/Projects/dream/src/runtime/gc/FunDataRoot.h                 | C++      |         15 |          3 |         13 |         31 |
+| /home/napbad/Projects/dream/src/runtime/gc/GCable.cpp                    | C++      |          1 |          3 |          2 |          6 |
+| /home/napbad/Projects/dream/src/runtime/gc/GCable.h                      | C++      |         10 |          3 |          8 |         21 |
+| /home/napbad/Projects/dream/src/runtime/global/global_runtime_depen.cpp  | C++      |          2 |          3 |          5 |         10 |
+| /home/napbad/Projects/dream/src/runtime/global/global_runtime_depen.h    | C++      |          3 |          3 |          4 |         10 |
+| /home/napbad/Projects/dream/src/runtime/reserve/Finally.cpp              | C++      |          1 |          3 |          2 |          6 |
+| /home/napbad/Projects/dream/src/runtime/reserve/Finally.h                | C++      |         14 |          3 |          6 |         23 |
+| /home/napbad/Projects/dream/src/runtime/reserve/d_define.h               | C++      |          4 |          3 |          4 |         11 |
+| /home/napbad/Projects/dream/src/runtime/run/ExecutePool.cpp              | C++      |         18 |          3 |          6 |         27 |
+| /home/napbad/Projects/dream/src/runtime/run/ExecutePool.h                | C++      |         13 |          3 |          9 |         25 |
+| /home/napbad/Projects/dream/src/runtime/run/ExecuteUnit.cpp              | C++      |          1 |          3 |          2 |          6 |
+| /home/napbad/Projects/dream/src/runtime/run/ExecuteUnit.h                | C++      |         10 |          3 |          8 |         21 |
+| /home/napbad/Projects/dream/src/util/file_util.cpp                       | C++      |        306 |         14 |         62 |        382 |
+| /home/napbad/Projects/dream/src/util/file_util.h                         | C++      |         75 |        105 |         33 |        213 |
+| /home/napbad/Projects/dream/src/util/gc_relative_util.cpp                | C++      |         19 |          3 |          4 |         26 |
+| /home/napbad/Projects/dream/src/util/gc_relative_util.h                  | C++      |         16 |          3 |          8 |         27 |
+| /home/napbad/Projects/dream/src/util/parser_util.cpp                     | C++      |        143 |         11 |         37 |        191 |
+| /home/napbad/Projects/dream/src/util/parser_util.h                       | C++      |         18 |         47 |         12 |         77 |
+| /home/napbad/Projects/dream/src/util/response_util.cpp                   | C++      |         15 |          3 |          5 |         23 |
+| /home/napbad/Projects/dream/src/util/response_util.h                     | C++      |          8 |         18 |          7 |         33 |
+| /home/napbad/Projects/dream/src/util/string_util.cpp                     | C++      |        239 |          7 |         53 |        299 |
+| /home/napbad/Projects/dream/src/util/string_util.h                       | C++      |         37 |        131 |         26 |        194 |
+| Total                                                                    |          |     14,824 |      1,443 |      3,850 |     20,117 |
++--------------------------------------------------------------------------+----------+------------+------------+------------+------------+
