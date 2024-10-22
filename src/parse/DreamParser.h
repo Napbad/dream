@@ -34,26 +34,27 @@ public:
     RuleProgram = 0, RulePackageDecl = 1, RuleImportStmt = 2, RulePackageName = 3, 
     RuleImportName = 4, RuleFunCallStmt = 5, RuleStmt = 6, RuleBinaryOpExpr = 7, 
     RuleFunVarDeclaration = 8, RuleArgList = 9, RuleLiteral = 10, RuleArrayInit = 11, 
-    RuleCastExpr = 12, RuleAssign = 13, RuleUnaryOpExpr = 14, RuleIfStmt = 15, 
-    RuleIfBlock = 16, RuleAtomExpr = 17, RuleIfStmtBody = 18, RuleReturnStmt = 19, 
-    RuleElseIfClause = 20, RuleElseClause = 21, RuleExpr = 22, RuleAssignExpr = 23, 
-    RuleDeclaration = 24, RuleVarDeclaration = 25, RuleVarModifiers = 26, 
-    RuleClassMemberModifier = 27, RuleFunctionDeclaration = 28, RuleClassVarDecl = 29, 
-    RuleClassFuncDecl = 30, RuleFunBlock = 31, RuleFunStmt = 32, RuleFunModifiers = 33, 
-    RuleClassDeclaration = 34, RuleClassModifiers = 35, RuleClassModifier = 36, 
-    RuleClassBlock = 37, RuleClassBody = 38, RuleClassStmt = 39, RuleConstructorDecl = 40, 
-    RuleClassFunStmtBlock = 41, RuleThrowStmt = 42, RuleSynchronizedStmt = 43, 
-    RuleTryCatchStmt = 44, RuleCatches = 45, RuleCatchClause = 46, RuleCatchFormalParameter = 47, 
-    RuleCatchType = 48, RuleFinally_ = 49, RuleMemberModifier = 50, RuleVisibilityModifier = 51, 
-    RuleStaticModifier = 52, RuleInterfaceDeclaration = 53, RuleInterfaceBlock = 54, 
-    RuleInterfaceBody = 55, RuleInterfaceVarDecl = 56, RuleInterfaceFuncDecl = 57, 
-    RuleAnnotationDeclaration = 58, RuleAnnotationBlock = 59, RuleAnnotation = 60, 
-    RuleQualifiedName = 61, RuleParamList = 62, RuleParam = 63, RuleType = 64, 
-    RuleSingleType = 65, RuleArrayType = 66, RuleReturnType = 67, RuleForStmt = 68, 
-    RuleForCondition = 69, RuleForBlock = 70, RuleForBody = 71, RuleForVarDecl = 72, 
-    RuleFileCodeBlock = 73, RuleFileCodeBlockBody = 74, RuleFileCodeBlockStmt = 75, 
-    RuleFunCodeBlock = 76, RuleFunCodeBlockBody = 77, RuleFunCodeBlockStmt = 78, 
-    RuleDeleteStmt = 79
+    RuleCastExpr = 12, RuleAssign = 13, RuleUnaryOpExpr = 14, RuleIfExpr = 15, 
+    RuleIfStmt = 16, RuleIfBlock = 17, RuleAtomExpr = 18, RuleIfStmtBody = 19, 
+    RuleReturnStmt = 20, RuleElseIfClause = 21, RuleElseClause = 22, RuleExpr = 23, 
+    RuleAssignExpr = 24, RuleDeclaration = 25, RuleVarDeclaration = 26, 
+    RuleVarModifiers = 27, RuleClassMemberModifier = 28, RuleFunctionDeclaration = 29, 
+    RuleClassVarDecl = 30, RuleClassFuncDecl = 31, RuleFunBlock = 32, RuleFunStmt = 33, 
+    RuleFunModifiers = 34, RuleClassDeclaration = 35, RuleClassModifiers = 36, 
+    RuleClassModifier = 37, RuleClassBlock = 38, RuleClassBody = 39, RuleClassStmt = 40, 
+    RuleClassFunStmtBlock = 41, RuleConstructorDecl = 42, RuleThrowStmt = 43, 
+    RuleSynchronizedStmt = 44, RuleTryCatchStmt = 45, RuleCatches = 46, 
+    RuleCatchClause = 47, RuleCatchFormalParameter = 48, RuleCatchType = 49, 
+    RuleFinally_ = 50, RuleMemberModifier = 51, RuleVisibilityModifier = 52, 
+    RuleStaticModifier = 53, RuleInterfaceDeclaration = 54, RuleInterfaceBlock = 55, 
+    RuleInterfaceBody = 56, RuleInterfaceVarDecl = 57, RuleInterfaceFuncDecl = 58, 
+    RuleAnnotationDeclaration = 59, RuleAnnotationBlock = 60, RuleAnnotation = 61, 
+    RuleQualifiedName = 62, RuleParamList = 63, RuleParam = 64, RuleType = 65, 
+    RuleSingleType = 66, RuleArrayType = 67, RuleReturnType = 68, RuleForStmt = 69, 
+    RuleForCondition = 70, RuleForBlock = 71, RuleForBody = 72, RuleForVarDecl = 73, 
+    RuleFileCodeBlock = 74, RuleFileCodeBlockBody = 75, RuleFileCodeBlockStmt = 76, 
+    RuleFunCodeBlock = 77, RuleFunCodeBlockBody = 78, RuleFunCodeBlockStmt = 79, 
+    RuleDeleteStmt = 80
   };
 
   explicit DreamParser(antlr4::TokenStream *input);
@@ -88,6 +89,7 @@ public:
   class CastExprContext;
   class AssignContext;
   class UnaryOpExprContext;
+  class IfExprContext;
   class IfStmtContext;
   class IfBlockContext;
   class AtomExprContext;
@@ -113,8 +115,8 @@ public:
   class ClassBlockContext;
   class ClassBodyContext;
   class ClassStmtContext;
-  class ConstructorDeclContext;
   class ClassFunStmtBlockContext;
+  class ConstructorDeclContext;
   class ThrowStmtContext;
   class SynchronizedStmtContext;
   class TryCatchStmtContext;
@@ -424,7 +426,7 @@ public:
   public:
     UnaryOpExprContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
-    antlr4::tree::TerminalNode *NOT();
+    antlr4::tree::TerminalNode *BANG();
     ExprContext *expr();
     antlr4::tree::TerminalNode *PLUS();
     antlr4::tree::TerminalNode *MINUS();
@@ -439,12 +441,52 @@ public:
 
   UnaryOpExprContext* unaryOpExpr();
 
+  class  IfExprContext : public antlr4::ParserRuleContext {
+  public:
+    IfExprContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    antlr4::tree::TerminalNode *LPAREN();
+    std::vector<ExprContext *> expr();
+    ExprContext* expr(size_t i);
+    antlr4::tree::TerminalNode *RPAREN();
+    FunCallStmtContext *funCallStmt();
+    UnaryOpExprContext *unaryOpExpr();
+    antlr4::tree::TerminalNode *MUL();
+    antlr4::tree::TerminalNode *SLASH();
+    antlr4::tree::TerminalNode *MOD();
+    antlr4::tree::TerminalNode *PLUS();
+    antlr4::tree::TerminalNode *MINUS();
+    antlr4::tree::TerminalNode *LSHIFT();
+    antlr4::tree::TerminalNode *RSHIFT();
+    antlr4::tree::TerminalNode *URSHIFT();
+    antlr4::tree::TerminalNode *LT();
+    antlr4::tree::TerminalNode *GT();
+    antlr4::tree::TerminalNode *LE();
+    antlr4::tree::TerminalNode *GE();
+    antlr4::tree::TerminalNode *EQ();
+    antlr4::tree::TerminalNode *NEQ();
+    antlr4::tree::TerminalNode *BIT_AND();
+    antlr4::tree::TerminalNode *XOR();
+    antlr4::tree::TerminalNode *BIT_OR();
+    antlr4::tree::TerminalNode *AND();
+    antlr4::tree::TerminalNode *OR();
+    AtomExprContext *atomExpr();
+    CastExprContext *castExpr();
+    AssignExprContext *assignExpr();
+
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+   
+  };
+
+  IfExprContext* ifExpr();
+
   class  IfStmtContext : public antlr4::ParserRuleContext {
   public:
     IfStmtContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     antlr4::tree::TerminalNode *IF();
-    ExprContext *expr();
+    IfExprContext *ifExpr();
     IfBlockContext *ifBlock();
     std::vector<ElseIfClauseContext *> elseIfClause();
     ElseIfClauseContext* elseIfClause(size_t i);
@@ -547,7 +589,7 @@ public:
     virtual size_t getRuleIndex() const override;
     antlr4::tree::TerminalNode *ELSE();
     antlr4::tree::TerminalNode *IF();
-    ExprContext *expr();
+    IfExprContext *ifExpr();
     IfBlockContext *ifBlock();
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
@@ -828,6 +870,7 @@ public:
     std::vector<ClassModifiersContext *> classModifiers();
     ClassModifiersContext* classModifiers(size_t i);
     antlr4::tree::TerminalNode *COLON();
+    VisibilityModifierContext *visibilityModifier();
     std::vector<antlr4::tree::TerminalNode *> COMMA();
     antlr4::tree::TerminalNode* COMMA(size_t i);
 
@@ -902,6 +945,7 @@ public:
     virtual size_t getRuleIndex() const override;
     ClassVarDeclContext *classVarDecl();
     ClassFuncDeclContext *classFuncDecl();
+    ConstructorDeclContext *constructorDecl();
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
@@ -909,6 +953,27 @@ public:
   };
 
   ClassStmtContext* classStmt();
+
+  class  ClassFunStmtBlockContext : public antlr4::ParserRuleContext {
+  public:
+    ClassFunStmtBlockContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    ExprContext *expr();
+    antlr4::tree::TerminalNode *SEMICOLON();
+    IfStmtContext *ifStmt();
+    ForStmtContext *forStmt();
+    FunVarDeclarationContext *funVarDeclaration();
+    ReturnStmtContext *returnStmt();
+    TryCatchStmtContext *tryCatchStmt();
+    ThrowStmtContext *throwStmt();
+    DeleteStmtContext *deleteStmt();
+
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+   
+  };
+
+  ClassFunStmtBlockContext* classFunStmtBlock();
 
   class  ConstructorDeclContext : public antlr4::ParserRuleContext {
   public:
@@ -932,27 +997,6 @@ public:
   };
 
   ConstructorDeclContext* constructorDecl();
-
-  class  ClassFunStmtBlockContext : public antlr4::ParserRuleContext {
-  public:
-    ClassFunStmtBlockContext(antlr4::ParserRuleContext *parent, size_t invokingState);
-    virtual size_t getRuleIndex() const override;
-    ExprContext *expr();
-    antlr4::tree::TerminalNode *SEMICOLON();
-    IfStmtContext *ifStmt();
-    ForStmtContext *forStmt();
-    FunVarDeclarationContext *funVarDeclaration();
-    ReturnStmtContext *returnStmt();
-    TryCatchStmtContext *tryCatchStmt();
-    ThrowStmtContext *throwStmt();
-    DeleteStmtContext *deleteStmt();
-
-    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
-    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
-   
-  };
-
-  ClassFunStmtBlockContext* classFunStmtBlock();
 
   class  ThrowStmtContext : public antlr4::ParserRuleContext {
   public:

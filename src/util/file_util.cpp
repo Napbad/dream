@@ -287,14 +287,14 @@ void file_util::format_all_cpp_files(const std::filesystem::path& directory)
             "Warn: clang-format is not available on this system."
             " The generated code can not be formatted automatically. "
             "If you want to format is automatically"
-            "Please install it.");
+            "Please install it.\n");
         return;
     }
 
     // Check if the provided path is a valid directory
     if (!exists(directory) || !is_directory(directory))
     {
-        err_print(cout, "Invalid directory path: " + directory.string());
+        err_print(cout, "Invalid directory path: " + directory.string() + "\n");
         return;
     }
 
@@ -307,7 +307,31 @@ void file_util::format_all_cpp_files(const std::filesystem::path& directory)
         format_file(file);
     }
 
-    print(cout, "All .cpp files in directory \"" + directory.string() + "\" have been formatted.", FileColor::WHITE);
+    print(cout, "All .cpp files in directory \"" + directory.string() + R"(" have been formatted.
+)", FileColor::WHITE);
+}
+
+bool file_util::create_dir(const std::string& path)
+{
+    try
+    {
+        // Create the directory and its parent directories if they do not exist
+        if (filesystem::create_directories(path))
+        {
+            std::cout << "Directory created: " << path << std::endl;
+            return true;
+        }
+        else
+        {
+            std::cout << "Directory already exists: " << path << std::endl;
+            return false;
+        }
+    }
+    catch (const filesystem::filesystem_error& e)
+    {
+        std::cerr << "Error creating directory: " << e.what() << std::endl;
+        return false;
+    }
 }
 
 #ifdef _WIN32

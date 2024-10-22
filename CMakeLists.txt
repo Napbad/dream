@@ -112,6 +112,10 @@ add_executable(dream src/main.cpp
         src/natives/net/SocketServer.h
         src/natives/io/FileBaseClass.cpp
         src/natives/io/FileBaseClass.h
+        src/natives/system/System.cpp
+        src/natives/system/System.h
+        src/natives/io/File.cpp
+        src/natives/io/File.h
 )
 
 target_link_libraries(dream ${LIBANTLR})

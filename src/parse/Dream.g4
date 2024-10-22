@@ -98,7 +98,7 @@ assign
 
 // 一元运算
 unaryOpExpr
-    : NOT expr
+    : BANG expr
     | PLUS expr
     | MINUS expr
     | INC expr
@@ -106,9 +106,28 @@ unaryOpExpr
     | TIBLE expr
     ;
 
+ifExpr
+    : LPAREN expr RPAREN
+    | funCallStmt
+    | unaryOpExpr
+    | expr (MUL | SLASH | MOD) expr
+    | expr (PLUS | MINUS) expr
+    | expr (LSHIFT | RSHIFT | URSHIFT) expr
+    | expr (LT | GT | LE | GE) expr
+    | expr (EQ | NEQ) expr
+    | expr BIT_AND expr
+    | expr XOR expr
+    | expr BIT_OR expr
+    | expr AND expr
+    | expr OR expr
+    | atomExpr
+    | castExpr
+    | assignExpr
+    ;
+
 // if 表达式
 ifStmt
-    : IF expr ifBlock (elseIfClause)* (elseClause)?
+    : IF ifExpr ifBlock (elseIfClause)* (elseClause)?
     ;
 
 // if 块
@@ -149,7 +168,7 @@ returnStmt
 
 // else if 子句
 elseIfClause
-    : ELSE IF expr ifBlock
+    : ELSE IF ifExpr ifBlock
     ;
 
 elseClause
@@ -249,7 +268,7 @@ funModifiers
 
 // 类声明
 classDeclaration
-    : classModifiers* CLASS IDENTIFIER (COLON (IDENTIFIER (COMMA IDENTIFIER)*))? classBlock
+    : classModifiers* CLASS IDENTIFIER (COLON visibilityModifier? (IDENTIFIER (COMMA IDENTIFIER)*))? classBlock
     ;
 
 // 类修饰符
@@ -278,14 +297,7 @@ classBody
 classStmt
     : classVarDecl
     | classFuncDecl
-    ;
-
-
-
-
-// 构造函数声明
-constructorDecl
-    : classMemberModifier? (annotation)* IDENTIFIER LPAREN (paramList)? RPAREN LBRACE classFunStmtBlock* RBRACE
+    | constructorDecl
     ;
 
 // 类函数语句块
@@ -300,6 +312,10 @@ classFunStmtBlock
     | deleteStmt
     ;
 
+// 构造函数声明
+constructorDecl
+    : classMemberModifier? (annotation)* IDENTIFIER LPAREN (paramList)? RPAREN LBRACE classFunStmtBlock* RBRACE
+    ;
 
 // 抛出语句
 throwStmt

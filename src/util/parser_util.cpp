@@ -95,7 +95,7 @@ std::string parser_util::convert_type_to_cpp(std::string& type_name)
         return "std::string[]";
 
 
-    // Type mapping from dream types to C++ types
+    // Type mapping from proj types to C++ types
     static const std::unordered_map<std::string, std::string> type_mapping = {
         {"byte", "uint8_t"},
         {"short", "short"},
@@ -174,4 +174,17 @@ std::string parser_util::generate_default_value(std::string& type)
 
     // Return an empty string if the type is not supported
     return "new " + type + "()";
+}
+
+std::string parser_util::get_pure_class_name(const std::string& full_class_name)
+{
+    for (int i = 0; i < full_class_name.length(); i++)
+        if (full_class_name[i] == ':')
+            return full_class_name.substr(0, i);
+    return full_class_name;
+}
+
+std::string parser_util::get_father_class_name(const std::string& full_class_name)
+{
+    return full_class_name.substr(full_class_name.find_last_of(':') + 8);
 }

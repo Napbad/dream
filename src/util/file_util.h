@@ -205,6 +205,8 @@ namespace file_util
     void format_file(const std::filesystem::path& filePath);
 
     void format_all_cpp_files(const std::filesystem::path& directory);
+
+    bool create_dir(const std::string& path);
 }
 
 #endif //FILE_UTIL_H

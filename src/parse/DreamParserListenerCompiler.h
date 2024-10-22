@@ -87,6 +87,7 @@ private:
     bool _is_in_for_loop = false;
     bool _is_in_for_condition = false;
     size_t _curr_fun_begin_pos = 0;
+    bool _is_in_if_cond = false;
 
     void enterProgram(DreamParser::ProgramContext * /*ctx*/) override;
     void exitProgram(DreamParser::ProgramContext * /*ctx*/) override;

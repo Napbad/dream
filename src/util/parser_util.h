@@ -68,6 +68,9 @@ namespace parser_util
      *
       */
     std::string generate_default_value(std::string& type);
+
+ std::string get_pure_class_name(const std::string& full_class_name);
+ std::string get_father_class_name(const std::string& full_class_name);
 } // namespace parser_util
 
 #endif // PARSER_UTIL_H

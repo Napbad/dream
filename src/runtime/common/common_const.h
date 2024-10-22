@@ -20,7 +20,7 @@ inline const std::string MAIN_CLASS = "Main";
 
 inline const std::string CONVERT_DESTINATION_FILE_TYPE = ".cpp";
 
-inline const std::string CONVERT_SOURCE_FILE_TYPE = ".dream";
+inline const std::string CONVERT_SOURCE_FILE_TYPE = ".proj";
 
 inline const std::string ROOT_DATASOURCE = "ROOT";
 

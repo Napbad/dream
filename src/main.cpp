@@ -13,7 +13,9 @@ using namespace antlr4;
 
 int main(int args, char** argv)
 {
-    std::string input_dir = "../dream";
+    std::string input_dir = "../proj";
+    std::string src_dir = "../src/dream";
+    std::string build_dir = "../build/";
 
     // handler arguments
     for (int i = 1; i < args; ++i)
@@ -31,7 +33,7 @@ int main(int args, char** argv)
             case 'h':
                 {
                     print(cout, "Usage: \n "
-                          "\tdream + <dir> \n\t\t ex: 'dream ./' build current directory\n",
+                          "\tproj + <dir> \n\t\t ex: 'proj ./' build current directory\n",
                           file_util::FileColor::BLACK);
                     print(cout, "Options \n", file_util::FileColor::BLACK);
                     print(cout, "\t-d: enable debug mode \n\t\t make all the compile info printed\n",
@@ -60,8 +62,15 @@ int main(int args, char** argv)
 
     std::ifstream stream;
 
+
+    std::string tmp_dir = "/tmp/dream/cache/proj/src";
+
+    file_util::create_dir(tmp_dir);
+    file_util::copy_directory(input_dir, tmp_dir);
+    file_util::copy_directory(src_dir, tmp_dir);
+
     // delete build directory
-    file_util::delete_directory("../build/");
+    file_util::delete_directory(build_dir);
 
     // copy runtime and native files
     std::string runtime_src_dir = "../src/runtime";
@@ -75,20 +84,20 @@ int main(int args, char** argv)
     file_util::copy_directory(runtime_src_dir, runtime_dest_dir);
     file_util::copy_directory(native_src_dir, native_dest_dir);
 
-    for (std::vector<std::string> files_in_dir = file_util::get_all_files_in_dir("../build/runtime");
+    for (std::vector<std::string> files_in_dir = file_util::get_all_files_in_dir(runtime_dest_dir);
          auto& file : files_in_dir)
     {
         global->add_file_compile(file);
     }
 
-    for (std::vector<std::string> files_in_dir = file_util::get_all_files_in_dir("../build/natives");
+    for (std::vector<std::string> files_in_dir = file_util::get_all_files_in_dir(native_dest_dir);
          auto& file : files_in_dir)
     {
         global->add_file_compile(file);
     }
 
     // compile the files in the directory
-    for (std::vector<std::string> files = file_util::get_all_files_in_dir(input_dir);
+    for (std::vector<std::string> files = file_util::get_all_files_in_dir(tmp_dir);
          auto& file_path : files)
     {
         if (file_path.ends_with("/main.drm"))
@@ -159,7 +168,11 @@ int main(int args, char** argv)
 
     // file_util::delete_directory(native_dest_dir);
 
-    file_util::format_all_cpp_files("../build/");
+    file_util::format_all_cpp_files(build_dir);
+
+    file_util::delete_directory(tmp_dir);
+
+    file_util::print(cout, "Compilation finished successfully!\n", file_util::FileColor::GREEN);
 
     return 0;
 }

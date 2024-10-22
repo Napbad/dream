@@ -1,0 +1,6 @@
+package stl;
+
+fun add(imt int a!, imt int b!) int {
+    return a + b;
+}
+

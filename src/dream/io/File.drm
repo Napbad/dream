@@ -1,0 +1,9 @@
+package io;
+
+import natives.io.FileBaseClass;
+
+class File : public FileBaseClass{
+    public File (imt string path!) {
+        super (path);
+    }
+}

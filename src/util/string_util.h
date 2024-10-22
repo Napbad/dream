@@ -12,6 +12,8 @@
 #include "parser_util.h"
 #include <antlr4-runtime.h>
 
+#include "common/dream_define.h"
+
 namespace string_util
 {
     /**
@@ -142,10 +144,18 @@ namespace string_util
     /**
      * Checks if the string represents a common type.
      *
-     * @param string The string to check.
+     * @param type The string to check.
      * @return True if the string represents a common type, false otherwise.
      */
-    bool str_is_common_type(const std::string& string);
+    bool str_is_common_type(const std::string& type);
+
+ /**
+     * Checks if the string represents a common type.
+     *
+     * @param type The string to check.
+     * @return True if the string represents a common type, false otherwise.
+     */
+    bool str_is_common_cpp_type(const std::string& type);
 
     /**
      * Checks if the string value represents a common type.
@@ -177,6 +187,7 @@ namespace string_util
     std::string gen_unique_name();
     void replace_all_without_str(std::string& str, const char* from, const char* to);
     bool find_expect_str(std::string value, const std::string& basic_string);
+    std::string get_param_from_param_vector(const std::vector<FUN_PARAM_TYPE>& vector, const char* delimiter);
 } // namespace string_util
 
 #endif // STRING_UTIL_H

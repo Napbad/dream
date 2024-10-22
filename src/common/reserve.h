@@ -172,7 +172,7 @@ inline std::unordered_map<std::string, std::string> common_type_map = {
     {D_LONG, "long"},
     {D_CHAR, "char"},
     {D_FLOAT, "float"},
-    {D_STRING, "string"},
+    {D_STRING, "std::string"},
     {D_BOOL, "bool"},
     {D_NULL, "null"},
     {D_UINT, "unsigned int"},

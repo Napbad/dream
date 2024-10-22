@@ -28,21 +28,22 @@
  */
 class ClassFunGenerator final : public CodeGenerator
 {
+    // Indicates whether the function is const
+    bool _const = false;
+    bool _static = false;
+    // Return type of the function
+    std::string _return_type;
+    bool _is_constructor = false;
+    bool _has_super = false;
+
+protected:
     // Stores parameters of the function
     std::vector<FUN_PARAM_TYPE> _params{};
 
     ClassMemberVisibility _visibility = ClassMemberVisibility::PROTECTED;
 
-    // Indicates whether the function is const
-    bool _const = false;
-
     // Name of the function
     std::string _name;
-
-    bool _static = false;
-
-    // Return type of the function
-    std::string _return_type;
 
     std::string _class_name;
 
@@ -53,6 +54,7 @@ public:
      * @brief Initializes the generator with a parsing context
      *
      * @param ctx Parsing context for the class function declaration
+     * @param class_name Name of the class containing the function
      */
     void init(DreamParser::ClassFuncDeclContext* ctx, const std::string& class_name);
 
@@ -73,6 +75,10 @@ public:
     [[nodiscard]] ClassMemberVisibility visibility() const;
     void add_stmt(const string& string);
     std::string name();
+
+    void set_is_constructor();
+    void set_has_super();
+    void init(DreamParser::ConstructorDeclContext* ctx, const string& class_name);
 };
 
 #endif //METHODGENERATOR_H

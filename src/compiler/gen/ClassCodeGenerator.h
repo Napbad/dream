@@ -26,8 +26,6 @@ public:
     std::vector<std::string> _methods;
     std::vector<std::string>* _current_converting;
 
-
-
     /// Class name
     std::string _class_name;
 

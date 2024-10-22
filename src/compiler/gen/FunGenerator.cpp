@@ -25,7 +25,10 @@ void FunGenerator::init(DreamParser::FunctionDeclarationContext* ctx)
     else if (ctx->returnType() == nullptr)
         _return_type = CPP_VOID;
     else if (ctx->returnType()->children.size() == 1)
-        _return_type = ctx->returnType()->getText();
+    {
+        string type = ctx->returnType()->getText();
+        _return_type = convert_type_to_cpp(type);
+    }
     else
         _return_type = convert_type_list_to_tuple(ctx->returnType());
 

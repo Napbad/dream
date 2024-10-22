@@ -17,6 +17,17 @@ void FunDataRoot::gc()
         d->gc();
 }
 
+void FunDataRoot::exit()
+{
+    #ifdef DEBUG_MODE
+    char buffer[50];
+    sprintf(buffer, "Exit FunDataRoot: %p \n\0", this);
+    dbg_util::dbg_print(std::cout, buffer);
+#endif
+
+
+}
+
 void FunDataRoot::destroy()
 {
 #ifdef DEBUG_MODE

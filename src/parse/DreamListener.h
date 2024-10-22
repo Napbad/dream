@@ -59,6 +59,9 @@ public:
   virtual void enterUnaryOpExpr(DreamParser::UnaryOpExprContext *ctx) = 0;
   virtual void exitUnaryOpExpr(DreamParser::UnaryOpExprContext *ctx) = 0;
 
+  virtual void enterIfExpr(DreamParser::IfExprContext *ctx) = 0;
+  virtual void exitIfExpr(DreamParser::IfExprContext *ctx) = 0;
+
   virtual void enterIfStmt(DreamParser::IfStmtContext *ctx) = 0;
   virtual void exitIfStmt(DreamParser::IfStmtContext *ctx) = 0;
 
@@ -134,11 +137,11 @@ public:
   virtual void enterClassStmt(DreamParser::ClassStmtContext *ctx) = 0;
   virtual void exitClassStmt(DreamParser::ClassStmtContext *ctx) = 0;
 
-  virtual void enterConstructorDecl(DreamParser::ConstructorDeclContext *ctx) = 0;
-  virtual void exitConstructorDecl(DreamParser::ConstructorDeclContext *ctx) = 0;
-
   virtual void enterClassFunStmtBlock(DreamParser::ClassFunStmtBlockContext *ctx) = 0;
   virtual void exitClassFunStmtBlock(DreamParser::ClassFunStmtBlockContext *ctx) = 0;
+
+  virtual void enterConstructorDecl(DreamParser::ConstructorDeclContext *ctx) = 0;
+  virtual void exitConstructorDecl(DreamParser::ConstructorDeclContext *ctx) = 0;
 
   virtual void enterThrowStmt(DreamParser::ThrowStmtContext *ctx) = 0;
   virtual void exitThrowStmt(DreamParser::ThrowStmtContext *ctx) = 0;

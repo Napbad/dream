@@ -1,0 +1,15 @@
+package handler;
+
+import io.File;
+
+fun get_file(imt string file_name!) File {
+    File file = new File(file_name);
+    if !file.exists() {
+        file.createFile();
+        /println("File created");
+    } else {
+        /println("File already exists.");
+    }
+
+    return file;
+}

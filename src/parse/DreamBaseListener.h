@@ -61,6 +61,9 @@ public:
   virtual void enterUnaryOpExpr(DreamParser::UnaryOpExprContext * /*ctx*/) override { }
   virtual void exitUnaryOpExpr(DreamParser::UnaryOpExprContext * /*ctx*/) override { }
 
+  virtual void enterIfExpr(DreamParser::IfExprContext * /*ctx*/) override { }
+  virtual void exitIfExpr(DreamParser::IfExprContext * /*ctx*/) override { }
+
   virtual void enterIfStmt(DreamParser::IfStmtContext * /*ctx*/) override { }
   virtual void exitIfStmt(DreamParser::IfStmtContext * /*ctx*/) override { }
 
@@ -136,11 +139,11 @@ public:
   virtual void enterClassStmt(DreamParser::ClassStmtContext * /*ctx*/) override { }
   virtual void exitClassStmt(DreamParser::ClassStmtContext * /*ctx*/) override { }
 
-  virtual void enterConstructorDecl(DreamParser::ConstructorDeclContext * /*ctx*/) override { }
-  virtual void exitConstructorDecl(DreamParser::ConstructorDeclContext * /*ctx*/) override { }
-
   virtual void enterClassFunStmtBlock(DreamParser::ClassFunStmtBlockContext * /*ctx*/) override { }
   virtual void exitClassFunStmtBlock(DreamParser::ClassFunStmtBlockContext * /*ctx*/) override { }
+
+  virtual void enterConstructorDecl(DreamParser::ConstructorDeclContext * /*ctx*/) override { }
+  virtual void exitConstructorDecl(DreamParser::ConstructorDeclContext * /*ctx*/) override { }
 
   virtual void enterThrowStmt(DreamParser::ThrowStmtContext * /*ctx*/) override { }
   virtual void exitThrowStmt(DreamParser::ThrowStmtContext * /*ctx*/) override { }

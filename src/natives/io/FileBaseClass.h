@@ -29,13 +29,13 @@ public:
     [[nodiscard]] bool isDirectory() const;
 
     // Create a file
-    bool createFile() const;
+    [[nodiscard]] bool createFile() const;
 
     // Create a directory
-    bool createDirectory() const;
+    [[nodiscard]] bool createDirectory() const;
 
     // Delete a file or directory
-    bool deleteFile() const;
+    [[nodiscard]] bool deleteFile() const;
 
     // List files and subdirectories in a directory
     [[nodiscard]] std::vector<std::string> listFiles() const;

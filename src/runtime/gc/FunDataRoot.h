@@ -19,6 +19,9 @@ public:
     void add_data(GCable* data);
 
     void gc() override;
+
+    void exit();
+
     void destroy() override;
 };
 

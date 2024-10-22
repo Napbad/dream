@@ -163,7 +163,7 @@ std::string string_util::get_str_from_param_vector(
     for (auto i = 0; i < vector.size(); i++)
     {
         auto [type, name, nullable, mutable_] = vector.at(i);
-        if (!str_is_common_type(type)) { type = "DataNode<" + type + ">"; }
+        if (!str_is_common_cpp_type(type)) { type = "DataNode<" + type + ">"; }
         res.append(mutable_ ? "const " : " ")
            .append(type)
            .append(" ")
@@ -192,8 +192,21 @@ std::string string_util::get_lines_from_vector(const std::vector<std::string>& v
 bool string_util::str_is_common_type(const std::string& type)
 {
     for (const auto& type_d : common_type_map | views::keys)
+    {
         if (type == type_d)
             return true;
+    }
+
+    return false;
+}
+
+bool string_util::str_is_common_cpp_type(const std::string& type)
+{
+    for (const auto& type_d : common_type_map | views::values)
+    {
+        if (type == type_d)
+            return true;
+    }
 
     return false;
 }
@@ -251,7 +264,7 @@ void string_util::replace_all_without_str(std::string& str, const char* from, co
 bool string_util::find_expect_str(std::string value, const std::string& basic_string)
 {
     bool is_in_str = false;
-    for (int i = 0;i < value.size(); i++)
+    for (int i = 0; i < value.size(); i++)
     {
         if (value.at(i) == '"')
             is_in_str = !is_in_str;
@@ -266,4 +279,20 @@ bool string_util::find_expect_str(std::string value, const std::string& basic_st
         }
     }
     return false;
+}
+
+std::string string_util::get_param_from_param_vector(
+    const std::vector<std::tuple<std::string, std::string, bool, bool>>& vector, const char* delimiter)
+{
+    string res;
+
+    for (auto i = 0; i < vector.size(); i++)
+    {
+        auto [type, name, nullable, mutable_] = vector.at(i);
+        res.append(name);
+
+        res += (i == (vector.size() - 1) ? "" : delimiter);
+    }
+
+    return res;
 }
