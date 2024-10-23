@@ -94,56 +94,23 @@ public:
   virtual void enterDeclaration(DreamParser::DeclarationContext * /*ctx*/) override { }
   virtual void exitDeclaration(DreamParser::DeclarationContext * /*ctx*/) override { }
 
+  virtual void enterStructDeclaration(DreamParser::StructDeclarationContext * /*ctx*/) override { }
+  virtual void exitStructDeclaration(DreamParser::StructDeclarationContext * /*ctx*/) override { }
+
+  virtual void enterStructMember(DreamParser::StructMemberContext * /*ctx*/) override { }
+  virtual void exitStructMember(DreamParser::StructMemberContext * /*ctx*/) override { }
+
   virtual void enterVarDeclaration(DreamParser::VarDeclarationContext * /*ctx*/) override { }
   virtual void exitVarDeclaration(DreamParser::VarDeclarationContext * /*ctx*/) override { }
 
-  virtual void enterVarModifiers(DreamParser::VarModifiersContext * /*ctx*/) override { }
-  virtual void exitVarModifiers(DreamParser::VarModifiersContext * /*ctx*/) override { }
-
-  virtual void enterClassMemberModifier(DreamParser::ClassMemberModifierContext * /*ctx*/) override { }
-  virtual void exitClassMemberModifier(DreamParser::ClassMemberModifierContext * /*ctx*/) override { }
-
   virtual void enterFunctionDeclaration(DreamParser::FunctionDeclarationContext * /*ctx*/) override { }
   virtual void exitFunctionDeclaration(DreamParser::FunctionDeclarationContext * /*ctx*/) override { }
-
-  virtual void enterClassVarDecl(DreamParser::ClassVarDeclContext * /*ctx*/) override { }
-  virtual void exitClassVarDecl(DreamParser::ClassVarDeclContext * /*ctx*/) override { }
-
-  virtual void enterClassFuncDecl(DreamParser::ClassFuncDeclContext * /*ctx*/) override { }
-  virtual void exitClassFuncDecl(DreamParser::ClassFuncDeclContext * /*ctx*/) override { }
 
   virtual void enterFunBlock(DreamParser::FunBlockContext * /*ctx*/) override { }
   virtual void exitFunBlock(DreamParser::FunBlockContext * /*ctx*/) override { }
 
   virtual void enterFunStmt(DreamParser::FunStmtContext * /*ctx*/) override { }
   virtual void exitFunStmt(DreamParser::FunStmtContext * /*ctx*/) override { }
-
-  virtual void enterFunModifiers(DreamParser::FunModifiersContext * /*ctx*/) override { }
-  virtual void exitFunModifiers(DreamParser::FunModifiersContext * /*ctx*/) override { }
-
-  virtual void enterClassDeclaration(DreamParser::ClassDeclarationContext * /*ctx*/) override { }
-  virtual void exitClassDeclaration(DreamParser::ClassDeclarationContext * /*ctx*/) override { }
-
-  virtual void enterClassModifiers(DreamParser::ClassModifiersContext * /*ctx*/) override { }
-  virtual void exitClassModifiers(DreamParser::ClassModifiersContext * /*ctx*/) override { }
-
-  virtual void enterClassModifier(DreamParser::ClassModifierContext * /*ctx*/) override { }
-  virtual void exitClassModifier(DreamParser::ClassModifierContext * /*ctx*/) override { }
-
-  virtual void enterClassBlock(DreamParser::ClassBlockContext * /*ctx*/) override { }
-  virtual void exitClassBlock(DreamParser::ClassBlockContext * /*ctx*/) override { }
-
-  virtual void enterClassBody(DreamParser::ClassBodyContext * /*ctx*/) override { }
-  virtual void exitClassBody(DreamParser::ClassBodyContext * /*ctx*/) override { }
-
-  virtual void enterClassStmt(DreamParser::ClassStmtContext * /*ctx*/) override { }
-  virtual void exitClassStmt(DreamParser::ClassStmtContext * /*ctx*/) override { }
-
-  virtual void enterClassFunStmtBlock(DreamParser::ClassFunStmtBlockContext * /*ctx*/) override { }
-  virtual void exitClassFunStmtBlock(DreamParser::ClassFunStmtBlockContext * /*ctx*/) override { }
-
-  virtual void enterConstructorDecl(DreamParser::ConstructorDeclContext * /*ctx*/) override { }
-  virtual void exitConstructorDecl(DreamParser::ConstructorDeclContext * /*ctx*/) override { }
 
   virtual void enterThrowStmt(DreamParser::ThrowStmtContext * /*ctx*/) override { }
   virtual void exitThrowStmt(DreamParser::ThrowStmtContext * /*ctx*/) override { }
@@ -177,33 +144,6 @@ public:
 
   virtual void enterStaticModifier(DreamParser::StaticModifierContext * /*ctx*/) override { }
   virtual void exitStaticModifier(DreamParser::StaticModifierContext * /*ctx*/) override { }
-
-  virtual void enterInterfaceDeclaration(DreamParser::InterfaceDeclarationContext * /*ctx*/) override { }
-  virtual void exitInterfaceDeclaration(DreamParser::InterfaceDeclarationContext * /*ctx*/) override { }
-
-  virtual void enterInterfaceBlock(DreamParser::InterfaceBlockContext * /*ctx*/) override { }
-  virtual void exitInterfaceBlock(DreamParser::InterfaceBlockContext * /*ctx*/) override { }
-
-  virtual void enterInterfaceBody(DreamParser::InterfaceBodyContext * /*ctx*/) override { }
-  virtual void exitInterfaceBody(DreamParser::InterfaceBodyContext * /*ctx*/) override { }
-
-  virtual void enterInterfaceVarDecl(DreamParser::InterfaceVarDeclContext * /*ctx*/) override { }
-  virtual void exitInterfaceVarDecl(DreamParser::InterfaceVarDeclContext * /*ctx*/) override { }
-
-  virtual void enterInterfaceFuncDecl(DreamParser::InterfaceFuncDeclContext * /*ctx*/) override { }
-  virtual void exitInterfaceFuncDecl(DreamParser::InterfaceFuncDeclContext * /*ctx*/) override { }
-
-  virtual void enterAnnotationDeclaration(DreamParser::AnnotationDeclarationContext * /*ctx*/) override { }
-  virtual void exitAnnotationDeclaration(DreamParser::AnnotationDeclarationContext * /*ctx*/) override { }
-
-  virtual void enterAnnotationBlock(DreamParser::AnnotationBlockContext * /*ctx*/) override { }
-  virtual void exitAnnotationBlock(DreamParser::AnnotationBlockContext * /*ctx*/) override { }
-
-  virtual void enterAnnotation(DreamParser::AnnotationContext * /*ctx*/) override { }
-  virtual void exitAnnotation(DreamParser::AnnotationContext * /*ctx*/) override { }
-
-  virtual void enterQualifiedName(DreamParser::QualifiedNameContext * /*ctx*/) override { }
-  virtual void exitQualifiedName(DreamParser::QualifiedNameContext * /*ctx*/) override { }
 
   virtual void enterParamList(DreamParser::ParamListContext * /*ctx*/) override { }
   virtual void exitParamList(DreamParser::ParamListContext * /*ctx*/) override { }

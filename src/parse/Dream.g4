@@ -48,7 +48,7 @@ binaryOpExpr
 
 // 函数变量声明
 funVarDeclaration
-    : (VAR | IMT)? varModifiers? type IDENTIFIER (BANG | QUESTION)? (ASSIGN expr)? SEMICOLON
+    : (VAR | IMT)?  type IDENTIFIER (BANG | QUESTION)? (ASSIGN expr)? SEMICOLON
     ;
 
 
@@ -205,42 +205,23 @@ assignExpr
 declaration
     : varDeclaration
     | functionDeclaration
-    | classDeclaration
-    | interfaceDeclaration
-    | annotationDeclaration
+    | structDeclaration
+    ;
+
+structDeclaration: STRUCT IDENTIFIER LBRACE (structMember)* RBRACE SEMICOLON;
+
+structMember
+    : varDeclaration
     ;
 
 // 变量声明
 varDeclaration
-    : (VAR | IMT)? varModifiers? type IDENTIFIER (BANG | QUESTION)? (ASSIGN expr)? SEMICOLON
+    : (VAR | IMT)?  type IDENTIFIER (BANG | QUESTION)? (ASSIGN expr)? SEMICOLON
     ;
-
-// 变量修饰符
-varModifiers
-    : annotation+
-    ;
-
-// 类成员修饰符
-classMemberModifier
-    : memberModifier
-    | visibilityModifier
-    | staticModifier
-    ;
-
-// 文件函数声明
 functionDeclaration
-    : funModifiers? FUN IDENTIFIER LPAREN (paramList)? RPAREN returnType? funBlock
+    :  FUN IDENTIFIER LPAREN (paramList)? RPAREN returnType? funBlock
     ;
 
-// 类成员变量声明
-classVarDecl
-    : classMemberModifier* (annotation)* (VAR | IMT) type IDENTIFIER (BANG | QUESTION)? ('=' expr)? SEMICOLON
-    ;
-
-// 类成员函数声明
-classFuncDecl
-    : classMemberModifier* (annotation)* CONST? FUN IDENTIFIER LPAREN (paramList)? RPAREN returnType? funBlock
-    ;
 
 // 函数块
 funBlock
@@ -258,63 +239,6 @@ funStmt
     | expr SEMICOLON
     | throwStmt
     | fileCodeBlock
-    ;
-
-
-// 函数修饰符
-funModifiers
-    : annotation+
-    ;
-
-// 类声明
-classDeclaration
-    : classModifiers* CLASS IDENTIFIER (COLON visibilityModifier? (IDENTIFIER (COMMA IDENTIFIER)*))? classBlock
-    ;
-
-// 类修饰符
-classModifiers
-    : annotation+
-    | classModifier
-    ;
-
-// 类修饰符
-classModifier
-    : ENUM
-    | ANNOTATION
-    ;
-
-// 类块
-classBlock
-    : LBRACE RBRACE
-    | LBRACE classBody RBRACE
-    ;
-
-// 类体
-classBody
-    : classStmt*
-    ;
-
-classStmt
-    : classVarDecl
-    | classFuncDecl
-    | constructorDecl
-    ;
-
-// 类函数语句块
-classFunStmtBlock
-    : expr SEMICOLON
-    | ifStmt
-    | forStmt
-    | funVarDeclaration
-    | returnStmt
-    | tryCatchStmt
-    | throwStmt
-    | deleteStmt
-    ;
-
-// 构造函数声明
-constructorDecl
-    : classMemberModifier? (annotation)* IDENTIFIER LPAREN (paramList)? RPAREN LBRACE classFunStmtBlock* RBRACE
     ;
 
 // 抛出语句
@@ -345,7 +269,7 @@ catchClause
 
 // catch 形参
 catchFormalParameter
-    : varModifiers* catchType IDENTIFIER
+    :  catchType IDENTIFIER
     ;
 
 // catch 类型
@@ -374,55 +298,6 @@ visibilityModifier
 staticModifier
     : STATIC
     ;
-
-// 接口声明
-interfaceDeclaration
-    : INTERFACE IDENTIFIER interfaceBlock
-    ;
-
-// 接口块
-interfaceBlock
-    : LBRACE interfaceBody* RBRACE
-    ;
-
-// 接口体
-interfaceBody
-    : interfaceVarDecl
-    | interfaceFuncDecl
-    ;
-
-// 接口变量声明
-interfaceVarDecl
-    : VAR type IDENTIFIER SEMICOLON
-    ;
-
-// 接口函数声明
-interfaceFuncDecl
-    : FUN IDENTIFIER LPAREN (paramList)? RPAREN returnType? SEMICOLON
-    ;
-
-// 注解声明
-annotationDeclaration
-    : ANNOTATION CLASS IDENTIFIER annotationBlock
-    ;
-
-// 注解块
-annotationBlock
-    : LBRACE varDeclaration* RBRACE
-    ;
-
-// 注解
-annotation
-    : AT IDENTIFIER (LBRACE assign* RBRACE)?
-    ;
-
-// 合格名称
-qualifiedName
-    : IDENTIFIER (DOT IDENTIFIER)*
-    ;
-
-
-
 // 参数列表
 paramList
     : param (COMMA param)*
@@ -576,10 +451,8 @@ FINALLY : 'finally';
 VAR : 'var';
 IMT : 'imt';
 FUN : 'fun';
-CLASS : 'class';
 ENUM : 'enum';
-INTERFACE : 'interface';
-ANNOTATION : 'annotation';
+STRUCT : 'struct';
 PUBLIC : 'public';
 PRIVATE : 'private';
 PROTECTED : 'protected';

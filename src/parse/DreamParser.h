@@ -14,20 +14,20 @@ public:
   enum {
     STRING_LITERAL = 1, RETURN = 2, IF = 3, ELSE = 4, FOR = 5, WHILE = 6, 
     PACKAGE = 7, IMPORT = 8, BREAK = 9, CONTINUE = 10, TRY = 11, CATCH = 12, 
-    FINALLY = 13, VAR = 14, IMT = 15, FUN = 16, CLASS = 17, ENUM = 18, INTERFACE = 19, 
-    ANNOTATION = 20, PUBLIC = 21, PRIVATE = 22, PROTECTED = 23, STATIC = 24, 
-    NEW = 25, OVERRIDE = 26, NATIVE = 27, SYNCHRONIZED = 28, THROW = 29, 
-    DELETE = 30, BYTE = 31, SHORT = 32, INT = 33, UINT = 34, USHORT = 35, 
-    LONG = 36, ULONG = 37, LONGLONG = 38, ULONGLONG = 39, FLOAT = 40, DOUBLE = 41, 
-    BOOL = 42, CHAR = 43, STRING = 44, VOID = 45, CONST = 46, CHAR_LITERAL = 47, 
-    INT_LITERAL = 48, FLOAT_LITERAL = 49, TRUE_LITERAL = 50, FALSE_LITERAL = 51, 
-    AT = 52, SLASH = 53, ASSIGN = 54, SEMICOLON = 55, LPAREN = 56, RPAREN = 57, 
-    LBRACE = 58, RBRACE = 59, LBRACK = 60, RBRACK = 61, COMMA = 62, LINE_COMMENT = 63, 
-    COMMENT = 64, WS = 65, DOT = 66, BANG = 67, QUESTION = 68, COLON = 69, 
-    MOD = 70, PLUS = 71, MINUS = 72, MUL = 73, LT = 74, GT = 75, LE = 76, 
-    GE = 77, EQ = 78, NEQ = 79, AND = 80, OR = 81, BIT_AND = 82, BIT_OR = 83, 
-    XOR = 84, LSHIFT = 85, RSHIFT = 86, URSHIFT = 87, NOT = 88, TIBLE = 89, 
-    INC = 90, DEC = 91, IDENTIFIER = 92
+    FINALLY = 13, VAR = 14, IMT = 15, FUN = 16, ENUM = 17, STRUCT = 18, 
+    PUBLIC = 19, PRIVATE = 20, PROTECTED = 21, STATIC = 22, NEW = 23, OVERRIDE = 24, 
+    NATIVE = 25, SYNCHRONIZED = 26, THROW = 27, DELETE = 28, BYTE = 29, 
+    SHORT = 30, INT = 31, UINT = 32, USHORT = 33, LONG = 34, ULONG = 35, 
+    LONGLONG = 36, ULONGLONG = 37, FLOAT = 38, DOUBLE = 39, BOOL = 40, CHAR = 41, 
+    STRING = 42, VOID = 43, CONST = 44, CHAR_LITERAL = 45, INT_LITERAL = 46, 
+    FLOAT_LITERAL = 47, TRUE_LITERAL = 48, FALSE_LITERAL = 49, AT = 50, 
+    SLASH = 51, ASSIGN = 52, SEMICOLON = 53, LPAREN = 54, RPAREN = 55, LBRACE = 56, 
+    RBRACE = 57, LBRACK = 58, RBRACK = 59, COMMA = 60, LINE_COMMENT = 61, 
+    COMMENT = 62, WS = 63, DOT = 64, BANG = 65, QUESTION = 66, COLON = 67, 
+    MOD = 68, PLUS = 69, MINUS = 70, MUL = 71, LT = 72, GT = 73, LE = 74, 
+    GE = 75, EQ = 76, NEQ = 77, AND = 78, OR = 79, BIT_AND = 80, BIT_OR = 81, 
+    XOR = 82, LSHIFT = 83, RSHIFT = 84, URSHIFT = 85, NOT = 86, TIBLE = 87, 
+    INC = 88, DEC = 89, IDENTIFIER = 90
   };
 
   enum {
@@ -37,24 +37,17 @@ public:
     RuleCastExpr = 12, RuleAssign = 13, RuleUnaryOpExpr = 14, RuleIfExpr = 15, 
     RuleIfStmt = 16, RuleIfBlock = 17, RuleAtomExpr = 18, RuleIfStmtBody = 19, 
     RuleReturnStmt = 20, RuleElseIfClause = 21, RuleElseClause = 22, RuleExpr = 23, 
-    RuleAssignExpr = 24, RuleDeclaration = 25, RuleVarDeclaration = 26, 
-    RuleVarModifiers = 27, RuleClassMemberModifier = 28, RuleFunctionDeclaration = 29, 
-    RuleClassVarDecl = 30, RuleClassFuncDecl = 31, RuleFunBlock = 32, RuleFunStmt = 33, 
-    RuleFunModifiers = 34, RuleClassDeclaration = 35, RuleClassModifiers = 36, 
-    RuleClassModifier = 37, RuleClassBlock = 38, RuleClassBody = 39, RuleClassStmt = 40, 
-    RuleClassFunStmtBlock = 41, RuleConstructorDecl = 42, RuleThrowStmt = 43, 
-    RuleSynchronizedStmt = 44, RuleTryCatchStmt = 45, RuleCatches = 46, 
-    RuleCatchClause = 47, RuleCatchFormalParameter = 48, RuleCatchType = 49, 
-    RuleFinally_ = 50, RuleMemberModifier = 51, RuleVisibilityModifier = 52, 
-    RuleStaticModifier = 53, RuleInterfaceDeclaration = 54, RuleInterfaceBlock = 55, 
-    RuleInterfaceBody = 56, RuleInterfaceVarDecl = 57, RuleInterfaceFuncDecl = 58, 
-    RuleAnnotationDeclaration = 59, RuleAnnotationBlock = 60, RuleAnnotation = 61, 
-    RuleQualifiedName = 62, RuleParamList = 63, RuleParam = 64, RuleType = 65, 
-    RuleSingleType = 66, RuleArrayType = 67, RuleReturnType = 68, RuleForStmt = 69, 
-    RuleForCondition = 70, RuleForBlock = 71, RuleForBody = 72, RuleForVarDecl = 73, 
-    RuleFileCodeBlock = 74, RuleFileCodeBlockBody = 75, RuleFileCodeBlockStmt = 76, 
-    RuleFunCodeBlock = 77, RuleFunCodeBlockBody = 78, RuleFunCodeBlockStmt = 79, 
-    RuleDeleteStmt = 80
+    RuleAssignExpr = 24, RuleDeclaration = 25, RuleStructDeclaration = 26, 
+    RuleStructMember = 27, RuleVarDeclaration = 28, RuleFunctionDeclaration = 29, 
+    RuleFunBlock = 30, RuleFunStmt = 31, RuleThrowStmt = 32, RuleSynchronizedStmt = 33, 
+    RuleTryCatchStmt = 34, RuleCatches = 35, RuleCatchClause = 36, RuleCatchFormalParameter = 37, 
+    RuleCatchType = 38, RuleFinally_ = 39, RuleMemberModifier = 40, RuleVisibilityModifier = 41, 
+    RuleStaticModifier = 42, RuleParamList = 43, RuleParam = 44, RuleType = 45, 
+    RuleSingleType = 46, RuleArrayType = 47, RuleReturnType = 48, RuleForStmt = 49, 
+    RuleForCondition = 50, RuleForBlock = 51, RuleForBody = 52, RuleForVarDecl = 53, 
+    RuleFileCodeBlock = 54, RuleFileCodeBlockBody = 55, RuleFileCodeBlockStmt = 56, 
+    RuleFunCodeBlock = 57, RuleFunCodeBlockBody = 58, RuleFunCodeBlockStmt = 59, 
+    RuleDeleteStmt = 60
   };
 
   explicit DreamParser(antlr4::TokenStream *input);
@@ -100,23 +93,12 @@ public:
   class ExprContext;
   class AssignExprContext;
   class DeclarationContext;
+  class StructDeclarationContext;
+  class StructMemberContext;
   class VarDeclarationContext;
-  class VarModifiersContext;
-  class ClassMemberModifierContext;
   class FunctionDeclarationContext;
-  class ClassVarDeclContext;
-  class ClassFuncDeclContext;
   class FunBlockContext;
   class FunStmtContext;
-  class FunModifiersContext;
-  class ClassDeclarationContext;
-  class ClassModifiersContext;
-  class ClassModifierContext;
-  class ClassBlockContext;
-  class ClassBodyContext;
-  class ClassStmtContext;
-  class ClassFunStmtBlockContext;
-  class ConstructorDeclContext;
   class ThrowStmtContext;
   class SynchronizedStmtContext;
   class TryCatchStmtContext;
@@ -128,15 +110,6 @@ public:
   class MemberModifierContext;
   class VisibilityModifierContext;
   class StaticModifierContext;
-  class InterfaceDeclarationContext;
-  class InterfaceBlockContext;
-  class InterfaceBodyContext;
-  class InterfaceVarDeclContext;
-  class InterfaceFuncDeclContext;
-  class AnnotationDeclarationContext;
-  class AnnotationBlockContext;
-  class AnnotationContext;
-  class QualifiedNameContext;
   class ParamListContext;
   class ParamContext;
   class TypeContext;
@@ -319,7 +292,6 @@ public:
     TypeContext *type();
     antlr4::tree::TerminalNode *IDENTIFIER();
     antlr4::tree::TerminalNode *SEMICOLON();
-    VarModifiersContext *varModifiers();
     antlr4::tree::TerminalNode *ASSIGN();
     ExprContext *expr();
     antlr4::tree::TerminalNode *VAR();
@@ -676,9 +648,7 @@ public:
     virtual size_t getRuleIndex() const override;
     VarDeclarationContext *varDeclaration();
     FunctionDeclarationContext *functionDeclaration();
-    ClassDeclarationContext *classDeclaration();
-    InterfaceDeclarationContext *interfaceDeclaration();
-    AnnotationDeclarationContext *annotationDeclaration();
+    StructDeclarationContext *structDeclaration();
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
@@ -687,6 +657,38 @@ public:
 
   DeclarationContext* declaration();
 
+  class  StructDeclarationContext : public antlr4::ParserRuleContext {
+  public:
+    StructDeclarationContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    antlr4::tree::TerminalNode *STRUCT();
+    antlr4::tree::TerminalNode *IDENTIFIER();
+    antlr4::tree::TerminalNode *LBRACE();
+    antlr4::tree::TerminalNode *RBRACE();
+    antlr4::tree::TerminalNode *SEMICOLON();
+    std::vector<StructMemberContext *> structMember();
+    StructMemberContext* structMember(size_t i);
+
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+   
+  };
+
+  StructDeclarationContext* structDeclaration();
+
+  class  StructMemberContext : public antlr4::ParserRuleContext {
+  public:
+    StructMemberContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    VarDeclarationContext *varDeclaration();
+
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+   
+  };
+
+  StructMemberContext* structMember();
+
   class  VarDeclarationContext : public antlr4::ParserRuleContext {
   public:
     VarDeclarationContext(antlr4::ParserRuleContext *parent, size_t invokingState);
@@ -694,7 +696,6 @@ public:
     TypeContext *type();
     antlr4::tree::TerminalNode *IDENTIFIER();
     antlr4::tree::TerminalNode *SEMICOLON();
-    VarModifiersContext *varModifiers();
     antlr4::tree::TerminalNode *ASSIGN();
     ExprContext *expr();
     antlr4::tree::TerminalNode *VAR();
@@ -709,35 +710,6 @@ public:
 
   VarDeclarationContext* varDeclaration();
 
-  class  VarModifiersContext : public antlr4::ParserRuleContext {
-  public:
-    VarModifiersContext(antlr4::ParserRuleContext *parent, size_t invokingState);
-    virtual size_t getRuleIndex() const override;
-    std::vector<AnnotationContext *> annotation();
-    AnnotationContext* annotation(size_t i);
-
-    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
-    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
-   
-  };
-
-  VarModifiersContext* varModifiers();
-
-  class  ClassMemberModifierContext : public antlr4::ParserRuleContext {
-  public:
-    ClassMemberModifierContext(antlr4::ParserRuleContext *parent, size_t invokingState);
-    virtual size_t getRuleIndex() const override;
-    MemberModifierContext *memberModifier();
-    VisibilityModifierContext *visibilityModifier();
-    StaticModifierContext *staticModifier();
-
-    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
-    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
-   
-  };
-
-  ClassMemberModifierContext* classMemberModifier();
-
   class  FunctionDeclarationContext : public antlr4::ParserRuleContext {
   public:
     FunctionDeclarationContext(antlr4::ParserRuleContext *parent, size_t invokingState);
@@ -747,7 +719,6 @@ public:
     antlr4::tree::TerminalNode *LPAREN();
     antlr4::tree::TerminalNode *RPAREN();
     FunBlockContext *funBlock();
-    FunModifiersContext *funModifiers();
     ParamListContext *paramList();
     ReturnTypeContext *returnType();
 
@@ -757,55 +728,6 @@ public:
   };
 
   FunctionDeclarationContext* functionDeclaration();
-
-  class  ClassVarDeclContext : public antlr4::ParserRuleContext {
-  public:
-    ClassVarDeclContext(antlr4::ParserRuleContext *parent, size_t invokingState);
-    virtual size_t getRuleIndex() const override;
-    TypeContext *type();
-    antlr4::tree::TerminalNode *IDENTIFIER();
-    antlr4::tree::TerminalNode *SEMICOLON();
-    antlr4::tree::TerminalNode *VAR();
-    antlr4::tree::TerminalNode *IMT();
-    std::vector<ClassMemberModifierContext *> classMemberModifier();
-    ClassMemberModifierContext* classMemberModifier(size_t i);
-    std::vector<AnnotationContext *> annotation();
-    AnnotationContext* annotation(size_t i);
-    antlr4::tree::TerminalNode *ASSIGN();
-    ExprContext *expr();
-    antlr4::tree::TerminalNode *BANG();
-    antlr4::tree::TerminalNode *QUESTION();
-
-    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
-    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
-   
-  };
-
-  ClassVarDeclContext* classVarDecl();
-
-  class  ClassFuncDeclContext : public antlr4::ParserRuleContext {
-  public:
-    ClassFuncDeclContext(antlr4::ParserRuleContext *parent, size_t invokingState);
-    virtual size_t getRuleIndex() const override;
-    antlr4::tree::TerminalNode *FUN();
-    antlr4::tree::TerminalNode *IDENTIFIER();
-    antlr4::tree::TerminalNode *LPAREN();
-    antlr4::tree::TerminalNode *RPAREN();
-    FunBlockContext *funBlock();
-    std::vector<ClassMemberModifierContext *> classMemberModifier();
-    ClassMemberModifierContext* classMemberModifier(size_t i);
-    std::vector<AnnotationContext *> annotation();
-    AnnotationContext* annotation(size_t i);
-    antlr4::tree::TerminalNode *CONST();
-    ParamListContext *paramList();
-    ReturnTypeContext *returnType();
-
-    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
-    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
-   
-  };
-
-  ClassFuncDeclContext* classFuncDecl();
 
   class  FunBlockContext : public antlr4::ParserRuleContext {
   public:
@@ -844,159 +766,6 @@ public:
   };
 
   FunStmtContext* funStmt();
-
-  class  FunModifiersContext : public antlr4::ParserRuleContext {
-  public:
-    FunModifiersContext(antlr4::ParserRuleContext *parent, size_t invokingState);
-    virtual size_t getRuleIndex() const override;
-    std::vector<AnnotationContext *> annotation();
-    AnnotationContext* annotation(size_t i);
-
-    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
-    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
-   
-  };
-
-  FunModifiersContext* funModifiers();
-
-  class  ClassDeclarationContext : public antlr4::ParserRuleContext {
-  public:
-    ClassDeclarationContext(antlr4::ParserRuleContext *parent, size_t invokingState);
-    virtual size_t getRuleIndex() const override;
-    antlr4::tree::TerminalNode *CLASS();
-    std::vector<antlr4::tree::TerminalNode *> IDENTIFIER();
-    antlr4::tree::TerminalNode* IDENTIFIER(size_t i);
-    ClassBlockContext *classBlock();
-    std::vector<ClassModifiersContext *> classModifiers();
-    ClassModifiersContext* classModifiers(size_t i);
-    antlr4::tree::TerminalNode *COLON();
-    VisibilityModifierContext *visibilityModifier();
-    std::vector<antlr4::tree::TerminalNode *> COMMA();
-    antlr4::tree::TerminalNode* COMMA(size_t i);
-
-    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
-    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
-   
-  };
-
-  ClassDeclarationContext* classDeclaration();
-
-  class  ClassModifiersContext : public antlr4::ParserRuleContext {
-  public:
-    ClassModifiersContext(antlr4::ParserRuleContext *parent, size_t invokingState);
-    virtual size_t getRuleIndex() const override;
-    std::vector<AnnotationContext *> annotation();
-    AnnotationContext* annotation(size_t i);
-    ClassModifierContext *classModifier();
-
-    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
-    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
-   
-  };
-
-  ClassModifiersContext* classModifiers();
-
-  class  ClassModifierContext : public antlr4::ParserRuleContext {
-  public:
-    ClassModifierContext(antlr4::ParserRuleContext *parent, size_t invokingState);
-    virtual size_t getRuleIndex() const override;
-    antlr4::tree::TerminalNode *ENUM();
-    antlr4::tree::TerminalNode *ANNOTATION();
-
-    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
-    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
-   
-  };
-
-  ClassModifierContext* classModifier();
-
-  class  ClassBlockContext : public antlr4::ParserRuleContext {
-  public:
-    ClassBlockContext(antlr4::ParserRuleContext *parent, size_t invokingState);
-    virtual size_t getRuleIndex() const override;
-    antlr4::tree::TerminalNode *LBRACE();
-    antlr4::tree::TerminalNode *RBRACE();
-    ClassBodyContext *classBody();
-
-    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
-    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
-   
-  };
-
-  ClassBlockContext* classBlock();
-
-  class  ClassBodyContext : public antlr4::ParserRuleContext {
-  public:
-    ClassBodyContext(antlr4::ParserRuleContext *parent, size_t invokingState);
-    virtual size_t getRuleIndex() const override;
-    std::vector<ClassStmtContext *> classStmt();
-    ClassStmtContext* classStmt(size_t i);
-
-    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
-    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
-   
-  };
-
-  ClassBodyContext* classBody();
-
-  class  ClassStmtContext : public antlr4::ParserRuleContext {
-  public:
-    ClassStmtContext(antlr4::ParserRuleContext *parent, size_t invokingState);
-    virtual size_t getRuleIndex() const override;
-    ClassVarDeclContext *classVarDecl();
-    ClassFuncDeclContext *classFuncDecl();
-    ConstructorDeclContext *constructorDecl();
-
-    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
-    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
-   
-  };
-
-  ClassStmtContext* classStmt();
-
-  class  ClassFunStmtBlockContext : public antlr4::ParserRuleContext {
-  public:
-    ClassFunStmtBlockContext(antlr4::ParserRuleContext *parent, size_t invokingState);
-    virtual size_t getRuleIndex() const override;
-    ExprContext *expr();
-    antlr4::tree::TerminalNode *SEMICOLON();
-    IfStmtContext *ifStmt();
-    ForStmtContext *forStmt();
-    FunVarDeclarationContext *funVarDeclaration();
-    ReturnStmtContext *returnStmt();
-    TryCatchStmtContext *tryCatchStmt();
-    ThrowStmtContext *throwStmt();
-    DeleteStmtContext *deleteStmt();
-
-    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
-    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
-   
-  };
-
-  ClassFunStmtBlockContext* classFunStmtBlock();
-
-  class  ConstructorDeclContext : public antlr4::ParserRuleContext {
-  public:
-    ConstructorDeclContext(antlr4::ParserRuleContext *parent, size_t invokingState);
-    virtual size_t getRuleIndex() const override;
-    antlr4::tree::TerminalNode *IDENTIFIER();
-    antlr4::tree::TerminalNode *LPAREN();
-    antlr4::tree::TerminalNode *RPAREN();
-    antlr4::tree::TerminalNode *LBRACE();
-    antlr4::tree::TerminalNode *RBRACE();
-    ClassMemberModifierContext *classMemberModifier();
-    std::vector<AnnotationContext *> annotation();
-    AnnotationContext* annotation(size_t i);
-    ParamListContext *paramList();
-    std::vector<ClassFunStmtBlockContext *> classFunStmtBlock();
-    ClassFunStmtBlockContext* classFunStmtBlock(size_t i);
-
-    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
-    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
-   
-  };
-
-  ConstructorDeclContext* constructorDecl();
 
   class  ThrowStmtContext : public antlr4::ParserRuleContext {
   public:
@@ -1082,8 +851,6 @@ public:
     virtual size_t getRuleIndex() const override;
     CatchTypeContext *catchType();
     antlr4::tree::TerminalNode *IDENTIFIER();
-    std::vector<VarModifiersContext *> varModifiers();
-    VarModifiersContext* varModifiers(size_t i);
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
@@ -1165,152 +932,6 @@ public:
   };
 
   StaticModifierContext* staticModifier();
-
-  class  InterfaceDeclarationContext : public antlr4::ParserRuleContext {
-  public:
-    InterfaceDeclarationContext(antlr4::ParserRuleContext *parent, size_t invokingState);
-    virtual size_t getRuleIndex() const override;
-    antlr4::tree::TerminalNode *INTERFACE();
-    antlr4::tree::TerminalNode *IDENTIFIER();
-    InterfaceBlockContext *interfaceBlock();
-
-    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
-    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
-   
-  };
-
-  InterfaceDeclarationContext* interfaceDeclaration();
-
-  class  InterfaceBlockContext : public antlr4::ParserRuleContext {
-  public:
-    InterfaceBlockContext(antlr4::ParserRuleContext *parent, size_t invokingState);
-    virtual size_t getRuleIndex() const override;
-    antlr4::tree::TerminalNode *LBRACE();
-    antlr4::tree::TerminalNode *RBRACE();
-    std::vector<InterfaceBodyContext *> interfaceBody();
-    InterfaceBodyContext* interfaceBody(size_t i);
-
-    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
-    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
-   
-  };
-
-  InterfaceBlockContext* interfaceBlock();
-
-  class  InterfaceBodyContext : public antlr4::ParserRuleContext {
-  public:
-    InterfaceBodyContext(antlr4::ParserRuleContext *parent, size_t invokingState);
-    virtual size_t getRuleIndex() const override;
-    InterfaceVarDeclContext *interfaceVarDecl();
-    InterfaceFuncDeclContext *interfaceFuncDecl();
-
-    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
-    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
-   
-  };
-
-  InterfaceBodyContext* interfaceBody();
-
-  class  InterfaceVarDeclContext : public antlr4::ParserRuleContext {
-  public:
-    InterfaceVarDeclContext(antlr4::ParserRuleContext *parent, size_t invokingState);
-    virtual size_t getRuleIndex() const override;
-    antlr4::tree::TerminalNode *VAR();
-    TypeContext *type();
-    antlr4::tree::TerminalNode *IDENTIFIER();
-    antlr4::tree::TerminalNode *SEMICOLON();
-
-    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
-    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
-   
-  };
-
-  InterfaceVarDeclContext* interfaceVarDecl();
-
-  class  InterfaceFuncDeclContext : public antlr4::ParserRuleContext {
-  public:
-    InterfaceFuncDeclContext(antlr4::ParserRuleContext *parent, size_t invokingState);
-    virtual size_t getRuleIndex() const override;
-    antlr4::tree::TerminalNode *FUN();
-    antlr4::tree::TerminalNode *IDENTIFIER();
-    antlr4::tree::TerminalNode *LPAREN();
-    antlr4::tree::TerminalNode *RPAREN();
-    antlr4::tree::TerminalNode *SEMICOLON();
-    ParamListContext *paramList();
-    ReturnTypeContext *returnType();
-
-    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
-    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
-   
-  };
-
-  InterfaceFuncDeclContext* interfaceFuncDecl();
-
-  class  AnnotationDeclarationContext : public antlr4::ParserRuleContext {
-  public:
-    AnnotationDeclarationContext(antlr4::ParserRuleContext *parent, size_t invokingState);
-    virtual size_t getRuleIndex() const override;
-    antlr4::tree::TerminalNode *ANNOTATION();
-    antlr4::tree::TerminalNode *CLASS();
-    antlr4::tree::TerminalNode *IDENTIFIER();
-    AnnotationBlockContext *annotationBlock();
-
-    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
-    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
-   
-  };
-
-  AnnotationDeclarationContext* annotationDeclaration();
-
-  class  AnnotationBlockContext : public antlr4::ParserRuleContext {
-  public:
-    AnnotationBlockContext(antlr4::ParserRuleContext *parent, size_t invokingState);
-    virtual size_t getRuleIndex() const override;
-    antlr4::tree::TerminalNode *LBRACE();
-    antlr4::tree::TerminalNode *RBRACE();
-    std::vector<VarDeclarationContext *> varDeclaration();
-    VarDeclarationContext* varDeclaration(size_t i);
-
-    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
-    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
-   
-  };
-
-  AnnotationBlockContext* annotationBlock();
-
-  class  AnnotationContext : public antlr4::ParserRuleContext {
-  public:
-    AnnotationContext(antlr4::ParserRuleContext *parent, size_t invokingState);
-    virtual size_t getRuleIndex() const override;
-    antlr4::tree::TerminalNode *AT();
-    antlr4::tree::TerminalNode *IDENTIFIER();
-    antlr4::tree::TerminalNode *LBRACE();
-    antlr4::tree::TerminalNode *RBRACE();
-    std::vector<AssignContext *> assign();
-    AssignContext* assign(size_t i);
-
-    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
-    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
-   
-  };
-
-  AnnotationContext* annotation();
-
-  class  QualifiedNameContext : public antlr4::ParserRuleContext {
-  public:
-    QualifiedNameContext(antlr4::ParserRuleContext *parent, size_t invokingState);
-    virtual size_t getRuleIndex() const override;
-    std::vector<antlr4::tree::TerminalNode *> IDENTIFIER();
-    antlr4::tree::TerminalNode* IDENTIFIER(size_t i);
-    std::vector<antlr4::tree::TerminalNode *> DOT();
-    antlr4::tree::TerminalNode* DOT(size_t i);
-
-    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
-    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
-   
-  };
-
-  QualifiedNameContext* qualifiedName();
 
   class  ParamListContext : public antlr4::ParserRuleContext {
   public:

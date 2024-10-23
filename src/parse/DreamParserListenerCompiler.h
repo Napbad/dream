@@ -5,14 +5,13 @@
 #ifndef DREAMPARSERLISTENERCOMPILER_H
 #define DREAMPARSERLISTENERCOMPILER_H
 #include "DreamBaseListener.h"
-#include "compiler/gen/ClassCodeGenerator.h"
-#include "compiler/gen/ClassVarGenerator.h"
 #include "compiler/gen/FileStructGenerator.h"
 #include "compiler/gen/FunVarGenerator.h"
 #include "compiler/gen/FileVarGenerator.h"
 #include "compiler/gen/FunDataRootGenerator.h"
 #include "compiler/gen/FunGenerator.h"
 #include "compiler/gen/StructDataCodeGenerator.h"
+#include "compiler/gen/StructGenerator.h"
 #include "obj/Global.h"
 
 class ClassFunGenerator;
@@ -69,18 +68,15 @@ private:
     Hierarchy *_package_hierarchy;
 
     // class code generator
-    ClassCodeGenerator *_class_code_generator;
-
     // struct data code generator
     StructDataCodeGenerator *_input_struct_data_code_generator;
     StructDataCodeGenerator *_own_struct_data_code_generator;
     FunVarGenerator *_fun_var_generator;
     FileVarGenerator *_file_var_generator;
     FunGenerator *_fun_generator;
-    ClassFunGenerator *_class_fun_generator;
     FileStructGenerator *_file_struct_generator;
-    ClassVarGenerator *_class_var_generator;
     FunDataRootGenerator *_fun_data_root_generator;
+    StructGenerator *_struct_generator;
 
     // flags
     bool _is_in_class = false;
@@ -88,6 +84,7 @@ private:
     bool _is_in_for_condition = false;
     size_t _curr_fun_begin_pos = 0;
     bool _is_in_if_cond = false;
+    bool _is_in_struct = false;
 
     void enterProgram(DreamParser::ProgramContext * /*ctx*/) override;
     void exitProgram(DreamParser::ProgramContext * /*ctx*/) override;
@@ -164,9 +161,6 @@ private:
     void enterVarDeclaration(DreamParser::VarDeclarationContext * /*ctx*/) override;
     void exitVarDeclaration(DreamParser::VarDeclarationContext * /*ctx*/) override;
 
-    void enterVarModifiers(DreamParser::VarModifiersContext * /*ctx*/) override;
-    void exitVarModifiers(DreamParser::VarModifiersContext * /*ctx*/) override;
-
     void enterFunctionDeclaration(DreamParser::FunctionDeclarationContext * /*ctx*/) override;
     void exitFunctionDeclaration(DreamParser::FunctionDeclarationContext * /*ctx*/) override;
 
@@ -178,39 +172,6 @@ private:
 
     void enterFunVarDeclaration(DreamParser::FunVarDeclarationContext * /*ctx*/) override;
     void exitFunVarDeclaration(DreamParser::FunVarDeclarationContext * /*ctx*/) override;
-
-    void enterFunModifiers(DreamParser::FunModifiersContext * /*ctx*/) override;
-    void exitFunModifiers(DreamParser::FunModifiersContext * /*ctx*/) override;
-
-    void enterClassDeclaration(DreamParser::ClassDeclarationContext * /*ctx*/) override;
-    void exitClassDeclaration(DreamParser::ClassDeclarationContext * /*ctx*/) override;
-
-    void enterClassModifiers(DreamParser::ClassModifiersContext * /*ctx*/) override;
-    void exitClassModifiers(DreamParser::ClassModifiersContext * /*ctx*/) override;
-
-    void enterClassModifier(DreamParser::ClassModifierContext * /*ctx*/) override;
-    void exitClassModifier(DreamParser::ClassModifierContext * /*ctx*/) override;
-
-    void enterClassBlock(DreamParser::ClassBlockContext * /*ctx*/) override;
-    void exitClassBlock(DreamParser::ClassBlockContext * /*ctx*/) override;
-
-    void enterClassBody(DreamParser::ClassBodyContext * /*ctx*/) override;
-    void exitClassBody(DreamParser::ClassBodyContext * /*ctx*/) override;
-
-    void enterClassVarDecl(DreamParser::ClassVarDeclContext * /*ctx*/) override;
-    void exitClassVarDecl(DreamParser::ClassVarDeclContext * /*ctx*/) override;
-
-    void enterClassFuncDecl(DreamParser::ClassFuncDeclContext * /*ctx*/) override;
-    void exitClassFuncDecl(DreamParser::ClassFuncDeclContext * /*ctx*/) override;
-
-    void enterClassMemberModifier(DreamParser::ClassMemberModifierContext * /*ctx*/) override;
-    void exitClassMemberModifier(DreamParser::ClassMemberModifierContext * /*ctx*/) override;
-
-    void enterConstructorDecl(DreamParser::ConstructorDeclContext * /*ctx*/) override;
-    void exitConstructorDecl(DreamParser::ConstructorDeclContext * /*ctx*/) override;
-
-    void enterClassFunStmtBlock(DreamParser::ClassFunStmtBlockContext * /*ctx*/) override;
-    void exitClassFunStmtBlock(DreamParser::ClassFunStmtBlockContext * /*ctx*/) override;
 
     void enterThrowStmt(DreamParser::ThrowStmtContext * /*ctx*/) override;
     void exitThrowStmt(DreamParser::ThrowStmtContext * /*ctx*/) override;
@@ -244,33 +205,6 @@ private:
 
     void enterStaticModifier(DreamParser::StaticModifierContext * /*ctx*/) override;
     void exitStaticModifier(DreamParser::StaticModifierContext * /*ctx*/) override;
-
-    void enterInterfaceDeclaration(DreamParser::InterfaceDeclarationContext * /*ctx*/) override;
-    void exitInterfaceDeclaration(DreamParser::InterfaceDeclarationContext * /*ctx*/) override;
-
-    void enterInterfaceBlock(DreamParser::InterfaceBlockContext * /*ctx*/) override;
-    void exitInterfaceBlock(DreamParser::InterfaceBlockContext * /*ctx*/) override;
-
-    void enterInterfaceBody(DreamParser::InterfaceBodyContext * /*ctx*/) override;
-    void exitInterfaceBody(DreamParser::InterfaceBodyContext * /*ctx*/) override;
-
-    void enterInterfaceVarDecl(DreamParser::InterfaceVarDeclContext * /*ctx*/) override;
-    void exitInterfaceVarDecl(DreamParser::InterfaceVarDeclContext * /*ctx*/) override;
-
-    void enterInterfaceFuncDecl(DreamParser::InterfaceFuncDeclContext * /*ctx*/) override;
-    void exitInterfaceFuncDecl(DreamParser::InterfaceFuncDeclContext * /*ctx*/) override;
-
-    void enterAnnotationDeclaration(DreamParser::AnnotationDeclarationContext * /*ctx*/) override;
-    void exitAnnotationDeclaration(DreamParser::AnnotationDeclarationContext * /*ctx*/) override;
-
-    void enterAnnotationBlock(DreamParser::AnnotationBlockContext * /*ctx*/) override;
-    void exitAnnotationBlock(DreamParser::AnnotationBlockContext * /*ctx*/) override;
-
-    void enterAnnotation(DreamParser::AnnotationContext * /*ctx*/) override;
-    void exitAnnotation(DreamParser::AnnotationContext * /*ctx*/) override;
-
-    void enterQualifiedName(DreamParser::QualifiedNameContext * /*ctx*/) override;
-    void exitQualifiedName(DreamParser::QualifiedNameContext * /*ctx*/) override;
 
     void enterParamList(DreamParser::ParamListContext * /*ctx*/) override;
     void exitParamList(DreamParser::ParamListContext * /*ctx*/) override;
@@ -325,6 +259,12 @@ private:
 
     void enterDeleteStmt(DreamParser::DeleteStmtContext* ctx) override;
     void exitDeleteStmt(DreamParser::DeleteStmtContext* ctx) override;
+
+    void enterIfExpr(DreamParser::IfExprContext* ctx) override;
+    void exitIfExpr(DreamParser::IfExprContext* ctx) override;
+
+    void enterStructDeclaration(DreamParser::StructDeclarationContext* ctx) override;
+    void exitStructDeclaration(DreamParser::StructDeclarationContext* ctx) override;
 
     void enterEveryRule(antlr4::ParserRuleContext * /*ctx*/) override;
     void exitEveryRule(antlr4::ParserRuleContext * /*ctx*/) override;
