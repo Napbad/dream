@@ -145,7 +145,7 @@ int main(const int argc, char **argv)
             programMap_d->insert({program, ctx});
         }
 
-        util::copy_directory("/home/napbad/Nextcloud/Project/dream-lang/src/dream/runtime/asm", "./build/dream/runtime/asm");
+        util::copy_directory("../src/dream/runtime/asm", "./build/dream/runtime/asm");
         auto includeAnalyzer = new dream::inter_gen::IncludeAnalyzer();
         includeAnalyzer->generateGraph();
         std::set<inter_gen::IncludeGraphNode *> roots = includeAnalyzer->getRoots();

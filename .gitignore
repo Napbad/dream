@@ -39,3 +39,10 @@ CMakeCache.txt
 *.pyc
 *.class
 *.jar
+
+
+**/node_modules/
+**/build/
+**/dist/
+
+*.vsix
