@@ -1,0 +1,8 @@
+package dream.runtime.gc;
+
+include dream.runtime.sys.sysFun;
+
+
+fun gc() {
+
+}

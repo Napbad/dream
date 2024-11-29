@@ -1,0 +1,8 @@
+package dream.runtime.mem;
+
+include dream.runtime.sys.sysFun;
+
+struct block_d {
+    var int pointer;
+};
+

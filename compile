@@ -1,0 +1,11 @@
+rm ./build -Rf
+mkdir ./build
+
+./gen_parser.sh
+
+cd ./build
+cmake .. -G "Ninja"
+
+ninja 
+
+cd ..

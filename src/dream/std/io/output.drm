@@ -1,0 +1,20 @@
+package dream.std.io;
+
+include dream.std.dstring;
+//
+// fun print(imt byte* str) void {
+//     write(1, str, strlen(str));
+//     fsync(1);
+// }
+//
+// fun println(imt byte* str) void {
+//     print(str);
+//     write(1, charToStr(int32To8(10)), 2);
+//     fsync(1);
+// }
+//
+// fun newline() void {
+//     write(1, charToStr(int32To8(10)), 2);
+//     fsync(1);
+// }
+//

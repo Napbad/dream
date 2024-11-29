@@ -1,0 +1,41 @@
+# Build output directories
+build/
+**/cmake-build-debug-clang/
+**/cmake-build-debug-gcc/
+**/cmake-build-debug/
+**/build-fleet/
+compile/
+**/.cache/jb
+**/cache/
+.cache/jb
+
+# Generated files
+output.ll
+
+# Test directory
+test/
+
+# CMake files
+CMakeFiles/
+CMakeCache.txt
+
+# Other temporary files
+*.o
+*.a
+*.so
+*.dylib
+*.log
+*.swp
+*.swo
+*.swn
+*.bak
+*.tmp
+
+# Editor and IDE files
+*.idea/
+*.DS_Store
+*.VSCodeCounter/
+# Other ignore files
+*.pyc
+*.class
+*.jar

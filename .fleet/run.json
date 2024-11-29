@@ -1,0 +1,66 @@
+{
+    "configurations": [
+        {
+            "type": "command",
+            "name": "yacc generate",
+            "program": "bash",
+            "args": [
+                "-c",
+                "$WORKSPACE_DIR$/gen_parser.sh"
+            ],
+        },
+        {
+            "type": "command",
+            "name": "clean",
+            "program": "rm",
+            "args": [
+                "$WORKSPACE_DIR$/build-fleet",
+                "-Rf",
+            ],
+        },
+        {
+            "type": "command",
+            "name": "cmake configuration",
+            "program": "cmake",
+            "args": [
+                "-S",
+                "$WORKSPACE_DIR$",
+                "-B",
+                "$WORKSPACE_DIR$/build-fleet",
+                "-G",
+                "Ninja"
+            ],
+            "allowParallelRun": true,
+            "dependsOn": [
+                "yacc generate"
+            ],
+        },
+        {
+            "type": "command",
+            "name": "cmake build",
+            "program": "cmake",
+            "args": [
+                "--build",
+                "$WORKSPACE_DIR$/build-fleet",
+                "-j",
+                "22",
+                "--target",
+                "dream_main"
+            ],
+            "dependsOn": [
+                "cmake configuration"
+            ],
+            "allowParallelRun": true,
+        },
+        {
+            "type": "command",
+            "name": "launch",
+            "program": "$WORKSPACE_DIR$/build-fleet/dream_main",
+            "dependsOn": ["cmake build"],
+            "args": [
+                "-d",
+                "$WORKSPACE_DIR$/src/dream"
+            ],
+        },
+    ]
+}

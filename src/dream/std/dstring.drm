@@ -1,0 +1,33 @@
+package dream.std;
+
+include dream.runtime.sys.sysFun;
+
+fun strlen(imt byte* s) int {
+    imt int res = 0;
+    if s == 0 {
+      return 0;
+    }
+    for int i = 0; (i < 99999999) && (s[i] != 0); ++i {
+      res = i;
+    }
+    return res + 1;
+}
+
+fun reverse(imt byte* s) {
+    if (s == 0) {
+      return;
+    }
+    imt int len = strlen(s);
+    for int i = 0; i < len / 2; ++i {
+        imt byte tmp = s[i];
+        s[i] = s[(len - i) - 1];
+        s[(len - i) - 1] = tmp;
+    }
+}
+
+fun fillStr(var byte* s, imt byte c, imt int len) {
+    for int i = 0; i < len; ++i {
+        s[i] = c;
+    }
+}
+

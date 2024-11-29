@@ -1,0 +1,123 @@
+package main;
+
+include dream.std.math.math;
+include dream.runtime.sys.sysFun;
+include dream.runtime.base;
+include dream.std.dstring;
+
+fun malloc(imt int size) int {
+    if size == 0 {
+      return 0;
+    }
+
+    imt int ptr = sbrk(size);
+    if ptr == -1 {
+      return 0;
+    }
+    return ptr;
+}
+
+
+fun newline() void {
+    write(1, charToStr(int32To8(10)), 2);
+    fsync(1);
+}
+
+// fun strlen(imt byte* s) int {
+//     imt int res = 0;
+//     if s == 0 {
+//       return 0;
+//     }
+//     for int i = 0; (i < 99999999) && (s[i] != 0); ++i {
+//       res = i;
+//     }
+//     return res + 1;
+// }
+//
+// fun reverse(imt byte* s) {
+//     if (s == 0) {
+//       return;
+//     }
+//     imt int len = strlen(s);
+//     for int i = 0; i < len / 2; ++i {
+//         imt byte tmp = s[i];
+//         s[i] = s[(len - i) - 1];
+//         s[(len - i) - 1] = tmp;
+//     }
+// }
+//
+// fun fillStr(var byte* s, imt byte c, imt int len) {
+//     for int i = 0; i < len; ++i {
+//         s[i] = c;
+//     }
+// }
+
+
+fun print(imt byte* s) {
+    write(1, s, strlen(s));
+    fsync(1);
+}
+
+
+fun print(imt byte* str) void {
+    write(1, str, strlen(str));
+    fsync(1);
+}
+
+fun println(imt byte* str) void {
+    print(str);
+    write(1, charToStr(int32To8(10)), 2);
+    fsync(1);
+}
+
+
+imt byte[11] intToStr_d = "2147483647";
+
+struct S {
+  imt int a;
+  imt int b;
+};
+
+fun main() int {
+  imt int* a = 1;
+
+  write(1, charToStr(intToChar(*a)), 1);
+  fsync(1);
+
+  imt S s;
+  s.a = 2;
+  write(1, charToStr(intToChar(s.a)), 1);
+  fsync(1);
+
+  imt int[5] arr = [1,2,3,4,5];
+  write(1, charToStr(intToChar(arr[2])), 1);
+  fsync(1);
+
+  imt S * sp;
+  sp.a = 4;
+  write(1, charToStr(intToChar(sp.a)), 1);
+  fsync(1);
+
+  imt int b = 5;
+  write(1, charToStr(intToChar(b)), 1);
+  fsync(1);
+
+  imt byte* s2 = "hello";
+  // print(s2);
+  newline();
+
+  imt int ptrMalloc = malloc(4);
+  ptrMalloc = 5;
+  write(1, charToStr(intToChar(ptrMalloc)), 1);
+  newline();
+
+  imt int i = 0;
+  imt int i2 = 1;
+  imt int resAdd = add(i, i2);
+  write(1, charToStr(intToChar(resAdd)), 1);
+  newline();
+
+  // imt byte[8] s3 = "hellooo";
+  // write (1, &s3, 8);
+  return 0;
+}
