@@ -1,4 +1,4 @@
-package dream.std.math;
+package dap.std.math;
 
 fun add(imt int x, imt int y) int {
     return x + y;

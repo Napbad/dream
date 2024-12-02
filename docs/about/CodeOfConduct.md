@@ -1,6 +1,6 @@
 # Code of Conduct
 
-Welcome to the **Dream** project! We are committed to fostering an open and welcoming environment for everyone. To ensure that all participants can contribute in a respectful and productive manner, we have adopted this Code of Conduct.
+Welcome to the **dap** project! We are committed to fostering an open and welcoming environment for everyone. To ensure that all participants can contribute in a respectful and productive manner, we have adopted this Code of Conduct.
 
 ## Our Pledge
 
@@ -26,7 +26,7 @@ Examples of unacceptable behavior include:
 
 ## Scope
 
-This Code of Conduct applies to all spaces managed by the **Dream** project, including but not limited to:
+This Code of Conduct applies to all spaces managed by the **dap** project, including but not limited to:
 
 - Code submissions
 - Issue reports
@@ -53,6 +53,6 @@ This Code of Conduct is adapted from the [Contributor Covenant](https://www.cont
 If you have any questions or suggestions, please feel free to reach out to us. We hope everyone feels comfortable and respected in this project.
 
 ---
-**Project Name**: Dream  
+**Project Name**: dap  
 **Maintainer**: Napbad  
 **Contact**: [napbad.sen@gmail.com](mailto:napbad.sen@gmail.com)

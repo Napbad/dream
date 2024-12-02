@@ -28,10 +28,10 @@
             "name": "(gdb) Launch",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceRoot}/build/dream_main",
+            "program": "${workspaceRoot}/build/dap_main",
             "args": [
                 "-d",
-                "${workspaceFolder}/src/dream"
+                "${workspaceFolder}/src/dap"
             ],
             "stopAtEntry": false,
             "cwd": "${fileDirname}",

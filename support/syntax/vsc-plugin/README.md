@@ -1,2 +1,2 @@
-# dream-lang-syntax-support README
+# dap-lang-syntax-support README
 

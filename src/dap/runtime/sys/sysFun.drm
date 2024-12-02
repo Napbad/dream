@@ -1,6 +1,6 @@
-package dream.runtime.sys;
+package dap.runtime.sys;
 
-package dream.runtime.sys;
+package dap.runtime.sys;
 
 extern fun open(imt byte* pathname, imt int flags, imt int mode) int;
 extern fun close(imt int fd) int;

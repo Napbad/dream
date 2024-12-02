@@ -45,7 +45,7 @@
                 "-j",
                 "22",
                 "--target",
-                "dream_main"
+                "dap_main"
             ],
             "dependsOn": [
                 "cmake configuration"
@@ -55,11 +55,11 @@
         {
             "type": "command",
             "name": "launch",
-            "program": "$WORKSPACE_DIR$/build-fleet/dream_main",
+            "program": "$WORKSPACE_DIR$/build-fleet/dap_main",
             "dependsOn": ["cmake build"],
             "args": [
                 "-d",
-                "$WORKSPACE_DIR$/src/dream"
+                "$WORKSPACE_DIR$/src/dap"
             ],
         },
     ]

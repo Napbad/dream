@@ -9,7 +9,7 @@
 
 #include <set>
 
-namespace dream
+namespace dap
 {
 namespace parser
 {
@@ -42,7 +42,7 @@ public:
         includedBy.push_back(node);
     }
 
-    [[nodiscard]] dream::parser::Program *getProgram() const
+    [[nodiscard]] dap::parser::Program *getProgram() const
     {
         return program;
     }
@@ -79,7 +79,7 @@ public:
 
 private:
     std::string name;
-    dream::parser::Program *program;
+    dap::parser::Program *program;
     std::vector<IncludeGraphNode *> includedBy{};
     std::vector<IncludeGraphNode *> includes{};
     std::vector<std::string *> includedBy_path{};
@@ -103,6 +103,6 @@ private:
     std::set<IncludeGraphNode *> roots;
 };
 }
-} // namespace dream::inter_gen
+} // namespace dap::inter_gen
 
 #endif //INCLUDEANAYLIZE_H

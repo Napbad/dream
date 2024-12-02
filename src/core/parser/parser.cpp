@@ -76,7 +76,7 @@
 #include <memory>
 #include "../utilities/file_util.h"
 
-using namespace dream::parser;
+using namespace dap::parser;
 
 Program *program; /* the top level root node of our final AST */
 
@@ -99,7 +99,7 @@ void printParseInfo(const char* ruleName, int lineNumber, const std::string& val
         oss << " with value:\t" << value;
     }
     try {
-        dream::util::dbg_print(std::cout, oss.str());
+        dap::util::dbg_print(std::cout, oss.str());
     } catch (const std::exception& e) {
         std::cerr << "Error in printParseInfo: " << e.what() << std::endl;
     }

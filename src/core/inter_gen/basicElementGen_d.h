@@ -7,7 +7,7 @@
 #include "../common/global.h"
 #include "codegen_inter.h"
 
-namespace dream::inter_gen
+namespace dap::inter_gen
 {
 /**
  * \brief Generates the function type for converting an integer to a character and creates the function.
@@ -81,6 +81,6 @@ Function *genFree(InterGenContext *ctx);
  * It allocates memory for a value on the heap and returns the result.
  */
 void genHeap(const InterGenContext *ctx);
-} // namespace dream::inter_gen
+} // namespace dap::inter_gen
 
 #endif // D_BASIC_FUN_GEN_H

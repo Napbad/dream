@@ -1,0 +1,8 @@
+package dap.runtime.mem;
+
+include dap.runtime.sys.sysFun;
+
+struct block_d {
+    var int pointer;
+};
+

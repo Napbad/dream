@@ -11,7 +11,7 @@
 #include "file_util.h"
 #include <unordered_map>
 
-namespace dream::util
+namespace dap::util
 {
 static const std::unordered_map<std::string, std::function<Type *(LLVMContext &)>> typeMap = {
     {"int", &Type::getInt32Ty},
@@ -110,4 +110,4 @@ inline Type *getPointerOf(Type *type)
     PointerType *pointer = PointerType::get(type, 0);
     return pointer;
 }
-} // namespace dream::util
+} // namespace dap::util

@@ -6,7 +6,7 @@
 #define SYS_FUN_GEN_H
 #include "../parser/node.h"
 #include "codegen_inter.h"
-namespace dream::inter_gen
+namespace dap::inter_gen
 {
 void genSysFun(const InterGenContext *ctx);
 
@@ -229,6 +229,6 @@ Function *genExit(const InterGenContext *ctx);
  * This function processes the system call and generates the corresponding LLVM IR instructions.
  */
 CallInst *handleSys(const parser::CallExpr *call, InterGenContext *ctx, Function *fun);
-} // namespace dream::inter_gen
+} // namespace dap::inter_gen
 
 #endif // SYS_FUN_GEN_H

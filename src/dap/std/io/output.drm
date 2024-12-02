@@ -1,6 +1,6 @@
-package dream.std.io;
+package dap.std.io;
 
-include dream.std.dstring;
+include dap.std.dstring;
 //
 // fun print(imt byte* str) void {
 //     write(1, str, strlen(str));

@@ -7,7 +7,7 @@
 #include <algorithm>
 #include <vector>
 
-namespace dream::util
+namespace dap::util
 {
 template <typename T> std::vector<T> getSubVector(const std::vector<T> &vec, size_t start, size_t end)
 {

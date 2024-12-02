@@ -74,7 +74,7 @@ inline void setColor(const char *ansiCode)
 }
 #endif
 
-namespace dream::util
+namespace dap::util
 {
 /**
  * @enum FileColor

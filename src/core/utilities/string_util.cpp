@@ -15,7 +15,7 @@
 
 using namespace std;
 
-namespace dream::util
+namespace dap::util
 {
 vector<string> split(const string &str, const char delimiter)
 {

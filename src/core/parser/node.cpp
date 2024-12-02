@@ -2,7 +2,7 @@
 
 #include "../utilities/file_util.h"
 
-namespace dream::parser
+namespace dap::parser
 {
 std::string VarDecl::getName() const
 {
@@ -23,4 +23,4 @@ bool Node::isa(parser::NodeMetaDataType type)
 {
     return metadata->getNodeType() == type;
 }
-} // namespace dream::parser
+} // namespace dap::parser

@@ -4,7 +4,7 @@
 
 #include "metadata.h"
 
-namespace dream::inter_gen
+namespace dap::inter_gen
 {
 StructMetaData::StructMetaData(InterGenContext *context, std::string name) :
     ctx(context), name_(std::move(name))
@@ -66,4 +66,4 @@ void FunctionMetaData::genFun(const InterGenContext *ctx) const
     for (auto &arg : fun->args())
         arg.setName(get<0>(args[idx++]));
 }
-} // namespace dream::inter_gen
+} // namespace dap::inter_gen

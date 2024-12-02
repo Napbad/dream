@@ -17,7 +17,7 @@
 
 using namespace llvm;
 
-namespace dream::inter_gen
+namespace dap::inter_gen
 {
 class InterGenContext;
 
@@ -242,6 +242,6 @@ private:
     std::string moduleSource; // Source code of the module
     Module *module_ = nullptr;
 };
-} // namespace dream::inter_gen
+} // namespace dap::inter_gen
 
 #endif // STRUCTMETADATA_H

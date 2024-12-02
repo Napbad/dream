@@ -17,8 +17,8 @@
 #include <llvm/Support/TargetSelect.h>
 
 using namespace std;
-extern dream::parser::Program *program;
-using namespace dream;
+extern dap::parser::Program *program;
+using namespace dap;
 
 void openFile(const char *filename)
 {
@@ -68,7 +68,7 @@ int main(const int argc, char **argv)
             genExec = true;
             break;
         case 'v':
-            cout << "Dream version: " << D_VERSION << endl;
+            cout << "dap version: " << D_VERSION << endl;
             break;
         default:
             cerr << "Usage: " << argv[0] << " [-h] [-d <directory>] [-D] [-i] [-e]" << endl;
@@ -91,7 +91,7 @@ int main(const int argc, char **argv)
     if (debugMode)
     {
 #ifdef D_DEBUG
-        dbg_print(cout, "====== DEBUG MODE IS ON ======\n", dream::util::FileColor::BRIGHT_MAGENTA);
+        dbg_print(cout, "====== DEBUG MODE IS ON ======\n", dap::util::FileColor::BRIGHT_MAGENTA);
 #endif
     }
 
@@ -145,8 +145,8 @@ int main(const int argc, char **argv)
             programMap_d->insert({program, ctx});
         }
 
-        util::copy_directory("../src/dream/runtime/asm", "./build/dream/runtime/asm");
-        auto includeAnalyzer = new dream::inter_gen::IncludeAnalyzer();
+        util::copy_directory("../src/dap/runtime/asm", "./build/dap/runtime/asm");
+        auto includeAnalyzer = new dap::inter_gen::IncludeAnalyzer();
         includeAnalyzer->generateGraph();
         std::set<inter_gen::IncludeGraphNode *> roots = includeAnalyzer->getRoots();
         if (genIR)

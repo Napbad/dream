@@ -1,4 +1,4 @@
-package dream.runtime;
+package dap.runtime;
 
 // extern fun intToChar(imt int i) byte;
 // extern fun charToStr(imt byte c) string;

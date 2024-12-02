@@ -12,7 +12,7 @@
 #include <llvm/IR/Verifier.h>
 #include <sstream>
 
-namespace dream::inter_gen
+namespace dap::inter_gen
 {
 Function *genIntToChar(InterGenContext *ctx)
 {
@@ -223,4 +223,4 @@ void genHeap(const InterGenContext *ctx)
 
     globalHeap = heap;
 }
-} // namespace dream::inter_gen
+} // namespace dap::inter_gen

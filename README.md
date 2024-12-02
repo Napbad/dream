@@ -1,12 +1,12 @@
-# Dream Project
+# dap Project
   
-Welcome to the **Dream** project repository! This project is licensed under the [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0).  
+Welcome to the **dap** project repository! This project is licensed under the [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0).  
 
-**Dream** project is the first generation compiler of a programming language called **Dream**.
+**dap** project is the first generation compiler of a programming language called **dap**.
   
 ## Overview  
   
-The **Dream** project is developed and maintained by [Napbad](https://github.com/Napbad). This repository contains the source code, documentation, and other resources related to the project.  
+The **dap** project is developed and maintained by [Napbad](https://github.com/Napbad). This repository contains the source code, documentation, and other resources related to the project.  
   
 ## License
 
@@ -14,7 +14,7 @@ Apache LICENSE
 
 ## Contributions  
   
-Contributions to the **Dream** project are welcomed and greatly appreciated. By contributing to this project, you agree to abide by the terms and conditions of the Apache License, Version 2.0.  
+Contributions to the **dap** project are welcomed and greatly appreciated. By contributing to this project, you agree to abide by the terms and conditions of the Apache License, Version 2.0.  
   
 To submit a contribution, please follow these steps:  
   
@@ -32,9 +32,9 @@ We value the participation of each member of our community and want to ensure th
   
 ## Acknowledgments  
   
-Special thanks to all the contributors who have helped make the **Dream** project possible. Your contributions are greatly appreciated!  
+Special thanks to all the contributors who have helped make the **dap** project possible. Your contributions are greatly appreciated!  
   
 ---  
   
-This README file provides a brief overview of the **Dream** project, its license, contribution guidelines, code of conduct, and acknowledgments. For more information, please refer to the other files and directories in this repository.
+This README file provides a brief overview of the **dap** project, its license, contribution guidelines, code of conduct, and acknowledgments. For more information, please refer to the other files and directories in this repository.
 

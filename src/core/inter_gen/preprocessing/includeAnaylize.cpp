@@ -4,7 +4,7 @@
 
 #include "includeAnaylize.h"
 
-namespace dream::inter_gen
+namespace dap::inter_gen
 {
 void IncludeAnalyzer::analyze()
 {
@@ -73,4 +73,4 @@ void IncludeAnalyzer::generateGraph()
 
 
 }
-} // namespace dream::inter_gen
+} // namespace dap::inter_gen

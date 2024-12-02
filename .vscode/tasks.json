@@ -59,7 +59,7 @@
                 "${workspaceFolder}/build",
                 "-j", "22",
                 "--target", 
-                "dream_main"
+                "dap_main"
             ],
             "group": {
                 "kind": "build",

@@ -8,7 +8,7 @@
 
 #include <llvm/IR/Type.h>
 
-namespace dream::util
+namespace dap::util
 {
 /* Returns an LLVM type based on the identifier */
 Type *typeOf(const parser::QualifiedName &type, const inter_gen::InterGenContext *ctx, parser::Expr *size = nullptr);
@@ -16,6 +16,6 @@ Type *typeOf(const parser::QualifiedName &type, const inter_gen::InterGenContext
 Type *typeOf_d(const parser::QualifiedName &type, const inter_gen::InterGenContext *ctx, parser::Expr *size);
 
 Type *getPointerOf(Type *type);
-} // namespace dream::util
+} // namespace dap::util
 
 #endif // LLVM_UTIL_H

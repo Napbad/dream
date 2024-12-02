@@ -1,7 +1,7 @@
-# **Dream** Language Reference
+# **dap** Language Reference
 
 ## I. Introduction
-**Dream** is an experimental programming language with rich features.
+**dap** is an experimental programming language with rich features.
 
 ## II. Lexical Structure
 

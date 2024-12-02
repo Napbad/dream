@@ -25,12 +25,12 @@
 #include <llvm/IR/LLVMContext.h>
 #include <llvm/IR/Module.h>
 
-namespace dream::parser
+namespace dap::parser
 {
 class Program;
 }
 
-namespace dream::inter_gen
+namespace dap::inter_gen
 {
 using namespace llvm;
 
@@ -284,7 +284,7 @@ public:
 
 void interGen(const std::set<IncludeGraphNode*>& map);
 
-} // namespace dream::inter_gen
+} // namespace dap::inter_gen
 
 
 #endif // CODEGEN_H

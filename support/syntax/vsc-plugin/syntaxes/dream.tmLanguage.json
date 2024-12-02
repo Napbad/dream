@@ -1,6 +1,6 @@
 {
-  "name": "Dream",
-  "scopeName": "source.dream",
+  "name": "dap",
+  "scopeName": "source.dap",
   "patterns": [
     {
       "include": "#keywords"
@@ -23,7 +23,7 @@
       "patterns": [
         {
           "match": "\\b(return|if|else|for|while|package|include|break|continue|try|catch|finally|var|imt|fun|class|enum|interface|annotation|public|private|protected|static|new|override|native|synchronized|throw|delete|byte|short|int|uint|ushort|long|ulong|llong|ullong|float|double|bool|char|string|void|const)\\b",
-          "name": "keyword.control.dream"
+          "name": "keyword.control.dap"
         }
       ]
     },
@@ -32,22 +32,22 @@
         {
           "begin": "\"",
           "end": "\"",
-          "name": "string.quoted.double.dream",
+          "name": "string.quoted.double.dap",
           "patterns": [
             {
               "match": "\\\\.",
-              "name": "constant.character.escape.dream"
+              "name": "constant.character.escape.dap"
             }
           ]
         },
         {
           "begin": "'",
           "end": "'",
-          "name": "string.quoted.single.dream",
+          "name": "string.quoted.single.dap",
           "patterns": [
             {
               "match": "\\\\.",
-              "name": "constant.character.escape.dream"
+              "name": "constant.character.escape.dap"
             }
           ]
         }
@@ -58,12 +58,12 @@
         {
           "begin": "//",
           "end": "$",
-          "name": "comment.line.double-slash.dream"
+          "name": "comment.line.double-slash.dap"
         },
         {
           "begin": "/\\*",
           "end": "\\*/",
-          "name": "comment.block.dream"
+          "name": "comment.block.dap"
         }
       ]
     },
@@ -71,15 +71,15 @@
       "patterns": [
         {
           "match": "\\b(true|false)\\b",
-          "name": "constant.language.boolean.dream"
+          "name": "constant.language.boolean.dap"
         },
         {
           "match": "\\b(0|[1-9]\\d*)\\b",
-          "name": "constant.numeric.integer.dream"
+          "name": "constant.numeric.integer.dap"
         },
         {
           "match": "\\b(0|[1-9]\\d*)\\.\\d+\\b",
-          "name": "constant.numeric.float.dream"
+          "name": "constant.numeric.float.dap"
         }
       ]
     },
@@ -87,7 +87,7 @@
       "patterns": [
         {
           "match": "\\b[a-zA-Z_][a-zA-Z_0-9]*\\b",
-          "name": "variable.other.dream"
+          "name": "variable.other.dap"
         }
       ]
     }

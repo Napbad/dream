@@ -3,7 +3,7 @@
 //
 
 #include "node_meta_data.h"
-namespace dream::parser
+namespace dap::parser
 {
 std::unordered_map<Node *, parser::NodeMetadata *> *nodeMetadataMapping =
     new std::unordered_map<Node *, parser::NodeMetadata *>;

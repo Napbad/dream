@@ -13,7 +13,7 @@
 
 
 
-void dream::mech_gen::execGen(std::set<inter_gen::IncludeGraphNode *> map)
+void dap::mech_gen::execGen(std::set<inter_gen::IncludeGraphNode *> map)
 {
     std::unordered_map<inter_gen::IncludeGraphNode *, bool> visited{};
     std::unordered_set<inter_gen::IncludeGraphNode *> level{};
@@ -45,6 +45,6 @@ void dream::mech_gen::execGen(std::set<inter_gen::IncludeGraphNode *> map)
     }
 
     std::string files = util::getStrFromVec(*filesToCompile, " ");
-    files.append(" ./build/dream/runtime/asm/_start.o ");
+    files.append(" ./build/dap/runtime/asm/_start.o ");
     system(("ld " + files + arg).c_str());
 }

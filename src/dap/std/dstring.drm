@@ -1,6 +1,6 @@
-package dream.std;
+package dap.std;
 
-include dream.runtime.sys.sysFun;
+include dap.runtime.sys.sysFun;
 
 fun strlen(imt byte* s) int {
     imt int res = 0;

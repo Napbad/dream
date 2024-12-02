@@ -14,7 +14,7 @@
 #include <utility>
 #include <vector>
 
-namespace dream
+namespace dap
 {
 namespace inter_gen
 {
@@ -591,5 +591,5 @@ class StructDecl : public Stmt
     llvm::Value *codeGen(inter_gen::InterGenContext *ctx) override;
 };
 } // namespace parser
-} // namespace dream
+} // namespace dap
 #endif

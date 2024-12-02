@@ -9,7 +9,7 @@
 #include <llvm/ADT/StringExtras.h>
 #include <llvm/IR/Verifier.h>
 
-namespace dream::inter_gen
+namespace dap::inter_gen
 {
 void genSysFun(const InterGenContext *ctx)
 {
@@ -1050,4 +1050,4 @@ CallInst *handleSys(const parser::CallExpr *call, InterGenContext *ctx, Function
     // REPORT_ERROR("unknown system call: " + fun->getName().str(), __FILE__, __LINE__);
     return nullptr;
 }
-} // namespace dream::inter_gen
+} // namespace dap::inter_gen

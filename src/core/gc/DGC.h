@@ -27,7 +27,7 @@ int main() {
 }
 */
 /* DGC
- * GC of this programming language ---- dream
+ * GC of this programming language ---- dap
  * How does it work?
  * 1. For each object, it will have a
  * (a.)reference counter (maybe unuseful),

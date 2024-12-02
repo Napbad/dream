@@ -88,7 +88,7 @@ void printTokenInfo(int token, int lineNumber, const std::string& value = "") {
         oss << "  \t(Currently parsing: " << yytext << ")";
     }
     try {
-        dream::util::dbg_print(std::cout, oss.str(), dream::util::FileColor::BLACK);
+        dap::util::dbg_print(std::cout, oss.str(), dap::util::FileColor::BLACK);
     } catch (const std::exception& e) {
         std::cerr << "Error in printTokenInfo: " << e.what() << std::endl;
     }

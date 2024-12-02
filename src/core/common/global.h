@@ -47,9 +47,9 @@ extern std::map<BasicBlock *, Value *> *blockMappingRet_d;
 // Stack that stores expected dereference types, used to track type information
 extern std::stack<Type *> *expectDerefType_d;
 
-extern std::unordered_map<std::string, dream::inter_gen::ModuleMetaData *> *moduleMetadataMap_d;
+extern std::unordered_map<std::string, dap::inter_gen::ModuleMetaData *> *moduleMetadataMap_d;
 
-extern std::unordered_map<dream::parser::Program*, dream::inter_gen::InterGenContext *> *programMap_d;
+extern std::unordered_map<dap::parser::Program*, dap::inter_gen::InterGenContext *> *programMap_d;
 
 extern std::vector<std::string> *filesToCompile;
 

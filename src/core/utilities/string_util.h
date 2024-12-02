@@ -9,7 +9,7 @@
 #include <string>
 #include <vector>
 
-namespace dream::util
+namespace dap::util
 {
 /**
  * Splits a string by a delimiter and returns a vector of substrings.

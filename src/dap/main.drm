@@ -1,9 +1,9 @@
 package main;
 
-include dream.std.math.math;
-include dream.runtime.sys.sysFun;
-include dream.runtime.base;
-include dream.std.dstring;
+include dap.std.math.math;
+include dap.runtime.sys.sysFun;
+include dap.runtime.base;
+include dap.std.dstring;
 
 fun malloc(imt int size) int {
     if size == 0 {

@@ -40,7 +40,7 @@
 #include <llvm/TargetParser/Host.h>
 #include <optional>
 
-namespace dream
+namespace dap
 {
 namespace parser
 {
@@ -728,7 +728,7 @@ Value *Program::codeGen(inter_gen::InterGenContext *ctx)
     util::create_package_dir(util::getStrFromVec(*packageStmt->name->name_parts, "."));
     stmts->stmts.erase(stmts->stmts.begin());
 
-    if (ctx->package == "dream.runtime.sys" && ctx->sourcePath.ends_with("/sysFun.drm"))
+    if (ctx->package == "dap.runtime.sys" && ctx->sourcePath.ends_with("/sysFun.drm"))
     {
         genSysFun(ctx);
         genCharToInt(ctx);
@@ -1463,4 +1463,4 @@ void interGen(const std::set<IncludeGraphNode *> &map)
     }
 }
 } // namespace inter_gen
-} // namespace dream
+} // namespace dap

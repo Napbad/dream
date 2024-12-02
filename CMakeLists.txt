@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.29)
-project(dream)
+project(dap)
 
 set(CMAKE_CXX_STANDARD 23)
 
@@ -11,7 +11,7 @@ execute_process(
 add_compile_options(${LLVM_CPPFLAGS})
 add_compile_definitions(D_DEBUG)
 
-add_executable(dream_main src/core/main.cpp
+add_executable(dap_main src/core/main.cpp
         src/core/inter_gen/codegen_inter.cpp
         src/core/inter_gen/codegen_inter.h
         src/core/parser/parser.cpp
@@ -60,10 +60,10 @@ message(STATUS "Found LLVM ${LLVM_PACKAGE_VERSION}")
 list(APPEND CMAKE_MODULE_PATH "${LLVM_CMAKE_DIR}")
 include(AddLLVM)
 
-target_link_libraries(dream_main PRIVATE LLVM pthread dl z ncurses)
+target_link_libraries(dap_main PRIVATE LLVM pthread dl z ncurses)
 
 
-# add_executable(dream_test
+# add_executable(dap_test
 #         src/core/inter_gen/codegen_inter.cpp
 #         src/core/inter_gen/codegen_inter.h
 #         src/core/parser/parser.cpp
@@ -106,5 +106,5 @@ target_link_libraries(dream_main PRIVATE LLVM pthread dl z ncurses)
 #         src/core/mechine_code_gen/codeGen_mechine.h
 # )
 #
-# target_link_libraries(dream_test PRIVATE LLVM pthread dl z ncurses)
+# target_link_libraries(dap_test PRIVATE LLVM pthread dl z ncurses)
 #

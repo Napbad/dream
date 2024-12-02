@@ -1,3 +1,3 @@
 #!/bin/bash
 
-as src/dream/runtime/asm/_start.s -o src/dream/runtime/asm/_start.o
+as src/dap/runtime/asm/_start.s -o src/dap/runtime/asm/_start.o

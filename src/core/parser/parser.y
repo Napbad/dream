@@ -6,7 +6,7 @@
 #include <memory>
 #include "../utilities/file_util.h"
 
-using namespace dream::parser;
+using namespace dap::parser;
 
 Program *program; /* the top level root node of our final AST */
 
@@ -29,7 +29,7 @@ void printParseInfo(const char* ruleName, int lineNumber, const std::string& val
         oss << " with value:\t" << value;
     }
     try {
-        dream::util::dbg_print(std::cout, oss.str());
+        dap::util::dbg_print(std::cout, oss.str());
     } catch (const std::exception& e) {
         std::cerr << "Error in printParseInfo: " << e.what() << std::endl;
     }
@@ -42,15 +42,15 @@ void printParseInfo(const char* ruleName, int lineNumber, const std::string& val
 #include <vector>
 #include "node.h"
 
-    dream::parser::Node *node;
-    dream::parser::BlockStmt *block;
-    dream::parser::Expr *expr;
-    dream::parser::Stmt *stmt;
-    dream::parser::QualifiedName *ident;
-    dream::parser::VarDecl *var_decl;
-    std::vector<dream::parser::VarDecl*> *varvec;
-    std::vector<dream::parser::Expr*> *exprvec;
-    std::vector<dream::parser::Stmt*> *stmtvec;
+    dap::parser::Node *node;
+    dap::parser::BlockStmt *block;
+    dap::parser::Expr *expr;
+    dap::parser::Stmt *stmt;
+    dap::parser::QualifiedName *ident;
+    dap::parser::VarDecl *var_decl;
+    std::vector<dap::parser::VarDecl*> *varvec;
+    std::vector<dap::parser::Expr*> *exprvec;
+    std::vector<dap::parser::Stmt*> *stmtvec;
     std::string *string;
     bool boolval;
     int token;

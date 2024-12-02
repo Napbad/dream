@@ -7,7 +7,7 @@
 #include <set>
 #include <string>
 
-namespace dream
+namespace dap
 {
 namespace inter_gen
 {
@@ -18,7 +18,7 @@ namespace mech_gen
 {
 const std::string arg = " -lc -dynamic-linker /lib64/ld-linux-x86-64.so.2 -o executable";
 
-void execGen(std::set<dream::inter_gen::IncludeGraphNode *> map);
+void execGen(std::set<dap::inter_gen::IncludeGraphNode *> map);
 }
 
 }

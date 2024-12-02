@@ -124,15 +124,15 @@ union YYSTYPE
 #include <vector>
 #include "node.h"
 
-    dream::parser::Node *node;
-    dream::parser::BlockStmt *block;
-    dream::parser::Expr *expr;
-    dream::parser::Stmt *stmt;
-    dream::parser::QualifiedName *ident;
-    dream::parser::VarDecl *var_decl;
-    std::vector<dream::parser::VarDecl*> *varvec;
-    std::vector<dream::parser::Expr*> *exprvec;
-    std::vector<dream::parser::Stmt*> *stmtvec;
+    dap::parser::Node *node;
+    dap::parser::BlockStmt *block;
+    dap::parser::Expr *expr;
+    dap::parser::Stmt *stmt;
+    dap::parser::QualifiedName *ident;
+    dap::parser::VarDecl *var_decl;
+    std::vector<dap::parser::VarDecl*> *varvec;
+    std::vector<dap::parser::Expr*> *exprvec;
+    std::vector<dap::parser::Stmt*> *stmtvec;
     std::string *string;
     bool boolval;
     int token;

@@ -1,7 +1,7 @@
 {
-  "name": "dream-lang-syntax-support",
-  "displayName": "dream-lang-syntax-support",
-  "description": "An extension for supporting the syntax highlight dream programming language.",
+  "name": "dap-lang-syntax-support",
+  "displayName": "dap-lang-syntax-support",
+  "description": "An extension for supporting the syntax highlight dap programming language.",
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.94.0"
@@ -14,16 +14,16 @@
   "contributes": {
     "commands": [
       {
-        "command": "dream-lang-syntax-support.helloWorld",
+        "command": "dap-lang-syntax-support.helloWorld",
         "title": "Hello World"
       }
     ],
     "languages": [
       {
-        "id": "dream",
+        "id": "dap",
         "aliases": [
-          "dream",
-          "dream"
+          "dap",
+          "dap"
         ],
         "extensions": [
           "drm"
@@ -33,9 +33,9 @@
     ],
     "grammars": [
       {
-        "language": "dream",
-        "scopeName": "source.dream",
-        "path": "./syntaxes/dream.tmLanguage.json"
+        "language": "dap",
+        "scopeName": "source.dap",
+        "path": "./syntaxes/dap.tmLanguage.json"
       }
     ]
   },

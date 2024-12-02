@@ -9,7 +9,7 @@
 #include <utility>
 #include <vector>
 
-namespace dream::parser
+namespace dap::parser
 {
 class Node;
 
@@ -734,6 +734,6 @@ class StructDeclMetadata final : public NodeMetadata
         return NodeMetaDataType::StructDecl;
     }
 };
-} // namespace dream::inter_gen
+} // namespace dap::inter_gen
 
 #endif // NODE_META_DATA_H
