@@ -36,5 +36,4 @@ Special thanks to all the contributors who have helped make the **Dap** project 
   
 ---  
   
-This README file provides a brief overview of the **Dap** project, its license, contribution guidelines, code of conduct, and acknowledgments. For more information, please refer to the other files and directories in this repository.
-
+Have a nice day!
