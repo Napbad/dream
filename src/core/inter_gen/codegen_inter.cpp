@@ -1330,7 +1330,7 @@ void InterGenContext::genIR(parser::Program *program)
 
     std::error_code EC;
     util::replace_all(package, ".", "/");
-    std::string outputPath = BUILD_DIR + package + "/" + fileName + ".ll";
+    std::string outputPath = buildDir + package + "/" + fileName + ".ll";
     std::fstream outputFile(outputPath, std::ios::out);
     outputFile.close();
     raw_fd_ostream outfile(outputPath, EC, sys::fs::OF_Text);
@@ -1408,7 +1408,7 @@ void InterGenContext::genExec(parser::Program *program)
     // Save the generated code to a file
     std::error_code EC;
     util::replace_all(package, ".", "/");
-    std::string outputPath = BUILD_DIR + package + "/" + fileName + ".o";
+    std::string outputPath = buildDir + package + "/" + fileName + ".o";
     std::fstream outputFile(outputPath, std::ios::out);
     outputFile.close();
     filesToCompile->push_back(outputPath);

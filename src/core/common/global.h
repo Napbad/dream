@@ -49,13 +49,16 @@ extern std::stack<Type *> *expectDerefType_d;
 
 extern std::unordered_map<std::string, dap::inter_gen::ModuleMetaData *> *moduleMetadataMap_d;
 
-extern std::unordered_map<dap::parser::Program*, dap::inter_gen::InterGenContext *> *programMap_d;
+extern std::unordered_map<dap::parser::Program *, dap::inter_gen::InterGenContext *> *programMap_d;
 
 extern std::vector<std::string> *filesToCompile;
 
 extern std::unordered_map<Value *, Value *> *ptrArrSizeMap_d;
 
+extern std::string buildDir;
+
+extern std::string targetExecName;
+
 #define globalHeap globalHeap_d
 #define gepMapping gepMapping_d
-
 #endif // GLOBAL_H

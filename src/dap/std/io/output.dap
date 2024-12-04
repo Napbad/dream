@@ -19,13 +19,6 @@ include dap.std.dstring;
 // }
 //
 
-
-fun print(imt byte* s) {
-    write(1, s, strlen(s));
-    fsync(1);
-}
-
-
 fun print(imt byte* str) void {
     write(1, str, strlen(str));
     fsync(1);

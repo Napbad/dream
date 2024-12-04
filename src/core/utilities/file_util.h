@@ -9,8 +9,6 @@
 #ifndef FILE_UTIL_H
 #define FILE_UTIL_H
 
-#define OUTPUT_DIR "./build/"
-
 #include <filesystem>
 #include <fstream>
 #include <iostream>

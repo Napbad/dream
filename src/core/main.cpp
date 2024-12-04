@@ -31,6 +31,7 @@ extern int yylineno;
 
 int main(const int argc, char **argv)
 {
+    buildDir = "./build/";
     int opt;
     bool debugMode = false;
     bool compileDir = false;
@@ -45,9 +46,11 @@ int main(const int argc, char **argv)
                                     {"generate-ir", no_argument, nullptr, 'i'},
                                     {"generate-exec", no_argument, nullptr, 'e'},
                                     {"version", no_argument, nullptr, 'v'},
+                                    {"output", required_argument, nullptr, 'o'},
+                                    {"output-exec-name", required_argument, nullptr, 'n'},
                                     {nullptr, 0, nullptr, 0}};
 
-    while ((opt = getopt_long(argc, argv, "hd:Die", long_options, nullptr)) != -1)
+    while ((opt = getopt_long(argc, argv, "n:d:o:ievhD", long_options, nullptr)) != -1)
     {
         switch (opt)
         {
@@ -70,21 +73,35 @@ int main(const int argc, char **argv)
         case 'v':
             cout << "dap version: " << D_VERSION << endl;
             break;
+        case 'o':
+            buildDir = optarg;
+            if (!buildDir.ends_with("/"))
+            {
+                buildDir.append("/");
+            }
+            break;
+        case 'n':
+            targetExecName = optarg;
+            break;
         default:
-            cerr << "Usage: " << argv[0] << " [-h] [-d <directory>] [-D] [-i] [-e]" << endl;
+            cerr << "Invalid option: " << static_cast<char>(opt) << endl;
+            cerr << "Usage: " << argv[0] << " [-h] [-d <directory>] [-D] [-i] [-e] [-o <output_directory>] [-n <executable_name>]" << endl;
             return 1;
         }
     }
 
     if (helpRequested)
     {
-        cout << "Usage: " << argv[0] << " [-h] [-d <directory>] [-D]" << endl;
+        cout << "Usage: " << argv[0] <<
+            " [-h] [-d <directory>] [-D] [-i] [-e] [-o <output_directory>] [-n <executable_name>]" << endl;
         cout << "  -h, --help            Show this help message and exit" << endl;
         cout << "  -d, --directory       Compile the specified directory" << endl;
         cout << "  -D, --debug           Enable debug mode" << endl;
-        cout << "  -i, --generate IR     Generate LLVM IR" << endl;
-        cout << "  -e, --generate Exec   Generate executable" << endl;
+        cout << "  -i, --generate-ir     Generate LLVM IR" << endl;
+        cout << "  -e, --generate-exec   Generate executable" << endl;
         cout << "  -v, --version         Print version information and exit" << endl;
+        cout << "  -o, --output          Specify the output directory" << endl;
+        cout << "  -n, --output-exec-name Specify the name of the generated executable" << endl;
         return 0;
     }
 
@@ -121,7 +138,7 @@ int main(const int argc, char **argv)
         }
     }
 
-    util::delete_directory("./build");
+    util::delete_directory(buildDir);
 
     if (compileDir)
     {
@@ -145,7 +162,7 @@ int main(const int argc, char **argv)
             programMap_d->insert({program, ctx});
         }
 
-        util::copy_directory("../src/dap/runtime/asm", "./build/dap/runtime/asm");
+        util::copy_directory("../src/dap/runtime/asm", buildDir + "dap/runtime/asm");
         auto includeAnalyzer = new dap::inter_gen::IncludeAnalyzer();
         includeAnalyzer->generateGraph();
         std::set<inter_gen::IncludeGraphNode *> roots = includeAnalyzer->getRoots();
@@ -164,10 +181,17 @@ int main(const int argc, char **argv)
         {
             openFile(inputPath.c_str());
         }
+        util::copy_directory("../src/dap/runtime/asm", buildDir + "dap/runtime/asm");
+
         auto *ctx = new inter_gen::InterGenContext(inputPath);
         yyparse();
 
-        ctx->genIR(program);
+        if (genIR)
+            ctx->genIR(program);
+        else
+        {
+            mech_gen::execGen_singleFile(ctx, program);
+        }
     }
 
     obj_util::deleteDelayedObj();

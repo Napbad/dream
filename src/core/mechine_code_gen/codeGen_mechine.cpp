@@ -12,7 +12,6 @@
 #include "../common/global.h"
 
 
-
 void dap::mech_gen::execGen(std::set<inter_gen::IncludeGraphNode *> map)
 {
     std::unordered_map<inter_gen::IncludeGraphNode *, bool> visited{};
@@ -45,6 +44,19 @@ void dap::mech_gen::execGen(std::set<inter_gen::IncludeGraphNode *> map)
     }
 
     std::string files = util::getStrFromVec(*filesToCompile, " ");
-    files.append(" ./build/dap/runtime/asm/_start.o ");
-    system(("ld " + files + arg).c_str());
+    files.append(" ")
+         .append(buildDir)
+         .append("dap/runtime/asm/_start.o ");
+    system(("ld " + files + arg + " -o " + targetExecName + " ").c_str());
+
+}
+
+void dap::mech_gen::execGen_singleFile(inter_gen::InterGenContext *ctx, dap::parser::Program *program)
+{
+    ctx->genExec(program);
+    std::string files = util::getStrFromVec(*filesToCompile, " ");
+    files.append(" ")
+         .append(buildDir)
+         .append("dap/runtime/asm/_start.o ");
+    system(("ld " + files + arg + " -o " + targetExecName + " ").c_str());
 }

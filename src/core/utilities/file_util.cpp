@@ -4,6 +4,8 @@
 
 #include "file_util.h"
 
+#include "../common/global.h"
+
 #include <filesystem>
 #include <fstream>
 
@@ -45,7 +47,7 @@ namespace dap::util {
             pos = pkg_dir_name.find('.', pos + 1);
         }
 
-        pkg_dir_name = OUTPUT_DIR + pkg_dir_name;
+        pkg_dir_name = buildDir + pkg_dir_name;
 
         try
         {
@@ -68,7 +70,7 @@ namespace dap::util {
             if (c == '.')
                 c = '/';
 
-        res = OUTPUT_DIR + res + "/";
+        res = buildDir + res + "/";
 
         return res;
     }

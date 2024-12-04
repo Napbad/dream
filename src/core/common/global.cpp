@@ -18,3 +18,7 @@ std::unordered_map<std::string, dap::inter_gen::ModuleMetaData *> *moduleMetadat
 std::unordered_map<dap::parser::Program *, dap::inter_gen::InterGenContext *> *programMap_d =
     new std::unordered_map<dap::parser::Program *, dap::inter_gen::InterGenContext *>();
 std::vector<std::string> *filesToCompile = new std::vector<std::string>();
+
+std::string buildDir = "./build/";
+
+std::string targetExecName = "main";
