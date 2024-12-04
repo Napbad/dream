@@ -101,7 +101,7 @@ int main(const int argc, char **argv)
     }
     else if (inputPath.empty())
     {
-        inputPath = "main.drm";
+        inputPath = "main.dap";
     }
 
     InitializeAllTargetInfos();
@@ -128,7 +128,7 @@ int main(const int argc, char **argv)
         std::vector<std::string> files = util::get_all_files_in_dir(inputPath);
         for (const auto &file : files)
         {
-            if (!file.ends_with(".drm"))
+            if (!file.ends_with(".dap"))
             {
                 continue;
             }

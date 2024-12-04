@@ -26,7 +26,7 @@
           "dap"
         ],
         "extensions": [
-          "drm"
+          "dap"
         ],
         "configuration": "./language-configuration.json"
       }

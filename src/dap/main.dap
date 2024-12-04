@@ -2,8 +2,9 @@ package main;
 
 include dap.std.math.math;
 include dap.runtime.sys.sysFun;
-include dap.runtime.base;
+// include dap.runtime.base;
 include dap.std.dstring;
+include dap.std.io.output;
 
 fun malloc(imt int size) int {
     if size == 0 {
@@ -16,61 +17,6 @@ fun malloc(imt int size) int {
     }
     return ptr;
 }
-
-
-fun newline() void {
-    write(1, charToStr(int32To8(10)), 2);
-    fsync(1);
-}
-
-// fun strlen(imt byte* s) int {
-//     imt int res = 0;
-//     if s == 0 {
-//       return 0;
-//     }
-//     for int i = 0; (i < 99999999) && (s[i] != 0); ++i {
-//       res = i;
-//     }
-//     return res + 1;
-// }
-//
-// fun reverse(imt byte* s) {
-//     if (s == 0) {
-//       return;
-//     }
-//     imt int len = strlen(s);
-//     for int i = 0; i < len / 2; ++i {
-//         imt byte tmp = s[i];
-//         s[i] = s[(len - i) - 1];
-//         s[(len - i) - 1] = tmp;
-//     }
-// }
-//
-// fun fillStr(var byte* s, imt byte c, imt int len) {
-//     for int i = 0; i < len; ++i {
-//         s[i] = c;
-//     }
-// }
-
-
-fun print(imt byte* s) {
-    write(1, s, strlen(s));
-    fsync(1);
-}
-
-
-fun print(imt byte* str) void {
-    write(1, str, strlen(str));
-    fsync(1);
-}
-
-fun println(imt byte* str) void {
-    print(str);
-    write(1, charToStr(int32To8(10)), 2);
-    fsync(1);
-}
-
-
 imt byte[11] intToStr_d = "2147483647";
 
 struct S {

@@ -35,6 +35,3 @@ extern fun utime(imt byte* path, imt int* times) int;
 extern fun utime(imt byte* path, imt int* times) int;
 
 extern fun exit(imt int code) int;
-
-extern fun init() void;
-extern fun fini() void;

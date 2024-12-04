@@ -555,6 +555,8 @@ Value *CallExpr::codeGen(inter_gen::InterGenContext *ctx)
 {
     // Look up the callee function by name
     Function *calleeFun = MODULE->getFunction(callee->getName());
+    inter_gen::FunctionMetaData * functionMetaData = ctx->metaData->getFunction(callee->getName());
+
     if (calleeFun == nullptr)
     {
         REPORT_ERROR("Unknown function referenced: " + callee->getName(), __FILE__, __LINE__);
@@ -702,7 +704,7 @@ Function *FuncDecl::codeGen(inter_gen::InterGenContext *ctx)
     // If this is the main function, set it in the context
     if (fun->getName() == "main")
     {
-        if (ctx->fileName.ends_with("/main.drm") || ctx->fileName == "main.drm")
+        if (ctx->fileName.ends_with("/main.dap") || ctx->fileName == "main.dap")
         {
             ctx->setMainFun(fun);
         }
@@ -728,7 +730,7 @@ Value *Program::codeGen(inter_gen::InterGenContext *ctx)
     util::create_package_dir(util::getStrFromVec(*packageStmt->name->name_parts, "."));
     stmts->stmts.erase(stmts->stmts.begin());
 
-    if (ctx->package == "dap.runtime.sys" && ctx->sourcePath.ends_with("/sysFun.drm"))
+    if (ctx->package == "dap.runtime.sys" && ctx->sourcePath.ends_with("/sysFun.dap"))
     {
         genSysFun(ctx);
         genCharToInt(ctx);
@@ -1311,7 +1313,7 @@ void InterGenContext::genIR(parser::Program *program)
 {
     program->codeGen(this);
 
-    if (!mainFunction && (sourcePath.ends_with("/main.drm") || sourcePath == "main.drm"))
+    if (!mainFunction && (sourcePath.ends_with("/main.dap") || sourcePath == "main.dap"))
     {
         constexpr std::vector<Type *> argTypes;
         FunctionType *ftype = FunctionType::get(Type::getInt32Ty(module->getContext()), ArrayRef(argTypes), false);
@@ -1357,7 +1359,7 @@ void InterGenContext::genExec(parser::Program *program)
 
     program->codeGen(this);
 
-    if (!mainFunction && (sourcePath.ends_with("/main.drm") || sourcePath == "main.drm"))
+    if (!mainFunction && (sourcePath.ends_with("/main.dap") || sourcePath == "main.dap"))
     {
         // Define the main function (i32 @main())
         FunctionType *ftype = FunctionType::get(Type::getInt32Ty(module->getContext()), false);
