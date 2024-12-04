@@ -11,7 +11,6 @@
 #include "../common/reserve.h"
 #include <bits/chrono.h>
 #include <cstring>
-#include <ranges>
 
 using namespace std;
 
@@ -184,9 +183,9 @@ std::string get_lines_from_vector(const std::vector<std::string> &vector)
 
 bool str_is_common_type(const std::string &type)
 {
-    for (const auto &type_d : common_type_map | views::keys)
+    for (const auto &type_d : common_type_map)
     {
-        if (type == type_d)
+        if (type == type_d.first)
             return true;
     }
 
@@ -195,9 +194,9 @@ bool str_is_common_type(const std::string &type)
 
 bool str_is_common_cpp_type(const std::string &type)
 {
-    for (const auto &type_d : common_type_map | views::values)
+    for (const auto &type_d : common_type_map)
     {
-        if (type == type_d)
+        if (type == type_d.first)
             return true;
     }
 

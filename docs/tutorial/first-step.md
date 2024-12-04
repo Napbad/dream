@@ -10,14 +10,14 @@ this is based on linux, you can use wsl on windows, or docker to run linux in wi
 ## 1. Install utils
 ```bash
 sudo apt update 
-sudo apt install -y flex bison gcc cmake gdb llvm clang libclang-dev git
+sudo apt install -y flex bison gcc cmake gdb llvm clang libclang-dev git ninja-build
 ```
 
 or 
 
 ```bash
 sudo yum update 
-sudo yum install -y flex bison gcc cmake gdb llvm clang clang-devel git
+sudo yum install -y flex bison gcc cmake gdb llvm clang clang-devel git ninja-build
 ```
 
 ## 2. Clone the repository
