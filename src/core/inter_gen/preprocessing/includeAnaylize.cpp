@@ -3,6 +3,7 @@
 //
 
 #include "includeAnaylize.h"
+#include <ranges>
 
 namespace dap::inter_gen
 {
@@ -53,7 +54,7 @@ void IncludeAnalyzer::generateGraph()
     // auto newRoots = new std::set<IncludeGraphNode *>();
 
     // generate the root nodes where the anaylize starts
-    for (auto rootIt = roots.begin(); rootIt != roots.end(); )
+    for (auto rootIt = roots.begin(); rootIt != roots.end();)
     {
         auto root = *rootIt;
         std::vector<IncludeGraphNode *> includeGraphNodes = root->getIncludes();
@@ -70,7 +71,5 @@ void IncludeAnalyzer::generateGraph()
             rootIt = roots.erase(rootIt);
         }
     }
-
-
 }
 } // namespace dap::inter_gen

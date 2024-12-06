@@ -1,6 +1,6 @@
-#line 1 "./src/core/parser/tokens.cpp"
+#line 2 "./src/core/parser/tokens.cpp"
 
-#line 3 "./src/core/parser/tokens.cpp"
+#line 4 "./src/core/parser/tokens.cpp"
 
 #define  YY_INT_ALIGNED short int
 
@@ -616,9 +616,9 @@ void printTokenInfo(int token, int lineNumber, const std::string& value = "") {
 #endif
 
 }
-#line 619 "./src/core/parser/tokens.cpp"
+#line 620 "./src/core/parser/tokens.cpp"
 /* Define the tokens */
-#line 621 "./src/core/parser/tokens.cpp"
+#line 622 "./src/core/parser/tokens.cpp"
 
 #define INITIAL 0
 
@@ -838,7 +838,7 @@ YY_DECL
 #line 103 "./src/core/parser/tokens.l"
 
 
-#line 841 "./src/core/parser/tokens.cpp"
+#line 842 "./src/core/parser/tokens.cpp"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -1221,7 +1221,7 @@ YY_RULE_SETUP
 #line 196 "./src/core/parser/tokens.l"
 ECHO;
 	YY_BREAK
-#line 1224 "./src/core/parser/tokens.cpp"
+#line 1225 "./src/core/parser/tokens.cpp"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 

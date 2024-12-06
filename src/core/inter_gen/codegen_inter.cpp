@@ -2,9 +2,8 @@
 // Created by napbad on 10/24/24.
 //
 
-
-
 #include <iostream>
+#include <unordered_set>
 
 #include <llvm/Bitstream/BitstreamReader.h>
 #include <llvm/ExecutionEngine/SectionMemoryManager.h>
@@ -28,17 +27,17 @@
 
 #include "codegen_inter.h"
 
+#include "basicElementGen_d.h"
+#include "funGen_sys.h"
+#include "preprocessing/includeAnaylize.h"
 #include "src/core/common/define_d.h"
 #include "src/core/common/derived_type.h"
+#include "src/core/common/reserve.h"
 #include "src/core/parser/node.h"
 #include "src/core/parser/parser.hpp"
 #include "src/core/utilities/data_struct_util.h"
 #include "src/core/utilities/file_util.h"
 #include "src/core/utilities/llvm_util.h"
-#include "basicElementGen_d.h"
-#include "funGen_sys.h"
-#include "src/core/common/reserve.h"
-#include "preprocessing/includeAnaylize.h"
 
 #include "llvm/IRReader/IRReader.h"
 
@@ -141,13 +140,13 @@ Value *handleStructName(const QualifiedName *name, inter_gen::InterGenContext *c
     if (gepMapping->contains(ctx->locals()[name->getFirstName()]))
     {
         structName = dyn_cast<StructType>(
-                dyn_cast<AllocaInst>(gepMapping->at(ctx->locals()[name->getFirstName()]))->getAllocatedType())
-            ->getStructName();
+                         dyn_cast<AllocaInst>(gepMapping->at(ctx->locals()[name->getFirstName()]))->getAllocatedType())
+                         ->getStructName();
     }
     else
     {
         structName = dyn_cast<StructType>(dyn_cast<AllocaInst>(ctx->locals()[name->getFirstName()])->getAllocatedType())
-            ->getStructName();
+                         ->getStructName();
     }
     const string str = structName.str();
     const inter_gen::StructMetaData *metaData = ctx->structs[str];
@@ -267,8 +266,7 @@ Value *handleArgumentArrayExpr(const ArrayExpr *Expr, Value *arrVal, inter_gen::
     return nullptr;
 }
 
-Value *handleAllocaArrayExpr(Value *arrVal, inter_gen::InterGenContext *ctx, const Function *fun,
-                             Value *idxVal)
+Value *handleAllocaArrayExpr(Value *arrVal, inter_gen::InterGenContext *ctx, const Function *fun, Value *idxVal)
 {
     auto *arr = dyn_cast<AllocaInst>(arrVal);
     if (llvm::isa<ArrayType>(arr->getAllocatedType()))
@@ -425,51 +423,40 @@ Value *BinaryExpr::codeGen(inter_gen::InterGenContext *ctx)
     {
     // Arithmetic operators
     case PLUS:
-        return isFloatingPoint
-                   ? BUILDER.CreateFAdd(lhsVal, rhsVal, "addtmp")
-                   : BUILDER.CreateAdd(lhsVal, rhsVal, "addtmp");
+        return isFloatingPoint ? BUILDER.CreateFAdd(lhsVal, rhsVal, "addtmp")
+                               : BUILDER.CreateAdd(lhsVal, rhsVal, "addtmp");
     case MINUS:
-        return isFloatingPoint
-                   ? BUILDER.CreateFSub(lhsVal, rhsVal, "subtmp")
-                   : BUILDER.CreateSub(lhsVal, rhsVal, "subtmp");
+        return isFloatingPoint ? BUILDER.CreateFSub(lhsVal, rhsVal, "subtmp")
+                               : BUILDER.CreateSub(lhsVal, rhsVal, "subtmp");
     case TIMES:
-        return isFloatingPoint
-                   ? BUILDER.CreateFMul(lhsVal, rhsVal, "multmp")
-                   : BUILDER.CreateMul(lhsVal, rhsVal, "multmp");
+        return isFloatingPoint ? BUILDER.CreateFMul(lhsVal, rhsVal, "multmp")
+                               : BUILDER.CreateMul(lhsVal, rhsVal, "multmp");
     case DIVIDE:
-        return isFloatingPoint
-                   ? BUILDER.CreateFDiv(lhsVal, rhsVal, "divtmp")
-                   : BUILDER.CreateSDiv(lhsVal, rhsVal, "divtmp");
+        return isFloatingPoint ? BUILDER.CreateFDiv(lhsVal, rhsVal, "divtmp")
+                               : BUILDER.CreateSDiv(lhsVal, rhsVal, "divtmp");
     case MOD:
-        return isFloatingPoint
-                   ? BUILDER.CreateFRem(lhsVal, rhsVal, "modtmp")
-                   : BUILDER.CreateSRem(lhsVal, rhsVal, "modtmp");
+        return isFloatingPoint ? BUILDER.CreateFRem(lhsVal, rhsVal, "modtmp")
+                               : BUILDER.CreateSRem(lhsVal, rhsVal, "modtmp");
 
     // Comparison operators
     case LT:
-        return isFloatingPoint
-                   ? BUILDER.CreateFCmpOLT(lhsVal, rhsVal, "ltcmp")
-                   : BUILDER.CreateICmpSLT(lhsVal, rhsVal, "ltcmp");
+        return isFloatingPoint ? BUILDER.CreateFCmpOLT(lhsVal, rhsVal, "ltcmp")
+                               : BUILDER.CreateICmpSLT(lhsVal, rhsVal, "ltcmp");
     case GT:
-        return isFloatingPoint
-                   ? BUILDER.CreateFCmpOGT(lhsVal, rhsVal, "gtcmp")
-                   : BUILDER.CreateICmpSGT(lhsVal, rhsVal, "gtcmp");
+        return isFloatingPoint ? BUILDER.CreateFCmpOGT(lhsVal, rhsVal, "gtcmp")
+                               : BUILDER.CreateICmpSGT(lhsVal, rhsVal, "gtcmp");
     case LE:
-        return isFloatingPoint
-                   ? BUILDER.CreateFCmpOLE(lhsVal, rhsVal, "lecmp")
-                   : BUILDER.CreateICmpSLE(lhsVal, rhsVal, "lecmp");
+        return isFloatingPoint ? BUILDER.CreateFCmpOLE(lhsVal, rhsVal, "lecmp")
+                               : BUILDER.CreateICmpSLE(lhsVal, rhsVal, "lecmp");
     case GE:
-        return isFloatingPoint
-                   ? BUILDER.CreateFCmpOGE(lhsVal, rhsVal, "gecmp")
-                   : BUILDER.CreateICmpSGE(lhsVal, rhsVal, "gecmp");
+        return isFloatingPoint ? BUILDER.CreateFCmpOGE(lhsVal, rhsVal, "gecmp")
+                               : BUILDER.CreateICmpSGE(lhsVal, rhsVal, "gecmp");
     case EQ:
-        return isFloatingPoint
-                   ? BUILDER.CreateFCmpOEQ(lhsVal, rhsVal, "eqcmp")
-                   : BUILDER.CreateICmpEQ(lhsVal, rhsVal, "eqcmp");
+        return isFloatingPoint ? BUILDER.CreateFCmpOEQ(lhsVal, rhsVal, "eqcmp")
+                               : BUILDER.CreateICmpEQ(lhsVal, rhsVal, "eqcmp");
     case NE:
-        return isFloatingPoint
-                   ? BUILDER.CreateFCmpONE(lhsVal, rhsVal, "necmp")
-                   : BUILDER.CreateICmpNE(lhsVal, rhsVal, "necmp");
+        return isFloatingPoint ? BUILDER.CreateFCmpONE(lhsVal, rhsVal, "necmp")
+                               : BUILDER.CreateICmpNE(lhsVal, rhsVal, "necmp");
 
     // Logical operators
     case AND:
@@ -491,33 +478,28 @@ Value *BinaryExpr::codeGen(inter_gen::InterGenContext *ctx)
     case ASSIGN:
         return BUILDER.CreateStore(rhsVal, lhsVal);
     case PLUS_ASSIGN: {
-        Value *result = isFloatingPoint
-                            ? BUILDER.CreateFAdd(lhsVal, rhsVal, "addassigntmp")
-                            : BUILDER.CreateAdd(lhsVal, rhsVal, "addassigntmp");
+        Value *result = isFloatingPoint ? BUILDER.CreateFAdd(lhsVal, rhsVal, "addassigntmp")
+                                        : BUILDER.CreateAdd(lhsVal, rhsVal, "addassigntmp");
         return BUILDER.CreateStore(result, lhsVal);
     }
     case MINUS_ASSIGN: {
-        Value *result = isFloatingPoint
-                            ? BUILDER.CreateFSub(lhsVal, rhsVal, "subassigntmp")
-                            : BUILDER.CreateSub(lhsVal, rhsVal, "subassigntmp");
+        Value *result = isFloatingPoint ? BUILDER.CreateFSub(lhsVal, rhsVal, "subassigntmp")
+                                        : BUILDER.CreateSub(lhsVal, rhsVal, "subassigntmp");
         return BUILDER.CreateStore(result, lhsVal);
     }
     case TIMES_ASSIGN: {
-        Value *result = isFloatingPoint
-                            ? BUILDER.CreateFMul(lhsVal, rhsVal, "mulassigntmp")
-                            : BUILDER.CreateMul(lhsVal, rhsVal, "mulassigntmp");
+        Value *result = isFloatingPoint ? BUILDER.CreateFMul(lhsVal, rhsVal, "mulassigntmp")
+                                        : BUILDER.CreateMul(lhsVal, rhsVal, "mulassigntmp");
         return BUILDER.CreateStore(result, lhsVal);
     }
     case DIVIDE_ASSIGN: {
-        Value *result = isFloatingPoint
-                            ? BUILDER.CreateFDiv(lhsVal, rhsVal, "divassigntmp")
-                            : BUILDER.CreateSDiv(lhsVal, rhsVal, "divassigntmp");
+        Value *result = isFloatingPoint ? BUILDER.CreateFDiv(lhsVal, rhsVal, "divassigntmp")
+                                        : BUILDER.CreateSDiv(lhsVal, rhsVal, "divassigntmp");
         return BUILDER.CreateStore(result, lhsVal);
     }
     case MOD_ASSIGN: {
-        Value *result = isFloatingPoint
-                            ? BUILDER.CreateFRem(lhsVal, rhsVal, "modassigntmp")
-                            : BUILDER.CreateSRem(lhsVal, rhsVal, "modassigntmp");
+        Value *result = isFloatingPoint ? BUILDER.CreateFRem(lhsVal, rhsVal, "modassigntmp")
+                                        : BUILDER.CreateSRem(lhsVal, rhsVal, "modassigntmp");
         return BUILDER.CreateStore(result, lhsVal);
     }
 
@@ -557,7 +539,7 @@ Value *CallExpr::codeGen(inter_gen::InterGenContext *ctx)
 {
     // Look up the callee function by name
     Function *calleeFun = MODULE->getFunction(callee->getName());
-    inter_gen::FunctionMetaData * functionMetaData = ctx->metaData->getFunction(callee->getName());
+    inter_gen::FunctionMetaData *functionMetaData = ctx->metaData->getFunction(callee->getName());
 
     if (calleeFun == nullptr)
     {
@@ -883,7 +865,7 @@ Value *ForStmt::codeGen(inter_gen::InterGenContext *ctx)
     {
         BUILDER.CreateStore(step->codeGen(ctx),
                             initGen); // Update the loop step variable
-        brCond = cond->codeGen(ctx); // Re-check the loop condition
+        brCond = cond->codeGen(ctx);  // Re-check the loop condition
         BUILDER.CreateCondBr(brCond, loopBB, exitBB);
     }
 
@@ -1007,9 +989,8 @@ Value *PackageStmt::codeGen(inter_gen::InterGenContext *ctx)
     const std::string pkg = util::getStrFromVec(*name->name_parts, ".");
     util::create_package_dir(pkg);
 
-    ctx->module = new Module(
-        pkg + "." + ctx->fileName.substr(0, ctx->fileName.find_last_of('.')),
-        *inter_gen::llvmContext);
+    ctx->module =
+        new Module(pkg + "." + ctx->fileName.substr(0, ctx->fileName.find_last_of('.')), *inter_gen::llvmContext);
     ctx->metaData = new inter_gen::ModuleMetaData(ctx->module);
     moduleMetadataMap_d->insert({pkg + "." + ctx->fileName.substr(0, ctx->fileName.find_last_of('.')), ctx->metaData});
 
@@ -1017,7 +998,6 @@ Value *PackageStmt::codeGen(inter_gen::InterGenContext *ctx)
 
     return nullptr;
 }
-
 
 // BlockStmt: Generates code for a block of statements
 Value *BlockStmt::codeGen(inter_gen::InterGenContext *ctx)
@@ -1085,16 +1065,12 @@ Value *ArrayAssignExpr::codeGen(inter_gen::InterGenContext *ctx)
     }
     if (llvm::isa<ArrayType>(base->getType()))
     {
-        const std::vector<Value *> idxList = {
-            ConstantInt::get(LLVMCTX, APInt(32, 0)),
-            idxVal
-        };
+        const std::vector<Value *> idxList = {ConstantInt::get(LLVMCTX, APInt(32, 0)), idxVal};
         Value *ptrAdd = BUILDER.CreateGEP(base->getType(), base, idxList, "ptrAccess_");
         return BUILDER.CreateStore(rhs->codeGen(ctx), ptrAdd);
     }
     return nullptr;
 }
-
 
 Value *handleStructAssign(const QualifiedName *var, Expr *val, inter_gen::InterGenContext *ctx)
 {
@@ -1284,11 +1260,11 @@ Value *StructDecl::codeGen(inter_gen::InterGenContext *ctx)
     // Create a global variable for the struct
     auto *globalStruct = new GlobalVariable(*MODULE, // Module in which to insert the global variable
                                             dStruct, // Type of the global variable (struct type)
-                                            false, // Whether it's constant
-                                            GlobalValue::ExternalLinkage, // Linkage type
+                                            false,   // Whether it's constant
+                                            GlobalValue::ExternalLinkage,    // Linkage type
                                             Constant::getNullValue(dStruct), // Initializer (null-initialized)
-                                            name->getName() // Name of the global variable
-        );
+                                            name->getName()                  // Name of the global variable
+    );
 
     smd->setStructType(dStruct);
 

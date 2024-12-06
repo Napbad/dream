@@ -46,3 +46,6 @@ CMakeCache.txt
 **/dist/
 
 *.vsix
+
+build
+.cache
