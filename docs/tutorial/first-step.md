@@ -31,6 +31,8 @@ cd dap
 ```bash
 chmod +x ./compile
 ./compile
+chmod +x ./gen_asm.sh
+./gen_asm.sh
 cd build
 ```
 now the compiler is built, you can run it with `./dap_main -h` to see what happends.
