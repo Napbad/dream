@@ -4,7 +4,7 @@ mkdir ./build
 ./gen_parser.sh
 
 cd ./build
-cmake .. -G "Ninja"
+cmake .. -G "Ninja" -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
 
 ninja 
 
