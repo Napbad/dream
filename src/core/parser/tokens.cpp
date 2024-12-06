@@ -521,10 +521,10 @@ char *yytext;
 #line 1 "./src/core/parser/tokens.l"
 #line 2 "./src/core/parser/tokens.l"
 #include "node.h"
-#include "parser.hpp"
+#include "src/core/parser/parser.hpp"
 #include <string>
 #include <cstring>
-#include "../utilities/file_util.h"
+#include "src/core/utilities/file_util.h"
 
 #define SAVE_TOKEN  yylval.string = new std::string(yytext, yyleng)
 #define TOKEN(t)    (yylval.token = t)

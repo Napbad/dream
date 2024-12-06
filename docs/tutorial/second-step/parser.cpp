@@ -110,7 +110,7 @@ void yyerror(const char *s) {
 #  endif
 # endif
 
-#include "parser.hpp"
+#include "src/core/parser.hpp"
 /* Symbol kind.  */
 enum yysymbol_kind_t
 {

@@ -4,10 +4,10 @@
 
 #ifndef CODEGEN_MECHINE_H
 #define CODEGEN_MECHINE_H
-#include "../common/global.h"
 
 #include <set>
 #include <string>
+#include "src/core/common/global.h"
 
 namespace dap
 {

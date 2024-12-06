@@ -2,7 +2,7 @@
 #include <string>
 #include <unistd.h>
 #include <cstring>
-#include "parser.hpp"
+#include "src/core/parser.hpp"
 
 
 #define SAVE_TOKEN  yylval.string = new std::string(yytext, yyleng)

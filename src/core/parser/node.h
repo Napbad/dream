@@ -4,15 +4,17 @@
 #ifndef NODE_H
 #define NODE_H
 
-#include "../inter_gen/codegen_inter.h"
-#include "../utilities/string_util.h"
-#include "node_meta_data.h"
+
 #include <llvm/IR/Function.h>
 #include <llvm/IR/Value.h>
 #include <memory>
 #include <string>
 #include <utility>
 #include <vector>
+
+#include "src/core/inter_gen/codegen_inter.h"
+#include "src/core/utilities/string_util.h"
+#include "node_meta_data.h"
 
 namespace dap
 {

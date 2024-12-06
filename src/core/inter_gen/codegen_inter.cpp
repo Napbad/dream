@@ -2,21 +2,7 @@
 // Created by napbad on 10/24/24.
 //
 
-#include "codegen_inter.h"
 
-#include "../common/define_d.h"
-#include "../common/derived_type.h"
-#include "../parser/node.h"
-#include "../parser/parser.hpp"
-#include "../utilities/data_struct_util.h"
-#include "../utilities/file_util.h"
-#include "../utilities/llvm_util.h"
-#include "basicElementGen_d.h"
-#include "funGen_sys.h"
-#include "../common/reserve.h"
-#include "preprocessing/includeAnaylize.h"
-
-#include "llvm/IRReader/IRReader.h"
 
 #include <iostream>
 
@@ -39,6 +25,22 @@
 #include <llvm/Target/TargetOptions.h>
 #include <llvm/TargetParser/Host.h>
 #include <optional>
+
+#include "codegen_inter.h"
+
+#include "src/core/common/define_d.h"
+#include "src/core/common/derived_type.h"
+#include "src/core/parser/node.h"
+#include "src/core/parser/parser.hpp"
+#include "src/core/utilities/data_struct_util.h"
+#include "src/core/utilities/file_util.h"
+#include "src/core/utilities/llvm_util.h"
+#include "basicElementGen_d.h"
+#include "funGen_sys.h"
+#include "src/core/common/reserve.h"
+#include "preprocessing/includeAnaylize.h"
+
+#include "llvm/IRReader/IRReader.h"
 
 namespace dap
 {

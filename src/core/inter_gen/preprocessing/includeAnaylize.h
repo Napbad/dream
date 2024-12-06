@@ -5,7 +5,7 @@
 #ifndef INCLUDEANAYLIZE_H
 #define INCLUDEANAYLIZE_H
 
-#include "../../common/global.h"
+#include "src/core/common/global.h"
 
 #include <set>
 

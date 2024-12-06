@@ -2,14 +2,14 @@
 // Created by napbad on 11/26/24.
 //
 
-#include "codeGen_mechine.h"
-#include "../inter_gen/preprocessing/includeAnaylize.h"
 
 #include <string>
 #include <unordered_map>
 #include <unordered_set>
 
-#include "../common/global.h"
+#include "src/core/common/global.h"
+#include "codeGen_mechine.h"
+#include "src/core/inter_gen/preprocessing/includeAnaylize.h"
 
 
 void dap::mech_gen::execGen(std::set<inter_gen::IncludeGraphNode *> map)

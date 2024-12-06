@@ -378,7 +378,7 @@ let us have a look at the following example:
 ```c
 %{
 #include <stdio.h>
-#include "parser.tab.h"
+#include "src/core/parser.tab.h"
 %}
 
 digit [0-9]

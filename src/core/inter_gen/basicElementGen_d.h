@@ -4,7 +4,9 @@
 
 #ifndef D_BASIC_FUN_GEN_H
 #define D_BASIC_FUN_GEN_H
-#include "../common/global.h"
+
+#include "src/core/common/global.h"
+
 #include "codegen_inter.h"
 
 namespace dap::inter_gen

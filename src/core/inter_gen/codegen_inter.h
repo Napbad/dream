@@ -5,16 +5,6 @@
 #ifndef CODEGEN_H
 #define CODEGEN_H
 
-#define LLVMCTX ctx->module->getContext()
-#define MODULE ctx->module
-#define BUILDER ctx->builder
-
-#include "../parser/node.h"
-#include "../utilities/file_util.h"
-#include "metadata.h"
-// #include "preprocessing/includeAnaylize.h"
-
-#include "../utilities/data_struct_util.h"
 
 #include <stack>
 #include <utility>
@@ -25,6 +15,13 @@
 #include <llvm/IR/LLVMContext.h>
 #include <llvm/IR/Module.h>
 
+#include "src/core/parser/node.h"
+#include "src/core/utilities/file_util.h"
+#include "metadata.h"
+
+#define LLVMCTX ctx->module->getContext()
+#define MODULE ctx->module
+#define BUILDER ctx->builder
 namespace dap::parser
 {
 class Program;

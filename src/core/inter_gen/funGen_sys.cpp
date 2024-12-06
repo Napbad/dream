@@ -2,12 +2,12 @@
 // Created by napbad on 11/1/24.
 //
 
-#include "funGen_sys.h"
-
-#include "../utilities/file_util.h"
-
 #include <llvm/ADT/StringExtras.h>
 #include <llvm/IR/Verifier.h>
+
+#include "funGen_sys.h"
+#include "src/core/utilities/file_util.h"
+
 
 namespace dap::inter_gen
 {

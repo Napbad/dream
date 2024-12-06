@@ -1,20 +1,20 @@
-#include "common/define_d.h"
-#include "common/global.h"
 
+
+#include <llvm/Pass.h>
+#include <llvm/Bitstream/BitstreamReader.h>
+#include <llvm/Support/TargetSelect.h>
 #include <getopt.h>
 #include <iostream>
 
-#include "inter_gen/codegen_inter.h"
-#include "inter_gen/preprocessing/includeAnaylize.h"
-#include "mechine_code_gen/codeGen_mechine.h"
-#include "parser/node.h"
-#include "parser/parser.hpp"
-#include "utilities/file_util.h"
-#include "utilities/obj_util.h"
-
-#include "llvm/Pass.h"
-#include <llvm/Bitstream/BitstreamReader.h>
-#include <llvm/Support/TargetSelect.h>
+#include "src/core/inter_gen/codegen_inter.h"
+#include "src/core/inter_gen/preprocessing/includeAnaylize.h"
+#include "src/core/mechine_code_gen/codeGen_mechine.h"
+#include "src/core/parser/node.h"
+#include "src/core/parser/parser.hpp"
+#include "src/core/utilities/file_util.h"
+#include "src/core/utilities/obj_util.h"
+#include "src/core/common/define_d.h"
+#include "src/core/common/global.h"
 
 using namespace std;
 extern dap::parser::Program *program;

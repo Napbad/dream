@@ -5,8 +5,6 @@
 #ifndef STRUCTMETADATA_H
 #define STRUCTMETADATA_H
 
-#include "codegen_inter.h"
-
 #include <llvm/IR/DerivedTypes.h>
 #include <llvm/IR/GlobalVariable.h>
 #include <llvm/IR/Type.h>
@@ -14,6 +12,8 @@
 #include <unordered_map>
 #include <utility>
 #include <vector>
+
+#include "codegen_inter.h"
 
 using namespace llvm;
 

@@ -4,7 +4,7 @@
 
 #ifndef SYS_FUN_GEN_H
 #define SYS_FUN_GEN_H
-#include "../parser/node.h"
+#include "src/core/parser/node.h"
 #include "codegen_inter.h"
 namespace dap::inter_gen
 {

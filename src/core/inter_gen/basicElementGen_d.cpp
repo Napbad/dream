@@ -2,15 +2,15 @@
 // Created by napbad on 11/16/24.
 //
 
-#include "basicElementGen_d.h"
-
-#include "../common/define_d.h"
-#include "../utilities/file_util.h"
-#include "../utilities/obj_util.h"
-
 #include <iostream>
 #include <llvm/IR/Verifier.h>
 #include <sstream>
+
+#include "basicElementGen_d.h"
+
+#include "src/core/common/define_d.h"
+#include "src/core/utilities/file_util.h"
+#include "src/core/utilities/obj_util.h"
 
 namespace dap::inter_gen
 {
