@@ -167,8 +167,8 @@ stmt:
         printParseInfo("stmt (extern_decl)", yylineno);
     }
     | break_statement SEMICOLON {
-	$$ = $1;
-	printParseInfo("stmt (break_statement)", yylineno);
+        $$ = $1;
+        printParseInfo("stmt (break_statement)", yylineno);
     }
     | block {
         $$ = $1;

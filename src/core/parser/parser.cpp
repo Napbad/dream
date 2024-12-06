@@ -1538,8 +1538,8 @@ yyreduce:
   case 16: /* stmt: break_statement SEMICOLON  */
 #line 169 "./src/core/parser/parser.y"
                                 {
-	(yyval.stmt) = (yyvsp[-1].stmt);
-	printParseInfo("stmt (break_statement)", yylineno);
+        (yyval.stmt) = (yyvsp[-1].stmt);
+        printParseInfo("stmt (break_statement)", yylineno);
     }
 #line 1545 "./src/core/parser/parser.cpp"
     break;

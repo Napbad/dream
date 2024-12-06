@@ -47,16 +47,19 @@ extern std::map<BasicBlock *, Value *> *blockMappingRet_d;
 // Stack that stores expected dereference types, used to track type information
 extern std::stack<Type *> *expectDerefType_d;
 
+// Map that stores metadata for each module
 extern std::unordered_map<std::string, dap::inter_gen::ModuleMetaData *> *moduleMetadataMap_d;
 
+// this is a map that stores the program that the parser parsed and the Context it corresponds to
 extern std::unordered_map<dap::parser::Program *, dap::inter_gen::InterGenContext *> *programMap_d;
 
+// files that will be the arguments of ld
 extern std::vector<std::string> *filesToCompile;
 
-extern std::unordered_map<Value *, Value *> *ptrArrSizeMap_d;
-
+// directory where the build files will be stored
 extern std::string buildDir;
 
+// name of the executable file
 extern std::string targetExecName;
 
 #define globalHeap globalHeap_d

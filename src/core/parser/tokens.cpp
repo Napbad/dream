@@ -541,7 +541,7 @@ std::string *handle_string_literal(const char *str) {
 #define PARSE_DBG
 
 void printTokenInfo(int token, int lineNumber, const std::string& value = "") {
-#ifdef PARSE_DBG
+    #ifdef PARSE_DBG
     const char* tokenName = nullptr;
     switch (token) {
         case IF: tokenName = "IF"; break;

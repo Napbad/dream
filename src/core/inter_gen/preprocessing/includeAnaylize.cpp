@@ -34,9 +34,9 @@ void IncludeAnalyzer::generateGraph()
         }
     }
     // generate full include graph
-    for (const auto &ctx : *programMap_d | std::views::values)
+    for (const auto &ctx : *programMap_d)
     {
-        IncludeGraphNode *includeGraphNode = nodes.at(ctx->module->getName().str());
+        IncludeGraphNode *includeGraphNode = nodes.at(ctx.second->module->getName().str());
         for (const auto include : includeGraphNode->getIncludes_path())
         {
             if (!nodes.contains(*include))
