@@ -159,6 +159,7 @@ int main(const int argc, char **argv)
             openFile(file.c_str());
             auto *ctx = new inter_gen::InterGenContext(file);
             yyparse();
+            // store the parser result and the context
             programMap_d->insert({program, ctx});
         }
 
