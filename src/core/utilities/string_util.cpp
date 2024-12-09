@@ -37,7 +37,7 @@ vector<string> split(const string &str, const char delimiter)
     return result;
 }
 
-bool str_is_num(const std::string &s)
+bool strIsNum(const std::string &s)
 {
     for (char const &ch : s)
     {
@@ -47,7 +47,7 @@ bool str_is_num(const std::string &s)
     return !s.empty();
 }
 
-bool str_is_op(const std::string &oper)
+bool strIsOp(const std::string &oper)
 {
     for (const auto &op : ops)
     {
@@ -60,24 +60,24 @@ bool str_is_op(const std::string &oper)
     return false;
 }
 
-bool str_is_bool(const std::string &string)
+bool strIsBool(const std::string &string)
 {
     return string == D_TRUE || string == D_FALSE;
 }
 
-bool str_is_str(const std::string &string)
+bool strIsStr(const std::string &string)
 {
     return string.size() >= 2 && string[0] == '"' && string[string.size() - 1] == '"';
 }
 
-bool str_is_float(const std::string &string)
+bool strIsFloat(const std::string &string)
 {
     const std::regex floatRegex("^[-+]?([0-9]+(\\.[0-9]*)?|\\.[0-9]+)([eE][-+]?[0-9]+)?$");
 
     return std::regex_match(string, floatRegex);
 }
 
-bool str_is_char(const std::string &string, char c)
+bool strIsChar(const std::string &string, char c)
 {
     if (string.size() == 1 && string.at(0) == c)
     {
@@ -86,12 +86,12 @@ bool str_is_char(const std::string &string, char c)
     return false;
 }
 
-bool str_is_char(const std::string &string)
+bool strIsChar(const std::string &string)
 {
     return string.size() == 3 && string.at(0) == '\'' && string.at(2) == '\'';
 }
 
-bool str_is_ident(const std::string &ident)
+bool strIsIdent(const std::string &ident)
 {
     if (ident.empty())
     {
@@ -118,13 +118,13 @@ bool str_is_ident(const std::string &ident)
     return true;
 }
 
-bool str_is_only_ident(const std::string &ident)
+bool strIsOnlyIdent(const std::string &ident)
 {
-    return str_is_ident(ident) && !str_is_op(ident) && !str_is_bool(ident) && !str_is_str(ident) &&
-           !str_is_float(ident) && !str_is_char(ident);
+    return strIsIdent(ident) && !strIsOp(ident) && !strIsBool(ident) && !strIsStr(ident) &&
+           !strIsFloat(ident) && !strIsChar(ident);
 }
 
-std::string get_text_from_vector(const std::vector<std::string> &vec)
+std::string getTextFromVec(const std::vector<std::string> &vec)
 {
     string res;
 
@@ -148,7 +148,7 @@ std::string getStrFromVec(const std::vector<std::string> &vec, const std::string
     return res;
 }
 
-std::string get_str_from_param_vector(
+std::string getStrFromParamVec(
     const std::vector<std::tuple<std::string, std::string, bool, bool>> &vector, const std::string &delimiter)
 {
     string res;
@@ -168,7 +168,7 @@ std::string get_str_from_param_vector(
     return res;
 }
 
-std::string get_lines_from_vector(const std::vector<std::string> &vector)
+std::string getLinesFromVec(const std::vector<std::string> &vector)
 {
     string res;
 
@@ -181,7 +181,7 @@ std::string get_lines_from_vector(const std::vector<std::string> &vector)
     return res;
 }
 
-bool str_is_common_type(const std::string &type)
+bool strIsCommonType(const std::string &type)
 {
     for (const auto &type_d : common_type_map)
     {
@@ -203,13 +203,13 @@ bool str_is_common_cpp_type(const std::string &type)
     return false;
 }
 
-bool str_val_is_common_type(const std::string &string)
+bool strValIsCommonType(const std::string &string)
 {
-    return str_is_bool(string) || str_is_char(string) || str_is_float(string) || str_is_num(string) ||
-           str_is_str(string);
+    return strIsBool(string) || strIsChar(string) || strIsFloat(string) || strIsNum(string) ||
+           strIsStr(string);
 }
 
-void replace_all(std::string &str, const std::string &from, const std::string &to)
+void replaceAll(std::string &str, const std::string &from, const std::string &to)
 {
     size_t start_pos = 0;
     while (true)
@@ -222,7 +222,7 @@ void replace_all(std::string &str, const std::string &from, const std::string &t
     }
 }
 
-std::string gen_unique_name()
+std::string genUniqueName()
 {
     auto timestamp = std::chrono::system_clock::now().time_since_epoch().count();
     auto random_num = random();
@@ -233,7 +233,7 @@ std::string gen_unique_name()
     return ss.str();
 }
 
-void replace_all_without_str(std::string &str, const char *from, const char *to)
+void replaceAllWithoutStr(std::string &str, const char *from, const char *to)
 {
     bool in_str = false;
     for (int i = 0; i < str.size(); i++)
@@ -249,7 +249,7 @@ void replace_all_without_str(std::string &str, const char *from, const char *to)
     }
 }
 
-bool find_expect_str(std::string value, const std::string &basic_string)
+bool findExpectStr(std::string value, const std::string &basic_string)
 {
     bool is_in_str = false;
     for (int i = 0; i < value.size(); i++)

@@ -35,7 +35,7 @@ std::string join(const std::vector<std::string> &strs, char delimiter);
  * @param s The string to check.
  * @return True if the string represents a numeric value, false otherwise.
  */
-bool str_is_num(const std::string &s);
+bool strIsNum(const std::string &s);
 
 /**
  * Checks if the string represents an operator.
@@ -43,7 +43,7 @@ bool str_is_num(const std::string &s);
  * @param string The string to check.
  * @return True if the string represents an operator, false otherwise.
  */
-bool str_is_op(const std::string &string);
+bool strIsOp(const std::string &string);
 
 /**
  * Checks if the string represents a boolean value.
@@ -51,7 +51,7 @@ bool str_is_op(const std::string &string);
  * @param string The string to check.
  * @return True if the string represents a boolean value, false otherwise.
  */
-bool str_is_bool(const std::string &string);
+bool strIsBool(const std::string &string);
 
 /**
  * Checks if the string represents a string literal.
@@ -59,7 +59,7 @@ bool str_is_bool(const std::string &string);
  * @param string The string to check.
  * @return True if the string represents a string literal, false otherwise.
  */
-bool str_is_str(const std::string &string);
+bool strIsStr(const std::string &string);
 
 /**
  * Checks if the string represents a floating-point number.
@@ -68,7 +68,7 @@ bool str_is_str(const std::string &string);
  * @return True if the string represents a floating-point number, false
  * otherwise.
  */
-bool str_is_float(const std::string &string);
+bool strIsFloat(const std::string &string);
 
 /**
  * Checks if the string represents a single character.
@@ -78,7 +78,7 @@ bool str_is_float(const std::string &string);
  * @return True if the string represents the specified character, false
  * otherwise.
  */
-bool str_is_char(const std::string &string, char c);
+bool strIsChar(const std::string &string, char c);
 
 /**
  * Checks if the string represents a single character (without specifying the
@@ -87,24 +87,24 @@ bool str_is_char(const std::string &string, char c);
  * @param string The string to check.
  * @return True if the string represents a single character, false otherwise.
  */
-bool str_is_char(const std::string &string);
+bool strIsChar(const std::string &string);
 
 /**
  * Checks if the string represents a valid identifier.
  *
  * @param ident The string to check.
- * @return True if the string represents a valid identifier, false otherwise.
+ * @return True if the string represents a valid identifier (including string, char ...), false otherwise.
  */
-bool str_is_ident(const std::string &ident);
+bool strIsIdent(const std::string &ident);
 
 /**
  * Checks if the string represents only a valid identifier.
  *
  * @param ident The string to check.
- * @return True if the string represents only a valid identifier, false
+ * @return True if the string represents only a valid identifier (do not include string ...), false
  * otherwise.
  */
-bool str_is_only_ident(const std::string &ident);
+bool strIsOnlyIdent(const std::string &ident);
 
 /**
  * Gets text from a vector of strings.
@@ -112,7 +112,7 @@ bool str_is_only_ident(const std::string &ident);
  * @param vec The vector of strings to process.
  * @return The concatenated text from the vector.
  */
-std::string get_text_from_vector(const std::vector<std::string> &vec);
+std::string getTextFromVec(const std::vector<std::string> &vec);
 
 std::string getStrFromVec(const std::vector<std::string> &vec, const std::string &delimiter);
 
@@ -123,7 +123,7 @@ std::string getStrFromVec(const std::vector<std::string> &vec, const std::string
  * @param delimiter The delimiter used to join the parameters.
  * @return The concatenated string from the vector of parameters.
  */
-std::string get_str_from_param_vector(const std::vector<std::tuple<std::string, std::string, bool, bool>> &vector,
+std::string getStrFromParamVec(const std::vector<std::tuple<std::string, std::string, bool, bool>> &vector,
                                       const std::string &delimiter);
 
 /**
@@ -132,7 +132,7 @@ std::string get_str_from_param_vector(const std::vector<std::tuple<std::string, 
  * @param vector The vector of strings to process.
  * @return The concatenated lines from the vector.
  */
-std::string get_lines_from_vector(const std::vector<std::string> &vector);
+std::string getLinesFromVec(const std::vector<std::string> &vector);
 
 /**
  * Checks if the string represents a common type.
@@ -140,15 +140,7 @@ std::string get_lines_from_vector(const std::vector<std::string> &vector);
  * @param type The string to check.
  * @return True if the string represents a common type, false otherwise.
  */
-bool str_is_common_type(const std::string &type);
-
-/**
- * Checks if the string represents a common type.
- *
- * @param type The string to check.
- * @return True if the string represents a common type, false otherwise.
- */
-bool str_is_common_cpp_type(const std::string &type);
+bool strIsCommonType(const std::string &type);
 
 /**
  * Checks if the string value represents a common type.
@@ -156,7 +148,7 @@ bool str_is_common_cpp_type(const std::string &type);
  * @param string The string to check.
  * @return True if the string value represents a common type, false otherwise.
  */
-bool str_val_is_common_type(const std::string &string);
+bool strValIsCommonType(const std::string &string);
 
 /**
  * Replaces all occurrences of a substring within a string.
@@ -165,7 +157,7 @@ bool str_val_is_common_type(const std::string &string);
  * @param from The substring to find and replace.
  * @param to The substring to replace with.
  */
-void replace_all(std::string &str, const std::string &from, const std::string &to);
+void replaceAll(std::string &str, const std::string &from, const std::string &to);
 
 /**
  * Generates a unique name.
@@ -178,9 +170,36 @@ void replace_all(std::string &str, const std::string &from, const std::string &t
  *
  * @return Returns a unique string name.
  */
-std::string gen_unique_name();
-void replace_all_without_str(std::string &str, const char *from, const char *to);
-bool find_expect_str(std::string value, const std::string &basic_string);
+std::string genUniqueName();
+
+/**
+ * Replaces all occurrences of a substring within a string without string
+ *
+ * e.g.
+ * replace 'b' in "aaa"bb"ababa" to c
+ *  => "aaac"bb"acaca"
+ *
+ * @param str The original string.
+ * @param from The substring to find and replace.
+ * @param to The substring to replace with.
+ */
+void replaceAllWithoutStr(std::string &str, const char *from, const char *to);
+
+/**
+ * Finds a string within a string but exclude string.
+ *
+ * e.g.
+ * find "aaa"bb"ababa" with "b"
+ * it will find:
+ *
+ *  "aaa"bb"ababa"
+ *
+ *  -------->b
+ * @param value The string to search within.
+ * @param basic_string The string to find.
+ * @return True if the string is found, false otherwise.
+ */
+bool findExpectStr(std::string value, const std::string &basic_string);
 } // namespace string_util
 
 #endif // STRING_UTIL_H

@@ -1,6 +1,10 @@
-version: "1.0"
-linter: jetbrains/qodana-jvm:2024.2
-profile:
-  name: qodana.recommended
-include:
-  - name: CheckDependencyLicenses
+failureConditions:
+  severityThresholds:
+    any: 50 # Total number of problems in all severities
+    critical: 1 # Severities
+    high: 2
+    moderate: 3
+    low: 4
+    info: 5
+version: 1.0
+bootstrap: mkdir -p build; cd build;cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON .. || true

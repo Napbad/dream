@@ -9,10 +9,18 @@ execute_process(
         OUTPUT_STRIP_TRAILING_WHITESPACE
 )
 
-add_compile_options(-Wall)
+
+#add_compile_options(-Wall)
 
 add_compile_options(${LLVM_CPPFLAGS})
 add_compile_definitions(D_DEBUG)
+
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+find_program(CLANG_TIDY_BIN NAMES "clang-tidy")
+if(CLANG_TIDY_BIN)
+    set(CMAKE_CXX_CLANG_TIDY "${CLANG_TIDY_BIN}" "-checks=*")
+endif()
 
 include_directories(${PROJECT_SOURCE_DIR})
 
