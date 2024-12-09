@@ -222,7 +222,7 @@ fun functionName(parameterList) [returnType] {
 For example:
 
 ```
-fun add(imt int x, var int y): INT_TOKEN {
+fun add(imt int x, var int y): int {
     return x + y;
 }
 ```
@@ -247,3 +247,4 @@ As mentioned earlier in the `struct Point` example, the structure declaration de
 
 ### (IX) Package Statements
 - The `package` statement is related to program package operations. The syntax is `package packageName;`. It is used to organize the code's namespace.
+

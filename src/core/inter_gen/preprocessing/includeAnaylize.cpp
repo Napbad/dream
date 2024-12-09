@@ -4,10 +4,13 @@
 
 #include "includeAnaylize.h"
 
+#include "src/core/parser/node.h"
+
 namespace dap::inter_gen
 {
 void IncludeAnalyzer::analyze()
 {
+    // TODO: fill the include analyze function
 }
 
 void IncludeAnalyzer::generateGraph()

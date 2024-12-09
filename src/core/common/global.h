@@ -10,6 +10,11 @@
 #include <map>
 #include <stack>
 
+namespace dap::parser
+{
+class Program;
+}
+
 namespace llvm
 {
 class AllocaInst;
@@ -61,6 +66,8 @@ extern std::string buildDir;
 
 // name of the executable file
 extern std::string targetExecName;
+
+dap::inter_gen::ModuleMetaData *getModuleMetaData(const std::string &name);
 
 #define globalHeap globalHeap_d
 #define gepMapping gepMapping_d

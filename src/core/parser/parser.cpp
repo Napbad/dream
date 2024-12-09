@@ -88,8 +88,6 @@ void yyerror(const char *s) {
     std::exit(1);
 }
 // if define this macro then output the parse info, with line number, and the rule that was used, the value parsed
-#define PARSE_DBG
-
 
 void printParseInfo(const char* ruleName, int lineNumber, const std::string& value = "") {
 #ifdef PARSE_DBG
@@ -107,7 +105,7 @@ void printParseInfo(const char* ruleName, int lineNumber, const std::string& val
 }
 
 
-#line 111 "./src/core/parser/parser.cpp"
+#line 109 "./src/core/parser/parser.cpp"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -616,17 +614,17 @@ static const yytype_int8 yytranslate[] =
 /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int16 yyrline[] =
 {
-       0,   106,   106,   113,   117,   125,   129,   133,   137,   141,
-     145,   149,   153,   157,   161,   165,   169,   173,   177,   181,
-     185,   192,   199,   206,   214,   219,   224,   230,   236,   243,
-     250,   260,   261,   262,   266,   267,   268,   272,   280,   285,
-     293,   297,   301,   309,   314,   324,   332,   336,   340,   345,
-     349,   353,   357,   361,   365,   369,   376,   383,   384,   385,
-     386,   387,   388,   389,   390,   391,   392,   393,   394,   395,
-     396,   397,   398,   399,   400,   401,   402,   403,   404,   408,
-     409,   410,   411,   412,   413,   414,   418,   422,   426,   434,
-     438,   442,   446,   453,   457,   464,   471,   478,   482,   489,
-     493,   500,   509,   513,   521,   528
+       0,   104,   104,   111,   115,   123,   127,   131,   135,   139,
+     143,   147,   151,   155,   159,   163,   167,   171,   175,   179,
+     183,   190,   197,   204,   212,   217,   222,   228,   234,   241,
+     248,   258,   259,   260,   264,   265,   266,   270,   278,   283,
+     291,   295,   299,   307,   312,   322,   330,   334,   338,   343,
+     347,   351,   355,   359,   363,   367,   374,   381,   382,   383,
+     384,   385,   386,   387,   388,   389,   390,   391,   392,   393,
+     394,   395,   396,   397,   398,   399,   400,   401,   402,   406,
+     407,   408,   409,   410,   411,   412,   416,   420,   424,   432,
+     436,   440,   444,   451,   455,   462,   469,   476,   480,   487,
+     491,   498,   507,   511,   519,   526
 };
 #endif
 
@@ -1409,249 +1407,249 @@ yyreduce:
   switch (yyn)
     {
   case 2: /* program: stmt_list  */
-#line 106 "./src/core/parser/parser.y"
+#line 104 "./src/core/parser/parser.y"
               {
         program = new Program(new BlockStmt(*(yyvsp[0].stmtvec)));
         printParseInfo("program", yylineno);
     }
-#line 1418 "./src/core/parser/parser.cpp"
+#line 1416 "./src/core/parser/parser.cpp"
     break;
 
   case 3: /* stmt_list: %empty  */
-#line 113 "./src/core/parser/parser.y"
+#line 111 "./src/core/parser/parser.y"
                 {
         (yyval.stmtvec) = new std::vector<Stmt*>();
         printParseInfo("stmt_list (empty)", yylineno);
     }
-#line 1427 "./src/core/parser/parser.cpp"
+#line 1425 "./src/core/parser/parser.cpp"
     break;
 
   case 4: /* stmt_list: stmt_list stmt  */
-#line 117 "./src/core/parser/parser.y"
+#line 115 "./src/core/parser/parser.y"
                      {
         (yyvsp[-1].stmtvec)->push_back((yyvsp[0].stmt));
         (yyval.stmtvec) = (yyvsp[-1].stmtvec);
         printParseInfo("stmt_list", yylineno);
     }
-#line 1437 "./src/core/parser/parser.cpp"
+#line 1435 "./src/core/parser/parser.cpp"
     break;
 
   case 5: /* stmt: expression SEMICOLON  */
-#line 125 "./src/core/parser/parser.y"
+#line 123 "./src/core/parser/parser.y"
                          {
         (yyval.stmt) = new ExprStmt((yyvsp[-1].expr));
         printParseInfo("stmt (expression SEMICOLON)", yylineno);
     }
-#line 1446 "./src/core/parser/parser.cpp"
+#line 1444 "./src/core/parser/parser.cpp"
     break;
 
   case 6: /* stmt: var_decl SEMICOLON  */
-#line 129 "./src/core/parser/parser.y"
+#line 127 "./src/core/parser/parser.y"
                          {
         (yyval.stmt) = (yyvsp[-1].var_decl);
         printParseInfo("stmt (var_decl SEMICOLON)", yylineno);
     }
-#line 1455 "./src/core/parser/parser.cpp"
+#line 1453 "./src/core/parser/parser.cpp"
     break;
 
   case 7: /* stmt: RETURN expression SEMICOLON  */
-#line 133 "./src/core/parser/parser.y"
+#line 131 "./src/core/parser/parser.y"
                                   {
         (yyval.stmt) = new ReturnStmt((yyvsp[-1].expr));
         printParseInfo("stmt (RETURN expression SEMICOLON)", yylineno);
     }
-#line 1464 "./src/core/parser/parser.cpp"
+#line 1462 "./src/core/parser/parser.cpp"
     break;
 
   case 8: /* stmt: RETURN SEMICOLON  */
-#line 137 "./src/core/parser/parser.y"
+#line 135 "./src/core/parser/parser.y"
                        {
         (yyval.stmt) = new ReturnStmt(nullptr);
         printParseInfo("stmt (RETURN void SEMICOLON)", yylineno);
     }
-#line 1473 "./src/core/parser/parser.cpp"
+#line 1471 "./src/core/parser/parser.cpp"
     break;
 
   case 9: /* stmt: if_statement  */
-#line 141 "./src/core/parser/parser.y"
+#line 139 "./src/core/parser/parser.y"
                    {
         (yyval.stmt) = (yyvsp[0].stmt);
         printParseInfo("stmt (if_statement)", yylineno);
     }
-#line 1482 "./src/core/parser/parser.cpp"
+#line 1480 "./src/core/parser/parser.cpp"
     break;
 
   case 10: /* stmt: elif_statement  */
-#line 145 "./src/core/parser/parser.y"
+#line 143 "./src/core/parser/parser.y"
                      {
         (yyval.stmt) = (yyvsp[0].stmt);
         printParseInfo("stmt (elif_statement)", yylineno);
     }
-#line 1491 "./src/core/parser/parser.cpp"
+#line 1489 "./src/core/parser/parser.cpp"
     break;
 
   case 11: /* stmt: for_statement  */
-#line 149 "./src/core/parser/parser.y"
+#line 147 "./src/core/parser/parser.y"
                     {
         (yyval.stmt) = (yyvsp[0].stmt);
         printParseInfo("stmt (for_statement)", yylineno);
     }
-#line 1500 "./src/core/parser/parser.cpp"
+#line 1498 "./src/core/parser/parser.cpp"
     break;
 
   case 12: /* stmt: function_declaration  */
-#line 153 "./src/core/parser/parser.y"
+#line 151 "./src/core/parser/parser.y"
                            {
         (yyval.stmt) = (yyvsp[0].stmt);
         printParseInfo("stmt (function_declaration)", yylineno);
     }
-#line 1509 "./src/core/parser/parser.cpp"
+#line 1507 "./src/core/parser/parser.cpp"
     break;
 
   case 13: /* stmt: assign_expr SEMICOLON  */
-#line 157 "./src/core/parser/parser.y"
+#line 155 "./src/core/parser/parser.y"
                             {
         (yyval.stmt) = (yyvsp[-1].stmt);
         printParseInfo("stmt (assignment)", yylineno);
     }
-#line 1518 "./src/core/parser/parser.cpp"
+#line 1516 "./src/core/parser/parser.cpp"
     break;
 
   case 14: /* stmt: array_assign_stmt  */
-#line 161 "./src/core/parser/parser.y"
+#line 159 "./src/core/parser/parser.y"
                         {
         (yyval.stmt) = (yyvsp[0].stmt);
         printParseInfo("stmt (array_assign_stmt)", yylineno);
     }
-#line 1527 "./src/core/parser/parser.cpp"
+#line 1525 "./src/core/parser/parser.cpp"
     break;
 
   case 15: /* stmt: extern_decl  */
-#line 165 "./src/core/parser/parser.y"
+#line 163 "./src/core/parser/parser.y"
                   {
         (yyval.stmt) = (yyvsp[0].stmt);
         printParseInfo("stmt (extern_decl)", yylineno);
     }
-#line 1536 "./src/core/parser/parser.cpp"
+#line 1534 "./src/core/parser/parser.cpp"
     break;
 
   case 16: /* stmt: break_statement SEMICOLON  */
-#line 169 "./src/core/parser/parser.y"
+#line 167 "./src/core/parser/parser.y"
                                 {
         (yyval.stmt) = (yyvsp[-1].stmt);
         printParseInfo("stmt (break_statement)", yylineno);
     }
-#line 1545 "./src/core/parser/parser.cpp"
+#line 1543 "./src/core/parser/parser.cpp"
     break;
 
   case 17: /* stmt: block  */
-#line 173 "./src/core/parser/parser.y"
+#line 171 "./src/core/parser/parser.y"
             {
         (yyval.stmt) = (yyvsp[0].block);
         printParseInfo("stmt (block)", yylineno);
     }
-#line 1554 "./src/core/parser/parser.cpp"
+#line 1552 "./src/core/parser/parser.cpp"
     break;
 
   case 18: /* stmt: struct_decl  */
-#line 177 "./src/core/parser/parser.y"
+#line 175 "./src/core/parser/parser.y"
                   {
         (yyval.stmt) = (yyvsp[0].stmt);
         printParseInfo("stmt (struct_decl)", yylineno);
     }
-#line 1563 "./src/core/parser/parser.cpp"
+#line 1561 "./src/core/parser/parser.cpp"
     break;
 
   case 19: /* stmt: include_stmt  */
-#line 181 "./src/core/parser/parser.y"
+#line 179 "./src/core/parser/parser.y"
                    {
     	(yyval.stmt) = (yyvsp[0].stmt);
     	printParseInfo("stmmt (include_stmt)", yylineno);
     }
-#line 1572 "./src/core/parser/parser.cpp"
+#line 1570 "./src/core/parser/parser.cpp"
     break;
 
   case 20: /* stmt: package_stmt  */
-#line 185 "./src/core/parser/parser.y"
+#line 183 "./src/core/parser/parser.y"
                    {
     	(yyval.stmt) = (yyvsp[0].stmt);
     	printParseInfo("stmt (package_stmt)", yylineno);
     }
-#line 1581 "./src/core/parser/parser.cpp"
+#line 1579 "./src/core/parser/parser.cpp"
     break;
 
   case 21: /* include_stmt: INCLUDE qualified_name SEMICOLON  */
-#line 192 "./src/core/parser/parser.y"
+#line 190 "./src/core/parser/parser.y"
                                      {
 	(yyval.stmt) = new IncludeStmt((yyvsp[-1].ident));
 	printParseInfo("include_stmt", yylineno);
     }
-#line 1590 "./src/core/parser/parser.cpp"
+#line 1588 "./src/core/parser/parser.cpp"
     break;
 
   case 22: /* package_stmt: PACKAGE qualified_name SEMICOLON  */
-#line 199 "./src/core/parser/parser.y"
+#line 197 "./src/core/parser/parser.y"
                                      {
 	(yyval.stmt) = new PackageStmt((yyvsp[-1].ident));
 	printParseInfo("package_stmt", yylineno);
     }
-#line 1599 "./src/core/parser/parser.cpp"
+#line 1597 "./src/core/parser/parser.cpp"
     break;
 
   case 23: /* block: LBRACE stmt_list RBRACE  */
-#line 206 "./src/core/parser/parser.y"
+#line 204 "./src/core/parser/parser.y"
                             {
         (yyval.block) = new BlockStmt(*(yyvsp[-1].stmtvec));
         delete (yyvsp[-1].stmtvec);
         printParseInfo("block", yylineno);
     }
-#line 1609 "./src/core/parser/parser.cpp"
+#line 1607 "./src/core/parser/parser.cpp"
     break;
 
   case 24: /* var_decl: var_mutable_flag qualified_name IDENTIFIER assign_nullable_flag ASSIGN expression  */
-#line 214 "./src/core/parser/parser.y"
+#line 212 "./src/core/parser/parser.y"
                                                                                       {
         (yyval.var_decl) = new VarDecl((yyvsp[-4].ident), new QualifiedName(new std::vector<std::string>({*(yyvsp[-3].string)})), (yyvsp[-5].boolval), (yyvsp[-2].boolval), (yyvsp[0].expr));
         delete (yyvsp[-3].string);
         printParseInfo("var_decl (var_mutable_flag qualified_name IDENTIFIER assign_nullable_flag ASSIGN expression)", yylineno);
     }
-#line 1619 "./src/core/parser/parser.cpp"
+#line 1617 "./src/core/parser/parser.cpp"
     break;
 
   case 25: /* var_decl: var_mutable_flag qualified_name IDENTIFIER assign_nullable_flag  */
-#line 219 "./src/core/parser/parser.y"
+#line 217 "./src/core/parser/parser.y"
                                                                       {
         (yyval.var_decl) = new VarDecl((yyvsp[-2].ident), new QualifiedName(new std::vector<std::string>({*(yyvsp[-1].string)})), (yyvsp[-3].boolval), (yyvsp[0].boolval), nullptr);
         delete (yyvsp[-1].string);
         printParseInfo("var_decl (var_mutable_flag qualified_name IDENTIFIER assign_nullable_flag)", yylineno);
     }
-#line 1629 "./src/core/parser/parser.cpp"
+#line 1627 "./src/core/parser/parser.cpp"
     break;
 
   case 26: /* var_decl: var_mutable_flag qualified_name TIMES IDENTIFIER assign_nullable_flag ASSIGN expression  */
-#line 224 "./src/core/parser/parser.y"
+#line 222 "./src/core/parser/parser.y"
                                                                                               {
     	(yyvsp[-5].ident)->name_parts->push_back("*");
         (yyval.var_decl) = new VarDecl((yyvsp[-5].ident), new QualifiedName(new std::vector<std::string>({*(yyvsp[-3].string)})), (yyvsp[-6].boolval), (yyvsp[-2].boolval), (yyvsp[0].expr));
         delete (yyvsp[-3].string);
         printParseInfo("var_decl (var_mutable_flag qualified_name IDENTIFIER assign_nullable_flag ASSIGN expression)", yylineno);
     }
-#line 1640 "./src/core/parser/parser.cpp"
+#line 1638 "./src/core/parser/parser.cpp"
     break;
 
   case 27: /* var_decl: var_mutable_flag qualified_name TIMES IDENTIFIER assign_nullable_flag  */
-#line 230 "./src/core/parser/parser.y"
+#line 228 "./src/core/parser/parser.y"
                                                                             {
     	(yyvsp[-3].ident)->name_parts->push_back("*");
         (yyval.var_decl) = new VarDecl((yyvsp[-3].ident), new QualifiedName(new std::vector<std::string>({*(yyvsp[-1].string)})), (yyvsp[-4].boolval), (yyvsp[0].boolval), nullptr);
         delete (yyvsp[-1].string);
         printParseInfo("var_decl (var_mutable_flag qualified_name IDENTIFIER assign_nullable_flag)", yylineno);
     }
-#line 1651 "./src/core/parser/parser.cpp"
+#line 1649 "./src/core/parser/parser.cpp"
     break;
 
   case 28: /* var_decl: var_mutable_flag qualified_name LBRACKET RBRACKET IDENTIFIER assign_nullable_flag  */
-#line 236 "./src/core/parser/parser.y"
+#line 234 "./src/core/parser/parser.y"
                                                                                         {
     	(yyvsp[-4].ident)->name_parts->push_back("[]");
         QualifiedName *name = new QualifiedName(new std::vector<std::string>({*(yyvsp[-1].string)}));
@@ -1659,11 +1657,11 @@ yyreduce:
     	delete (yyvsp[-1].string);
     	printParseInfo("var_decl (array) (var_mutable_flag qualified_name LBRACKET RBRACKET IDENTIFIER)", yylineno);
     }
-#line 1663 "./src/core/parser/parser.cpp"
+#line 1661 "./src/core/parser/parser.cpp"
     break;
 
   case 29: /* var_decl: var_mutable_flag qualified_name LBRACKET RBRACKET IDENTIFIER assign_nullable_flag ASSIGN expression  */
-#line 243 "./src/core/parser/parser.y"
+#line 241 "./src/core/parser/parser.y"
                                                                                                           {
     	(yyvsp[-6].ident)->name_parts->push_back("[]");
         QualifiedName *name = new QualifiedName(new std::vector<std::string>({*(yyvsp[-3].string)}));
@@ -1671,11 +1669,11 @@ yyreduce:
     	delete (yyvsp[-3].string);
     	printParseInfo("var_decl (array) (var_mutable_flag qualified_name LBRACKET RBRACKET IDENTIFIER assign", yylineno);
     }
-#line 1675 "./src/core/parser/parser.cpp"
+#line 1673 "./src/core/parser/parser.cpp"
     break;
 
   case 30: /* var_decl: var_mutable_flag qualified_name LBRACKET expression RBRACKET IDENTIFIER assign_nullable_flag ASSIGN expression  */
-#line 250 "./src/core/parser/parser.y"
+#line 248 "./src/core/parser/parser.y"
                                                                                                                      {
     	(yyvsp[-7].ident)->name_parts->push_back("[]");
     	(yyval.var_decl) = new VarDecl((yyvsp[-7].ident), new QualifiedName(new std::vector<std::string>({*(yyvsp[-3].string)})), (yyvsp[-8].boolval), (yyvsp[-3].string), (yyvsp[0].expr), (yyvsp[-5].expr));
@@ -1683,593 +1681,593 @@ yyreduce:
     	delete (yyvsp[-3].string);
     	printParseInfo("var_decl (array) (var_mutable_flag qualified_name LBRACKET RBRACKET IDENTIFIER assign", yylineno);
     }
-#line 1687 "./src/core/parser/parser.cpp"
+#line 1685 "./src/core/parser/parser.cpp"
     break;
 
   case 31: /* var_mutable_flag: VAR  */
-#line 260 "./src/core/parser/parser.y"
+#line 258 "./src/core/parser/parser.y"
         { (yyval.boolval) = { true }; }
-#line 1693 "./src/core/parser/parser.cpp"
+#line 1691 "./src/core/parser/parser.cpp"
     break;
 
   case 32: /* var_mutable_flag: IMT  */
-#line 261 "./src/core/parser/parser.y"
+#line 259 "./src/core/parser/parser.y"
           { (yyval.boolval) = { false }; }
-#line 1699 "./src/core/parser/parser.cpp"
+#line 1697 "./src/core/parser/parser.cpp"
     break;
 
   case 33: /* var_mutable_flag: %empty  */
-#line 262 "./src/core/parser/parser.y"
+#line 260 "./src/core/parser/parser.y"
                   { (yyval.boolval) = { false }; }
-#line 1705 "./src/core/parser/parser.cpp"
+#line 1703 "./src/core/parser/parser.cpp"
     break;
 
   case 34: /* assign_nullable_flag: NULLABLE  */
-#line 266 "./src/core/parser/parser.y"
+#line 264 "./src/core/parser/parser.y"
              { (yyval.boolval) = { true }; }
-#line 1711 "./src/core/parser/parser.cpp"
+#line 1709 "./src/core/parser/parser.cpp"
     break;
 
   case 35: /* assign_nullable_flag: NON_NULLABLE  */
-#line 267 "./src/core/parser/parser.y"
+#line 265 "./src/core/parser/parser.y"
                    { (yyval.boolval) = { false }; }
-#line 1717 "./src/core/parser/parser.cpp"
+#line 1715 "./src/core/parser/parser.cpp"
     break;
 
   case 36: /* assign_nullable_flag: %empty  */
-#line 268 "./src/core/parser/parser.y"
+#line 266 "./src/core/parser/parser.y"
                   { (yyval.boolval) = { false }; }
-#line 1723 "./src/core/parser/parser.cpp"
+#line 1721 "./src/core/parser/parser.cpp"
     break;
 
   case 37: /* extern_decl: EXTERN FUN qualified_name LPAREN var_decl_list RPAREN qualified_name SEMICOLON  */
-#line 272 "./src/core/parser/parser.y"
+#line 270 "./src/core/parser/parser.y"
                                                                                    {
         (yyval.stmt) = new ProtoDecl((yyvsp[-1].ident), (yyvsp[-5].ident), *(yyvsp[-3].varvec));
         delete (yyvsp[-3].varvec);
         printParseInfo("extern_decl", yylineno);
     }
-#line 1733 "./src/core/parser/parser.cpp"
+#line 1731 "./src/core/parser/parser.cpp"
     break;
 
   case 38: /* function_declaration: FUN qualified_name LPAREN var_decl_list RPAREN block  */
-#line 280 "./src/core/parser/parser.y"
+#line 278 "./src/core/parser/parser.y"
                                                          {
         (yyval.stmt) = new FuncDecl(new QualifiedName(), (yyvsp[-4].ident), *(yyvsp[-2].varvec), (yyvsp[0].block));
         delete (yyvsp[-2].varvec);
         printParseInfo("function_declaration (without return type)", yylineno);
     }
-#line 1743 "./src/core/parser/parser.cpp"
+#line 1741 "./src/core/parser/parser.cpp"
     break;
 
   case 39: /* function_declaration: FUN qualified_name LPAREN var_decl_list RPAREN qualified_name block  */
-#line 285 "./src/core/parser/parser.y"
+#line 283 "./src/core/parser/parser.y"
                                                                            {
         (yyval.stmt) = new FuncDecl((yyvsp[-1].ident), (yyvsp[-5].ident), *(yyvsp[-3].varvec), (yyvsp[0].block));
         delete (yyvsp[-3].varvec);
         printParseInfo("function_declaration (with return type)", yylineno);
     }
-#line 1753 "./src/core/parser/parser.cpp"
+#line 1751 "./src/core/parser/parser.cpp"
     break;
 
   case 40: /* var_decl_list: %empty  */
-#line 293 "./src/core/parser/parser.y"
+#line 291 "./src/core/parser/parser.y"
                      {
     	(yyval.varvec) = new std::vector<VarDecl*>();
     	printParseInfo("var_decl_list (empty list)", yylineno);
     }
-#line 1762 "./src/core/parser/parser.cpp"
+#line 1760 "./src/core/parser/parser.cpp"
     break;
 
   case 41: /* var_decl_list: var_decl  */
-#line 297 "./src/core/parser/parser.y"
+#line 295 "./src/core/parser/parser.y"
                {
         (yyval.varvec) = new std::vector<VarDecl*>{(yyvsp[0].var_decl)};
         printParseInfo("var_decl_list (single var_decl)", yylineno);
     }
-#line 1771 "./src/core/parser/parser.cpp"
+#line 1769 "./src/core/parser/parser.cpp"
     break;
 
   case 42: /* var_decl_list: var_decl_list COMMA var_decl  */
-#line 301 "./src/core/parser/parser.y"
+#line 299 "./src/core/parser/parser.y"
                                    {
         (yyvsp[-2].varvec)->push_back((yyvsp[0].var_decl));
         (yyval.varvec) = (yyvsp[-2].varvec);
         printParseInfo("var_decl_list (multiple var_decl)", yylineno);
     }
-#line 1781 "./src/core/parser/parser.cpp"
+#line 1779 "./src/core/parser/parser.cpp"
     break;
 
   case 43: /* qualified_name: IDENTIFIER  */
-#line 309 "./src/core/parser/parser.y"
+#line 307 "./src/core/parser/parser.y"
                {
         (yyval.ident) = new QualifiedName({*(yyvsp[0].string)});
         delete (yyvsp[0].string); // Clean up the string
         printParseInfo("qualified_name (single IDENTIFIER)", yylineno);
     }
-#line 1791 "./src/core/parser/parser.cpp"
+#line 1789 "./src/core/parser/parser.cpp"
     break;
 
   case 44: /* qualified_name: qualified_name DOT IDENTIFIER  */
-#line 314 "./src/core/parser/parser.y"
+#line 312 "./src/core/parser/parser.y"
                                     {
         (yyval.ident) = (yyvsp[-2].ident);
         (yyval.ident)->name_parts->push_back(*(yyvsp[0].string));
         delete (yyvsp[0].string); // Clean up the string
         printParseInfo("qualified_name (nested)", yylineno);
     }
-#line 1802 "./src/core/parser/parser.cpp"
+#line 1800 "./src/core/parser/parser.cpp"
     break;
 
   case 45: /* binary_expression: expression binary_operator expression  */
-#line 324 "./src/core/parser/parser.y"
+#line 322 "./src/core/parser/parser.y"
                                          {
         (yyval.expr) = new BinaryExpr((yyvsp[-1].token), (yyvsp[-2].expr), (yyvsp[0].expr));
         printParseInfo("binary_expression", yylineno);
     }
-#line 1811 "./src/core/parser/parser.cpp"
+#line 1809 "./src/core/parser/parser.cpp"
     break;
 
   case 46: /* expression: INT_TOKEN  */
-#line 332 "./src/core/parser/parser.y"
+#line 330 "./src/core/parser/parser.y"
               {
         (yyval.expr) = new IntegerExpr(atol((yyvsp[0].string)->c_str()));
         printParseInfo("expression (INT_TOKEN)", yylineno);
     }
-#line 1820 "./src/core/parser/parser.cpp"
+#line 1818 "./src/core/parser/parser.cpp"
     break;
 
   case 47: /* expression: DOUBLE_TOKEN  */
-#line 336 "./src/core/parser/parser.y"
+#line 334 "./src/core/parser/parser.y"
                    {
         (yyval.expr) = new DoubleExpr(atof((yyvsp[0].string)->c_str()));
         printParseInfo("expression (DOUBLE_TOKEN)", yylineno);
     }
-#line 1829 "./src/core/parser/parser.cpp"
+#line 1827 "./src/core/parser/parser.cpp"
     break;
 
   case 48: /* expression: STRING_LITERAL  */
-#line 340 "./src/core/parser/parser.y"
+#line 338 "./src/core/parser/parser.y"
                      {
         (yyval.expr) = new StringExpr((yyvsp[0].string)->substr(1, (yyvsp[0].string)->length() - 2));
         delete (yyvsp[0].string); // Clean up the string
         printParseInfo("expression (STRING_LITERAL)", yylineno);
     }
-#line 1839 "./src/core/parser/parser.cpp"
+#line 1837 "./src/core/parser/parser.cpp"
     break;
 
   case 49: /* expression: qualified_name  */
-#line 345 "./src/core/parser/parser.y"
+#line 343 "./src/core/parser/parser.y"
                      {
         (yyval.expr) = new VarExpr((yyvsp[0].ident));
         printParseInfo("expression (qualified_name)", yylineno);
     }
-#line 1848 "./src/core/parser/parser.cpp"
+#line 1846 "./src/core/parser/parser.cpp"
     break;
 
   case 50: /* expression: LPAREN expression RPAREN  */
-#line 349 "./src/core/parser/parser.y"
+#line 347 "./src/core/parser/parser.y"
                                {
         (yyval.expr) = (yyvsp[-1].expr);
         printParseInfo("expression (parenthesized)", yylineno);
     }
-#line 1857 "./src/core/parser/parser.cpp"
+#line 1855 "./src/core/parser/parser.cpp"
     break;
 
   case 51: /* expression: qualified_name LPAREN expr_list RPAREN  */
-#line 353 "./src/core/parser/parser.y"
+#line 351 "./src/core/parser/parser.y"
                                              {
         (yyval.expr) = new CallExpr((yyvsp[-3].ident), *(yyvsp[-1].exprvec));
         printParseInfo("expression (function call)", yylineno);
     }
-#line 1866 "./src/core/parser/parser.cpp"
+#line 1864 "./src/core/parser/parser.cpp"
     break;
 
   case 52: /* expression: binary_expression  */
-#line 357 "./src/core/parser/parser.y"
+#line 355 "./src/core/parser/parser.y"
                         {
 	(yyval.expr) = (yyvsp[0].expr);
         printParseInfo("expression (binary_expression)", yylineno);
     }
-#line 1875 "./src/core/parser/parser.cpp"
+#line 1873 "./src/core/parser/parser.cpp"
     break;
 
   case 53: /* expression: unary_expression  */
-#line 361 "./src/core/parser/parser.y"
+#line 359 "./src/core/parser/parser.y"
                        {
         (yyval.expr) = (yyvsp[0].expr);
         printParseInfo("expression (unary_expression)", yylineno);
     }
-#line 1884 "./src/core/parser/parser.cpp"
+#line 1882 "./src/core/parser/parser.cpp"
     break;
 
   case 54: /* expression: LBRACKET expr_list RBRACKET  */
-#line 365 "./src/core/parser/parser.y"
+#line 363 "./src/core/parser/parser.y"
                                   {
         (yyval.expr) = new ListExpr((yyvsp[-1].exprvec));
         printParseInfo("expression (list)", yylineno);
     }
-#line 1893 "./src/core/parser/parser.cpp"
+#line 1891 "./src/core/parser/parser.cpp"
     break;
 
   case 55: /* expression: qualified_name LBRACKET expression RBRACKET  */
-#line 369 "./src/core/parser/parser.y"
+#line 367 "./src/core/parser/parser.y"
                                                   {
         (yyval.expr) = new ArrayExpr((yyvsp[-1].expr), (yyvsp[-3].ident));
         printParseInfo("expression (array access)", yylineno);
     }
-#line 1902 "./src/core/parser/parser.cpp"
+#line 1900 "./src/core/parser/parser.cpp"
     break;
 
   case 56: /* unary_expression: unary_operator expression  */
-#line 376 "./src/core/parser/parser.y"
+#line 374 "./src/core/parser/parser.y"
                               {
         (yyval.expr) = new UnaryExpr((yyvsp[-1].token), (yyvsp[0].expr));
         printParseInfo("unary_expression", yylineno);
     }
-#line 1911 "./src/core/parser/parser.cpp"
+#line 1909 "./src/core/parser/parser.cpp"
     break;
 
   case 57: /* binary_operator: PLUS  */
-#line 383 "./src/core/parser/parser.y"
+#line 381 "./src/core/parser/parser.y"
          { (yyval.token) = PLUS; }
-#line 1917 "./src/core/parser/parser.cpp"
+#line 1915 "./src/core/parser/parser.cpp"
     break;
 
   case 58: /* binary_operator: MINUS  */
-#line 384 "./src/core/parser/parser.y"
+#line 382 "./src/core/parser/parser.y"
             { (yyval.token) = MINUS; }
-#line 1923 "./src/core/parser/parser.cpp"
+#line 1921 "./src/core/parser/parser.cpp"
     break;
 
   case 59: /* binary_operator: TIMES  */
-#line 385 "./src/core/parser/parser.y"
+#line 383 "./src/core/parser/parser.y"
             { (yyval.token) = TIMES; }
-#line 1929 "./src/core/parser/parser.cpp"
+#line 1927 "./src/core/parser/parser.cpp"
     break;
 
   case 60: /* binary_operator: DIVIDE  */
-#line 386 "./src/core/parser/parser.y"
+#line 384 "./src/core/parser/parser.y"
              { (yyval.token) = DIVIDE; }
-#line 1935 "./src/core/parser/parser.cpp"
+#line 1933 "./src/core/parser/parser.cpp"
     break;
 
   case 61: /* binary_operator: MOD  */
-#line 387 "./src/core/parser/parser.y"
+#line 385 "./src/core/parser/parser.y"
           { (yyval.token) = MOD; }
-#line 1941 "./src/core/parser/parser.cpp"
+#line 1939 "./src/core/parser/parser.cpp"
     break;
 
   case 62: /* binary_operator: LT  */
-#line 388 "./src/core/parser/parser.y"
+#line 386 "./src/core/parser/parser.y"
          { (yyval.token) = LT; }
-#line 1947 "./src/core/parser/parser.cpp"
+#line 1945 "./src/core/parser/parser.cpp"
     break;
 
   case 63: /* binary_operator: LE  */
-#line 389 "./src/core/parser/parser.y"
+#line 387 "./src/core/parser/parser.y"
          { (yyval.token) = LE; }
-#line 1953 "./src/core/parser/parser.cpp"
+#line 1951 "./src/core/parser/parser.cpp"
     break;
 
   case 64: /* binary_operator: GT  */
-#line 390 "./src/core/parser/parser.y"
+#line 388 "./src/core/parser/parser.y"
          { (yyval.token) = GT; }
-#line 1959 "./src/core/parser/parser.cpp"
+#line 1957 "./src/core/parser/parser.cpp"
     break;
 
   case 65: /* binary_operator: GE  */
-#line 391 "./src/core/parser/parser.y"
+#line 389 "./src/core/parser/parser.y"
          { (yyval.token) = GE; }
-#line 1965 "./src/core/parser/parser.cpp"
+#line 1963 "./src/core/parser/parser.cpp"
     break;
 
   case 66: /* binary_operator: EQ  */
-#line 392 "./src/core/parser/parser.y"
+#line 390 "./src/core/parser/parser.y"
          { (yyval.token) = EQ; }
-#line 1971 "./src/core/parser/parser.cpp"
+#line 1969 "./src/core/parser/parser.cpp"
     break;
 
   case 67: /* binary_operator: NE  */
-#line 393 "./src/core/parser/parser.y"
+#line 391 "./src/core/parser/parser.y"
          { (yyval.token) = NE; }
-#line 1977 "./src/core/parser/parser.cpp"
+#line 1975 "./src/core/parser/parser.cpp"
     break;
 
   case 68: /* binary_operator: AND  */
-#line 394 "./src/core/parser/parser.y"
+#line 392 "./src/core/parser/parser.y"
           { (yyval.token) = AND; }
-#line 1983 "./src/core/parser/parser.cpp"
+#line 1981 "./src/core/parser/parser.cpp"
     break;
 
   case 69: /* binary_operator: OR  */
-#line 395 "./src/core/parser/parser.y"
+#line 393 "./src/core/parser/parser.y"
          { (yyval.token) = OR; }
-#line 1989 "./src/core/parser/parser.cpp"
+#line 1987 "./src/core/parser/parser.cpp"
     break;
 
   case 70: /* binary_operator: PLUS_ASSIGN  */
-#line 396 "./src/core/parser/parser.y"
+#line 394 "./src/core/parser/parser.y"
                   { (yyval.token) = PLUS_ASSIGN; }
-#line 1995 "./src/core/parser/parser.cpp"
+#line 1993 "./src/core/parser/parser.cpp"
     break;
 
   case 71: /* binary_operator: MINUS_ASSIGN  */
-#line 397 "./src/core/parser/parser.y"
+#line 395 "./src/core/parser/parser.y"
                    { (yyval.token) = MINUS_ASSIGN; }
-#line 2001 "./src/core/parser/parser.cpp"
+#line 1999 "./src/core/parser/parser.cpp"
     break;
 
   case 72: /* binary_operator: TIMES_ASSIGN  */
-#line 398 "./src/core/parser/parser.y"
+#line 396 "./src/core/parser/parser.y"
                    { (yyval.token) = TIMES_ASSIGN; }
-#line 2007 "./src/core/parser/parser.cpp"
+#line 2005 "./src/core/parser/parser.cpp"
     break;
 
   case 73: /* binary_operator: DIVIDE_ASSIGN  */
-#line 399 "./src/core/parser/parser.y"
+#line 397 "./src/core/parser/parser.y"
                     { (yyval.token) = DIVIDE_ASSIGN; }
-#line 2013 "./src/core/parser/parser.cpp"
+#line 2011 "./src/core/parser/parser.cpp"
     break;
 
   case 74: /* binary_operator: MOD_ASSIGN  */
-#line 400 "./src/core/parser/parser.y"
+#line 398 "./src/core/parser/parser.y"
                  { (yyval.token) = MOD_ASSIGN; }
-#line 2019 "./src/core/parser/parser.cpp"
+#line 2017 "./src/core/parser/parser.cpp"
     break;
 
   case 75: /* binary_operator: LSHIFT  */
-#line 401 "./src/core/parser/parser.y"
+#line 399 "./src/core/parser/parser.y"
              { (yyval.token) = LSHIFT; }
-#line 2025 "./src/core/parser/parser.cpp"
+#line 2023 "./src/core/parser/parser.cpp"
     break;
 
   case 76: /* binary_operator: RSHIFT  */
-#line 402 "./src/core/parser/parser.y"
+#line 400 "./src/core/parser/parser.y"
              { (yyval.token) = RSHIFT; }
-#line 2031 "./src/core/parser/parser.cpp"
+#line 2029 "./src/core/parser/parser.cpp"
     break;
 
   case 77: /* binary_operator: URSHIFT  */
-#line 403 "./src/core/parser/parser.y"
+#line 401 "./src/core/parser/parser.y"
               { (yyval.token) = URSHIFT; }
-#line 2037 "./src/core/parser/parser.cpp"
+#line 2035 "./src/core/parser/parser.cpp"
     break;
 
   case 78: /* binary_operator: XOR  */
-#line 404 "./src/core/parser/parser.y"
+#line 402 "./src/core/parser/parser.y"
           { (yyval.token) = XOR; }
-#line 2043 "./src/core/parser/parser.cpp"
+#line 2041 "./src/core/parser/parser.cpp"
     break;
 
   case 79: /* unary_operator: MINUS  */
-#line 408 "./src/core/parser/parser.y"
+#line 406 "./src/core/parser/parser.y"
           { (yyval.token) = MINUS; }
-#line 2049 "./src/core/parser/parser.cpp"
+#line 2047 "./src/core/parser/parser.cpp"
     break;
 
   case 80: /* unary_operator: PLUS  */
-#line 409 "./src/core/parser/parser.y"
+#line 407 "./src/core/parser/parser.y"
            { (yyval.token) = PLUS; }
-#line 2055 "./src/core/parser/parser.cpp"
+#line 2053 "./src/core/parser/parser.cpp"
     break;
 
   case 81: /* unary_operator: NOT  */
-#line 410 "./src/core/parser/parser.y"
+#line 408 "./src/core/parser/parser.y"
           { (yyval.token) = NOT; }
-#line 2061 "./src/core/parser/parser.cpp"
+#line 2059 "./src/core/parser/parser.cpp"
     break;
 
   case 82: /* unary_operator: INC  */
-#line 411 "./src/core/parser/parser.y"
+#line 409 "./src/core/parser/parser.y"
           { (yyval.token) = INC; }
-#line 2067 "./src/core/parser/parser.cpp"
+#line 2065 "./src/core/parser/parser.cpp"
     break;
 
   case 83: /* unary_operator: DEC  */
-#line 412 "./src/core/parser/parser.y"
+#line 410 "./src/core/parser/parser.y"
           { (yyval.token) = DEC; }
-#line 2073 "./src/core/parser/parser.cpp"
+#line 2071 "./src/core/parser/parser.cpp"
     break;
 
   case 84: /* unary_operator: TIMES  */
-#line 413 "./src/core/parser/parser.y"
+#line 411 "./src/core/parser/parser.y"
             { (yyval.token) = TIMES; }
-#line 2079 "./src/core/parser/parser.cpp"
+#line 2077 "./src/core/parser/parser.cpp"
     break;
 
   case 85: /* unary_operator: BIT_AND  */
-#line 414 "./src/core/parser/parser.y"
+#line 412 "./src/core/parser/parser.y"
               { (yyval.token) = BIT_AND; }
-#line 2085 "./src/core/parser/parser.cpp"
+#line 2083 "./src/core/parser/parser.cpp"
     break;
 
   case 86: /* expr_list: %empty  */
-#line 418 "./src/core/parser/parser.y"
+#line 416 "./src/core/parser/parser.y"
                 {
 	(yyval.exprvec) = new std::vector<Expr*>();
 	printParseInfo("expr_list (empty)", yylineno);
     }
-#line 2094 "./src/core/parser/parser.cpp"
+#line 2092 "./src/core/parser/parser.cpp"
     break;
 
   case 87: /* expr_list: expression  */
-#line 422 "./src/core/parser/parser.y"
+#line 420 "./src/core/parser/parser.y"
                 {
         (yyval.exprvec) = new std::vector<Expr*>{(yyvsp[0].expr)};
         printParseInfo("expr_list (singleexpression)", yylineno);
     }
-#line 2103 "./src/core/parser/parser.cpp"
+#line 2101 "./src/core/parser/parser.cpp"
     break;
 
   case 88: /* expr_list: expr_list COMMA expression  */
-#line 426 "./src/core/parser/parser.y"
+#line 424 "./src/core/parser/parser.y"
                                 {
         (yyvsp[-2].exprvec)->push_back((yyvsp[0].expr));
         (yyval.exprvec) = (yyvsp[-2].exprvec);
         printParseInfo("expr_list (multipleexpressions)", yylineno);
     }
-#line 2113 "./src/core/parser/parser.cpp"
+#line 2111 "./src/core/parser/parser.cpp"
     break;
 
   case 89: /* if_statement: IF expression block  */
-#line 434 "./src/core/parser/parser.y"
+#line 432 "./src/core/parser/parser.y"
                         {
         (yyval.stmt) = new IfStmt((yyvsp[-1].expr), (yyvsp[0].block), nullptr);
         printParseInfo("if_statement (no else)", yylineno);
     }
-#line 2122 "./src/core/parser/parser.cpp"
+#line 2120 "./src/core/parser/parser.cpp"
     break;
 
   case 90: /* if_statement: IF expression block ELSE block  */
-#line 438 "./src/core/parser/parser.y"
+#line 436 "./src/core/parser/parser.y"
                                      {
         (yyval.stmt) = new IfStmt((yyvsp[-3].expr), (yyvsp[-2].block), (yyvsp[0].block));
         printParseInfo("if_statement (with else)", yylineno);
     }
-#line 2131 "./src/core/parser/parser.cpp"
+#line 2129 "./src/core/parser/parser.cpp"
     break;
 
   case 91: /* if_statement: IF expression block elif_stmts  */
-#line 442 "./src/core/parser/parser.y"
+#line 440 "./src/core/parser/parser.y"
                                      {
         (yyval.stmt) = new IfStmt((yyvsp[-2].expr), (yyvsp[-1].block), nullptr, (yyvsp[0].stmtvec));
         printParseInfo("if_statement (with elif_stmts)", yylineno);
     }
-#line 2140 "./src/core/parser/parser.cpp"
+#line 2138 "./src/core/parser/parser.cpp"
     break;
 
   case 92: /* if_statement: IF expression block elif_stmts ELSE block  */
-#line 446 "./src/core/parser/parser.y"
+#line 444 "./src/core/parser/parser.y"
                                                 {
         (yyval.stmt) = new IfStmt((yyvsp[-4].expr), (yyvsp[-3].block), (yyvsp[0].block), (yyvsp[-2].stmtvec));
         printParseInfo("if_statement (with elif_stmts)", yylineno);
     }
-#line 2149 "./src/core/parser/parser.cpp"
+#line 2147 "./src/core/parser/parser.cpp"
     break;
 
   case 93: /* elif_stmts: %empty  */
-#line 453 "./src/core/parser/parser.y"
+#line 451 "./src/core/parser/parser.y"
                 {
         (yyval.stmtvec) = new std::vector<Stmt*>();
         printParseInfo("elif_stmts (empty)", yylineno);
     }
-#line 2158 "./src/core/parser/parser.cpp"
+#line 2156 "./src/core/parser/parser.cpp"
     break;
 
   case 94: /* elif_stmts: elif_statement elif_stmts  */
-#line 457 "./src/core/parser/parser.y"
+#line 455 "./src/core/parser/parser.y"
                                 {
         (yyval.stmtvec)->push_back((yyvsp[-1].stmt));
         printParseInfo("elif_stmts (with elif_statement)", yylineno);
     }
-#line 2167 "./src/core/parser/parser.cpp"
+#line 2165 "./src/core/parser/parser.cpp"
     break;
 
   case 95: /* elif_statement: ELIF expression block  */
-#line 464 "./src/core/parser/parser.y"
+#line 462 "./src/core/parser/parser.y"
                           {
         (yyval.stmt) = new ElifStmt((yyvsp[-1].expr), (yyvsp[0].block));
         printParseInfo("elif_statement", yylineno);
     }
-#line 2176 "./src/core/parser/parser.cpp"
+#line 2174 "./src/core/parser/parser.cpp"
     break;
 
   case 96: /* for_statement: FOR for_var_decl SEMICOLON expression SEMICOLON expression block  */
-#line 471 "./src/core/parser/parser.y"
+#line 469 "./src/core/parser/parser.y"
                                                                      {
         (yyval.stmt) = new ForStmt((yyvsp[-5].var_decl), (yyvsp[-3].expr), (yyvsp[-1].expr), (yyvsp[0].block));
         printParseInfo("for_statement", yylineno);
     }
-#line 2185 "./src/core/parser/parser.cpp"
+#line 2183 "./src/core/parser/parser.cpp"
     break;
 
   case 97: /* break_statement: BREAK  */
-#line 478 "./src/core/parser/parser.y"
+#line 476 "./src/core/parser/parser.y"
           {
         (yyval.stmt) = new BreakStmt();
         printParseInfo("break_statement", yylineno);
     }
-#line 2194 "./src/core/parser/parser.cpp"
+#line 2192 "./src/core/parser/parser.cpp"
     break;
 
   case 98: /* break_statement: BREAK expression  */
-#line 482 "./src/core/parser/parser.y"
+#line 480 "./src/core/parser/parser.y"
                        {
         (yyval.stmt) = new BreakStmt((yyvsp[0].expr));
         printParseInfo("break_statement", yylineno);
     }
-#line 2203 "./src/core/parser/parser.cpp"
+#line 2201 "./src/core/parser/parser.cpp"
     break;
 
   case 99: /* for_var_decl: qualified_name IDENTIFIER ASSIGN expression  */
-#line 489 "./src/core/parser/parser.y"
+#line 487 "./src/core/parser/parser.y"
                                                 {
         (yyval.var_decl) = new VarDecl((yyvsp[-3].ident), new QualifiedName(new std::vector<std::string>({*(yyvsp[-2].string)})), true, true, (yyvsp[0].expr));
         printParseInfo("for_var_decl (qualified_name qualified_name IDENTIFIER ASSIGN expression)", yylineno);
     }
-#line 2212 "./src/core/parser/parser.cpp"
+#line 2210 "./src/core/parser/parser.cpp"
     break;
 
   case 100: /* for_var_decl: qualified_name IDENTIFIER  */
-#line 493 "./src/core/parser/parser.y"
+#line 491 "./src/core/parser/parser.y"
                                 {
         (yyval.var_decl) = new VarDecl((yyvsp[-1].ident), new QualifiedName(new std::vector<std::string>({*(yyvsp[0].string)})), true, true, nullptr);
         printParseInfo("for_var_decl (qualified_name qualified_name IDENTIFIER)", yylineno);
     }
-#line 2221 "./src/core/parser/parser.cpp"
+#line 2219 "./src/core/parser/parser.cpp"
     break;
 
   case 101: /* struct_decl: STRUCT IDENTIFIER LBRACE struct_field_list RBRACE SEMICOLON  */
-#line 500 "./src/core/parser/parser.y"
+#line 498 "./src/core/parser/parser.y"
                                                                 {
         (yyval.stmt) = new StructDecl(new QualifiedName({*(yyvsp[-4].string)}), *(yyvsp[-2].varvec));
         delete (yyvsp[-4].string);
         delete (yyvsp[-2].varvec);
         printParseInfo("struct_decl", yylineno);
     }
-#line 2232 "./src/core/parser/parser.cpp"
+#line 2230 "./src/core/parser/parser.cpp"
     break;
 
   case 102: /* struct_field_list: %empty  */
-#line 509 "./src/core/parser/parser.y"
+#line 507 "./src/core/parser/parser.y"
                 {
         (yyval.varvec) = new std::vector<VarDecl*>();
         printParseInfo("struct_field_list (empty)", yylineno);
     }
-#line 2241 "./src/core/parser/parser.cpp"
+#line 2239 "./src/core/parser/parser.cpp"
     break;
 
   case 103: /* struct_field_list: struct_field_list var_decl SEMICOLON  */
-#line 513 "./src/core/parser/parser.y"
+#line 511 "./src/core/parser/parser.y"
                                            {
         (yyvsp[-2].varvec)->push_back((yyvsp[-1].var_decl));
         (yyval.varvec) = (yyvsp[-2].varvec);
         printParseInfo("struct_field_list (with var_decl)", yylineno);
     }
-#line 2251 "./src/core/parser/parser.cpp"
+#line 2249 "./src/core/parser/parser.cpp"
     break;
 
   case 104: /* assign_expr: qualified_name ASSIGN expression  */
-#line 521 "./src/core/parser/parser.y"
+#line 519 "./src/core/parser/parser.y"
                                      {
         (yyval.stmt) = new AssignExpr((yyvsp[-2].ident), (yyvsp[0].expr));
         printParseInfo("assignment", yylineno);
     }
-#line 2260 "./src/core/parser/parser.cpp"
+#line 2258 "./src/core/parser/parser.cpp"
     break;
 
   case 105: /* array_assign_stmt: qualified_name LBRACKET expression RBRACKET ASSIGN expression SEMICOLON  */
-#line 528 "./src/core/parser/parser.y"
+#line 526 "./src/core/parser/parser.y"
                                                                             {
         (yyval.stmt) = new ArrayAssignExpr((yyvsp[-6].ident), (yyvsp[-4].expr), (yyvsp[-1].expr));
         printParseInfo("array_assign_expr", yylineno);
     }
-#line 2269 "./src/core/parser/parser.cpp"
+#line 2267 "./src/core/parser/parser.cpp"
     break;
 
 
-#line 2273 "./src/core/parser/parser.cpp"
+#line 2271 "./src/core/parser/parser.cpp"
 
       default: break;
     }
@@ -2462,4 +2460,4 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 534 "./src/core/parser/parser.y"
+#line 532 "./src/core/parser/parser.y"

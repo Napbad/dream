@@ -3,7 +3,6 @@
 //
 
 
-
 #include <iostream>
 
 #include <llvm/Bitstream/BitstreamReader.h>
@@ -25,6 +24,7 @@
 #include <llvm/Target/TargetOptions.h>
 #include <llvm/TargetParser/Host.h>
 #include <optional>
+#include <llvm/IRReader/IRReader.h>
 
 #include "codegen_inter.h"
 
@@ -37,10 +37,10 @@
 #include "src/core/utilities/llvm_util.h"
 #include "basicElementGen_d.h"
 #include "funGen_sys.h"
+#include "check/variableCheck.h"
 #include "src/core/common/reserve.h"
 #include "preprocessing/includeAnaylize.h"
 
-#include "llvm/IRReader/IRReader.h"
 
 namespace dap
 {
@@ -135,19 +135,27 @@ Value *QualifiedName::codeGen(inter_gen::InterGenContext *ctx)
 
 Value *handleStructName(const QualifiedName *name, inter_gen::InterGenContext *ctx)
 {
-    Value *currentPtr = ctx->locals()[name->getFirstName()];
+    auto [value, metadata] = ctx->locals()[name->getFirstName()];
+    Value *currentPtr = value;
 
     StringRef structName;
-    if (gepMapping->contains(ctx->locals()[name->getFirstName()]))
+    if (gepMapping->contains(value))
     {
         structName = dyn_cast<StructType>(
-                dyn_cast<AllocaInst>(gepMapping->at(ctx->locals()[name->getFirstName()]))->getAllocatedType())
+                dyn_cast<AllocaInst>(gepMapping->at(value))->getAllocatedType())
             ->getStructName();
     }
     else
     {
-        structName = dyn_cast<StructType>(dyn_cast<AllocaInst>(ctx->locals()[name->getFirstName()])->getAllocatedType())
+        AllocaInst *allocaInst = dyn_cast<AllocaInst>(ctx->locals()[name->getFirstName()].first);
+        if (!allocaInst)
+        {
+            REPORT_ERROR("Unknown variable name " + name->getFirstName(), __FILE__, __LINE__);
+            return nullptr;
+        }
+        structName = dyn_cast<StructType>(allocaInst->getAllocatedType())
             ->getStructName();
+
     }
     const string str = structName.str();
     const inter_gen::StructMetaData *metaData = ctx->structs[str];
@@ -267,7 +275,7 @@ Value *handleArgumentArrayExpr(const ArrayExpr *Expr, Value *arrVal, inter_gen::
     return nullptr;
 }
 
-Value *handleAllocaArrayExpr(Value *arrVal, inter_gen::InterGenContext *ctx, const Function *fun,
+Value *handleAllocaArrayExpr(Value *arrVal, inter_gen::InterGenContext *ctx,
                              Value *idxVal)
 {
     auto *arr = dyn_cast<AllocaInst>(arrVal);
@@ -305,7 +313,6 @@ Value *handleAllocaArrayExpr(Value *arrVal, inter_gen::InterGenContext *ctx, con
     return BUILDER.CreateLoad(arrType->getArrayElementType(), elementValue, "array_access_load");
 }
 
-// TODO : amend it
 Value *ArrayExpr::codeGen(inter_gen::InterGenContext *ctx)
 {
     // Step 1: Generate code for the index Expression
@@ -321,7 +328,6 @@ Value *ArrayExpr::codeGen(inter_gen::InterGenContext *ctx)
         REPORT_ERROR("Index Expression must evaluate to an integer", __FILE__, __LINE__);
         return nullptr; // Error in generating code for the index
     }
-    map<string, Value *> pairs = ctx->locals();
     Value *arrVal = ctx->getVal(name->getName());
     if (!llvm::isa<AllocaInst>(arrVal) && !llvm::isa<Argument>(arrVal))
     {
@@ -335,7 +341,7 @@ Value *ArrayExpr::codeGen(inter_gen::InterGenContext *ctx)
     }
     if (llvm::isa<AllocaInst>(arrVal))
     {
-        return handleAllocaArrayExpr(arrVal, ctx, ctx->currBlock()->getParent(), indexValue);
+        return handleAllocaArrayExpr(arrVal, ctx, indexValue);
     }
 
     REPORT_ERROR("Unknown variable type", __FILE__, __LINE__);
@@ -557,7 +563,6 @@ Value *CallExpr::codeGen(inter_gen::InterGenContext *ctx)
 {
     // Look up the callee function by name
     Function *calleeFun = MODULE->getFunction(callee->getName());
-    inter_gen::FunctionMetaData * functionMetaData = ctx->metaData->getFunction(callee->getName());
 
     if (calleeFun == nullptr)
     {
@@ -645,7 +650,9 @@ Function *ProtoDecl::codeGen(inter_gen::InterGenContext *ctx)
     unsigned idx = 0;
     for (auto &arg : fun->args())
     {
-        funMetaData->addArg(params[idx]->getName(), &arg, util::typeOf_d(*params[idx]->type, ctx, nullptr));
+        funMetaData->addArg(params[idx]->getName(), &arg, util::typeOf_d(*params[idx]->type, ctx, nullptr),
+                            new inter_gen::VariableMetaData(params[idx]->getName(),
+                                                            util::typeOf_d(*params[idx]->type, ctx, nullptr)));
         arg.setName(params[idx++]->getName());
     }
 
@@ -672,7 +679,8 @@ Function *FuncDecl::codeGen(inter_gen::InterGenContext *ctx)
     Function *fun = Function::Create(funTy, Function::ExternalLinkage, proto->name->getName(), MODULE);
 
     // create the metadata of the function
-    auto funMetaData = new inter_gen::FunctionMetaData(proto->name->getName(), funTy);
+    const auto funMetaData = new inter_gen::FunctionMetaData(proto->name->getName(), funTy);
+    ctx->setCurrFunMetaData(funMetaData);
 
     // Create the entry basic block and set insert point for the builder
     BasicBlock *bblock = BasicBlock::Create(LLVMCTX, "entry", fun, nullptr);
@@ -686,7 +694,12 @@ Function *FuncDecl::codeGen(inter_gen::InterGenContext *ctx)
     for (const auto &param : proto->params)
     {
         Value *argVal = argsVal++;
-        funMetaData->addArg(param->name->getName(), argVal, util::typeOf_d(*param->type, ctx, nullptr));
+        Type *typeOfArg = util::typeOf_d(*param->type, ctx, nullptr);
+        funMetaData->addArg(param->name->getName(),
+                            argVal,
+                            typeOfArg,
+                            new inter_gen::VariableMetaData(param->name->getName(), typeOfArg, param->is_mutable,
+                                                            param->is_nullable));
         argVal->setName(param->getName());
     }
 
@@ -923,7 +936,8 @@ Value *VarDecl::codeGen(inter_gen::InterGenContext *ctx)
         AllocaInst *allocaInst = BUILDER.CreateAlloca(baseType, nullptr, name->getName());
 
         Value *gep = BUILDER.CreateGEP(baseType, dyn_cast<Value>(allocaInst), ConstantInt::get(LLVMCTX, APInt(32, 0)));
-        ctx->locals()[name->getName()] = gep;
+        ctx->locals()[name->getName()] = {
+            gep, new inter_gen::VariableMetaData(name->getName(), gep->getType(), is_mutable, is_nullable)};
         ctx->addPtrValBaseTypeMapping(allocaInst, baseType);
 
         gepMapping->insert(std::make_pair(gep, allocaInst));
@@ -940,7 +954,8 @@ Value *VarDecl::codeGen(inter_gen::InterGenContext *ctx)
 
     // For other variable types, just allocate memory
     AllocaInst *alloc = BUILDER.CreateAlloca(valType, nullptr, name->getName());
-    ctx->locals()[name->getName()] = alloc;
+    ctx->locals()[name->getName()] = {
+        alloc, new inter_gen::VariableMetaData(name->getName(), alloc->getAllocatedType(), is_mutable, is_nullable)};
 
     // If there's an initializer Expression, evaluate it
     if (init != nullptr)
@@ -963,6 +978,10 @@ Value *ReturnStmt::codeGen(inter_gen::InterGenContext *ctx)
     // Generate code for the return expression
     Value *retVal = expr->codeGen(ctx);
 
+    const bool isNullable = inter_gen::isNullable(expr, ctx);
+    ctx->getCurrFunMetaData()->setReturnMetaData(
+        retVal, new inter_gen::VariableMetaData("", retVal->getType(), true, isNullable));
+
     BUILDER.CreateRet(retVal);
     ctx->setCurrRetVal(retVal);
     blockMappingRet_d->insert({ctx->currBlock(), retVal});
@@ -978,7 +997,6 @@ Value *ExprStmt::codeGen(inter_gen::InterGenContext *ctx)
 
 Value *IncludeStmt::codeGen(inter_gen::InterGenContext *ctx)
 {
-    // TODO
     const std::string target = util::getStrFromVec(*path->name_parts, ".");
     if (!moduleMetadataMap_d->contains(target))
     {
@@ -986,10 +1004,6 @@ Value *IncludeStmt::codeGen(inter_gen::InterGenContext *ctx)
     }
 
     const auto moduleMetaData = moduleMetadataMap_d->at(target);
-    // for (Function &fun : moduleMetaData->getModule()->functions())
-    // {
-    // Function::Create(fun.getFunctionType(), Function::ExternalLinkage, fun.getName(), MODULE);
-    // }
     for (const auto fun : moduleMetaData->getFunctions())
     {
         Function::Create(fun->getType(), Function::ExternalLinkage, fun->getName(), MODULE);
@@ -1047,9 +1061,17 @@ Value *handleStructAssign(const QualifiedName *var, Expr *val, inter_gen::InterG
 // AssignExpr: Generates code for an assignment statement
 Value *AssignExpr::codeGen(inter_gen::InterGenContext *ctx)
 {
-    // Look up the left-hand side variable in the local context
-    if (!ctx->locals().contains(lhs->getFirstName()))
+    // check whether the value can be assigned or a value can be assigned to null
+    auto [val, valMetaData] = ctx->getValWithMetadata(lhs->getName());
+    if (!valMetaData->isMutable())
     {
+        REPORT_ERROR("can not assign to a immutable value: " + lhs->getName(), __FILE__, __LINE__);
+        return nullptr;
+    }
+
+    if (!valMetaData->isNullable() && isNullable(rhs, ctx))
+    {
+        REPORT_ERROR("can not assign to a non-nullable value: " + lhs->getName(), __FILE__, __LINE__);
         return nullptr;
     }
 
@@ -1059,7 +1081,7 @@ Value *AssignExpr::codeGen(inter_gen::InterGenContext *ctx)
     }
 
     // Store the result of the right-hand side Expression in the left-hand side
-    // variablea
+    // variable
     return BUILDER.CreateStore(rhs->codeGen(ctx), ctx->getVal(lhs->getName()), false);
 }
 
@@ -1100,7 +1122,7 @@ Value *handleStructAssign(const QualifiedName *var, Expr *val, inter_gen::InterG
 {
     Value *currentPtr = nullptr;
     // Get the pointer to the struct
-    if (Value *local = ctx->locals()[var->getFirstName()])
+    if (Value *local = ctx->locals()[var->getFirstName()].first)
     {
         // if it is a pointer, then load it
         if (llvm::isa<StructType>(local->getType()))
@@ -1114,7 +1136,7 @@ Value *handleStructAssign(const QualifiedName *var, Expr *val, inter_gen::InterG
         else
         {
             // not a pointer, just get the val
-            currentPtr = ctx->locals()[var->getFirstName()];
+            currentPtr = ctx->locals()[var->getFirstName()].first;
         }
     }
     else
@@ -1218,20 +1240,17 @@ Value *UnaryExpr::codeGen(inter_gen::InterGenContext *ctx)
         var = operand->codeGen(ctx);
         varPtr = BUILDER.CreateGEP(var->getType(), var, ConstantInt::get(LLVMCTX, APInt(1, 0)));
         return BUILDER.CreateStore(res, varPtr);
-        break;
     case PLUS_ASSIGN:
         res = BUILDER.CreateAdd(operand->codeGen(ctx), operVal);
         var = operand->codeGen(ctx);
         varPtr = BUILDER.CreateGEP(var->getType(), var, ConstantInt::get(LLVMCTX, APInt(1, 0)));
         return BUILDER.CreateStore(res, varPtr);
-        break;
 
     case MINUS_ASSIGN:
         res = BUILDER.CreateSub(operand->codeGen(ctx), operVal);
         var = operand->codeGen(ctx);
         varPtr = BUILDER.CreateGEP(var->getType(), var, ConstantInt::get(LLVMCTX, APInt(1, 0)));
         return BUILDER.CreateStore(res, varPtr);
-        break;
 
     case TIMES_ASSIGN:
         res = BUILDER.CreateMul(operand->codeGen(ctx), operVal);
@@ -1239,18 +1258,14 @@ Value *UnaryExpr::codeGen(inter_gen::InterGenContext *ctx)
         varPtr = BUILDER.CreateGEP(var->getType(), var, ConstantInt::get(LLVMCTX, APInt(1, 0)));
         return BUILDER.CreateStore(res, varPtr);
 
-        break;
     case MOD_ASSIGN:
         res = BUILDER.CreateSRem(operand->codeGen(ctx), operVal);
         var = operand->codeGen(ctx);
         varPtr = BUILDER.CreateGEP(var->getType(), var, ConstantInt::get(LLVMCTX, APInt(1, 0)));
 
         return BUILDER.CreateStore(res, varPtr);
-        break;
     case NOT:
         return BUILDER.CreateNot(operVal, "not");
-
-        break;
     default:
         return nullptr;
     }
@@ -1310,6 +1325,7 @@ FunctionMetaData *InterGenContext::getFunMetaData(const std::string &name) const
     REPORT_ERROR("Function " + name + " not found", __FILE__, __LINE__);
     return nullptr;
 }
+
 
 void InterGenContext::genIR(parser::Program *program)
 {
@@ -1466,5 +1482,94 @@ void interGen(const std::set<IncludeGraphNode *> &map)
         std::swap(level, nextLevel);
     }
 }
+
+
+Value *InterGenContext::getVal(const std::string &name)
+{
+    std::stack<InterGenBlock *> tmp;
+    while (!blocks.empty())
+    {
+        if (blocks.top()->locals.contains(name))
+        {
+            Value *res = blocks.top()->locals[name].first;
+
+            while (!tmp.empty())
+            {
+                blocks.push(tmp.top());
+                tmp.pop();
+            }
+            return res;
+        }
+        if (Function *fun = blocks.top()->block->getParent())
+        {
+            for (auto &arg : fun->args())
+            {
+                if (arg.getName() == name)
+                {
+                    return &arg;
+                }
+            }
+        }
+        tmp.push(blocks.top());
+        blocks.pop();
+    }
+
+    if (module->getGlobalVariable(name))
+    {
+        return module->getGlobalVariable(name);
+    }
+
+    return nullptr;
+}
+
+
+std::pair<Value *, VariableMetaData *> InterGenContext::getValWithMetadata(const std::string &name)
+{
+    std::stack<InterGenBlock *> tmp;
+    while (!blocks.empty())
+    {
+        if (blocks.top()->locals.contains(name))
+        {
+            std::map<std::string, std::pair<Value *, VariableMetaData *>>::mapped_type res = blocks.top()->locals[name];
+            while (!tmp.empty())
+            {
+                blocks.push(tmp.top());
+                tmp.pop();
+            }
+            return res;
+        }
+        if (Function *fun = blocks.top()->block->getParent())
+        {
+            const auto &funMetadata = functions[fun->getName().str()];
+            for (auto &arg : fun->args())
+            {
+                if (arg.getName() == name)
+                {
+                    return {&arg, funMetadata->getArgMetaData(arg.getName().str())};
+                }
+            }
+        }
+        tmp.push(blocks.top());
+        blocks.pop();
+    }
+
+    if (module->getGlobalVariable(name))
+    {
+        return {module->getGlobalVariable(name), getModuleMetaData(name)->getGlobalValMetaData(name)};
+    }
+
+    return {nullptr, nullptr};
+}
+
+FunctionMetaData *InterGenContext::getCurrFunMetaData() const
+{
+    return currentFunMetaData;
+}
+
+void InterGenContext::setCurrFunMetaData(inter_gen::FunctionMetaData *funMetaData)
+{
+    currentFunMetaData = funMetaData;
+}
+
 } // namespace inter_gen
 } // namespace dap

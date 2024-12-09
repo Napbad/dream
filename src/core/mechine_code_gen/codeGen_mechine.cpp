@@ -9,10 +9,13 @@
 
 #include "src/core/common/global.h"
 #include "codeGen_mechine.h"
+
+#include "src/core/inter_gen/codegen_inter.h"
 #include "src/core/inter_gen/preprocessing/includeAnaylize.h"
+#include "src/core/utilities/string_util.h"
 
 
-void dap::mech_gen::execGen(std::set<inter_gen::IncludeGraphNode *> map)
+void dap::mech_gen::execGen(const std::set<inter_gen::IncludeGraphNode *>& map)
 {
     std::unordered_map<inter_gen::IncludeGraphNode *, bool> visited{};
     std::unordered_set<inter_gen::IncludeGraphNode *> level{};

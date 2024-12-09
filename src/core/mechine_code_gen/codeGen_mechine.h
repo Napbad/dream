@@ -20,7 +20,7 @@ namespace mech_gen
 {
 const std::string arg = " -lc -dynamic-linker /lib64/ld-linux-x86-64.so.2 ";
 
-void execGen(std::set<dap::inter_gen::IncludeGraphNode *> map);
+void execGen(const std::set<dap::inter_gen::IncludeGraphNode *>& map);
 void execGen_singleFile(inter_gen::InterGenContext * ctx, dap::parser::Program * program);
 }
 

@@ -1,0 +1,11 @@
+package main;
+
+fun main() int {
+
+    imt int a = 10;
+    a = 20;
+
+    var int b = 20;
+    b = 30;
+    return 0;
+}

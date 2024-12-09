@@ -50,18 +50,19 @@ fun main() int {
 
   imt byte* s2 = "hello";
   // print(s2);
-  newline();
+  // newline();
 
   imt int ptrMalloc = malloc(4);
   ptrMalloc = 5;
   write(1, charToStr(intToChar(ptrMalloc)), 1);
-  newline();
+  // newline();
 
   imt int i = 0;
   imt int i2 = 1;
+
   imt int resAdd = add(i, i2);
   write(1, charToStr(intToChar(resAdd)), 1);
-  newline();
+  // newline();
 
   // imt byte[8] s3 = "hellooo";
   // write (1, &s3, 8);

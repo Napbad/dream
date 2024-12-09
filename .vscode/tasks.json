@@ -82,6 +82,17 @@
                 "kind": "build",
                 "isDefault": true
             }
+        },
+        {
+            "label": "debug prepare",
+            "type": "shell",
+            "command": "echo",
+            "args": [
+                "\"compile successfully\"",
+            ],
+            "dependsOn": [
+                "cmake all"
+            ]
         }
     ]
 }

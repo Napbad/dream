@@ -29,6 +29,8 @@ enum class NodeMetaDataType
     ArrayExpr,
     CallExpr,
     AssignExpr,
+    ArrayAssignExpr,
+
     IncludeStmt,
     PackageStmt,
     BlockStmt,
@@ -43,7 +45,7 @@ enum class NodeMetaDataType
     IfStmt,
     ElifStmt,
     ForStmt,
-    StructDecl
+    StructDecl,
 };
 
 class NodeMetadata
@@ -538,7 +540,7 @@ class VarDeclMetadata final : public NodeMetadata
 class ProtoDeclMetadata final : public NodeMetadata
 {
   public:
-    std::vector<VarDeclMetadata> params;
+    std::vector<VarDeclMetadata> params{};
     QualifiedNameMetadata return_type;
     QualifiedNameMetadata name;
 

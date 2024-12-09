@@ -1,13 +1,16 @@
 cmake_minimum_required(VERSION 3.26)
 project(dap)
 
-set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_STANDARD 20)
 
 execute_process(
         COMMAND llvm-config --cppflags
         OUTPUT_VARIABLE LLVM_CPPFLAGS
         OUTPUT_STRIP_TRAILING_WHITESPACE
 )
+
+add_compile_options(-Wall)
+
 add_compile_options(${LLVM_CPPFLAGS})
 add_compile_definitions(D_DEBUG)
 
@@ -53,6 +56,8 @@ add_executable(dap_main src/core/main.cpp
         src/core/inter_gen/preprocessing/includeAnaylize.h
         src/core/mechine_code_gen/codeGen_mechine.cpp
         src/core/mechine_code_gen/codeGen_mechine.h
+        src/core/inter_gen/check/variableCheck.cpp
+        src/core/inter_gen/check/variableCheck.h
 )
 
 find_package(LLVM REQUIRED CONFIG)

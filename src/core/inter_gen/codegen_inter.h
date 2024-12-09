@@ -35,6 +35,8 @@ static LLVMContext *llvmContext = new LLVMContext();
 
 class FunctionMetaData;
 class StructMetaData;
+class VariableMetaData;
+
 class ModuleMetaData;
 class IncludeGraphNode;
 
@@ -47,7 +49,7 @@ class InterGenBlock
 public:
     BasicBlock *block{}; ///< The current basic block
     Value *returnValue{}; ///< The return value of the current block
-    std::map<std::string, Value *> locals{};
+    std::map<std::string, std::pair<Value *, VariableMetaData *>> locals{};
     std::stack<BasicBlock *> loopExitBlocks{};
     std::unordered_map<Value *, Type *> ptrValBaseTypeMapping{};
     ///< Local variables of the current block
@@ -69,8 +71,9 @@ class InterGenContext
 {
     std::stack<InterGenBlock *> blocks; ///< Stack of blocks
     Function *mainFunction{}; ///< Main function
-    Function *currentFunction = nullptr; ///< Current function
-    bool definingStruct = false;
+    Function *currFun = nullptr; ///< Current function
+    FunctionMetaData *currentFunMetaData = nullptr;
+    bool definingStruct = false; ///< if now defining struct
 
 public:
     Module *module = nullptr; ///< LLVM module
@@ -83,6 +86,9 @@ public:
     std::string fileName;
 
     FunctionMetaData *getFunMetaData(const std::string &name) const;
+    std::pair<Value *, VariableMetaData *> getValWithMetadata(const std::string & name);
+    FunctionMetaData* getCurrFunMetaData() const;
+    void setCurrFunMetaData(inter_gen::FunctionMetaData * funMetaData);
 
     /**
      * @brief Constructor to initialize the module and IR builder.
@@ -93,42 +99,7 @@ public:
         fileName = sourcePath.substr(sourcePath.find_last_of('/') + 1);
     }
 
-    Value *getVal(const std::string &name)
-    {
-        std::stack<InterGenBlock *> tmp;
-        while (!blocks.empty())
-        {
-            if (blocks.top()->locals.contains(name))
-            {
-                Value *res = blocks.top()->locals[name];
-                while (!tmp.empty())
-                {
-                    blocks.push(tmp.top());
-                    tmp.pop();
-                }
-                return res;
-            }
-            if (Function *fun = blocks.top()->block->getParent())
-            {
-                for (auto &arg : fun->args())
-                {
-                    if (arg.getName() == name)
-                    {
-                        return &arg;
-                    }
-                }
-            }
-            tmp.push(blocks.top());
-            blocks.pop();
-        }
-
-        if (module->getGlobalVariable(name))
-        {
-            return module->getGlobalVariable(name);
-        }
-
-        return nullptr;
-    }
+    Value *getVal(const std::string &name);
 
     /**
      * @brief Get the basic block of the current block.
@@ -143,7 +114,7 @@ public:
      * @brief Get the map of local variables of the current block.
      * @return Map of local variables of the current block
      */
-    std::map<std::string, Value *> &locals()
+    std::map<std::string, std::pair<Value*, VariableMetaData*>> &locals()
     {
         return blocks.top()->locals;
     }
@@ -191,7 +162,7 @@ public:
      */
     void setCurrFun(Function *fun)
     {
-        currentFunction = fun;
+        currFun = fun;
     }
 
     /**
@@ -200,7 +171,7 @@ public:
      */
     [[nodiscard]] Function *getCurrFun() const
     {
-        return currentFunction;
+        return currFun;
     }
 
     /**

@@ -5,7 +5,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "(gdb) Attach",
+            "name": "build",
             "type": "cppdbg",
             "request": "attach",
             "program": "echo \"build success\"",
@@ -22,7 +22,7 @@
                     "ignoreFailures": true
                 }
             ],
-            "preLaunchTask": "cmake all",
+            "preLaunchTask": "debug prepare",
         },
         {
             "name": "(gdb) Launch",
@@ -34,7 +34,7 @@
                 "${workspaceFolder}/src/dap"
             ],
             "stopAtEntry": false,
-            "cwd": "${fileDirname}",
+            "cwd": "${workspaceFolder}/build",
             "environment": [],
             "externalConsole": false,
             "MIMode": "gdb",
@@ -50,7 +50,8 @@
                     "ignoreFailures": true
                 }
             ],
-            "preLaunchTask": "cmake all",
+            "preLaunchTask": "debug prepare",
+            
             "miDebuggerPath": "/usr/bin/gdb"
         }
 

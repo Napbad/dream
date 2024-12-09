@@ -18,8 +18,6 @@ void yyerror(const char *s) {
     std::exit(1);
 }
 // if define this macro then output the parse info, with line number, and the rule that was used, the value parsed
-#define PARSE_DBG
-
 
 void printParseInfo(const char* ruleName, int lineNumber, const std::string& value = "") {
 #ifdef PARSE_DBG

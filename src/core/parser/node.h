@@ -56,7 +56,7 @@ class Expr : public Node
 {
 };
 // for a qualifiedName, its' result of codeGen function is a value, rather than its's address
-class QualifiedName : public Expr
+class  QualifiedName final : public Expr
 {
   public:
     std::vector<std::string> *name_parts;
@@ -67,7 +67,7 @@ class QualifiedName : public Expr
     explicit QualifiedName(std::vector<std::string> *names) : name_parts(names)
     {
     }
-    explicit QualifiedName(std::string names) : name_parts(new std::vector<std::string>{std::move(names)})
+    explicit QualifiedName(std::string names) : name_parts(new std::vector{std::move(names)})
     {
     }
 
@@ -76,7 +76,7 @@ class QualifiedName : public Expr
         return util::get_text_from_vector(*name_parts);
     }
 
-    [[nodiscard]] std::string getName(int idx) const
+    [[nodiscard]] std::string getName( const int idx) const
     {
         return name_parts->at(idx);
     }
@@ -87,9 +87,10 @@ class QualifiedName : public Expr
     }
 
     llvm::Value *codeGen(inter_gen::InterGenContext *ctx) override;
+    bool isa(NodeMetaDataType type) override;
 };
 
-class DoubleExpr : public Expr
+class  DoubleExpr final : public Expr
 {
   public:
     double value;
@@ -99,9 +100,10 @@ class DoubleExpr : public Expr
     }
 
     llvm::Value *codeGen(inter_gen::InterGenContext *ctx) override;
+    bool isa(NodeMetaDataType type) override;
 };
 
-class IntegerExpr : public Expr
+class  IntegerExpr final : public Expr
 {
   public:
     long long value;
@@ -111,9 +113,10 @@ class IntegerExpr : public Expr
     }
 
     llvm::Value *codeGen(inter_gen::InterGenContext *ctx) override;
+    bool isa(NodeMetaDataType type) override;
 };
 
-class StringExpr : public Expr
+class StringExpr final : public Expr
 {
   public:
     std::string value;
@@ -123,9 +126,10 @@ class StringExpr : public Expr
     }
 
     llvm::Value *codeGen(inter_gen::InterGenContext *ctx) override;
+    bool isa(NodeMetaDataType type) override;
 };
 
-class VarExpr : public Expr
+class  VarExpr final : public Expr
 {
   public:
     QualifiedName *name;
@@ -135,6 +139,7 @@ class VarExpr : public Expr
     }
 
     llvm::Value *codeGen(inter_gen::InterGenContext *ctx) override;
+    bool isa(NodeMetaDataType type) override;
 
     ~VarExpr() override
     {
@@ -142,7 +147,7 @@ class VarExpr : public Expr
     }
 };
 
-class BinaryExpr : public Expr
+class  BinaryExpr final : public Expr
 {
   public:
     int op;
@@ -160,9 +165,10 @@ class BinaryExpr : public Expr
     }
 
     llvm::Value *codeGen(inter_gen::InterGenContext *ctx) override;
+    bool isa(NodeMetaDataType type) override;
 };
 
-class UnaryExpr : public Expr
+class  UnaryExpr final : public Expr
 {
   public:
     int op;
@@ -178,9 +184,10 @@ class UnaryExpr : public Expr
     }
 
     llvm::Value *codeGen(inter_gen::InterGenContext *ctx) override;
+    bool isa(NodeMetaDataType type) override;
 };
 
-class ListExpr : public Expr
+class  ListExpr final : public Expr
 {
   public:
     std::vector<Expr *> *elements;
@@ -195,9 +202,10 @@ class ListExpr : public Expr
     }
 
     llvm::Value *codeGen(inter_gen::InterGenContext *ctx) override;
+    bool isa(NodeMetaDataType type) override;
 };
 
-class PointerExpr : public Node
+class  PointerExpr final : public Node
 {
   public:
     Node *baseVal;
@@ -215,9 +223,10 @@ class PointerExpr : public Node
 
     // Generates the corresponding LLVM IR type for the pointer
     llvm::Value *codeGen(inter_gen::InterGenContext *ctx) override;
+    bool isa(NodeMetaDataType type) override;
 };
 
-class ArrayExpr : public Expr
+class  ArrayExpr final : public Expr
 {
   public:
     Expr *idx;
@@ -234,9 +243,10 @@ class ArrayExpr : public Expr
     }
 
     llvm::Value *codeGen(inter_gen::InterGenContext *ctx) override;
+    bool isa(NodeMetaDataType type) override;
 };
 
-class CallExpr : public Expr
+class  CallExpr final : public Expr
 {
   public:
     QualifiedName *callee;
@@ -256,9 +266,10 @@ class CallExpr : public Expr
     }
 
     llvm::Value *codeGen(inter_gen::InterGenContext *ctx) override;
+    bool isa(NodeMetaDataType type) override;
 };
 
-class AssignExpr : public Stmt
+class  AssignExpr final : public Stmt
 {
   public:
     QualifiedName *lhs;
@@ -275,9 +286,10 @@ class AssignExpr : public Stmt
     }
 
     llvm::Value *codeGen(inter_gen::InterGenContext *ctx) override;
+    bool isa(NodeMetaDataType type) override;
 };
 
-class ArrayAssignExpr: public Stmt
+class  ArrayAssignExpr final : public Stmt
 {
 public:
     QualifiedName *lhs;
@@ -293,9 +305,10 @@ public:
         delete rhs;
     }
     llvm::Value *codeGen(inter_gen::InterGenContext *ctx) override;
+    bool isa(NodeMetaDataType type) override;
 };
 
-class BlockStmt : public Stmt
+class  BlockStmt final : public Stmt
 {
   public:
     std::vector<Stmt *> stmts;
@@ -314,9 +327,10 @@ class BlockStmt : public Stmt
     }
 
     llvm::Value *codeGen(inter_gen::InterGenContext *ctx) override;
+    bool isa(NodeMetaDataType type) override;
 };
 
-class IncludeStmt : public Stmt
+class  IncludeStmt final : public Stmt
 {
   public:
     QualifiedName* path;
@@ -326,9 +340,10 @@ class IncludeStmt : public Stmt
     }
 
     llvm::Value *codeGen(inter_gen::InterGenContext *ctx) override;
+    bool isa(NodeMetaDataType type) override;
 };
 
-class PackageStmt : public Stmt
+class  PackageStmt final : public Stmt
 {
   public:
     QualifiedName *name;
@@ -343,9 +358,10 @@ class PackageStmt : public Stmt
     }
 
     llvm::Value *codeGen(inter_gen::InterGenContext *ctx) override;
+    bool isa(NodeMetaDataType type) override;
 };
 
-class ExprStmt : public Stmt
+class  ExprStmt final : public Stmt
 {
   public:
     Expr *expr;
@@ -360,9 +376,10 @@ class ExprStmt : public Stmt
     }
 
     llvm::Value *codeGen(inter_gen::InterGenContext *ctx) override;
+    bool isa(NodeMetaDataType type) override;
 };
 
-class ReturnStmt : public Stmt
+class  ReturnStmt final : public Stmt
 {
   public:
     Expr *expr;
@@ -377,9 +394,10 @@ class ReturnStmt : public Stmt
     }
 
     llvm::Value *codeGen(inter_gen::InterGenContext *ctx) override;
+    bool isa(NodeMetaDataType type) override;
 };
 
-class BreakStmt : public Stmt
+class  BreakStmt final : public Stmt
 {
   public:
     Expr *expr;
@@ -394,9 +412,10 @@ class BreakStmt : public Stmt
         delete expr;
     }
     llvm::Value *codeGen(inter_gen::InterGenContext *ctx) override;
+    bool isa(NodeMetaDataType type) override;
 };
 
-class VarDecl : public Stmt
+class  VarDecl final : public Stmt
 {
   public:
     bool is_mutable;
@@ -425,14 +444,15 @@ class VarDecl : public Stmt
     [[nodiscard]] const QualifiedName *getType() const;
 
     llvm::Value *codeGen(inter_gen::InterGenContext *ctx) override;
+    bool isa(NodeMetaDataType type) override;
 };
 
-class ProtoDecl : public Stmt
+class  ProtoDecl final : public Stmt
 {
   public:
-    std::vector<VarDecl *> params;
+    std::vector<VarDecl *> params{};
     const QualifiedName *return_type;
-    QualifiedName *name;
+    QualifiedName *name = nullptr;
     ProtoDecl(const QualifiedName *return_type, QualifiedName *name, std::vector<VarDecl *> params)
         : return_type(return_type), name(name), params(std::move(params))
     {
@@ -449,9 +469,10 @@ class ProtoDecl : public Stmt
     };
 
     llvm::Function *codeGen(inter_gen::InterGenContext *ctx) override;
+    bool isa(NodeMetaDataType type) override;
 };
 
-class FuncDecl : public Stmt
+class  FuncDecl final : public Stmt
 {
   public:
     ProtoDecl *proto;
@@ -469,9 +490,10 @@ class FuncDecl : public Stmt
     }
 
     llvm::Function *codeGen(inter_gen::InterGenContext *ctx) override;
+    bool isa(NodeMetaDataType type) override;
 };
 
-class ExternDecl : public Stmt
+class  ExternDecl final : public Stmt
 {
   public:
     ProtoDecl *proto;
@@ -486,9 +508,10 @@ class ExternDecl : public Stmt
     }
 
     llvm::Function *codeGen(inter_gen::InterGenContext *ctx) override;
+    bool isa(NodeMetaDataType type) override;
 };
 
-class Program : public Stmt
+class  Program final : public Stmt
 {
   public:
     BlockStmt *stmts;
@@ -503,9 +526,10 @@ class Program : public Stmt
     }
 
     llvm::Value *codeGen(inter_gen::InterGenContext *ctx) override;
+    bool isa(NodeMetaDataType type) override;
 };
 
-class IfStmt : public Stmt
+class  IfStmt final : public Stmt
 {
   public:
     Expr *cond;
@@ -527,9 +551,10 @@ class IfStmt : public Stmt
     }
 
     llvm::Value *codeGen(inter_gen::InterGenContext *ctx) override;
+    bool isa(NodeMetaDataType type) override;
 };
 
-class ElifStmt : public Stmt
+class ElifStmt final : public Stmt
 {
   public:
     Expr *cond;
@@ -546,9 +571,10 @@ class ElifStmt : public Stmt
     }
 
     llvm::Value *codeGen(inter_gen::InterGenContext *ctx) override;
+    bool isa(NodeMetaDataType type) override;
 };
 
-class ForStmt : public Stmt
+class  ForStmt final : public Stmt
 {
   public:
     VarDecl *init;
@@ -569,9 +595,10 @@ class ForStmt : public Stmt
     }
 
     llvm::Value *codeGen(inter_gen::InterGenContext *ctx) override;
+    bool isa(NodeMetaDataType type) override;
 };
 
-class StructDecl : public Stmt
+class  StructDecl final : public Stmt
 {
   public:
     std::vector<VarDecl *> fields;
@@ -591,6 +618,7 @@ class StructDecl : public Stmt
     }
 
     llvm::Value *codeGen(inter_gen::InterGenContext *ctx) override;
+    bool isa(NodeMetaDataType type) override;
 };
 } // namespace parser
 } // namespace dap

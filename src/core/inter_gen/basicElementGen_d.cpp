@@ -35,7 +35,10 @@ Function *genIntToChar(InterGenContext *ctx)
     if (Argument *arg = intToChar->getArg(0); arg->getType()->getTypeID() == Type::IntegerTyID)
     {
         arg->setName("i");
-        funMetadata->addArg("i", arg, Type::getInt32Ty(LLVMCTX));
+        funMetadata->addArg("i",
+arg,
+            Type::getInt32Ty(LLVMCTX),
+            new VariableMetaData("i",  Type::getInt32Ty(LLVMCTX)));
         // Truncate the integer to a character
         Value *charCast = BUILDER.CreateTrunc(arg, Type::getInt8Ty(LLVMCTX), "int_cast");
 
@@ -79,7 +82,7 @@ Function *genCharToInt(InterGenContext *ctx)
     {
         // Cast the character to an integer
         arg->setName("ch");
-        funMetadata->addArg("ch", arg, Type::getInt8Ty(LLVMCTX));
+        funMetadata->addArg("ch", arg, Type::getInt8Ty(LLVMCTX), new VariableMetaData("ch",  Type::getInt8Ty(LLVMCTX)));
         Value *intCast_ret = BUILDER.CreateIntCast(arg, Type::getInt32Ty(LLVMCTX), false, "char_cast");
         BUILDER.CreateRet(intCast_ret);
     }
@@ -123,7 +126,7 @@ Function *genInt32To8(InterGenContext *ctx)
     {
         // Set argument name
         arg->setName("input");
-        funMetadata->addArg("input", arg, Type::getInt32Ty(LLVMCTX));
+        funMetadata->addArg("input", arg, Type::getInt32Ty(LLVMCTX), new VariableMetaData("input",  Type::getInt32Ty(LLVMCTX)));
 
         // Perform the truncation operation
         Value *truncatedValue = ctx->builder.CreateTrunc(arg, Type::getInt8Ty(LLVMCTX), "truncated_value");
@@ -174,7 +177,7 @@ Function *genCharToStr(InterGenContext *ctx)
     const auto args = charToStr->arg_begin();
     Value *inputInt = &*args;
     inputInt->setName("inputInt");
-    funMetadata->addArg("inputInt", inputInt, Type::getInt8Ty(LLVMCTX));
+    funMetadata->addArg("inputInt", inputInt, Type::getInt8Ty(LLVMCTX), new VariableMetaData("inputInt",  Type::getInt8Ty(LLVMCTX)));
 
     // Return the pointer to the buffer (for now, we just return the buffer's address)
     Value *gep = BUILDER.CreateGEP(Type::getInt8Ty(LLVMCTX), strBuffer, ConstantInt::get(Type::getInt32Ty(LLVMCTX), 0),
