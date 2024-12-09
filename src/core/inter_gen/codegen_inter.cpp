@@ -4,6 +4,7 @@
 
 
 #include <iostream>
+#include <unordered_set>
 
 #include <llvm/Bitstream/BitstreamReader.h>
 #include <llvm/ExecutionEngine/SectionMemoryManager.h>
@@ -147,7 +148,7 @@ Value *handleStructName(const QualifiedName *name, inter_gen::InterGenContext *c
     }
     else
     {
-        AllocaInst *allocaInst = dyn_cast<AllocaInst>(ctx->locals()[name->getFirstName()].first);
+        const AllocaInst *allocaInst = dyn_cast<AllocaInst>(ctx->locals()[name->getFirstName()].first);
         if (!allocaInst)
         {
             REPORT_ERROR("Unknown variable name " + name->getFirstName(), __FILE__, __LINE__);
@@ -1566,7 +1567,7 @@ FunctionMetaData *InterGenContext::getCurrFunMetaData() const
     return currentFunMetaData;
 }
 
-void InterGenContext::setCurrFunMetaData(inter_gen::FunctionMetaData *funMetaData)
+void InterGenContext::setCurrFunMetaData(FunctionMetaData *funMetaData)
 {
     currentFunMetaData = funMetaData;
 }
