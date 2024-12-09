@@ -40,6 +40,8 @@ CMakeCache.txt
 *.class
 *.jar
 
+.venv/
+
 
 **/node_modules/
 **/build/
