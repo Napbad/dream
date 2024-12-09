@@ -36,4 +36,4 @@ Special thanks to all the contributors who have helped make the **Dap** project 
   
 ---  
   
-Have a nice day!
+# Have a nice day!
