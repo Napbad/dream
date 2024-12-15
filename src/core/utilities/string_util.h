@@ -117,16 +117,6 @@ std::string getTextFromVec(const std::vector<std::string> &vec);
 std::string getStrFromVec(const std::vector<std::string> &vec, const std::string &delimiter);
 
 /**
- * Gets a string from a vector of parameters with a delimiter.
- *
- * @param vector The vector of parameters to process.
- * @param delimiter The delimiter used to join the parameters.
- * @return The concatenated string from the vector of parameters.
- */
-std::string getStrFromParamVec(const std::vector<std::tuple<std::string, std::string, bool, bool>> &vector,
-                                      const std::string &delimiter);
-
-/**
  * Gets lines from a vector of strings.
  *
  * @param vector The vector of strings to process.

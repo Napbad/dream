@@ -148,26 +148,6 @@ std::string getStrFromVec(const std::vector<std::string> &vec, const std::string
     return res;
 }
 
-std::string getStrFromParamVec(
-    const std::vector<std::tuple<std::string, std::string, bool, bool>> &vector, const std::string &delimiter)
-{
-    string res;
-
-    for (auto i = 0; i < vector.size(); i++)
-    {
-        auto [type, name, nullable, mutable_] = vector.at(i);
-        if (!str_is_common_cpp_type(type))
-        {
-            type = "DataNode<" + type + ">";
-        }
-        res.append(mutable_ ? "const " : " ").append(type).append(" ").append(name);
-
-        res += (i == (vector.size() - 1) ? "" : delimiter);
-    }
-
-    return res;
-}
-
 std::string getLinesFromVec(const std::vector<std::string> &vector)
 {
     string res;

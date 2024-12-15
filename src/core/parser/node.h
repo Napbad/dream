@@ -73,7 +73,7 @@ class  QualifiedName final : public Expr
 
     [[nodiscard]] std::string getName() const
     {
-        return util::get_text_from_vector(*name_parts);
+        return util::getTextFromVec(*name_parts);
     }
 
     [[nodiscard]] std::string getName( const int idx) const

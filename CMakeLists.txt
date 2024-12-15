@@ -9,9 +9,6 @@ execute_process(
         OUTPUT_STRIP_TRAILING_WHITESPACE
 )
 
-
-#add_compile_options(-Wall)
-
 add_compile_options(${LLVM_CPPFLAGS})
 add_compile_definitions(D_DEBUG)
 

@@ -30,6 +30,7 @@ CMakeCache.txt
 *.swn
 *.bak
 *.tmp
+*.log
 
 # Editor and IDE files
 *.idea/
