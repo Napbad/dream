@@ -14,10 +14,10 @@ add_compile_definitions(D_DEBUG)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-find_program(CLANG_TIDY_BIN NAMES "clang-tidy")
-if(CLANG_TIDY_BIN)
-    set(CMAKE_CXX_CLANG_TIDY "${CLANG_TIDY_BIN}" "-checks=*")
-endif()
+#find_program(CLANG_TIDY_BIN NAMES "clang-tidy")
+#if(CLANG_TIDY_BIN)
+#    set(CMAKE_CXX_CLANG_TIDY "${CLANG_TIDY_BIN}" "-checks=*")
+#endif()
 
 include_directories(${PROJECT_SOURCE_DIR})
 
