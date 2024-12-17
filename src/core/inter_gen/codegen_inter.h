@@ -74,6 +74,7 @@ class InterGenContext
     Function *currFun = nullptr; ///< Current function
     FunctionMetaData *currentFunMetaData = nullptr;
     bool definingStruct = false; ///< if now defining struct
+    bool definingVariable = false; ///< if now defining variable
 
 public:
     Module *module = nullptr; ///< LLVM module
@@ -231,6 +232,16 @@ public:
         return blocks.top()->returnValue != nullptr;
     }
 
+    void setDefiningVariable(bool cond)
+    {
+        definingVariable = cond;
+    }
+
+    bool isDefiningVariable() const
+    {
+        return definingVariable;
+    }
+
     void addPtrValBaseTypeMapping(Value *val, Type *baseType)
     {
         if (blocks.top())
@@ -249,6 +260,8 @@ public:
         return nullptr;
     }
 };
+
+void interGen_oneFile(IncludeGraphNode *node);
 
 void interGen(const std::set<IncludeGraphNode*>& map);
 

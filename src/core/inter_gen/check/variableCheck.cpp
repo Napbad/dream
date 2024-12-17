@@ -22,6 +22,11 @@ bool dap::inter_gen::isNullable(parser::Expr *valToCheck, InterGenContext *ctx)
         FunctionMetaData * functionMetaData = ctx->metaData->getFunction(callExpr->callee->getName());
         VariableMetaData * varMetaData = functionMetaData->getReturnMetaData();
 
+        if (varMetaData == nullptr)
+        {
+            return false;
+        }
+
         if (varMetaData->isNullable())
         {
             return true;

@@ -3,7 +3,7 @@ package dap.std;
 include dap.runtime.sys.sysFun;
 
 fun strlen(imt byte* s) int {
-    imt int res = 0;
+    var int res? = 0;
     if s == 0 {
       return 0;
     }

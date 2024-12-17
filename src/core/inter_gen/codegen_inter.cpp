@@ -913,6 +913,7 @@ Value *ForStmt::codeGen(inter_gen::InterGenContext *ctx)
 // VarDecl: Generates code for a variable declaration
 Value *VarDecl::codeGen(inter_gen::InterGenContext *ctx)
 {
+    ctx->setDefiningVariable(true);
     // If no block exists, it's a global variable
     if (!ctx->hasBlock() && !ctx->isDefStruct())
     {
@@ -922,6 +923,7 @@ Value *VarDecl::codeGen(inter_gen::InterGenContext *ctx)
         // Handle global variables, assuming non-pointer types
         if (util::typeOf(*type, ctx, size) != Type::getInt8Ty(LLVMCTX))
         {
+            ctx->setDefiningVariable(false);
             return new GlobalVariable(*MODULE, util::typeOf(*type, ctx, size), false, GlobalValue::InternalLinkage,
                                       constant, name->getName());
         }
@@ -950,6 +952,7 @@ Value *VarDecl::codeGen(inter_gen::InterGenContext *ctx)
             assign.codeGen(ctx);
         }
 
+        ctx->setDefiningVariable(false);
         return gep;
     }
 
@@ -964,6 +967,8 @@ Value *VarDecl::codeGen(inter_gen::InterGenContext *ctx)
         AssignExpr assign(name, init);
         assign.codeGen(ctx);
     }
+    ctx->setDefiningVariable(false);
+
     return alloc; // Return the allocated variable
 }
 
@@ -1064,7 +1069,7 @@ Value *AssignExpr::codeGen(inter_gen::InterGenContext *ctx)
 {
     // check whether the value can be assigned or a value can be assigned to null
     auto [val, valMetaData] = ctx->getValWithMetadata(lhs->getName());
-    if (!valMetaData->isMutable())
+    if (!valMetaData->isMutable() && !ctx->isDefiningVariable())
     {
         REPORT_ERROR("can not assign to a immutable value: " + lhs->getName(), __FILE__, __LINE__);
         return nullptr;
@@ -1452,35 +1457,31 @@ void InterGenContext::genExec(parser::Program *program)
     outs() << "Object file emitted to " << outputPath << "\n";
 }
 
+std::unordered_map<IncludeGraphNode *, bool> visited{};
+
+void interGen_oneFile(IncludeGraphNode *node)
+{
+    if (visited.contains(node))
+    {
+        return;
+    }
+    visited.insert({node, false});
+    if (!node->getIncludes().empty())
+    {
+        for (const auto oneNode : node->getIncludes())
+        {
+            interGen_oneFile(oneNode);
+        }
+    }
+    programMap_d->at(node->getProgram())->genIR(node->getProgram());
+    visited.insert({node, true});
+}
+
 void interGen(const std::set<IncludeGraphNode *> &map)
 {
-    std::unordered_map<IncludeGraphNode *, bool> visited{};
-    std::unordered_set<IncludeGraphNode *> level{};
-    std::unordered_set<IncludeGraphNode *> nextLevel{};
-
-    for (auto &node : map)
+    for (const auto node : map)
     {
-        level.insert(node);
-    }
-
-    while (!level.empty() || !nextLevel.empty())
-    {
-        for (auto &node : level)
-        {
-            std::string basic_string = node->getName();
-            if (visited.contains(node))
-            {
-                continue;
-            }
-            programMap_d->at(node->getProgram())->genIR(node->getProgram());
-            visited.insert({node, true});
-            for (auto includeBy : node->getIncludedBy())
-            {
-                nextLevel.insert(includeBy);
-            }
-        }
-        level.clear();
-        std::swap(level, nextLevel);
+        interGen_oneFile(node);
     }
 }
 

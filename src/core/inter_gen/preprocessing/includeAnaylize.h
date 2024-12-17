@@ -101,6 +101,7 @@ public:
 private:
     std::map<std::string, IncludeGraphNode *> nodes;
     std::set<IncludeGraphNode *> roots;
+
 };
 }
 } // namespace dap::inter_gen

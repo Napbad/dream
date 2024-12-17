@@ -25,46 +25,46 @@ struct S {
 };
 
 fun main() int {
-  imt int* a = 1;
+  // imt int* a = 1;
 
-  write(1, charToStr(intToChar(*a)), 1);
-  fsync(1);
+  // write(1, charToStr(intToChar(*a)), 1);
+  // fsync(1);
 
-  imt S s;
-  s.a = 2;
-  write(1, charToStr(intToChar(s.a)), 1);
-  fsync(1);
+  // imt S s;
+  // s.a = 2;
+  // write(1, charToStr(intToChar(s.a)), 1);
+  // fsync(1);
 
-  imt int[5] arr = [1,2,3,4,5];
-  write(1, charToStr(intToChar(arr[2])), 1);
-  fsync(1);
+  // imt int[5] arr = [1,2,3,4,5];
+  // write(1, charToStr(intToChar(arr[2])), 1);
+  // fsync(1);
 
-  imt S * sp;
-  sp.a = 4;
-  write(1, charToStr(intToChar(sp.a)), 1);
-  fsync(1);
+  // imt S * sp;
+  // sp.a = 4;
+  // write(1, charToStr(intToChar(sp.a)), 1);
+  // fsync(1);
 
-  imt int b = 5;
-  write(1, charToStr(intToChar(b)), 1);
-  fsync(1);
+  // imt int b = 5;
+  // write(1, charToStr(intToChar(b)), 1);
+  // fsync(1);
 
-  imt byte* s2 = "hello";
-  // print(s2);
-  // newline();
+  // imt byte* s2 = "hello";
+  // // print(s2);
+  // // newline();
 
-  imt int ptrMalloc = malloc(4);
-  ptrMalloc = 5;
-  write(1, charToStr(intToChar(ptrMalloc)), 1);
-  // newline();
+  // imt int ptrMalloc = malloc(4);
+  // ptrMalloc = 5;
+  // write(1, charToStr(intToChar(ptrMalloc)), 1);
+  // // newline();
 
-  imt int i = 0;
-  imt int i2 = 1;
+  // imt int i = 0;
+  // imt int i2 = 1;
 
-  imt int resAdd = add(i, i2);
-  write(1, charToStr(intToChar(resAdd)), 1);
-  // newline();
+  // imt int resAdd = add(i, i2);
+  // write(1, charToStr(intToChar(resAdd)), 1);
+  // // newline();
 
-  // imt byte[8] s3 = "hellooo";
-  // write (1, &s3, 8);
+  // // imt byte[8] s3 = "hellooo";
+  // // write (1, &s3, 8);
   return 0;
 }

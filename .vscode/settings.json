@@ -1,6 +1,6 @@
 {
     "files.associations": {
-        "*.dap": "dream",
+        "*.dap": "dap",
         "*.tcc": "cpp",
         "string": "cpp",
         "format": "cpp",

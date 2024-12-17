@@ -14,36 +14,14 @@
 #include "src/core/inter_gen/preprocessing/includeAnaylize.h"
 #include "src/core/utilities/string_util.h"
 
+std::unordered_map<dap::inter_gen::IncludeGraphNode *, bool> dap::mech_gen::visited;
 
 void dap::mech_gen::execGen(const std::set<inter_gen::IncludeGraphNode *>& map)
 {
-    std::unordered_map<inter_gen::IncludeGraphNode *, bool> visited{};
-    std::unordered_set<inter_gen::IncludeGraphNode *> level{};
-    std::unordered_set<inter_gen::IncludeGraphNode *> nextLevel{};
 
-    for (auto &node : map)
+    for (const auto node : map)
     {
-        level.insert(node);
-    }
-
-    while (!level.empty() || !nextLevel.empty())
-    {
-        for (auto &node : level)
-        {
-            std::string basic_string = node->getName();
-            if (visited.contains(node))
-            {
-                continue;
-            }
-            programMap_d->at(node->getProgram())->genExec(node->getProgram());
-            visited.insert({node, true});
-            for (auto includeBy : node->getIncludedBy())
-            {
-                nextLevel.insert(includeBy);
-            }
-        }
-        level.clear();
-        std::swap(level, nextLevel);
+        genExecToOneFile(node);
     }
 
     std::string files = util::getStrFromVec(*filesToCompile, " ");
@@ -58,8 +36,24 @@ void dap::mech_gen::execGen_singleFile(inter_gen::InterGenContext *ctx, dap::par
 {
     ctx->genExec(program);
     std::string files = util::getStrFromVec(*filesToCompile, " ");
-    files.append(" ")
-         .append(buildDir)
-         .append("dap/runtime/asm/_start.o ");
+    files.append(" ").append(buildDir).append("dap/runtime/asm/_start.o ");
     system(("ld " + files + arg + " -o " + targetExecName + " ").c_str());
+}
+void dap::mech_gen::genExecToOneFile(inter_gen::IncludeGraphNode *node)
+{
+    if (!node->getIncludes().empty())
+    {
+        for (const auto include : node->getIncludes())
+        {
+            genExecToOneFile(include);
+        }
+    }
+
+    std::string basic_string = node->getName();
+    if (visited.contains(node))
+    {
+        return;;
+    }
+    programMap_d->at(node->getProgram())->genExec(node->getProgram());
+    visited.insert({node, true});
 }

@@ -13,30 +13,30 @@ namespace dap::inter_gen
 {
 void genSysFun(const InterGenContext *ctx)
 {
-    Function *writeFunc = genSysWrite(ctx);
-    Function *fsyncFunc = genSysFSync(ctx);
-    Function *readFunc = genSysRead(ctx);
-    Function *openFunc = genSysOpen(ctx);
-    Function *closeFunc = genSysClose(ctx);
-
-    Function *forkFunc = genSysFork(ctx);
-    Function *execveFunc = genSysExecve(ctx);
-    Function *waitFunc = genSysWait(ctx);
-    Function *listenFunc = genSysListen(ctx);
-    Function *mmapFunc = genSysMmap(ctx);
-
-    Function *munmapFunc = genSysMunmap(ctx);
-    Function *sbrkFunc = genSysSbrk(ctx);
-    Function *brkFunc = genSysBrk(ctx);
-    Function *acceptFunc = genSysAccept(ctx);
-    Function *bindFunc = genSysBind(ctx);
-
-    Function *socketFunc = genSysSocket(ctx);
-    Function *connectFunc = genSysConnect(ctx);
-
-    Function * init = genInit(ctx);
-    Function *exit = genExit(ctx);
-    Function *f = genFini(ctx);
+    // Function *writeFunc = genSysWrite(ctx);
+    // Function *fsyncFunc = genSysFSync(ctx);
+    // Function *readFunc = genSysRead(ctx);
+    // Function *openFunc = genSysOpen(ctx);
+    // Function *closeFunc = genSysClose(ctx);
+    //
+    // Function *forkFunc = genSysFork(ctx);
+    // Function *execveFunc = genSysExecve(ctx);
+    // Function *waitFunc = genSysWait(ctx);
+    // Function *listenFunc = genSysListen(ctx);
+    // Function *mmapFunc = genSysMmap(ctx);
+    //
+    // Function *munmapFunc = genSysMunmap(ctx);
+    // Function *sbrkFunc = genSysSbrk(ctx);
+    // Function *brkFunc = genSysBrk(ctx);
+    // Function *acceptFunc = genSysAccept(ctx);
+    // Function *bindFunc = genSysBind(ctx);
+    //
+    // Function *socketFunc = genSysSocket(ctx);
+    // Function *connectFunc = genSysConnect(ctx);
+    //
+    // Function * init = genInit(ctx);
+    // Function *exit = genExit(ctx);
+    // Function *f = genFini(ctx);
 }
 
 void registerSysFunctions(const InterGenContext *ctx)

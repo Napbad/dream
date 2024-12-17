@@ -6,11 +6,44 @@
 
 #include "src/core/parser/node.h"
 
+#include <queue>
+#include <unordered_set>
+
 namespace dap::inter_gen
 {
 void IncludeAnalyzer::analyze()
 {
     // TODO: fill the include analyze function
+    for (auto root : roots)
+    {
+        std::unordered_set<IncludeGraphNode*> visited;
+        std::queue<IncludeGraphNode *> includeQueue{};
+
+        visited.insert(root);
+        for (auto include : root->getIncludes())
+        {
+            includeQueue.push(include);
+            visited.insert(include);
+        }
+
+        while (!includeQueue.empty())
+        {
+            while (!includeQueue.empty())
+            {
+                auto include = includeQueue.front();
+                if (visited.contains(include))
+                {
+                    REPORT_ERROR("Recycling include!", __FILE__, __LINE__);
+                }
+                visited.insert(include);
+                for (auto include_2level : include->getIncludes())
+                {
+                    includeQueue.push(include_2level);
+                }
+                includeQueue.pop();
+            }
+         }
+    }
 }
 
 void IncludeAnalyzer::generateGraph()
@@ -35,6 +68,8 @@ void IncludeAnalyzer::generateGraph()
                 node->addIncludes_path(includePath);
             }
         }
+
+        analyze();
     }
     // generate full include graph
     for (const auto &ctx : *programMap_d)
@@ -55,7 +90,7 @@ void IncludeAnalyzer::generateGraph()
 
     // auto newRoots = new std::set<IncludeGraphNode *>();
 
-    // generate the root nodes where the anaylize starts
+    // generate the root nodes where the analyzer starts
     for (auto rootIt = roots.begin(); rootIt != roots.end(); )
     {
         auto root = *rootIt;
@@ -64,7 +99,7 @@ void IncludeAnalyzer::generateGraph()
         {
             roots.insert(includeNode);
         }
-        if (root->getIncludes().empty() || !roots.contains(root))
+        if (root->getIncludedBy().empty() || !roots.contains(root))
         {
             ++rootIt;
         }
