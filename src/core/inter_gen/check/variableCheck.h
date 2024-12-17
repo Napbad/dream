@@ -6,10 +6,11 @@
 #define VARIABLE_CHECK
 #include "src/core/parser/node.h"
 
-namespace dap::inter_gen{
+namespace dap::inter_gen
+{
 bool checkValueMutable();
 
-bool isNullable(parser::Expr* valToCheck, InterGenContext* ctx);
-}
+bool isNullable(parser::Expr *valToCheck, InterGenContext *ctx);
+} // namespace dap::inter_gen
 
-#endif //VARIABLE_CHECK
+#endif // VARIABLE_CHECK

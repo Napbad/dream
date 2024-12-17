@@ -23,14 +23,13 @@ extern std::unordered_map<inter_gen::IncludeGraphNode *, bool> visited;
 
 const std::string arg = " -lc -dynamic-linker /lib64/ld-linux-x86-64.so.2 ";
 
-void execGen(const std::set<dap::inter_gen::IncludeGraphNode *>& map);
+void execGen(const std::set<dap::inter_gen::IncludeGraphNode *> &map);
 
-void execGen_singleFile(inter_gen::InterGenContext * ctx, dap::parser::Program * program);
+void execGen_singleFile(inter_gen::InterGenContext *ctx, dap::parser::Program *program);
 
 void genExecToOneFile(inter_gen::IncludeGraphNode *node);
-}
+} // namespace mech_gen
 
-}
+} // namespace dap
 
-
-#endif //CODEGEN_MECHINE_H
+#endif // CODEGEN_MECHINE_H

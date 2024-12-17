@@ -7,8 +7,7 @@
 
 namespace dap::inter_gen
 {
-StructMetaData::StructMetaData(InterGenContext *context, std::string name) :
-    ctx(context), name_(std::move(name))
+StructMetaData::StructMetaData(InterGenContext *context, std::string name) : ctx(context), name_(std::move(name))
 {
 }
 
@@ -20,12 +19,10 @@ void StructMetaData::addField(const std::string &fieldName, llvm::Type *fieldTyp
 
 StructType *StructMetaData::getStructType() const
 {
-    if (!structType_)
-    {
+    if (!structType_) {
         std::vector<Type *> fieldTypes;
         fieldTypes.reserve(fields_.size());
-        for (const auto &[fst, snd] : fields_)
-        {
+        for (const auto &[fst, snd] : fields_) {
             fieldTypes.push_back(snd);
         }
         structType_ = StructType::create(LLVMCTX, fieldTypes, name_);
@@ -36,8 +33,7 @@ StructType *StructMetaData::getStructType() const
 unsigned StructMetaData::getFieldIndex(const std::string &fieldName) const
 {
     auto it = fieldIndexMap_.find(fieldName);
-    if (it == fieldIndexMap_.end())
-    {
+    if (it == fieldIndexMap_.end()) {
         throw std::runtime_error("Field '" + fieldName + "' not found");
     }
     return it->second;
@@ -74,10 +70,8 @@ VariableMetaData *FunctionMetaData::getReturnMetaData() const
 
 VariableMetaData *FunctionMetaData::getArgMetaData(const std::string &name)
 {
-    for (auto val : args)
-    {
-        if (get<0>(val) == name)
-        {
+    for (auto val : args) {
+        if (get<0>(val) == name) {
             return get<3>(val);
         }
     }
@@ -97,8 +91,7 @@ void ModuleMetaData::addGlobalValMetaData(VariableMetaData *metaData)
 
 VariableMetaData *ModuleMetaData::getGlobalValMetaData(const std::string &name)
 {
-    if (!globalMetaDataMap.contains(name))
-    {
+    if (!globalMetaDataMap.contains(name)) {
         return nullptr;
     }
     return globalMetaDataMap[name];
@@ -119,7 +112,7 @@ std::string VariableMetaData::getName() const
     return name_;
 }
 
-Type * VariableMetaData::getType() const
+Type *VariableMetaData::getType() const
 {
     return type_;
 }
@@ -147,16 +140,14 @@ void VariableMetaData::enterNewScope(bool newMutable, bool newNullable)
     nullableStack_.push(newNullable);
 }
 
-VariableMetaData::VariableMetaData(std::string name, Type *type, bool isMutable
-                                   , bool isNullable
+VariableMetaData::VariableMetaData(std::string name, Type *type, bool isMutable, bool isNullable
 
-    )
+)
 {
     name_ = std::move(name);
     type_ = type;
     mutableStack_.push(isMutable);
     nullableStack_.push(isNullable);
 }
-
 
 } // namespace dap::inter_gen

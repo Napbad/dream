@@ -31,10 +31,8 @@ std::string targetExecName = "main";
 
 dap::inter_gen::ModuleMetaData *getModuleMetaData(const std::string &name)
 {
-    for (const auto&[moduleName, metaData] : *moduleMetadataMap_d)
-    {
-        if (moduleName == name)
-        {
+    for (const auto &[moduleName, metaData] : *moduleMetadataMap_d) {
+        if (moduleName == name) {
             return metaData;
         }
     }

@@ -22,7 +22,6 @@ class AllocaInst;
 
 using namespace llvm;
 
-
 /**
  * struct heap_d - Describes the structure of the heap
  * @heapStart_d: Pointer to the start of the heap
@@ -30,10 +29,10 @@ using namespace llvm;
  * @heapPtr_d: Current pointer position in the heap
  * @heapSize_d: Size of the heap
  *
- * This structure is used to describe the state of the heap during program execution, including the start and end positions, current pointer position, and size of the heap.
+ * This structure is used to describe the state of the heap during program execution, including the start and end
+ * positions, current pointer position, and size of the heap.
  */
-struct heap_d
-{
+struct heap_d {
     Value *heapStart_d;
     Value *heapEnd_d;
     Value *heapPtr_d;
@@ -43,7 +42,8 @@ struct heap_d
 // Pointer to the global heap structure, used to share heap information throughout the program
 extern heap_d *globalHeap_d;
 
-// Map that associates pointers with allocation instructions, used to track getelementptr instructions and their corresponding allocation instructions
+// Map that associates pointers with allocation instructions, used to track getelementptr instructions and their
+// corresponding allocation instructions
 extern std::map<Value *, AllocaInst *> *gepMapping_d;
 
 // Map that associates basic blocks with return values, used to track the return value of each basic block

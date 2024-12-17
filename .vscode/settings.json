@@ -83,5 +83,10 @@
         "typeinfo": "cpp",
         "variant": "cpp",
         "hash_map": "cpp"
-    }
+    },
+    "terminal.explorerKind": "external",
+    "terminal.integrated.automationProfile.linux": {
+
+    },
+    "terminal.external.linuxExec": "konsole"
 }

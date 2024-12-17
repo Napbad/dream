@@ -5,7 +5,6 @@
 #ifndef CODEGEN_H
 #define CODEGEN_H
 
-
 #include <stack>
 #include <utility>
 
@@ -15,9 +14,9 @@
 #include <llvm/IR/LLVMContext.h>
 #include <llvm/IR/Module.h>
 
+#include "metadata.h"
 #include "src/core/parser/node.h"
 #include "src/core/utilities/file_util.h"
-#include "metadata.h"
 
 #define LLVMCTX ctx->module->getContext()
 #define MODULE ctx->module
@@ -46,8 +45,8 @@ class IncludeGraphNode;
  */
 class InterGenBlock
 {
-public:
-    BasicBlock *block{}; ///< The current basic block
+  public:
+    BasicBlock *block{};  ///< The current basic block
     Value *returnValue{}; ///< The return value of the current block
     std::map<std::string, std::pair<Value *, VariableMetaData *>> locals{};
     std::stack<BasicBlock *> loopExitBlocks{};
@@ -58,8 +57,7 @@ public:
      * @brief Constructor to initialize the basic block.
      * @param block Pointer to the basic block
      */
-    explicit InterGenBlock(BasicBlock *block) :
-        block(block)
+    explicit InterGenBlock(BasicBlock *block) : block(block)
     {
     }
 };
@@ -70,32 +68,33 @@ public:
 class InterGenContext
 {
     std::stack<InterGenBlock *> blocks; ///< Stack of blocks
-    Function *mainFunction{}; ///< Main function
-    Function *currFun = nullptr; ///< Current function
+    Function *mainFunction{};           ///< Main function
+    Function *currFun = nullptr;        ///< Current function
     FunctionMetaData *currentFunMetaData = nullptr;
-    bool definingStruct = false; ///< if now defining struct
+    bool definingStruct = false;   ///< if now defining struct
     bool definingVariable = false; ///< if now defining variable
 
-public:
-    Module *module = nullptr; ///< LLVM module
-    IRBuilder<> builder; ///< IR builder
+  public:
+    Module *module = nullptr;                        ///< LLVM module
+    IRBuilder<> builder;                             ///< IR builder
     std::map<std::string, StructMetaData *> structs; ///< Struct metadata
     std::unordered_map<std::string, FunctionMetaData *> functions{};
     ModuleMetaData *metaData = nullptr;
+    int currLine = -1;
     std::string sourcePath;
     std::string package;
     std::string fileName;
 
     FunctionMetaData *getFunMetaData(const std::string &name) const;
-    std::pair<Value *, VariableMetaData *> getValWithMetadata(const std::string & name);
-    FunctionMetaData* getCurrFunMetaData() const;
-    void setCurrFunMetaData(inter_gen::FunctionMetaData * funMetaData);
+    std::pair<Value *, VariableMetaData *> getValWithMetadata(const std::string &name);
+    FunctionMetaData *getCurrFunMetaData() const;
+    void setCurrFunMetaData(inter_gen::FunctionMetaData *funMetaData);
 
     /**
      * @brief Constructor to initialize the module and IR builder.
      */
-    explicit InterGenContext(std::string sourcePathInput) :
-        builder(IRBuilder(*llvmContext)), sourcePath(std::move(std::move(sourcePathInput)))
+    explicit InterGenContext(std::string sourcePathInput)
+        : builder(IRBuilder(*llvmContext)), sourcePath(std::move(std::move(sourcePathInput)))
     {
         fileName = sourcePath.substr(sourcePath.find_last_of('/') + 1);
     }
@@ -115,7 +114,7 @@ public:
      * @brief Get the map of local variables of the current block.
      * @return Map of local variables of the current block
      */
-    std::map<std::string, std::pair<Value*, VariableMetaData*>> &locals()
+    std::map<std::string, std::pair<Value *, VariableMetaData *>> &locals()
     {
         return blocks.top()->locals;
     }
@@ -244,16 +243,14 @@ public:
 
     void addPtrValBaseTypeMapping(Value *val, Type *baseType)
     {
-        if (blocks.top())
-        {
+        if (blocks.top()) {
             blocks.top()->ptrValBaseTypeMapping.insert({val, baseType});
         }
     }
 
     Type *getPtrValBaseTy(Value *value)
     {
-        if (blocks.top() && blocks.top()->ptrValBaseTypeMapping.contains(value))
-        {
+        if (blocks.top() && blocks.top()->ptrValBaseTypeMapping.contains(value)) {
             return blocks.top()->ptrValBaseTypeMapping.at(value);
         }
         REPORT_ERROR("Value not found in ptrValBaseTypeMapping", __FILE__, __LINE__);
@@ -263,9 +260,8 @@ public:
 
 void interGen_oneFile(IncludeGraphNode *node);
 
-void interGen(const std::set<IncludeGraphNode*>& map);
+void interGen(const std::set<IncludeGraphNode *> &map);
 
 } // namespace dap::inter_gen
-
 
 #endif // CODEGEN_H

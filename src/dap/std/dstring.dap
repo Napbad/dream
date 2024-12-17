@@ -1,7 +1,5 @@
 package dap.std;
 
-include dap.runtime.sys.sysFun;
-
 fun strlen(imt byte* s) int {
     var int res? = 0;
     if s == 0 {
@@ -22,6 +20,12 @@ fun reverse(imt byte* s) {
         imt byte tmp = s[i];
         s[i] = s[(len - i) - 1];
         s[(len - i) - 1] = tmp;
+    }
+}
+
+fun strcpy(var byte* dest, imt byte* src) {
+    for int i = 0; src[i] != 0; ++i {
+        dest[i] = src[i];
     }
 }
 

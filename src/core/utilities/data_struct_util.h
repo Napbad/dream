@@ -16,11 +16,10 @@ template <typename T> std::vector<T> getSubVector(const std::vector<T> &vec, siz
     return std::vector<T>(startIt, endIt);
 }
 
-template <typename T>
-bool findInVec(const std::vector<T> &vec, const T &elem)
+template <typename T> bool findInVec(const std::vector<T> &vec, const T &elem)
 {
     return std::find(vec.begin(), vec.end(), elem) != vec.end();
 }
-} // namespace ds_util
+} // namespace dap::util
 
 #endif // DATA_STRUCT_UTIL_H

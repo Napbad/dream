@@ -4,8 +4,8 @@
 
 #ifndef SYS_FUN_GEN_H
 #define SYS_FUN_GEN_H
-#include "src/core/parser/node.h"
 #include "codegen_inter.h"
+#include "src/core/parser/node.h"
 namespace dap::inter_gen
 {
 void genSysFun(const InterGenContext *ctx);
@@ -186,7 +186,6 @@ Function *genSysBrk(const InterGenContext *ctx);
  */
 Function *genSysSbrk(const InterGenContext *ctx);
 
-
 /**
  * \brief Generates the function type for the `_init` function and creates the function.
  *
@@ -216,7 +215,6 @@ Function *genFini(const InterGenContext *ctx);
  * This function defines the `exit` function using LLVM's type system and creates an external linkage function.
  */
 Function *genExit(const InterGenContext *ctx);
-
 
 /**
  * \brief Handles the system call by generating the appropriate LLVM IR.

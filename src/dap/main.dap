@@ -66,5 +66,7 @@ fun main() int {
 
   // // imt byte[8] s3 = "hellooo";
   // // write (1, &s3, 8);
+  // a;
+
   return 0;
 }

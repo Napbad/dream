@@ -19,43 +19,35 @@
 
 // Report a warning message with a specific color (default yellow)
 #define REPORT_WARNING(msg, file, line)                                                                                \
-    util::warn_print(std::cout, (SPACE_STR + (msg) + " \nat file: " file + ":" + std::to_string(line) + "\n"),    \
-                          util::FileColor::YELLOW)
+    util::warn_print(std::cout, (SPACE_STR + (msg) + " \nat file: " file + ":" + std::to_string(line) + "\n"),         \
+                     util::FileColor::YELLOW)
 
 // Report an error message with a specific color (default red)
 #define REPORT_ERROR(msg, file, line)                                                                                  \
-    util::err_print(std::cout, (SPACE_STR + (msg) + " \nat file: " file + ":" + std::to_string(line) + "\n"),     \
-                         util::FileColor::RED)
+    util::err_print(std::cout, (SPACE_STR + (msg) + " \nat file: " file + ":" + std::to_string(line) + "\n"),          \
+                    util::FileColor::RED)
 
 // Report a debug message with a specific color (default white)
 #define REPORT_DEBUG(msg, file, line)                                                                                  \
-    util::dbg_print(std::cout, (SPACE_STR + (msg) + " \nat file: " file + ":" + std::to_string(line) + "\n"),     \
-                         util::FileColor::WHITE)
+    util::dbg_print(std::cout, (SPACE_STR + (msg) + " \nat file: " file + ":" + std::to_string(line) + "\n"),          \
+                    util::FileColor::WHITE)
 
 // Report a success message with a specific color (default green)
 #define REPORT_SUCCESS(msg, file, line)                                                                                \
-    util::print(std::cout, (SPACE_STR + (msg) + " \nat file: " file + ":" + std::to_string(line) + "\n"),         \
-                     util::FileColor::GREEN)
+    util::print(std::cout, (SPACE_STR + (msg) + " \nat file: " file + ":" + std::to_string(line) + "\n"),              \
+                util::FileColor::GREEN)
 
 // Report a warning message with a specific color (default yellow)
-#define LOG_WARNING(msg)                                                                                \
-    util::warn_print(std::cout, (SPACE_STR + (msg) + "\n"),    \
-                          util::FileColor::YELLOW)
+#define LOG_WARNING(msg) util::warn_print(std::cout, (SPACE_STR + (msg) + "\n"), util::FileColor::YELLOW)
 
 // Report an error message with a specific color (default red)
-#define LOG_ERROR(msg)                                                                                  \
-    util::err_print(std::cout, (SPACE_STR + (msg) + "\n"),     \
-                         util::FileColor::RED)
+#define LOG_ERROR(msg) util::err_print(std::cout, (SPACE_STR + (msg) + "\n"), util::FileColor::RED)
 
 // Report a debug message with a specific color (default white)
-#define LOG_DEBUG(msg)                                                                                  \
-    util::dbg_print(std::cout, (SPACE_STR + (msg) + "\n"),     \
-                         util::FileColor::WHITE)
+#define LOG_DEBUG(msg) util::dbg_print(std::cout, (SPACE_STR + (msg) + "\n"), util::FileColor::WHITE)
 
 // Report a success message with a specific color (default green)
-#define LOG_SUCCESS(msg)                                                                                \
-    util::print(std::cout, (SPACE_STR + (msg) + "\n"),         \
-                     util::FileColor::GREEN)
+#define LOG_SUCCESS(msg) util::print(std::cout, (SPACE_STR + (msg) + "\n"), util::FileColor::GREEN)
 
 // Platform-specific color setting functions
 #ifdef _WIN32
@@ -78,8 +70,7 @@ namespace dap::util
  * @enum FileColor
  * @brief Enum for file colors.
  */
-enum class FileColor
-{
+enum class FileColor {
     GREEN,
     WHITE,
     RED,
@@ -238,6 +229,6 @@ std::vector<std::filesystem::path> find_cpp_files(const std::filesystem::path &d
 bool is_clang_format_available();
 
 bool create_dir(const std::string &path);
-} // namespace util
+} // namespace dap::util
 
 #endif // FILE_UTIL_H

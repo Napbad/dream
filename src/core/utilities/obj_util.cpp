@@ -6,8 +6,7 @@
 
 void obj_util::deleteDelayedObj()
 {
-    while (!delayedDeleteObjVector.empty())
-    {
+    while (!delayedDeleteObjVector.empty()) {
         const auto obj = delayedDeleteObjVector.back();
         delayedDeleteObjVector.erase(delayedDeleteObjVector.end() - 1);
         delete obj;

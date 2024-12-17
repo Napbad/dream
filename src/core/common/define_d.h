@@ -12,7 +12,7 @@
 #define SHORT_BIT_WIDTH 16
 #define LONG_LONG_BIT_WIDTH 128
 
-// #define PARSE_DBG
+#define PARSE_DBG
 
 #define DEFAULT_HEAP_SIZE 65536
 

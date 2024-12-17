@@ -1,10 +1,11 @@
 %{
 #include <vector>
-#include "node.h"
 #include <cstdio>
 #include <cstdlib>
 #include <memory>
-#include "../utilities/file_util.h"
+#include "node.h"
+#include "src/core/utilities/file_util.h"
+#include "src/core/common/define_d.h"
 
 using namespace dap::parser;
 
@@ -105,6 +106,8 @@ void printParseInfo(const char* ruleName, int lineNumber, const std::string& val
 program:
     stmt_list {
         program = new Program(new BlockStmt(*$1));
+        $$->line = yylineno;
+
         printParseInfo("program", yylineno);
     }
 ;
@@ -124,66 +127,98 @@ stmt_list:
 stmt:
     expression SEMICOLON {
         $$ = new ExprStmt($1);
+        $$->line = yylineno;
+
         printParseInfo("stmt (expression SEMICOLON)", yylineno);
     }
     | var_decl SEMICOLON {
         $$ = $1;
+        $$->line = yylineno;
+
         printParseInfo("stmt (var_decl SEMICOLON)", yylineno);
     }
     | RETURN expression SEMICOLON {
         $$ = new ReturnStmt($2);
+        $$->line = yylineno;
+
         printParseInfo("stmt (RETURN expression SEMICOLON)", yylineno);
     }
     | RETURN SEMICOLON {
         $$ = new ReturnStmt(nullptr);
+        $$->line = yylineno;
+
         printParseInfo("stmt (RETURN void SEMICOLON)", yylineno);
     }
     | if_statement {
         $$ = $1;
+        $$->line = yylineno;
+
         printParseInfo("stmt (if_statement)", yylineno);
     }
     | elif_statement {
         $$ = $1;
+        $$->line = yylineno;
+
         printParseInfo("stmt (elif_statement)", yylineno);
     }
     | for_statement {
         $$ = $1;
+        $$->line = yylineno;
+
         printParseInfo("stmt (for_statement)", yylineno);
     }
     | function_declaration {
         $$ = $1;
+        $$->line = yylineno;
+
         printParseInfo("stmt (function_declaration)", yylineno);
     }
     | assign_expr SEMICOLON {
         $$ = $1;
+        $$->line = yylineno;
+
         printParseInfo("stmt (assignment)", yylineno);
     }
     | array_assign_stmt {
         $$ = $1;
+        $$->line = yylineno;
+
         printParseInfo("stmt (array_assign_stmt)", yylineno);
     }
     | extern_decl {
         $$ = $1;
+        $$->line = yylineno;
+
         printParseInfo("stmt (extern_decl)", yylineno);
     }
     | break_statement SEMICOLON {
         $$ = $1;
+        $$->line = yylineno;
+
         printParseInfo("stmt (break_statement)", yylineno);
     }
     | block {
         $$ = $1;
+        $$->line = yylineno;
+
         printParseInfo("stmt (block)", yylineno);
     }
     | struct_decl {
         $$ = $1;
+        $$->line = yylineno;
+
         printParseInfo("stmt (struct_decl)", yylineno);
     }
     | include_stmt {
     	$$ = $1;
+        $$->line = yylineno;
+
     	printParseInfo("stmmt (include_stmt)", yylineno);
     }
     | package_stmt {
     	$$ = $1;
+        $$->line = yylineno;
+
     	printParseInfo("stmt (package_stmt)", yylineno);
     }
 ;
@@ -191,6 +226,8 @@ stmt:
 include_stmt:
     INCLUDE qualified_name SEMICOLON {
 	$$ = new IncludeStmt($2);
+        $$->line = yylineno;
+
 	printParseInfo("include_stmt", yylineno);
     }
 ;
@@ -198,6 +235,8 @@ include_stmt:
 package_stmt:
     PACKAGE qualified_name SEMICOLON {
 	$$ = new PackageStmt($2);
+        $$->line = yylineno;
+
 	printParseInfo("package_stmt", yylineno);
     }
 ;
@@ -205,7 +244,8 @@ package_stmt:
 block:
     LBRACE stmt_list RBRACE {
         $$ = new BlockStmt(*$2);
-        delete $2;
+        $$->line = yylineno;
+
         printParseInfo("block", yylineno);
     }
 ;
@@ -214,23 +254,31 @@ var_decl:
     var_mutable_flag qualified_name IDENTIFIER assign_nullable_flag ASSIGN expression {
         $$ = new VarDecl($2, new QualifiedName(new std::vector<std::string>({*$3})), $1, $4, $6);
         delete $3;
+        $$->line = yylineno;
+
         printParseInfo("var_decl (var_mutable_flag qualified_name IDENTIFIER assign_nullable_flag ASSIGN expression)", yylineno);
     }
     | var_mutable_flag qualified_name IDENTIFIER assign_nullable_flag {
         $$ = new VarDecl($2, new QualifiedName(new std::vector<std::string>({*$3})), $1, $4, nullptr);
         delete $3;
+        $$->line = yylineno;
+
         printParseInfo("var_decl (var_mutable_flag qualified_name IDENTIFIER assign_nullable_flag)", yylineno);
     }
     | var_mutable_flag qualified_name TIMES IDENTIFIER assign_nullable_flag ASSIGN expression {
     	$2->name_parts->push_back("*");
         $$ = new VarDecl($2, new QualifiedName(new std::vector<std::string>({*$4})), $1, $5, $7);
         delete $4;
+        $$->line = yylineno;
+
         printParseInfo("var_decl (var_mutable_flag qualified_name IDENTIFIER assign_nullable_flag ASSIGN expression)", yylineno);
     }
     | var_mutable_flag qualified_name TIMES IDENTIFIER assign_nullable_flag {
     	$2->name_parts->push_back("*");
         $$ = new VarDecl($2, new QualifiedName(new std::vector<std::string>({*$4})), $1, $5, nullptr);
         delete $4;
+        $$->line = yylineno;
+
         printParseInfo("var_decl (var_mutable_flag qualified_name IDENTIFIER assign_nullable_flag)", yylineno);
     }
     | var_mutable_flag qualified_name LBRACKET RBRACKET IDENTIFIER assign_nullable_flag {
@@ -238,6 +286,8 @@ var_decl:
         QualifiedName *name = new QualifiedName(new std::vector<std::string>({*$5}));
     	$$ = new VarDecl($2, name, $1, $6, nullptr);
     	delete $5;
+        $$->line = yylineno;
+
     	printParseInfo("var_decl (array) (var_mutable_flag qualified_name LBRACKET RBRACKET IDENTIFIER)", yylineno);
     }
     | var_mutable_flag qualified_name LBRACKET RBRACKET IDENTIFIER assign_nullable_flag ASSIGN expression {
@@ -245,6 +295,8 @@ var_decl:
         QualifiedName *name = new QualifiedName(new std::vector<std::string>({*$5}));
     	$$ = new VarDecl($2, name, $1, $6, $8);
     	delete $5;
+        $$->line = yylineno;
+
     	printParseInfo("var_decl (array) (var_mutable_flag qualified_name LBRACKET RBRACKET IDENTIFIER assign", yylineno);
     }
     | var_mutable_flag qualified_name LBRACKET expression RBRACKET IDENTIFIER assign_nullable_flag ASSIGN expression {
@@ -252,6 +304,8 @@ var_decl:
     	$$ = new VarDecl($2, new QualifiedName(new std::vector<std::string>({*$6})), $1, $6, $9, $4);
     	$$->size = $4;
     	delete $6;
+        $$->line = yylineno;
+
     	printParseInfo("var_decl (array) (var_mutable_flag qualified_name LBRACKET RBRACKET IDENTIFIER assign", yylineno);
     }
 ;
@@ -272,19 +326,26 @@ extern_decl:
     EXTERN FUN qualified_name LPAREN var_decl_list RPAREN qualified_name SEMICOLON {
         $$ = new ProtoDecl($7, $3, *$5);
         delete $5;
+        $$->line = yylineno;
+
         printParseInfo("extern_decl", yylineno);
     }
 ;
 
 function_declaration:
     FUN qualified_name LPAREN var_decl_list RPAREN block {
+
         $$ = new FuncDecl(new QualifiedName(), $2, *$4, $6);
+        $$->line = yylineno;
+
         delete $4;
         printParseInfo("function_declaration (without return type)", yylineno);
     }
     | FUN qualified_name LPAREN var_decl_list RPAREN qualified_name block  {
         $$ = new FuncDecl($6, $2, *$4, $7);
         delete $4;
+        $$->line = yylineno;
+
         printParseInfo("function_declaration (with return type)", yylineno);
     }
 ;
@@ -300,6 +361,7 @@ var_decl_list:
     }
     | var_decl_list COMMA var_decl {
         $1->push_back($3);
+        std::cout << "Added " << $3->name->getName() << " to var_decl_list" << std::endl;
         $$ = $1;
         printParseInfo("var_decl_list (multiple var_decl)", yylineno);
     }
@@ -309,12 +371,16 @@ qualified_name:
     IDENTIFIER {
         $$ = new QualifiedName({*$1});
         delete $1; // Clean up the string
+        $$->line = yylineno;
+
         printParseInfo("qualified_name (single IDENTIFIER)", yylineno);
     }
     | qualified_name DOT IDENTIFIER {
         $$ = $1;
         $$->name_parts->push_back(*$3);
         delete $3; // Clean up the string
+        $$->line = yylineno;
+
         printParseInfo("qualified_name (nested)", yylineno);
     }
 ;
@@ -323,6 +389,8 @@ qualified_name:
 binary_expression:
    expression binary_operator expression {
         $$ = new BinaryExpr($2, $1, $3);
+        $$->line = yylineno;
+
         printParseInfo("binary_expression", yylineno);
     }
 ;
@@ -331,43 +399,63 @@ binary_expression:
 expression:
     INT_TOKEN {
         $$ = new IntegerExpr(atol($1->c_str()));
+        $$->line = yylineno;
+
         printParseInfo("expression (INT_TOKEN)", yylineno);
     }
     | DOUBLE_TOKEN {
         $$ = new DoubleExpr(atof($1->c_str()));
+        $$->line = yylineno;
+
         printParseInfo("expression (DOUBLE_TOKEN)", yylineno);
     }
     | STRING_LITERAL {
         $$ = new StringExpr($1->substr(1, $1->length() - 2));
         delete $1; // Clean up the string
+        $$->line = yylineno;
+
         printParseInfo("expression (STRING_LITERAL)", yylineno);
     }
     | qualified_name {
         $$ = new VarExpr($1);
+        $$->line = yylineno;
+
         printParseInfo("expression (qualified_name)", yylineno);
     }
     | LPAREN expression RPAREN {
         $$ = $2;
+        $$->line = yylineno;
+
         printParseInfo("expression (parenthesized)", yylineno);
     }
     | qualified_name LPAREN expr_list RPAREN {
         $$ = new CallExpr($1, *$3);
+        $$->line = yylineno;
+
         printParseInfo("expression (function call)", yylineno);
     }
     | binary_expression {
 	$$ = $1;
+        $$->line = yylineno;
+
         printParseInfo("expression (binary_expression)", yylineno);
     }
     | unary_expression {
         $$ = $1;
+        $$->line = yylineno;
+
         printParseInfo("expression (unary_expression)", yylineno);
     }
     | LBRACKET expr_list RBRACKET {
         $$ = new ListExpr($2);
+        $$->line = yylineno;
+
         printParseInfo("expression (list)", yylineno);
     }
     | qualified_name LBRACKET expression RBRACKET {
         $$ = new ArrayExpr($3, $1);
+        $$->line = yylineno;
+
         printParseInfo("expression (array access)", yylineno);
     }
 ;
@@ -375,6 +463,8 @@ expression:
 unary_expression:
     unary_operator expression {
         $$ = new UnaryExpr($1, $2);
+        $$->line = yylineno;
+
         printParseInfo("unary_expression", yylineno);
     }
 ;
@@ -416,8 +506,8 @@ unary_operator:
 
 expr_list:
     /* empty */ {
-	$$ = new std::vector<Expr*>();
-	printParseInfo("expr_list (empty)", yylineno);
+        $$ = new std::vector<Expr*>();
+        printParseInfo("expr_list (empty)", yylineno);
     }
     |expression {
         $$ = new std::vector<Expr*>{$1};
@@ -433,18 +523,26 @@ expr_list:
 if_statement:
     IF expression block {
         $$ = new IfStmt($2, $3, nullptr);
+        $$->line = yylineno;
+
         printParseInfo("if_statement (no else)", yylineno);
     }
     | IF expression block ELSE block {
         $$ = new IfStmt($2, $3, $5);
+        $$->line = yylineno;
+
         printParseInfo("if_statement (with else)", yylineno);
     }
     | IF expression block elif_stmts {
         $$ = new IfStmt($2, $3, nullptr, $4);
+        $$->line = yylineno;
+
         printParseInfo("if_statement (with elif_stmts)", yylineno);
     }
     | IF expression block elif_stmts ELSE block {
         $$ = new IfStmt($2, $3, $6, $4);
+        $$->line = yylineno;
+
         printParseInfo("if_statement (with elif_stmts)", yylineno);
     }
 ;
@@ -452,10 +550,12 @@ if_statement:
 elif_stmts:
     /* empty */ {
         $$ = new std::vector<Stmt*>();
+
         printParseInfo("elif_stmts (empty)", yylineno);
     }
     | elif_statement elif_stmts {
         $$->push_back($1);
+
         printParseInfo("elif_stmts (with elif_statement)", yylineno);
     }
 ;
@@ -463,6 +563,7 @@ elif_stmts:
 elif_statement:
     ELIF expression block {
         $$ = new ElifStmt($2, $3);
+        $$->line = yylineno;
         printParseInfo("elif_statement", yylineno);
     }
 ;
@@ -470,16 +571,19 @@ elif_statement:
 for_statement:
     FOR for_var_decl SEMICOLON expression SEMICOLON expression block {
         $$ = new ForStmt($2, $4, $6, $7);
+        $$->line = yylineno;
         printParseInfo("for_statement", yylineno);
     }
 ;
 
 break_statement:
     BREAK {
+        $$->line = yylineno;
         $$ = new BreakStmt();
         printParseInfo("break_statement", yylineno);
     }
     | BREAK expression {
+        $$->line = yylineno;
         $$ = new BreakStmt($2);
         printParseInfo("break_statement", yylineno);
     }
@@ -498,6 +602,7 @@ for_var_decl:
 
 struct_decl:
     STRUCT IDENTIFIER LBRACE struct_field_list RBRACE SEMICOLON {
+        $$->line = yylineno;
         $$ = new StructDecl(new QualifiedName({*$2}), *$4);
         delete $2;
         delete $4;
@@ -520,6 +625,7 @@ struct_field_list:
 assign_expr:
     qualified_name ASSIGN expression {
         $$ = new AssignExpr($1, $3);
+        $$->line = yylineno;
         printParseInfo("assignment", yylineno);
     }
 ;
@@ -527,6 +633,7 @@ assign_expr:
 array_assign_stmt:
     qualified_name LBRACKET expression RBRACKET ASSIGN expression SEMICOLON {
         $$ = new ArrayAssignExpr($1, $3, $6);
+        $$->line = yylineno;
         printParseInfo("array_assign_expr", yylineno);
     }
 ;

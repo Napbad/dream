@@ -8,7 +8,6 @@
 #include "funGen_sys.h"
 #include "src/core/utilities/file_util.h"
 
-
 namespace dap::inter_gen
 {
 void genSysFun(const InterGenContext *ctx)
@@ -41,8 +40,7 @@ void genSysFun(const InterGenContext *ctx)
 
 void registerSysFunctions(const InterGenContext *ctx)
 {
-    struct SysFunctionMetadata
-    {
+    struct SysFunctionMetadata {
         std::string name;
         FunctionType *type;
     };
@@ -99,8 +97,7 @@ void registerSysFunctions(const InterGenContext *ctx)
         {"sbrk",
          FunctionType::get(PointerType::get(IntegerType::getInt8Ty(LLVMCTX), 0), {Type::getInt32Ty(LLVMCTX)}, false)}};
 
-    for (const auto &[name, type] : sysFunctions)
-    {
+    for (const auto &[name, type] : sysFunctions) {
         Function *func = Function::Create(type, Function::ExternalLinkage, name, ctx->module);
     }
 }
@@ -349,7 +346,6 @@ Function *genFini(const InterGenContext *ctx)
     return finiFunc;
 }
 
-
 Function *genExit(const InterGenContext *ctx)
 {
     // Define the function type for the `exit` function
@@ -361,91 +357,60 @@ Function *genExit(const InterGenContext *ctx)
     return exitFunc;
 }
 
-
 CallInst *handleSys(const parser::CallExpr *call, InterGenContext *ctx, Function *fun)
 {
-    if (fun->getName() == "write")
-    {
+    if (fun->getName() == "write") {
         std::vector<Value *> writeArgs;
 
         // Handle the file descriptor argument
-        if (auto *intExpr = dynamic_cast<parser::IntegerExpr *>(call->args[0]))
-        {
+        if (auto *intExpr = dynamic_cast<parser::IntegerExpr *>(call->args[0])) {
             writeArgs.push_back(ConstantInt::get(Type::getInt32Ty(LLVMCTX), APInt(32, intExpr->value)));
-        }
-        else if (auto *varExpr = dynamic_cast<parser::VarExpr *>(call->args[0]))
-        {
-            if (Value *codeGen = varExpr->codeGen(ctx); isa<ConstantInt>(codeGen))
-            {
-                if (auto *constantInt = dyn_cast<ConstantInt>(codeGen); constantInt->getBitWidth() != 32)
-                {
+        } else if (auto *varExpr = dynamic_cast<parser::VarExpr *>(call->args[0])) {
+            if (Value *codeGen = varExpr->codeGen(ctx); isa<ConstantInt>(codeGen)) {
+                if (auto *constantInt = dyn_cast<ConstantInt>(codeGen); constantInt->getBitWidth() != 32) {
                     writeArgs.push_back(codeGen);
-                }
-                else
-                {
+                } else {
                     writeArgs.push_back(
                         ConstantInt::get(Type::getInt32Ty(LLVMCTX), APInt(32, constantInt->getSExtValue())));
                 }
-            }
-            else
-            {
+            } else {
                 std::stringstream ss;
                 ss << "invalid arg type: expect Integer32, but get: " << codeGen->getType()->getTypeID();
                 util::err_print(std::cerr, ss.str());
             }
-        }
-        else
-        {
+        } else {
             REPORT_ERROR("invalid arg type: expect Integer32, but get: unknown", __FILE__, __LINE__);
         }
 
         // Handle the buffer argument
-        if (auto *strExpr = dynamic_cast<parser::StringExpr *>(call->args[1]))
-        {
+        if (auto *strExpr = dynamic_cast<parser::StringExpr *>(call->args[1])) {
             auto *strPtr = BUILDER.CreateGlobalStringPtr(strExpr->value);
             writeArgs.push_back(strPtr);
-        }
-        else if (auto *expr = dynamic_cast<parser::Expr *>(call->args[1]))
-        {
+        } else if (auto *expr = dynamic_cast<parser::Expr *>(call->args[1])) {
             writeArgs.push_back(expr->codeGen(ctx));
-        }
-        else
-        {
+        } else {
             REPORT_ERROR("invalid arg type: expect String, but get: unknown", __FILE__, __LINE__);
         }
 
         // Handle the count argument
-        if (auto *intExpr = dynamic_cast<parser::IntegerExpr *>(call->args[2]))
-        {
+        if (auto *intExpr = dynamic_cast<parser::IntegerExpr *>(call->args[2])) {
             writeArgs.push_back(ConstantInt::get(Type::getInt32Ty(LLVMCTX), APInt(32, intExpr->value)));
-        }
-        else if (auto *varExpr = dynamic_cast<parser::VarExpr *>(call->args[2]))
-        {
-            if (Value *codeGen = varExpr->codeGen(ctx); isa<ConstantInt>(codeGen))
-            {
-                if (auto *constantInt = dyn_cast<ConstantInt>(codeGen); constantInt->getBitWidth() != 32)
-                {
+        } else if (auto *varExpr = dynamic_cast<parser::VarExpr *>(call->args[2])) {
+            if (Value *codeGen = varExpr->codeGen(ctx); isa<ConstantInt>(codeGen)) {
+                if (auto *constantInt = dyn_cast<ConstantInt>(codeGen); constantInt->getBitWidth() != 32) {
                     writeArgs.push_back(codeGen);
-                }
-                else
-                {
+                } else {
                     writeArgs.push_back(
                         ConstantInt::get(Type::getInt32Ty(LLVMCTX), APInt(32, constantInt->getSExtValue())));
                 }
-            }
-            else
-            {
+            } else {
                 std::stringstream ss;
                 ss << "invalid arg type: expect Integer32, but get: " << codeGen->getType()->getTypeID();
                 util::err_print(std::cerr, ss.str());
             }
-        }
-        else if (Value *size = call->args[2]->codeGen(ctx); isa<IntegerType>(size->getType()))
-        {
+        } else if (Value *size = call->args[2]->codeGen(ctx); isa<IntegerType>(size->getType())) {
             writeArgs.push_back(size);
-        }
-        else
-        {
+        } else {
             REPORT_ERROR("invalid arg type: expect Integer32, but get: unknown", __FILE__, __LINE__);
         }
 
@@ -453,15 +418,11 @@ CallInst *handleSys(const parser::CallExpr *call, InterGenContext *ctx, Function
         return BUILDER.CreateCall(fun, writeArgs, "write_calltmp");
     }
 
-    if (fun->getName() == "fsync")
-    {
+    if (fun->getName() == "fsync") {
         std::vector<Value *> fsyncArgs;
-        if (auto *intExpr = dynamic_cast<parser::IntegerExpr *>(call->args[0]))
-        {
+        if (auto *intExpr = dynamic_cast<parser::IntegerExpr *>(call->args[0])) {
             fsyncArgs.push_back(ConstantInt::get(LLVMCTX, APInt(32, intExpr->value)));
-        }
-        else
-        {
+        } else {
             REPORT_ERROR("invalid arg type: expect Integer32, but get: unknown", __FILE__, __LINE__);
             return nullptr;
         }
@@ -470,73 +431,47 @@ CallInst *handleSys(const parser::CallExpr *call, InterGenContext *ctx, Function
         return BUILDER.CreateCall(fun, fsyncArgs, "fsync_calltmp");
     }
 
-    if (fun->getName() == "read")
-    {
+    if (fun->getName() == "read") {
         std::vector<Value *> readArgs;
-        if (auto *intExpr = dynamic_cast<parser::IntegerExpr *>(call->args[0]))
-        {
+        if (auto *intExpr = dynamic_cast<parser::IntegerExpr *>(call->args[0])) {
             readArgs.push_back(ConstantInt::get(LLVMCTX, APInt(32, intExpr->value)));
-        }
-        else if (auto *varExpr = dynamic_cast<parser::VarExpr *>(call->args[0]))
-        {
-            if (Value *codeGen = varExpr->codeGen(ctx); isa<ConstantInt>(codeGen))
-            {
-                if (auto *constantInt = dyn_cast<ConstantInt>(codeGen); constantInt->getBitWidth() != 32)
-                {
+        } else if (auto *varExpr = dynamic_cast<parser::VarExpr *>(call->args[0])) {
+            if (Value *codeGen = varExpr->codeGen(ctx); isa<ConstantInt>(codeGen)) {
+                if (auto *constantInt = dyn_cast<ConstantInt>(codeGen); constantInt->getBitWidth() != 32) {
                     readArgs.push_back(codeGen);
-                }
-                else
-                {
+                } else {
                     readArgs.push_back(ConstantInt::get(LLVMCTX, APInt(32, constantInt->getSExtValue())));
                 }
-            }
-            else
-            {
+            } else {
                 REPORT_ERROR("invalid arg type: expect Integer32, but get: unknown", __FILE__, __LINE__);
                 return nullptr;
             }
-        }
-        else
-        {
+        } else {
             REPORT_ERROR("invalid arg type: expect Integer32, but get: unknown", __FILE__, __LINE__);
             return nullptr;
         }
 
-        if (auto *ptrExpr = dynamic_cast<parser::PointerExpr *>(call->args[1]))
-        {
+        if (auto *ptrExpr = dynamic_cast<parser::PointerExpr *>(call->args[1])) {
             readArgs.push_back(ptrExpr->codeGen(ctx));
-        }
-        else
-        {
+        } else {
             REPORT_ERROR("invalid arg type: expect Pointer, but get: unknown", __FILE__, __LINE__);
             return nullptr;
         }
 
-        if (auto *intExpr = dynamic_cast<parser::IntegerExpr *>(call->args[2]))
-        {
+        if (auto *intExpr = dynamic_cast<parser::IntegerExpr *>(call->args[2])) {
             readArgs.push_back(ConstantInt::get(LLVMCTX, APInt(32, intExpr->value)));
-        }
-        else if (auto *varExpr = dynamic_cast<parser::VarExpr *>(call->args[2]))
-        {
-            if (Value *codeGen = varExpr->codeGen(ctx); isa<ConstantInt>(codeGen))
-            {
-                if (auto *constantInt = dyn_cast<ConstantInt>(codeGen); constantInt->getBitWidth() != 32)
-                {
+        } else if (auto *varExpr = dynamic_cast<parser::VarExpr *>(call->args[2])) {
+            if (Value *codeGen = varExpr->codeGen(ctx); isa<ConstantInt>(codeGen)) {
+                if (auto *constantInt = dyn_cast<ConstantInt>(codeGen); constantInt->getBitWidth() != 32) {
                     readArgs.push_back(codeGen);
-                }
-                else
-                {
+                } else {
                     readArgs.push_back(ConstantInt::get(LLVMCTX, APInt(32, constantInt->getSExtValue())));
                 }
-            }
-            else
-            {
+            } else {
                 REPORT_ERROR("invalid arg type: expect Integer32, but get: unknown", __FILE__, __LINE__);
                 return nullptr;
             }
-        }
-        else
-        {
+        } else {
             REPORT_ERROR("invalid arg type: expect Integer32, but get: unknown", __FILE__, __LINE__);
             return nullptr;
         }
@@ -544,36 +479,26 @@ CallInst *handleSys(const parser::CallExpr *call, InterGenContext *ctx, Function
         return BUILDER.CreateCall(fun, readArgs, "read_calltmp");
     }
 
-    if (fun->getName() == "open")
-    {
+    if (fun->getName() == "open") {
         std::vector<Value *> openArgs;
-        if (auto *strExpr = dynamic_cast<parser::StringExpr *>(call->args[0]))
-        {
+        if (auto *strExpr = dynamic_cast<parser::StringExpr *>(call->args[0])) {
             auto *strPtr = BUILDER.CreateGlobalStringPtr(strExpr->value);
             openArgs.push_back(strPtr);
-        }
-        else
-        {
+        } else {
             REPORT_ERROR("invalid arg type: expect String, but get: unknown", __FILE__, __LINE__);
             return nullptr;
         }
 
-        if (auto *intExpr = dynamic_cast<parser::IntegerExpr *>(call->args[1]))
-        {
+        if (auto *intExpr = dynamic_cast<parser::IntegerExpr *>(call->args[1])) {
             openArgs.push_back(ConstantInt::get(LLVMCTX, APInt(32, intExpr->value)));
-        }
-        else
-        {
+        } else {
             REPORT_ERROR("invalid arg type: expect Integer32, but get: unknown", __FILE__, __LINE__);
             return nullptr;
         }
 
-        if (auto *intExpr = dynamic_cast<parser::IntegerExpr *>(call->args[2]))
-        {
+        if (auto *intExpr = dynamic_cast<parser::IntegerExpr *>(call->args[2])) {
             openArgs.push_back(ConstantInt::get(LLVMCTX, APInt(32, intExpr->value)));
-        }
-        else
-        {
+        } else {
             REPORT_ERROR("invalid arg type: expect Integer32, but get: unknown", __FILE__, __LINE__);
             return nullptr;
         }
@@ -581,15 +506,11 @@ CallInst *handleSys(const parser::CallExpr *call, InterGenContext *ctx, Function
         return BUILDER.CreateCall(fun, openArgs, "open_calltmp");
     }
 
-    if (fun->getName() == "close")
-    {
+    if (fun->getName() == "close") {
         std::vector<Value *> closeArgs;
-        if (auto *intExpr = dynamic_cast<parser::IntegerExpr *>(call->args[0]))
-        {
+        if (auto *intExpr = dynamic_cast<parser::IntegerExpr *>(call->args[0])) {
             closeArgs.push_back(ConstantInt::get(LLVMCTX, APInt(32, intExpr->value)));
-        }
-        else
-        {
+        } else {
             REPORT_ERROR("invalid arg type: expect Integer32, but get: unknown", __FILE__, __LINE__);
             return nullptr;
         }
@@ -597,41 +518,30 @@ CallInst *handleSys(const parser::CallExpr *call, InterGenContext *ctx, Function
         return BUILDER.CreateCall(fun, closeArgs, "close_calltmp");
     }
 
-    if (fun->getName() == "fork")
-    {
+    if (fun->getName() == "fork") {
         return BUILDER.CreateCall(fun, {}, "fork_calltmp");
     }
 
-    if (fun->getName() == "execve")
-    {
+    if (fun->getName() == "execve") {
         std::vector<Value *> execveArgs;
-        if (auto *strExpr = dynamic_cast<parser::StringExpr *>(call->args[0]))
-        {
+        if (auto *strExpr = dynamic_cast<parser::StringExpr *>(call->args[0])) {
             auto *strPtr = BUILDER.CreateGlobalStringPtr(strExpr->value);
             execveArgs.push_back(strPtr);
-        }
-        else
-        {
+        } else {
             REPORT_ERROR("invalid arg type: expect String, but get: unknown", __FILE__, __LINE__);
             return nullptr;
         }
 
-        if (auto *arrExpr = dynamic_cast<parser::ArrayExpr *>(call->args[1]))
-        {
+        if (auto *arrExpr = dynamic_cast<parser::ArrayExpr *>(call->args[1])) {
             execveArgs.push_back(arrExpr->codeGen(ctx));
-        }
-        else
-        {
+        } else {
             REPORT_ERROR("invalid arg type: expect Array, but get: unknown", __FILE__, __LINE__);
             return nullptr;
         }
 
-        if (auto *arrExpr = dynamic_cast<parser::ArrayExpr *>(call->args[2]))
-        {
+        if (auto *arrExpr = dynamic_cast<parser::ArrayExpr *>(call->args[2])) {
             execveArgs.push_back(arrExpr->codeGen(ctx));
-        }
-        else
-        {
+        } else {
             REPORT_ERROR("invalid arg type: expect Array, but get: unknown", __FILE__, __LINE__);
             return nullptr;
         }
@@ -639,15 +549,11 @@ CallInst *handleSys(const parser::CallExpr *call, InterGenContext *ctx, Function
         return BUILDER.CreateCall(fun, execveArgs, "execve_calltmp");
     }
 
-    if (fun->getName() == "wait")
-    {
+    if (fun->getName() == "wait") {
         std::vector<Value *> waitArgs;
-        if (auto *ptrExpr = dynamic_cast<parser::PointerExpr *>(call->args[0]))
-        {
+        if (auto *ptrExpr = dynamic_cast<parser::PointerExpr *>(call->args[0])) {
             waitArgs.push_back(ptrExpr->codeGen(ctx));
-        }
-        else
-        {
+        } else {
             REPORT_ERROR("invalid arg type: expect Pointer, but get: unknown", __FILE__, __LINE__);
             return nullptr;
         }
@@ -655,65 +561,46 @@ CallInst *handleSys(const parser::CallExpr *call, InterGenContext *ctx, Function
         return BUILDER.CreateCall(fun, waitArgs, "wait_calltmp");
     }
 
-    if (fun->getName() == "mmap")
-    {
+    if (fun->getName() == "mmap") {
         std::vector<Value *> mmapArgs;
-        if (auto *ptrExpr = dynamic_cast<parser::PointerExpr *>(call->args[0]))
-        {
+        if (auto *ptrExpr = dynamic_cast<parser::PointerExpr *>(call->args[0])) {
             mmapArgs.push_back(ptrExpr->codeGen(ctx));
-        }
-        else
-        {
+        } else {
             REPORT_ERROR("invalid arg type: expect Pointer, but get: unknown", __FILE__, __LINE__);
             return nullptr;
         }
 
-        if (auto *intExpr = dynamic_cast<parser::IntegerExpr *>(call->args[1]))
-        {
+        if (auto *intExpr = dynamic_cast<parser::IntegerExpr *>(call->args[1])) {
             mmapArgs.push_back(ConstantInt::get(LLVMCTX, APInt(64, intExpr->value)));
-        }
-        else
-        {
+        } else {
             REPORT_ERROR("invalid arg type: expect Integer64, but get: unknown", __FILE__, __LINE__);
             return nullptr;
         }
 
-        if (auto *intExpr = dynamic_cast<parser::IntegerExpr *>(call->args[2]))
-        {
+        if (auto *intExpr = dynamic_cast<parser::IntegerExpr *>(call->args[2])) {
             mmapArgs.push_back(ConstantInt::get(LLVMCTX, APInt(32, intExpr->value)));
-        }
-        else
-        {
+        } else {
             REPORT_ERROR("invalid arg type: expect Integer32, but get: unknown", __FILE__, __LINE__);
             return nullptr;
         }
 
-        if (auto *intExpr = dynamic_cast<parser::IntegerExpr *>(call->args[3]))
-        {
+        if (auto *intExpr = dynamic_cast<parser::IntegerExpr *>(call->args[3])) {
             mmapArgs.push_back(ConstantInt::get(LLVMCTX, APInt(32, intExpr->value)));
-        }
-        else
-        {
+        } else {
             REPORT_ERROR("invalid arg type: expect Integer32, but get: unknown", __FILE__, __LINE__);
             return nullptr;
         }
 
-        if (auto *intExpr = dynamic_cast<parser::IntegerExpr *>(call->args[4]))
-        {
+        if (auto *intExpr = dynamic_cast<parser::IntegerExpr *>(call->args[4])) {
             mmapArgs.push_back(ConstantInt::get(LLVMCTX, APInt(32, intExpr->value)));
-        }
-        else
-        {
+        } else {
             REPORT_ERROR("invalid arg type: expect Integer32, but get: unknown", __FILE__, __LINE__);
             return nullptr;
         }
 
-        if (auto *intExpr = dynamic_cast<parser::IntegerExpr *>(call->args[5]))
-        {
+        if (auto *intExpr = dynamic_cast<parser::IntegerExpr *>(call->args[5])) {
             mmapArgs.push_back(ConstantInt::get(LLVMCTX, APInt(64, intExpr->value)));
-        }
-        else
-        {
+        } else {
             REPORT_ERROR("invalid arg type: expect Integer64, but get: unknown", __FILE__, __LINE__);
             return nullptr;
         }
@@ -721,25 +608,18 @@ CallInst *handleSys(const parser::CallExpr *call, InterGenContext *ctx, Function
         return BUILDER.CreateCall(fun, mmapArgs, "mmap_calltmp");
     }
 
-    if (fun->getName() == "munmap")
-    {
+    if (fun->getName() == "munmap") {
         std::vector<Value *> munmapArgs;
-        if (auto *ptrExpr = dynamic_cast<parser::PointerExpr *>(call->args[0]))
-        {
+        if (auto *ptrExpr = dynamic_cast<parser::PointerExpr *>(call->args[0])) {
             munmapArgs.push_back(ptrExpr->codeGen(ctx));
-        }
-        else
-        {
+        } else {
             REPORT_ERROR("invalid arg type: expect Pointer, but get: unknown", __FILE__, __LINE__);
             return nullptr;
         }
 
-        if (auto *intExpr = dynamic_cast<parser::IntegerExpr *>(call->args[1]))
-        {
+        if (auto *intExpr = dynamic_cast<parser::IntegerExpr *>(call->args[1])) {
             munmapArgs.push_back(ConstantInt::get(LLVMCTX, APInt(64, intExpr->value)));
-        }
-        else
-        {
+        } else {
             REPORT_ERROR("invalid arg type: expect Integer64, but get: unknown", __FILE__, __LINE__);
             return nullptr;
         }
@@ -747,35 +627,25 @@ CallInst *handleSys(const parser::CallExpr *call, InterGenContext *ctx, Function
         return BUILDER.CreateCall(fun, munmapArgs, "munmap_calltmp");
     }
 
-    if (fun->getName() == "socket")
-    {
+    if (fun->getName() == "socket") {
         std::vector<Value *> socketArgs;
-        if (auto *intExpr = dynamic_cast<parser::IntegerExpr *>(call->args[0]))
-        {
+        if (auto *intExpr = dynamic_cast<parser::IntegerExpr *>(call->args[0])) {
             socketArgs.push_back(ConstantInt::get(LLVMCTX, APInt(32, intExpr->value)));
-        }
-        else
-        {
+        } else {
             REPORT_ERROR("invalid arg type: expect Integer32, but get: unknown", __FILE__, __LINE__);
             return nullptr;
         }
 
-        if (auto *intExpr = dynamic_cast<parser::IntegerExpr *>(call->args[1]))
-        {
+        if (auto *intExpr = dynamic_cast<parser::IntegerExpr *>(call->args[1])) {
             socketArgs.push_back(ConstantInt::get(LLVMCTX, APInt(32, intExpr->value)));
-        }
-        else
-        {
+        } else {
             REPORT_ERROR("invalid arg type: expect Integer32, but get: unknown", __FILE__, __LINE__);
             return nullptr;
         }
 
-        if (auto *intExpr = dynamic_cast<parser::IntegerExpr *>(call->args[2]))
-        {
+        if (auto *intExpr = dynamic_cast<parser::IntegerExpr *>(call->args[2])) {
             socketArgs.push_back(ConstantInt::get(LLVMCTX, APInt(32, intExpr->value)));
-        }
-        else
-        {
+        } else {
             REPORT_ERROR("invalid arg type: expect Integer32, but get: unknown", __FILE__, __LINE__);
             return nullptr;
         }
@@ -783,35 +653,25 @@ CallInst *handleSys(const parser::CallExpr *call, InterGenContext *ctx, Function
         return BUILDER.CreateCall(fun, socketArgs, "socket_calltmp");
     }
 
-    if (fun->getName() == "bind")
-    {
+    if (fun->getName() == "bind") {
         std::vector<Value *> bindArgs;
-        if (auto *intExpr = dynamic_cast<parser::IntegerExpr *>(call->args[0]))
-        {
+        if (auto *intExpr = dynamic_cast<parser::IntegerExpr *>(call->args[0])) {
             bindArgs.push_back(ConstantInt::get(LLVMCTX, APInt(32, intExpr->value)));
-        }
-        else
-        {
+        } else {
             REPORT_ERROR("invalid arg type: expect Integer32, but get: unknown", __FILE__, __LINE__);
             return nullptr;
         }
 
-        if (auto *ptrExpr = dynamic_cast<parser::PointerExpr *>(call->args[1]))
-        {
+        if (auto *ptrExpr = dynamic_cast<parser::PointerExpr *>(call->args[1])) {
             bindArgs.push_back(ptrExpr->codeGen(ctx));
-        }
-        else
-        {
+        } else {
             REPORT_ERROR("invalid arg type: expect Pointer, but get: unknown", __FILE__, __LINE__);
             return nullptr;
         }
 
-        if (auto *intExpr = dynamic_cast<parser::IntegerExpr *>(call->args[2]))
-        {
+        if (auto *intExpr = dynamic_cast<parser::IntegerExpr *>(call->args[2])) {
             bindArgs.push_back(ConstantInt::get(LLVMCTX, APInt(32, intExpr->value)));
-        }
-        else
-        {
+        } else {
             REPORT_ERROR("invalid arg type: expect Integer32, but get: unknown", __FILE__, __LINE__);
             return nullptr;
         }
@@ -819,15 +679,11 @@ CallInst *handleSys(const parser::CallExpr *call, InterGenContext *ctx, Function
         return BUILDER.CreateCall(fun, bindArgs, "bind_calltmp");
     }
 
-    if (fun->getName() == "listen")
-    {
+    if (fun->getName() == "listen") {
         std::vector<Value *> listenArgs;
-        if (auto *intExpr = dynamic_cast<parser::IntegerExpr *>(call->args[0]))
-        {
+        if (auto *intExpr = dynamic_cast<parser::IntegerExpr *>(call->args[0])) {
             listenArgs.push_back(ConstantInt::get(LLVMCTX, APInt(32, intExpr->value)));
-        }
-        else
-        {
+        } else {
             REPORT_ERROR("invalid arg type: expect Integer32, but get: unknown", __FILE__, __LINE__);
             return nullptr;
         }
@@ -835,35 +691,25 @@ CallInst *handleSys(const parser::CallExpr *call, InterGenContext *ctx, Function
         return BUILDER.CreateCall(fun, listenArgs, "listen_calltmp");
     }
 
-    if (fun->getName() == "accept")
-    {
+    if (fun->getName() == "accept") {
         std::vector<Value *> acceptArgs;
-        if (auto *intExpr = dynamic_cast<parser::IntegerExpr *>(call->args[0]))
-        {
+        if (auto *intExpr = dynamic_cast<parser::IntegerExpr *>(call->args[0])) {
             acceptArgs.push_back(ConstantInt::get(LLVMCTX, APInt(32, intExpr->value)));
-        }
-        else
-        {
+        } else {
             REPORT_ERROR("invalid arg type: expect Integer32, but get: unknown", __FILE__, __LINE__);
             return nullptr;
         }
 
-        if (auto *ptrExpr = dynamic_cast<parser::PointerExpr *>(call->args[1]))
-        {
+        if (auto *ptrExpr = dynamic_cast<parser::PointerExpr *>(call->args[1])) {
             acceptArgs.push_back(ptrExpr->codeGen(ctx));
-        }
-        else
-        {
+        } else {
             REPORT_ERROR("invalid arg type: expect Pointer, but get: unknown", __FILE__, __LINE__);
             return nullptr;
         }
 
-        if (auto *ptrExpr = dynamic_cast<parser::PointerExpr *>(call->args[2]))
-        {
+        if (auto *ptrExpr = dynamic_cast<parser::PointerExpr *>(call->args[2])) {
             acceptArgs.push_back(ptrExpr->codeGen(ctx));
-        }
-        else
-        {
+        } else {
             REPORT_ERROR("invalid arg type: expect Pointer, but get: unknown", __FILE__, __LINE__);
             return nullptr;
         }
@@ -871,35 +717,25 @@ CallInst *handleSys(const parser::CallExpr *call, InterGenContext *ctx, Function
         return BUILDER.CreateCall(fun, acceptArgs, "accept_calltmp");
     }
 
-    if (fun->getName() == "connect")
-    {
+    if (fun->getName() == "connect") {
         std::vector<Value *> connectArgs;
-        if (auto *intExpr = dynamic_cast<parser::IntegerExpr *>(call->args[0]))
-        {
+        if (auto *intExpr = dynamic_cast<parser::IntegerExpr *>(call->args[0])) {
             connectArgs.push_back(ConstantInt::get(LLVMCTX, APInt(32, intExpr->value)));
-        }
-        else
-        {
+        } else {
             REPORT_ERROR("invalid arg type: expect Integer32, but get: unknown", __FILE__, __LINE__);
             return nullptr;
         }
 
-        if (auto *ptrExpr = dynamic_cast<parser::PointerExpr *>(call->args[1]))
-        {
+        if (auto *ptrExpr = dynamic_cast<parser::PointerExpr *>(call->args[1])) {
             connectArgs.push_back(ptrExpr->codeGen(ctx));
-        }
-        else
-        {
+        } else {
             REPORT_ERROR("invalid arg type: expect Pointer, but get: unknown", __FILE__, __LINE__);
             return nullptr;
         }
 
-        if (auto *intExpr = dynamic_cast<parser::IntegerExpr *>(call->args[2]))
-        {
+        if (auto *intExpr = dynamic_cast<parser::IntegerExpr *>(call->args[2])) {
             connectArgs.push_back(ConstantInt::get(LLVMCTX, APInt(32, intExpr->value)));
-        }
-        else
-        {
+        } else {
             REPORT_ERROR("invalid arg type: expect Integer32, but get: unknown", __FILE__, __LINE__);
             return nullptr;
         }
@@ -907,45 +743,32 @@ CallInst *handleSys(const parser::CallExpr *call, InterGenContext *ctx, Function
         return BUILDER.CreateCall(fun, connectArgs, "connect_calltmp");
     }
 
-    if (fun->getName() == "send")
-    {
+    if (fun->getName() == "send") {
         std::vector<Value *> sendArgs;
-        if (auto *intExpr = dynamic_cast<parser::IntegerExpr *>(call->args[0]))
-        {
+        if (auto *intExpr = dynamic_cast<parser::IntegerExpr *>(call->args[0])) {
             sendArgs.push_back(ConstantInt::get(LLVMCTX, APInt(32, intExpr->value)));
-        }
-        else
-        {
+        } else {
             REPORT_ERROR("invalid arg type: expect Integer32, but get: unknown", __FILE__, __LINE__);
             return nullptr;
         }
 
-        if (auto *ptrExpr = dynamic_cast<parser::PointerExpr *>(call->args[1]))
-        {
+        if (auto *ptrExpr = dynamic_cast<parser::PointerExpr *>(call->args[1])) {
             sendArgs.push_back(ptrExpr->codeGen(ctx));
-        }
-        else
-        {
+        } else {
             REPORT_ERROR("invalid arg type: expect Pointer, but get: unknown", __FILE__, __LINE__);
             return nullptr;
         }
 
-        if (auto *intExpr = dynamic_cast<parser::IntegerExpr *>(call->args[2]))
-        {
+        if (auto *intExpr = dynamic_cast<parser::IntegerExpr *>(call->args[2])) {
             sendArgs.push_back(ConstantInt::get(LLVMCTX, APInt(32, intExpr->value)));
-        }
-        else
-        {
+        } else {
             REPORT_ERROR("invalid arg type: expect Integer32, but get: unknown", __FILE__, __LINE__);
             return nullptr;
         }
 
-        if (auto *intExpr = dynamic_cast<parser::IntegerExpr *>(call->args[3]))
-        {
+        if (auto *intExpr = dynamic_cast<parser::IntegerExpr *>(call->args[3])) {
             sendArgs.push_back(ConstantInt::get(LLVMCTX, APInt(32, intExpr->value)));
-        }
-        else
-        {
+        } else {
             REPORT_ERROR("invalid arg type: expect Integer32, but get: unknown", __FILE__, __LINE__);
             return nullptr;
         }
@@ -953,45 +776,32 @@ CallInst *handleSys(const parser::CallExpr *call, InterGenContext *ctx, Function
         return BUILDER.CreateCall(fun, sendArgs, "send_calltmp");
     }
 
-    if (fun->getName() == "recv")
-    {
+    if (fun->getName() == "recv") {
         std::vector<Value *> recvArgs;
-        if (auto *intExpr = dynamic_cast<parser::IntegerExpr *>(call->args[0]))
-        {
+        if (auto *intExpr = dynamic_cast<parser::IntegerExpr *>(call->args[0])) {
             recvArgs.push_back(ConstantInt::get(LLVMCTX, APInt(32, intExpr->value)));
-        }
-        else
-        {
+        } else {
             REPORT_ERROR("invalid arg type: expect Integer32, but get: unknown", __FILE__, __LINE__);
             return nullptr;
         }
 
-        if (auto *ptrExpr = dynamic_cast<parser::PointerExpr *>(call->args[1]))
-        {
+        if (auto *ptrExpr = dynamic_cast<parser::PointerExpr *>(call->args[1])) {
             recvArgs.push_back(ptrExpr->codeGen(ctx));
-        }
-        else
-        {
+        } else {
             REPORT_ERROR("invalid arg type: expect Pointer, but get: unknown", __FILE__, __LINE__);
             return nullptr;
         }
 
-        if (auto *intExpr = dynamic_cast<parser::IntegerExpr *>(call->args[2]))
-        {
+        if (auto *intExpr = dynamic_cast<parser::IntegerExpr *>(call->args[2])) {
             recvArgs.push_back(ConstantInt::get(LLVMCTX, APInt(32, intExpr->value)));
-        }
-        else
-        {
+        } else {
             REPORT_ERROR("invalid arg type: expect Integer32, but get: unknown", __FILE__, __LINE__);
             return nullptr;
         }
 
-        if (auto *intExpr = dynamic_cast<parser::IntegerExpr *>(call->args[3]))
-        {
+        if (auto *intExpr = dynamic_cast<parser::IntegerExpr *>(call->args[3])) {
             recvArgs.push_back(ConstantInt::get(LLVMCTX, APInt(32, intExpr->value)));
-        }
-        else
-        {
+        } else {
             REPORT_ERROR("invalid arg type: expect Integer32, but get: unknown", __FILE__, __LINE__);
             return nullptr;
         }
@@ -999,29 +809,20 @@ CallInst *handleSys(const parser::CallExpr *call, InterGenContext *ctx, Function
         return BUILDER.CreateCall(fun, recvArgs, "recv_calltmp");
     }
 
-    if (fun->getName() == "sbrk")
-    {
+    if (fun->getName() == "sbrk") {
         std::vector<Value *> sbrkArgs;
-        if (auto *intExpr = dynamic_cast<parser::IntegerExpr *>(call->args[0]))
-        {
+        if (auto *intExpr = dynamic_cast<parser::IntegerExpr *>(call->args[0])) {
             sbrkArgs.push_back(ConstantInt::get(Type::getInt32Ty(LLVMCTX), APInt(32, intExpr->value)));
-        }
-        else if (auto *varExpr = dynamic_cast<parser::VarExpr *>(call->args[0]))
-        {
-            if (Value *codeGen = varExpr->codeGen(ctx); isa<IntegerType>(codeGen->getType()))
-            {
+        } else if (auto *varExpr = dynamic_cast<parser::VarExpr *>(call->args[0])) {
+            if (Value *codeGen = varExpr->codeGen(ctx); isa<IntegerType>(codeGen->getType())) {
                 sbrkArgs.push_back(codeGen);
-            }
-            else
-            {
+            } else {
                 std::stringstream ss;
                 ss << "invalid arg type: expect Integer32, but get: " << codeGen->getType()->getTypeID();
                 util::err_print(std::cerr, ss.str());
                 return nullptr;
             }
-        }
-        else
-        {
+        } else {
             REPORT_ERROR("invalid arg type: expect Integer32, but get: unknown", __FILE__, __LINE__);
             return nullptr;
         }
@@ -1030,15 +831,11 @@ CallInst *handleSys(const parser::CallExpr *call, InterGenContext *ctx, Function
         return BUILDER.CreateCall(fun, sbrkArgs, "sbrk_calltmp");
     }
 
-    if (fun->getName() == "brk")
-    {
+    if (fun->getName() == "brk") {
         std::vector<Value *> brkArgs;
-        if (auto *ptrExpr = dynamic_cast<parser::PointerExpr *>(call->args[0]))
-        {
+        if (auto *ptrExpr = dynamic_cast<parser::PointerExpr *>(call->args[0])) {
             brkArgs.push_back(ptrExpr->codeGen(ctx));
-        }
-        else
-        {
+        } else {
             REPORT_ERROR("invalid arg type: expect Pointer, but get: unknown", __FILE__, __LINE__);
             return nullptr;
         }

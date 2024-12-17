@@ -4,7 +4,6 @@
 #ifndef NODE_H
 #define NODE_H
 
-
 #include <llvm/IR/Function.h>
 #include <llvm/IR/Value.h>
 #include <memory>
@@ -12,9 +11,9 @@
 #include <utility>
 #include <vector>
 
+#include "node_meta_data.h"
 #include "src/core/inter_gen/codegen_inter.h"
 #include "src/core/utilities/string_util.h"
-#include "node_meta_data.h"
 
 namespace dap
 {
@@ -38,6 +37,7 @@ typedef std::vector<Stmt *> stmt_list;
 class Node
 {
   public:
+    int line = -1;
     Node() = default;
     NodeMetadata *metadata = nullptr;
     virtual ~Node() = default;
@@ -56,7 +56,7 @@ class Expr : public Node
 {
 };
 // for a qualifiedName, its' result of codeGen function is a value, rather than its's address
-class  QualifiedName final : public Expr
+class QualifiedName final : public Expr
 {
   public:
     std::vector<std::string> *name_parts;
@@ -76,7 +76,7 @@ class  QualifiedName final : public Expr
         return util::getTextFromVec(*name_parts);
     }
 
-    [[nodiscard]] std::string getName( const int idx) const
+    [[nodiscard]] std::string getName(const int idx) const
     {
         return name_parts->at(idx);
     }
@@ -90,7 +90,7 @@ class  QualifiedName final : public Expr
     bool isa(NodeMetaDataType type) override;
 };
 
-class  DoubleExpr final : public Expr
+class DoubleExpr final : public Expr
 {
   public:
     double value;
@@ -103,7 +103,7 @@ class  DoubleExpr final : public Expr
     bool isa(NodeMetaDataType type) override;
 };
 
-class  IntegerExpr final : public Expr
+class IntegerExpr final : public Expr
 {
   public:
     long long value;
@@ -129,7 +129,7 @@ class StringExpr final : public Expr
     bool isa(NodeMetaDataType type) override;
 };
 
-class  VarExpr final : public Expr
+class VarExpr final : public Expr
 {
   public:
     QualifiedName *name;
@@ -147,7 +147,7 @@ class  VarExpr final : public Expr
     }
 };
 
-class  BinaryExpr final : public Expr
+class BinaryExpr final : public Expr
 {
   public:
     int op;
@@ -168,7 +168,7 @@ class  BinaryExpr final : public Expr
     bool isa(NodeMetaDataType type) override;
 };
 
-class  UnaryExpr final : public Expr
+class UnaryExpr final : public Expr
 {
   public:
     int op;
@@ -187,7 +187,7 @@ class  UnaryExpr final : public Expr
     bool isa(NodeMetaDataType type) override;
 };
 
-class  ListExpr final : public Expr
+class ListExpr final : public Expr
 {
   public:
     std::vector<Expr *> *elements;
@@ -205,7 +205,7 @@ class  ListExpr final : public Expr
     bool isa(NodeMetaDataType type) override;
 };
 
-class  PointerExpr final : public Node
+class PointerExpr final : public Node
 {
   public:
     Node *baseVal;
@@ -226,7 +226,7 @@ class  PointerExpr final : public Node
     bool isa(NodeMetaDataType type) override;
 };
 
-class  ArrayExpr final : public Expr
+class ArrayExpr final : public Expr
 {
   public:
     Expr *idx;
@@ -246,7 +246,7 @@ class  ArrayExpr final : public Expr
     bool isa(NodeMetaDataType type) override;
 };
 
-class  CallExpr final : public Expr
+class CallExpr final : public Expr
 {
   public:
     QualifiedName *callee;
@@ -259,8 +259,7 @@ class  CallExpr final : public Expr
     ~CallExpr() override
     {
         delete callee;
-        for (auto *arg : args)
-        {
+        for (auto *arg : args) {
             delete arg;
         }
     }
@@ -269,7 +268,7 @@ class  CallExpr final : public Expr
     bool isa(NodeMetaDataType type) override;
 };
 
-class  AssignExpr final : public Stmt
+class AssignExpr final : public Stmt
 {
   public:
     QualifiedName *lhs;
@@ -289,9 +288,9 @@ class  AssignExpr final : public Stmt
     bool isa(NodeMetaDataType type) override;
 };
 
-class  ArrayAssignExpr final : public Stmt
+class ArrayAssignExpr final : public Stmt
 {
-public:
+  public:
     QualifiedName *lhs;
     Expr *idx;
     Expr *rhs;
@@ -308,7 +307,7 @@ public:
     bool isa(NodeMetaDataType type) override;
 };
 
-class  BlockStmt final : public Stmt
+class BlockStmt final : public Stmt
 {
   public:
     std::vector<Stmt *> stmts;
@@ -320,8 +319,7 @@ class  BlockStmt final : public Stmt
 
     ~BlockStmt() override
     {
-        for (auto *stmt : stmts)
-        {
+        for (auto *stmt : stmts) {
             delete stmt;
         }
     }
@@ -330,12 +328,12 @@ class  BlockStmt final : public Stmt
     bool isa(NodeMetaDataType type) override;
 };
 
-class  IncludeStmt final : public Stmt
+class IncludeStmt final : public Stmt
 {
   public:
-    QualifiedName* path;
+    QualifiedName *path;
 
-    explicit IncludeStmt(QualifiedName* path) : path(path)
+    explicit IncludeStmt(QualifiedName *path) : path(path)
     {
     }
 
@@ -343,7 +341,7 @@ class  IncludeStmt final : public Stmt
     bool isa(NodeMetaDataType type) override;
 };
 
-class  PackageStmt final : public Stmt
+class PackageStmt final : public Stmt
 {
   public:
     QualifiedName *name;
@@ -361,7 +359,7 @@ class  PackageStmt final : public Stmt
     bool isa(NodeMetaDataType type) override;
 };
 
-class  ExprStmt final : public Stmt
+class ExprStmt final : public Stmt
 {
   public:
     Expr *expr;
@@ -379,7 +377,7 @@ class  ExprStmt final : public Stmt
     bool isa(NodeMetaDataType type) override;
 };
 
-class  ReturnStmt final : public Stmt
+class ReturnStmt final : public Stmt
 {
   public:
     Expr *expr;
@@ -397,7 +395,7 @@ class  ReturnStmt final : public Stmt
     bool isa(NodeMetaDataType type) override;
 };
 
-class  BreakStmt final : public Stmt
+class BreakStmt final : public Stmt
 {
   public:
     Expr *expr;
@@ -415,7 +413,7 @@ class  BreakStmt final : public Stmt
     bool isa(NodeMetaDataType type) override;
 };
 
-class  VarDecl final : public Stmt
+class VarDecl final : public Stmt
 {
   public:
     bool is_mutable;
@@ -447,21 +445,20 @@ class  VarDecl final : public Stmt
     bool isa(NodeMetaDataType type) override;
 };
 
-class  ProtoDecl final : public Stmt
+class ProtoDecl final : public Stmt
 {
   public:
     std::vector<VarDecl *> params{};
     const QualifiedName *return_type;
     QualifiedName *name = nullptr;
     ProtoDecl(const QualifiedName *return_type, QualifiedName *name, std::vector<VarDecl *> params)
-        : return_type(return_type), name(name), params(std::move(params))
+        : return_type(return_type), name(name), params(params)
     {
     }
 
     ~ProtoDecl() override
     {
-        for (auto *param : params)
-        {
+        for (auto *param : params) {
             delete param;
         }
         delete name;
@@ -472,14 +469,14 @@ class  ProtoDecl final : public Stmt
     bool isa(NodeMetaDataType type) override;
 };
 
-class  FuncDecl final : public Stmt
+class FuncDecl final : public Stmt
 {
   public:
     ProtoDecl *proto;
     BlockStmt *body;
 
     FuncDecl(QualifiedName *type, QualifiedName *name, std::vector<VarDecl *> params, BlockStmt *body)
-        : proto(new ProtoDecl(type, name, std::move(params))), body(body)
+        : proto(new ProtoDecl(type, name, params)), body(body)
     {
     }
 
@@ -493,7 +490,7 @@ class  FuncDecl final : public Stmt
     bool isa(NodeMetaDataType type) override;
 };
 
-class  ExternDecl final : public Stmt
+class ExternDecl final : public Stmt
 {
   public:
     ProtoDecl *proto;
@@ -511,7 +508,7 @@ class  ExternDecl final : public Stmt
     bool isa(NodeMetaDataType type) override;
 };
 
-class  Program final : public Stmt
+class Program final : public Stmt
 {
   public:
     BlockStmt *stmts;
@@ -529,7 +526,7 @@ class  Program final : public Stmt
     bool isa(NodeMetaDataType type) override;
 };
 
-class  IfStmt final : public Stmt
+class IfStmt final : public Stmt
 {
   public:
     Expr *cond;
@@ -574,7 +571,7 @@ class ElifStmt final : public Stmt
     bool isa(NodeMetaDataType type) override;
 };
 
-class  ForStmt final : public Stmt
+class ForStmt final : public Stmt
 {
   public:
     VarDecl *init;
@@ -598,7 +595,7 @@ class  ForStmt final : public Stmt
     bool isa(NodeMetaDataType type) override;
 };
 
-class  StructDecl final : public Stmt
+class StructDecl final : public Stmt
 {
   public:
     std::vector<VarDecl *> fields;
@@ -610,8 +607,7 @@ class  StructDecl final : public Stmt
 
     ~StructDecl() override
     {
-        for (auto *field : fields)
-        {
+        for (auto *field : fields) {
             delete field;
         }
         delete name;

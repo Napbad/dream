@@ -5,15 +5,14 @@
 #ifndef STRUCTMETADATA_H
 #define STRUCTMETADATA_H
 
-#include <stack>
 #include <llvm/IR/DerivedTypes.h>
 #include <llvm/IR/GlobalVariable.h>
 #include <llvm/IR/Type.h>
+#include <stack>
 #include <string>
 #include <unordered_map>
 #include <utility>
 #include <vector>
-
 
 using namespace llvm;
 
@@ -24,7 +23,7 @@ class InterGenContext;
 
 class StructMetaData
 {
-public:
+  public:
     explicit StructMetaData(InterGenContext *context, std::string name);
 
     // add Field
@@ -42,7 +41,7 @@ public:
 
     std::string getName() const;
 
-private:
+  private:
     InterGenContext *ctx;
     std::string name_;
     std::unordered_map<std::string, Type *> fields_;
@@ -52,15 +51,13 @@ private:
 
 class FunctionMetaData
 {
-public:
+  public:
     void genFun(const InterGenContext *ctx) const;
     [[nodiscard]] VariableMetaData *getReturnMetaData() const;
     VariableMetaData *getArgMetaData(const std::string &name);
-    void setReturnMetaData(Value * value, VariableMetaData * variableMetaData);
+    void setReturnMetaData(Value *value, VariableMetaData *variableMetaData);
 
-
-    FunctionMetaData(std::string name, FunctionType *funType) :
-        name_(std::move(name)), funType(funType)
+    FunctionMetaData(std::string name, FunctionType *funType) : name_(std::move(name)), funType(funType)
     {
     }
 
@@ -86,10 +83,8 @@ public:
 
     [[nodiscard]] Type *getArgType(const std::string &argName) const
     {
-        for (auto &arg : args)
-        {
-            if (get<0>(arg) == argName)
-            {
+        for (auto &arg : args) {
+            if (get<0>(arg) == argName) {
                 return std::get<2>(arg);
             }
         }
@@ -103,17 +98,15 @@ public:
 
     [[nodiscard]] Value *getArg(const std::string &argName) const
     {
-        for (auto &arg : args)
-        {
-            if (get<0>(arg) == argName)
-            {
+        for (auto &arg : args) {
+            if (get<0>(arg) == argName) {
                 return std::get<1>(arg);
             }
         }
         return nullptr;
     }
 
-private:
+  private:
     std::string name_;
     FunctionType *funType;
     std::vector<std::tuple<std::string, Value *, Type *, VariableMetaData *>> args;
@@ -122,11 +115,9 @@ private:
 
 class ModuleMetaData
 {
-public:
-    explicit ModuleMetaData(Module *module) :
-        module_(module)
+  public:
+    explicit ModuleMetaData(Module *module) : module_(module)
     {
-
     }
 
     // Add a structure metadata to the module
@@ -140,8 +131,7 @@ public:
     StructMetaData *getStruct(const std::string &name) const
     {
         const auto it = structMap.find(name);
-        if (it != structMap.end())
-        {
+        if (it != structMap.end()) {
             return it->second;
         }
         return nullptr;
@@ -158,8 +148,7 @@ public:
     FunctionMetaData *getFunction(const std::string &name) const
     {
         auto it = functionMap.find(name);
-        if (it != functionMap.end())
-        {
+        if (it != functionMap.end()) {
             return it->second;
         }
         return nullptr;
@@ -239,26 +228,28 @@ public:
 
     VariableMetaData *getGlobalValMetaData(const std::string &name);
 
-private:
-    std::vector<StructMetaData *> structs; // List of structure metadata
-    std::vector<FunctionMetaData *> functions; // List of function metadata
-    std::unordered_map<std::string, StructMetaData *> structMap; // Map of structure metadata by name
-    std::unordered_map<std::string, FunctionMetaData *> functionMap; // Map of function metadata by name
+  private:
+    std::vector<StructMetaData *> structs;                                 // List of structure metadata
+    std::vector<FunctionMetaData *> functions;                             // List of function metadata
+    std::unordered_map<std::string, StructMetaData *> structMap;           // Map of structure metadata by name
+    std::unordered_map<std::string, FunctionMetaData *> functionMap;       // Map of function metadata by name
     std::unordered_map<std::string, VariableMetaData *> globalMetaDataMap; //
-    std::vector<Value *> globalVals; // List of global values
-    std::vector<GlobalVariable *> globalVar; // List of global variables
-    std::string moduleName; // Name of the module
-    std::string modulePath; // Path of the module
-    std::string moduleSource; // Source code of the module
+    std::vector<Value *> globalVals;                                       // List of global values
+    std::vector<GlobalVariable *> globalVar;                               // List of global variables
+    std::string moduleName;                                                // Name of the module
+    std::string modulePath;                                                // Path of the module
+    std::string moduleSource;                                              // Source code of the module
     Module *module_ = nullptr;
 };
 
 class VariableMetaData
 {
-public:
-    [[nodiscard]] bool isMutable() const;;
+  public:
+    [[nodiscard]] bool isMutable() const;
+    ;
 
-    [[nodiscard]] bool isNullable() const;;
+    [[nodiscard]] bool isNullable() const;
+    ;
 
     [[nodiscard]] std::string getName() const;
 
@@ -270,7 +261,7 @@ public:
     void enterNewScope(bool newMutable, bool newNullable);
     VariableMetaData(std::string name, Type *type, bool isMutable = false, bool isNullable = false);
 
-private:
+  private:
     std::string name_;
     Type *type_ = nullptr;
     std::stack<bool> mutableStack_{};

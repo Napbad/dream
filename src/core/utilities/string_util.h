@@ -190,6 +190,6 @@ void replaceAllWithoutStr(std::string &str, const char *from, const char *to);
  * @return True if the string is found, false otherwise.
  */
 bool findExpectStr(std::string value, const std::string &basic_string);
-} // namespace string_util
+} // namespace dap::util
 
 #endif // STRING_UTIL_H

@@ -119,7 +119,7 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 39 "./src/core/parser/parser.y"
+#line 42 "./src/core/parser/parser.y"
 
 #include <vector>
 #include "node.h"

@@ -2,7 +2,6 @@
 // Created by napbad on 10/24/24.
 //
 
-
 #include <iostream>
 #include <unordered_set>
 
@@ -16,6 +15,7 @@
 #include <llvm/IR/Module.h>
 #include <llvm/IR/Type.h>
 #include <llvm/IR/Verifier.h>
+#include <llvm/IRReader/IRReader.h>
 #include <llvm/MC/MCContext.h>
 #include <llvm/MC/TargetRegistry.h>
 #include <llvm/Pass.h>
@@ -25,23 +25,21 @@
 #include <llvm/Target/TargetOptions.h>
 #include <llvm/TargetParser/Host.h>
 #include <optional>
-#include <llvm/IRReader/IRReader.h>
 
 #include "codegen_inter.h"
 
+#include "basicElementGen_d.h"
+#include "check/variableCheck.h"
+#include "funGen_sys.h"
+#include "preprocessing/includeAnaylize.h"
 #include "src/core/common/define_d.h"
 #include "src/core/common/derived_type.h"
+#include "src/core/common/reserve.h"
 #include "src/core/parser/node.h"
 #include "src/core/parser/parser.hpp"
 #include "src/core/utilities/data_struct_util.h"
 #include "src/core/utilities/file_util.h"
 #include "src/core/utilities/llvm_util.h"
-#include "basicElementGen_d.h"
-#include "funGen_sys.h"
-#include "check/variableCheck.h"
-#include "src/core/common/reserve.h"
-#include "preprocessing/includeAnaylize.h"
-
 
 namespace dap
 {
@@ -53,6 +51,7 @@ using std::string;
 // Generates code for an Integer Expression (integer constant)
 Value *IntegerExpr::codeGen(inter_gen::InterGenContext *ctx)
 {
+    ctx->currLine = this->line;
     // Return an integer constant (64-bit)
     return ConstantInt::get(LLVMCTX, APInt(INT_BIT_WIDTH, value, true));
 }
@@ -60,6 +59,7 @@ Value *IntegerExpr::codeGen(inter_gen::InterGenContext *ctx)
 // Generates code for a Double Expression (floating-point constant)
 Value *DoubleExpr::codeGen(inter_gen::InterGenContext *ctx)
 {
+    ctx->currLine = this->line;
     // Return a floating-point constant
     return ConstantFP::get(LLVMCTX, APFloat(value));
 }
@@ -67,6 +67,8 @@ Value *DoubleExpr::codeGen(inter_gen::InterGenContext *ctx)
 // Generates code for a String Expression (string constant)
 Value *StringExpr::codeGen(inter_gen::InterGenContext *ctx)
 {
+    ctx->currLine = this->line;
+
     // Create a constant string (true for null-terminated)
     Constant *stringConstant = ConstantDataArray::getString(LLVMCTX, value, true);
     // Return the pointer to the string constant
@@ -78,42 +80,37 @@ Value *handleStructName(const QualifiedName *name, inter_gen::InterGenContext *c
 // Generates code for a Qualified Name (variable lookup and access)
 Value *QualifiedName::codeGen(inter_gen::InterGenContext *ctx)
 {
+    ctx->currLine = this->line;
     // check the functions
-    if (Function *parentFun = ctx->currBlock()->getParent())
-    {
-        for (auto &arg : parentFun->args())
-        {
-            if (arg.getName() == getName())
-            {
+    if (Function *parentFun = ctx->currBlock()->getParent()) {
+        for (auto &arg : parentFun->args()) {
+            if (arg.getName() == getName()) {
                 return &arg;
             }
         }
     }
     // Check if the variable is declared in the current scope
-    if (!ctx->getVal(getFirstName()))
-    {
-        REPORT_ERROR("Unknown variable name " + getFirstName(), __FILE__, __LINE__);
+    if (!ctx->getVal(getFirstName())) {
+        REPORT_ERROR("error at: " + ctx->sourcePath + ":" + std::to_string(this->line) + " \nUnknown variable name " +
+                         getFirstName(),
+                     __FILE__, __LINE__);
         return nullptr;
     }
 
-    if (name_parts->size() > 1)
-    {
+    if (name_parts->size() > 1) {
         return handleStructName(this, ctx);
     }
 
-    if (const auto inst = dyn_cast<AllocaInst>(ctx->getVal(getFirstName())))
-    {
+    if (const auto inst = dyn_cast<AllocaInst>(ctx->getVal(getFirstName()))) {
         return BUILDER.CreateLoad(inst->getAllocatedType(), inst, false, getFirstName());
     }
 
-    if (llvm::isa<PointerType>(ctx->getVal(getFirstName())->getType()))
-    {
+    if (llvm::isa<PointerType>(ctx->getVal(getFirstName())->getType())) {
         return ctx->getVal(getFirstName());
     }
 
     // Handle the case where the variable is an array, and we need to return a pointer
-    if (dyn_cast<AllocaInst>(ctx->getVal(getFirstName()))->getAllocatedType()->isArrayTy())
-    {
+    if (dyn_cast<AllocaInst>(ctx->getVal(getFirstName()))->getAllocatedType()->isArrayTy()) {
         return BUILDER.CreateGEP(PointerType::getInt8Ty(LLVMCTX), ctx->getVal(getFirstName()),
                                  {ConstantInt::get(IntegerType::get(LLVMCTX, 64), 0)});
     }
@@ -121,12 +118,10 @@ Value *QualifiedName::codeGen(inter_gen::InterGenContext *ctx)
     // If it's a pointer type, return a pointer to it
     auto *val = dyn_cast<AllocaInst>(ctx->getVal(getFirstName()));
     const Type *allocatedType = val->getAllocatedType();
-    if (llvm::isa<StructType>(allocatedType))
-    {
+    if (llvm::isa<StructType>(allocatedType)) {
         return handleStructName(this, ctx);
     }
-    if (allocatedType == PointerType::get(IntegerType::get(LLVMCTX, 8), 0))
-    {
+    if (allocatedType == PointerType::get(IntegerType::get(LLVMCTX, 8), 0)) {
         return BUILDER.CreateInBoundsGEP(PointerType::getInt8Ty(LLVMCTX), ctx->getVal(getFirstName()),
                                          {ConstantInt::get(IntegerType::get(LLVMCTX, 64), 0)});
     }
@@ -140,48 +135,35 @@ Value *handleStructName(const QualifiedName *name, inter_gen::InterGenContext *c
     Value *currentPtr = value;
 
     StringRef structName;
-    if (gepMapping->contains(value))
-    {
-        structName = dyn_cast<StructType>(
-                dyn_cast<AllocaInst>(gepMapping->at(value))->getAllocatedType())
-            ->getStructName();
-    }
-    else
-    {
+    if (gepMapping->contains(value)) {
+        structName =
+            dyn_cast<StructType>(dyn_cast<AllocaInst>(gepMapping->at(value))->getAllocatedType())->getStructName();
+    } else {
         const AllocaInst *allocaInst = dyn_cast<AllocaInst>(ctx->locals()[name->getFirstName()].first);
-        if (!allocaInst)
-        {
+        if (!allocaInst) {
             REPORT_ERROR("Unknown variable name " + name->getFirstName(), __FILE__, __LINE__);
             return nullptr;
         }
-        structName = dyn_cast<StructType>(allocaInst->getAllocatedType())
-            ->getStructName();
-
+        structName = dyn_cast<StructType>(allocaInst->getAllocatedType())->getStructName();
     }
     const string str = structName.str();
     const inter_gen::StructMetaData *metaData = ctx->structs[str];
 
     // Traverse through the struct fields
-    for (int i = 1; i < name->name_parts->size(); ++i)
-    {
+    for (int i = 1; i < name->name_parts->size(); ++i) {
         // Get the field index based on the current struct's metadata
         const unsigned int fieldIndex = metaData->getFieldIndex(name->getName(i));
 
         // Generate the GEP to get the field pointer
         if (Type *elementType = metaData->getStructType()->getElementType(fieldIndex);
-            llvm::isa<StructType>(elementType))
-        {
+            llvm::isa<StructType>(elementType)) {
             currentPtr = BUILDER.CreateStructGEP(metaData->getStructType(), currentPtr, fieldIndex,
                                                  "struct_" + metaData->getName());
-        }
-        else if (llvm::isa<PointerType>(elementType))
-        {
+        } else if (llvm::isa<PointerType>(elementType)) {
             currentPtr = BUILDER.CreateStructGEP(elementType, currentPtr, fieldIndex, "struct_" + metaData->getName());
             currentPtr = BUILDER.CreateBitCast(currentPtr, elementType);
             return currentPtr;
-        }
-        else
-        {
+        } else {
             currentPtr = BUILDER.CreateLoad(metaData->getStructType()->getElementType(fieldIndex), currentPtr, false,
                                             "struct_" + metaData->getName());
             return currentPtr;
@@ -189,34 +171,26 @@ Value *handleStructName(const QualifiedName *name, inter_gen::InterGenContext *c
 
         // If this field is a nested struct, update the struct type and
         // metadata
-        if (i < name->name_parts->size() - 1)
-        {
+        if (i < name->name_parts->size() - 1) {
             const auto *nestedStructType = dyn_cast<StructType>(metaData->getStructType()->getElementType(fieldIndex));
-            if (!nestedStructType)
-            {
+            if (!nestedStructType) {
                 return nullptr; // Error: not a valid nested struct
             }
             // Update metadata for the nested struct
             metaData = ctx->structs[nestedStructType->getStructName().str()];
-            if (!metaData)
-            {
+            if (!metaData) {
                 REPORT_ERROR("Unknown struct name " + str, __FILE__, __LINE__);
                 return nullptr; // Error: metadata for nested struct not
             }
-        }
-        else if (i == name->name_parts->size() - 1)
-        {
-            if (ctx->structs[name->getName(i)])
-            {
+        } else if (i == name->name_parts->size() - 1) {
+            if (ctx->structs[name->getName(i)]) {
                 return BUILDER.CreateStructGEP(metaData->getFieldType(name->getName(i)), currentPtr,
                                                metaData->getFieldIndex(name->getName(i)),
                                                "struct_" + metaData->getName());
             }
             return BUILDER.CreateGEP(metaData->getFieldType(name->getName(i)), currentPtr,
                                      ConstantInt::get(Type::getInt32Ty(LLVMCTX), fieldIndex), name->getName(i));
-        }
-        else
-        {
+        } else {
             REPORT_ERROR("Unknown variable name " + name->getName(i), __FILE__, __LINE__);
         }
     }
@@ -229,24 +203,19 @@ Value *handleArgumentArrayExpr(const ArrayExpr *Expr, Value *arrVal, inter_gen::
     auto *arr = dyn_cast<Argument>(arrVal);
     Type *ptrType = arr->getType();
 
-    if (llvm::isa<PointerType>(ptrType))
-    {
+    if (llvm::isa<PointerType>(ptrType)) {
 
         Type *baseType = nullptr;
-        for (const auto funMetaData : ctx->metaData->getFunctions())
-        {
-            if (funMetaData->getName() == fun->getName() && funMetaData->getArg(Expr->name->getName()))
-            {
+        for (const auto funMetaData : ctx->metaData->getFunctions()) {
+            if (funMetaData->getName() == fun->getName() && funMetaData->getArg(Expr->name->getName())) {
                 baseType = funMetaData->getArgType(Expr->name->getName());
-                if (dyn_cast<PointerType_d>(baseType))
-                {
+                if (dyn_cast<PointerType_d>(baseType)) {
                     const PointerType_d *ptr = dyn_cast<PointerType_d>(baseType);
                     baseType = ptr->getBaseTy();
                 }
             }
         }
-        if (!baseType)
-        {
+        if (!baseType) {
             REPORT_ERROR("Unknown base type", __FILE__, __LINE__);
             return nullptr;
         }
@@ -259,8 +228,7 @@ Value *handleArgumentArrayExpr(const ArrayExpr *Expr, Value *arrVal, inter_gen::
 
         return BUILDER.CreateLoad(baseType, ptrAdd, "array_access_load");
     }
-    if (llvm::isa<ArrayType>(ptrType))
-    {
+    if (llvm::isa<ArrayType>(ptrType)) {
         Value *arrayPtr = BUILDER.CreateLoad(ptrType->getPointerTo(), arr, "array_ptr");
 
         // Step 2: Create a GEP instruction to access the array element
@@ -276,12 +244,10 @@ Value *handleArgumentArrayExpr(const ArrayExpr *Expr, Value *arrVal, inter_gen::
     return nullptr;
 }
 
-Value *handleAllocaArrayExpr(Value *arrVal, inter_gen::InterGenContext *ctx,
-                             Value *idxVal)
+Value *handleAllocaArrayExpr(Value *arrVal, inter_gen::InterGenContext *ctx, Value *idxVal)
 {
     auto *arr = dyn_cast<AllocaInst>(arrVal);
-    if (llvm::isa<ArrayType>(arr->getAllocatedType()))
-    {
+    if (llvm::isa<ArrayType>(arr->getAllocatedType())) {
         Type *arrType = arr->getAllocatedType();
         Value *arrayPtr = BUILDER.CreateLoad(arrType->getPointerTo(), arr, "array_ptr");
 
@@ -295,8 +261,7 @@ Value *handleAllocaArrayExpr(Value *arrVal, inter_gen::InterGenContext *ctx,
         return BUILDER.CreateLoad(arrType->getArrayElementType(), elementValue, "array_access_load");
     }
     Type *arrType = arr->getAllocatedType();
-    if (!llvm::isa<PointerType>(arrType))
-    {
+    if (!llvm::isa<PointerType>(arrType)) {
         REPORT_ERROR("Variable must be of array type", __FILE__, __LINE__);
         return nullptr;
     }
@@ -316,32 +281,28 @@ Value *handleAllocaArrayExpr(Value *arrVal, inter_gen::InterGenContext *ctx,
 
 Value *ArrayExpr::codeGen(inter_gen::InterGenContext *ctx)
 {
+    ctx->currLine = this->line;
     // Step 1: Generate code for the index Expression
     Value *indexValue = idx->codeGen(ctx);
-    if (!indexValue)
-    {
+    if (!indexValue) {
         REPORT_ERROR("Error in generating code for the index Expression", __FILE__, __LINE__);
         return nullptr;
     }
     if (!llvm::isa<IntegerType>(indexValue->getType()) && !llvm::isa<ConstantInt>(indexValue) &&
-        !llvm::isa<IntegerType>(indexValue->getType()))
-    {
+        !llvm::isa<IntegerType>(indexValue->getType())) {
         REPORT_ERROR("Index Expression must evaluate to an integer", __FILE__, __LINE__);
         return nullptr; // Error in generating code for the index
     }
     Value *arrVal = ctx->getVal(name->getName());
-    if (!llvm::isa<AllocaInst>(arrVal) && !llvm::isa<Argument>(arrVal))
-    {
+    if (!llvm::isa<AllocaInst>(arrVal) && !llvm::isa<Argument>(arrVal)) {
         REPORT_ERROR("Mapped value must be an alloca instruction or argument", __FILE__, __LINE__);
         return nullptr;
     }
 
-    if (llvm::isa<Argument>(arrVal))
-    {
+    if (llvm::isa<Argument>(arrVal)) {
         return handleArgumentArrayExpr(this, arrVal, ctx, ctx->currBlock()->getParent(), indexValue);
     }
-    if (llvm::isa<AllocaInst>(arrVal))
-    {
+    if (llvm::isa<AllocaInst>(arrVal)) {
         return handleAllocaArrayExpr(arrVal, ctx, indexValue);
     }
 
@@ -352,11 +313,11 @@ Value *ArrayExpr::codeGen(inter_gen::InterGenContext *ctx)
 // generate the value of the Pointer
 Value *PointerExpr::codeGen(inter_gen::InterGenContext *ctx)
 {
+    ctx->currLine = this->line;
     // Generate the LLVM IR value for the base Expression
     Value *base_value = baseVal->codeGen(ctx);
 
-    if (!base_value)
-    {
+    if (!base_value) {
         // If the base Expression does not generate a valid value, return null
         return nullptr;
     }
@@ -365,8 +326,7 @@ Value *PointerExpr::codeGen(inter_gen::InterGenContext *ctx)
     Type *base_type = base_value->getType();
 
     // If the base value is already a pointer, return it directly
-    if (base_type->isPointerTy())
-    {
+    if (base_type->isPointerTy()) {
         return base_value;
     }
 
@@ -386,6 +346,7 @@ Value *PointerExpr::codeGen(inter_gen::InterGenContext *ctx)
 // Generates code for a Binary Expression (arithmetic, comparison, etc.)
 Value *BinaryExpr::codeGen(inter_gen::InterGenContext *ctx)
 {
+    ctx->currLine = this->line;
     // Generate code for left-hand side and right-hand side Expressions
     Value *lhsVal = lhs->codeGen(ctx);
     Value *rhsVal = rhs->codeGen(ctx);
@@ -394,32 +355,23 @@ Value *BinaryExpr::codeGen(inter_gen::InterGenContext *ctx)
     if (!lhsVal || !rhsVal)
         return nullptr;
 
-    if (llvm::isa<PointerType>(lhsVal->getType()))
-    {
+    if (llvm::isa<PointerType>(lhsVal->getType())) {
         lhsVal = BUILDER.CreatePtrToInt(lhsVal, Type::getInt64Ty(LLVMCTX));
     }
-    if (llvm::isa<PointerType>(rhsVal->getType()))
-    {
+    if (llvm::isa<PointerType>(rhsVal->getType())) {
         rhsVal = BUILDER.CreatePtrToInt(rhsVal, Type::getInt64Ty(LLVMCTX));
     }
 
     // Check if both operands are of the same type
     const auto lhsType = lhsVal->getType();
-    if (const auto rhsType = rhsVal->getType(); lhsType != rhsType)
-    {
-        if (llvm::isa<IntegerType>(lhsType) && llvm::isa<IntegerType>(rhsType))
-        {
-            if (lhsType->getIntegerBitWidth() > rhsType->getIntegerBitWidth())
-            {
+    if (const auto rhsType = rhsVal->getType(); lhsType != rhsType) {
+        if (llvm::isa<IntegerType>(lhsType) && llvm::isa<IntegerType>(rhsType)) {
+            if (lhsType->getIntegerBitWidth() > rhsType->getIntegerBitWidth()) {
                 rhsVal = BUILDER.CreateSExtOrTrunc(rhsVal, lhsType, "sext_or_trunc");
-            }
-            else if (lhsType->getIntegerBitWidth() < rhsType->getIntegerBitWidth())
-            {
+            } else if (lhsType->getIntegerBitWidth() < rhsType->getIntegerBitWidth()) {
                 lhsVal = BUILDER.CreateSExtOrTrunc(lhsVal, rhsType, "sext_or_trunc");
             }
-        }
-        else
-        {
+        } else {
             REPORT_ERROR("Type mismatch in binary Expression", __FILE__, __LINE__);
             return nullptr;
         }
@@ -428,55 +380,43 @@ Value *BinaryExpr::codeGen(inter_gen::InterGenContext *ctx)
     const bool isFloatingPoint = lhsType->isFloatingPointTy();
 
     // Handle each operator type (arithmetic, comparison, logical, etc.)
-    switch (op)
-    {
+    switch (op) {
     // Arithmetic operators
     case PLUS:
-        return isFloatingPoint
-                   ? BUILDER.CreateFAdd(lhsVal, rhsVal, "addtmp")
-                   : BUILDER.CreateAdd(lhsVal, rhsVal, "addtmp");
+        return isFloatingPoint ? BUILDER.CreateFAdd(lhsVal, rhsVal, "addtmp")
+                               : BUILDER.CreateAdd(lhsVal, rhsVal, "addtmp");
     case MINUS:
-        return isFloatingPoint
-                   ? BUILDER.CreateFSub(lhsVal, rhsVal, "subtmp")
-                   : BUILDER.CreateSub(lhsVal, rhsVal, "subtmp");
+        return isFloatingPoint ? BUILDER.CreateFSub(lhsVal, rhsVal, "subtmp")
+                               : BUILDER.CreateSub(lhsVal, rhsVal, "subtmp");
     case TIMES:
-        return isFloatingPoint
-                   ? BUILDER.CreateFMul(lhsVal, rhsVal, "multmp")
-                   : BUILDER.CreateMul(lhsVal, rhsVal, "multmp");
+        return isFloatingPoint ? BUILDER.CreateFMul(lhsVal, rhsVal, "multmp")
+                               : BUILDER.CreateMul(lhsVal, rhsVal, "multmp");
     case DIVIDE:
-        return isFloatingPoint
-                   ? BUILDER.CreateFDiv(lhsVal, rhsVal, "divtmp")
-                   : BUILDER.CreateSDiv(lhsVal, rhsVal, "divtmp");
+        return isFloatingPoint ? BUILDER.CreateFDiv(lhsVal, rhsVal, "divtmp")
+                               : BUILDER.CreateSDiv(lhsVal, rhsVal, "divtmp");
     case MOD:
-        return isFloatingPoint
-                   ? BUILDER.CreateFRem(lhsVal, rhsVal, "modtmp")
-                   : BUILDER.CreateSRem(lhsVal, rhsVal, "modtmp");
+        return isFloatingPoint ? BUILDER.CreateFRem(lhsVal, rhsVal, "modtmp")
+                               : BUILDER.CreateSRem(lhsVal, rhsVal, "modtmp");
 
     // Comparison operators
     case LT:
-        return isFloatingPoint
-                   ? BUILDER.CreateFCmpOLT(lhsVal, rhsVal, "ltcmp")
-                   : BUILDER.CreateICmpSLT(lhsVal, rhsVal, "ltcmp");
+        return isFloatingPoint ? BUILDER.CreateFCmpOLT(lhsVal, rhsVal, "ltcmp")
+                               : BUILDER.CreateICmpSLT(lhsVal, rhsVal, "ltcmp");
     case GT:
-        return isFloatingPoint
-                   ? BUILDER.CreateFCmpOGT(lhsVal, rhsVal, "gtcmp")
-                   : BUILDER.CreateICmpSGT(lhsVal, rhsVal, "gtcmp");
+        return isFloatingPoint ? BUILDER.CreateFCmpOGT(lhsVal, rhsVal, "gtcmp")
+                               : BUILDER.CreateICmpSGT(lhsVal, rhsVal, "gtcmp");
     case LE:
-        return isFloatingPoint
-                   ? BUILDER.CreateFCmpOLE(lhsVal, rhsVal, "lecmp")
-                   : BUILDER.CreateICmpSLE(lhsVal, rhsVal, "lecmp");
+        return isFloatingPoint ? BUILDER.CreateFCmpOLE(lhsVal, rhsVal, "lecmp")
+                               : BUILDER.CreateICmpSLE(lhsVal, rhsVal, "lecmp");
     case GE:
-        return isFloatingPoint
-                   ? BUILDER.CreateFCmpOGE(lhsVal, rhsVal, "gecmp")
-                   : BUILDER.CreateICmpSGE(lhsVal, rhsVal, "gecmp");
+        return isFloatingPoint ? BUILDER.CreateFCmpOGE(lhsVal, rhsVal, "gecmp")
+                               : BUILDER.CreateICmpSGE(lhsVal, rhsVal, "gecmp");
     case EQ:
-        return isFloatingPoint
-                   ? BUILDER.CreateFCmpOEQ(lhsVal, rhsVal, "eqcmp")
-                   : BUILDER.CreateICmpEQ(lhsVal, rhsVal, "eqcmp");
+        return isFloatingPoint ? BUILDER.CreateFCmpOEQ(lhsVal, rhsVal, "eqcmp")
+                               : BUILDER.CreateICmpEQ(lhsVal, rhsVal, "eqcmp");
     case NE:
-        return isFloatingPoint
-                   ? BUILDER.CreateFCmpONE(lhsVal, rhsVal, "necmp")
-                   : BUILDER.CreateICmpNE(lhsVal, rhsVal, "necmp");
+        return isFloatingPoint ? BUILDER.CreateFCmpONE(lhsVal, rhsVal, "necmp")
+                               : BUILDER.CreateICmpNE(lhsVal, rhsVal, "necmp");
 
     // Logical operators
     case AND:
@@ -498,33 +438,28 @@ Value *BinaryExpr::codeGen(inter_gen::InterGenContext *ctx)
     case ASSIGN:
         return BUILDER.CreateStore(rhsVal, lhsVal);
     case PLUS_ASSIGN: {
-        Value *result = isFloatingPoint
-                            ? BUILDER.CreateFAdd(lhsVal, rhsVal, "addassigntmp")
-                            : BUILDER.CreateAdd(lhsVal, rhsVal, "addassigntmp");
+        Value *result = isFloatingPoint ? BUILDER.CreateFAdd(lhsVal, rhsVal, "addassigntmp")
+                                        : BUILDER.CreateAdd(lhsVal, rhsVal, "addassigntmp");
         return BUILDER.CreateStore(result, lhsVal);
     }
     case MINUS_ASSIGN: {
-        Value *result = isFloatingPoint
-                            ? BUILDER.CreateFSub(lhsVal, rhsVal, "subassigntmp")
-                            : BUILDER.CreateSub(lhsVal, rhsVal, "subassigntmp");
+        Value *result = isFloatingPoint ? BUILDER.CreateFSub(lhsVal, rhsVal, "subassigntmp")
+                                        : BUILDER.CreateSub(lhsVal, rhsVal, "subassigntmp");
         return BUILDER.CreateStore(result, lhsVal);
     }
     case TIMES_ASSIGN: {
-        Value *result = isFloatingPoint
-                            ? BUILDER.CreateFMul(lhsVal, rhsVal, "mulassigntmp")
-                            : BUILDER.CreateMul(lhsVal, rhsVal, "mulassigntmp");
+        Value *result = isFloatingPoint ? BUILDER.CreateFMul(lhsVal, rhsVal, "mulassigntmp")
+                                        : BUILDER.CreateMul(lhsVal, rhsVal, "mulassigntmp");
         return BUILDER.CreateStore(result, lhsVal);
     }
     case DIVIDE_ASSIGN: {
-        Value *result = isFloatingPoint
-                            ? BUILDER.CreateFDiv(lhsVal, rhsVal, "divassigntmp")
-                            : BUILDER.CreateSDiv(lhsVal, rhsVal, "divassigntmp");
+        Value *result = isFloatingPoint ? BUILDER.CreateFDiv(lhsVal, rhsVal, "divassigntmp")
+                                        : BUILDER.CreateSDiv(lhsVal, rhsVal, "divassigntmp");
         return BUILDER.CreateStore(result, lhsVal);
     }
     case MOD_ASSIGN: {
-        Value *result = isFloatingPoint
-                            ? BUILDER.CreateFRem(lhsVal, rhsVal, "modassigntmp")
-                            : BUILDER.CreateSRem(lhsVal, rhsVal, "modassigntmp");
+        Value *result = isFloatingPoint ? BUILDER.CreateFRem(lhsVal, rhsVal, "modassigntmp")
+                                        : BUILDER.CreateSRem(lhsVal, rhsVal, "modassigntmp");
         return BUILDER.CreateStore(result, lhsVal);
     }
 
@@ -536,21 +471,20 @@ Value *BinaryExpr::codeGen(inter_gen::InterGenContext *ctx)
 
 Value *ListExpr::codeGen(inter_gen::InterGenContext *ctx)
 {
+    ctx->currLine = this->line;
     if (elements->empty())
         return nullptr;
     const Value *firstVal = elements->at(0)->codeGen(ctx);
     // new a list object
     std::vector<Value *> vals;
     vals.reserve(elements->size());
-    for (const auto &e : *elements)
-    {
+    for (const auto &e : *elements) {
         vals.push_back(e->codeGen(ctx));
     }
 
     ArrayType *array = ArrayType::get(firstVal->getType(), vals.size());
     Value *array_val = BUILDER.CreateAlloca(array, nullptr, "array");
-    for (unsigned i = 0; i < vals.size(); i++)
-    {
+    for (unsigned i = 0; i < vals.size(); i++) {
         BUILDER.CreateStore(vals[i], BUILDER.CreateGEP(firstVal->getType(), array_val,
                                                        {ConstantInt::get(LLVMCTX, APInt(INT_BIT_WIDTH, i))},
                                                        "list_elem_" + std::to_string(i)));
@@ -562,68 +496,57 @@ Value *ListExpr::codeGen(inter_gen::InterGenContext *ctx)
 // Generates code for a function call Expression
 Value *CallExpr::codeGen(inter_gen::InterGenContext *ctx)
 {
+    ctx->currLine = this->line;
     // Look up the callee function by name
     Function *calleeFun = MODULE->getFunction(callee->getName());
 
-    if (calleeFun == nullptr)
-    {
+    if (calleeFun == nullptr) {
         REPORT_ERROR("Unknown function referenced: " + callee->getName(), __FILE__, __LINE__);
         return nullptr;
     }
 
     // Check if the correct number of arguments are passed
-    if (calleeFun->arg_size() != args.size())
-    {
+    if (calleeFun->arg_size() != args.size()) {
         REPORT_ERROR("Incorrect arguments passed", __FILE__, __LINE__);
         return nullptr;
     }
 
     // Handle system calls if applicable
-    if (CallInst *res = handleSys(this, ctx, calleeFun))
-    {
+    if (CallInst *res = handleSys(this, ctx, calleeFun)) {
         return res;
     }
 
     const inter_gen::FunctionMetaData *funMetaData = ctx->getFunMetaData(callee->getName());
-    if (funMetaData == nullptr)
-    {
+    if (funMetaData == nullptr) {
         REPORT_ERROR("Unknown function referenced: " + callee->getName(), __FILE__, __LINE__);
         return nullptr;
     }
     // Generate code for each argument
     std::vector<Value *> args_v;
     int argIdx = 0;
-    for (const auto &e : args)
-    {
+    for (const auto &e : args) {
         Type *argType = funMetaData->getArgType(argIdx++);
-        if (argType->isPointerTy())
-        {
+        if (argType->isPointerTy()) {
             const PointerType_d *pointerType_d = dyn_cast<PointerType_d>(argType);
             expectDerefType_d->push(pointerType_d->getBaseTy());
-        }
-        else
-        {
+        } else {
             expectDerefType_d->push(argType);
         }
         args_v.push_back(e->codeGen(ctx));
-        if (!args_v.back())
-        {
-            if (argType->isPointerTy())
-            {
+        if (!args_v.back()) {
+            if (argType->isPointerTy()) {
                 expectDerefType_d->pop();
             }
             REPORT_ERROR("Error in argument " + std::to_string(argIdx - 1), __FILE__, __LINE__);
             return nullptr;
         }
-        if (argType->isPointerTy())
-        {
+        if (argType->isPointerTy()) {
             expectDerefType_d->pop();
         }
     }
 
     // Create the function call instruction
-    if (calleeFun->getReturnType() == Type::getVoidTy(LLVMCTX))
-    {
+    if (calleeFun->getReturnType() == Type::getVoidTy(LLVMCTX)) {
         return BUILDER.CreateCall(calleeFun, args_v);
     }
     return BUILDER.CreateCall(calleeFun, args_v, "calltmp");
@@ -632,6 +555,7 @@ Value *CallExpr::codeGen(inter_gen::InterGenContext *ctx)
 // Generates code for function prototype (declaration)
 Function *ProtoDecl::codeGen(inter_gen::InterGenContext *ctx)
 {
+    ctx->currLine = this->line;
     // Prepare argument types for the function signature
     std::vector<Type *> args_types;
     args_types.reserve(params.size());
@@ -649,11 +573,10 @@ Function *ProtoDecl::codeGen(inter_gen::InterGenContext *ctx)
 
     // Name the function arguments based on the parameters
     unsigned idx = 0;
-    for (auto &arg : fun->args())
-    {
-        funMetaData->addArg(params[idx]->getName(), &arg, util::typeOf_d(*params[idx]->type, ctx, nullptr),
-                            new inter_gen::VariableMetaData(params[idx]->getName(),
-                                                            util::typeOf_d(*params[idx]->type, ctx, nullptr)));
+    for (auto &arg : fun->args()) {
+        funMetaData->addArg(
+            params[idx]->getName(), &arg, util::typeOf_d(*params[idx]->type, ctx, nullptr),
+            new inter_gen::VariableMetaData(params[idx]->getName(), util::typeOf_d(*params[idx]->type, ctx, nullptr)));
         arg.setName(params[idx++]->getName());
     }
 
@@ -667,11 +590,10 @@ Function *ProtoDecl::codeGen(inter_gen::InterGenContext *ctx)
 // Generates code for function definition
 Function *FuncDecl::codeGen(inter_gen::InterGenContext *ctx)
 {
-    // Prepare argument types for the function signature
+    ctx->currLine = this->line;
     std::vector<Type *> argTy;
     argTy.reserve(proto->params.size());
-    for (const auto &p : proto->params)
-    {
+    for (const auto &p : proto->params) {
         argTy.push_back(util::typeOf(*p->getType(), ctx));
     }
 
@@ -692,22 +614,18 @@ Function *FuncDecl::codeGen(inter_gen::InterGenContext *ctx)
 
     // Assign names to the function's arguments
     Argument *argsVal = fun->arg_begin();
-    for (const auto &param : proto->params)
-    {
+    for (const auto &param : proto->params) {
         Value *argVal = argsVal++;
         Type *typeOfArg = util::typeOf_d(*param->type, ctx, nullptr);
-        funMetaData->addArg(param->name->getName(),
-                            argVal,
-                            typeOfArg,
-                            new inter_gen::VariableMetaData(param->name->getName(), typeOfArg, param->is_mutable,
-                                                            param->is_nullable));
+        funMetaData->addArg(
+            param->name->getName(), argVal, typeOfArg,
+            new inter_gen::VariableMetaData(param->name->getName(), typeOfArg, param->is_mutable, param->is_nullable));
         argVal->setName(param->getName());
     }
 
     // Generate the function body
     body->codeGen(ctx);
-    if (!blockMappingRet_d->contains(bblock))
-    {
+    if (!blockMappingRet_d->contains(bblock)) {
         BUILDER.CreateRetVoid();
     }
     ctx->popBlock();
@@ -718,10 +636,8 @@ Function *FuncDecl::codeGen(inter_gen::InterGenContext *ctx)
     ctx->setCurrFun(nullptr);
 
     // If this is the main function, set it in the context
-    if (fun->getName() == "main")
-    {
-        if (ctx->fileName.ends_with("/main.dap") || ctx->fileName == "main.dap")
-        {
+    if (fun->getName() == "main") {
+        if (ctx->fileName.ends_with("/main.dap") || ctx->fileName == "main.dap") {
             ctx->setMainFun(fun);
         }
     }
@@ -732,6 +648,7 @@ Function *FuncDecl::codeGen(inter_gen::InterGenContext *ctx)
 // ExternDecl: Generates code for an external function declaration
 Function *ExternDecl::codeGen(inter_gen::InterGenContext *ctx)
 {
+    ctx->currLine = this->line;
     // Delegate code generation to the function prototype
     return proto->codeGen(ctx);
 }
@@ -740,14 +657,14 @@ Function *ExternDecl::codeGen(inter_gen::InterGenContext *ctx)
 // and statements
 Value *Program::codeGen(inter_gen::InterGenContext *ctx)
 {
+    ctx->currLine = this->line;
     Stmt *stmt = stmts->stmts.at(0);
     stmt->codeGen(ctx);
     const auto packageStmt = dynamic_cast<PackageStmt *>(stmt);
     util::create_package_dir(util::getStrFromVec(*packageStmt->name->name_parts, "."));
     stmts->stmts.erase(stmts->stmts.begin());
 
-    if (ctx->package == "dap.runtime.sys" && ctx->sourcePath.ends_with("/sysFun.dap"))
-    {
+    if (ctx->package == "dap.runtime.sys" && ctx->sourcePath.ends_with("/sysFun.dap")) {
         genSysFun(ctx);
         genCharToInt(ctx);
         genIntToChar(ctx);
@@ -762,6 +679,7 @@ Value *Program::codeGen(inter_gen::InterGenContext *ctx)
 // IfStmt: Generates code for an if statement
 Value *IfStmt::codeGen(inter_gen::InterGenContext *ctx)
 {
+    ctx->currLine = this->line;
     // Generate code for the condition Expression
     Value *condVal = cond->codeGen(ctx);
     if (!condVal)
@@ -769,20 +687,13 @@ Value *IfStmt::codeGen(inter_gen::InterGenContext *ctx)
 
     // Normalize condition to boolean (for integer, floating point, or pointer
     // types)
-    if (Type *condType = condVal->getType(); condType->isIntegerTy())
-    {
+    if (Type *condType = condVal->getType(); condType->isIntegerTy()) {
         condVal = BUILDER.CreateICmpNE(condVal, ConstantInt::get(condType, 0), "ifcond");
-    }
-    else if (condType->isFloatingPointTy())
-    {
+    } else if (condType->isFloatingPointTy()) {
         condVal = BUILDER.CreateFCmpONE(condVal, ConstantFP::get(condType, 0.0), "ifcond");
-    }
-    else if (condType->isPointerTy() || condType->isArrayTy())
-    {
+    } else if (condType->isPointerTy() || condType->isArrayTy()) {
         condVal = BUILDER.CreateICmpNE(condVal, ConstantPointerNull::get(cast<PointerType>(condType)), "ifcond");
-    }
-    else
-    {
+    } else {
         REPORT_ERROR("Unsupported type for conditional Expression", __FILE__, __LINE__);
         return nullptr;
     }
@@ -800,8 +711,7 @@ Value *IfStmt::codeGen(inter_gen::InterGenContext *ctx)
     ctx->pushBlock(thenBB);
     Value *thenBody = body->codeGen(ctx);
     BasicBlock::iterator thenBBEndIter = thenBB->end();
-    if ((--thenBBEndIter)->getOpcode() != Instruction::Br && thenBBEndIter->getOpcode() != Instruction::Ret)
-    {
+    if ((--thenBBEndIter)->getOpcode() != Instruction::Br && thenBBEndIter->getOpcode() != Instruction::Ret) {
         BUILDER.CreateBr(mergeBB); // Unconditionally branch to merge
     }
     ctx->popBlock();
@@ -811,8 +721,7 @@ Value *IfStmt::codeGen(inter_gen::InterGenContext *ctx)
     ctx->pushBlock(elseBB);
     Value *elseBody = else_body ? else_body->codeGen(ctx) : nullptr;
     BasicBlock::iterator elseBBEndIter = elseBB->end();
-    if ((--elseBBEndIter)->getOpcode() != Instruction::Br && elseBBEndIter->getOpcode() != Instruction::Ret)
-    {
+    if ((--elseBBEndIter)->getOpcode() != Instruction::Br && elseBBEndIter->getOpcode() != Instruction::Ret) {
         BUILDER.CreateBr(mergeBB); // Unconditionally branch to merge
     }
     ctx->popBlock();
@@ -822,8 +731,7 @@ Value *IfStmt::codeGen(inter_gen::InterGenContext *ctx)
     BUILDER.SetInsertPoint(mergeBB);
     PHINode *phi;
 
-    if (thenBody != nullptr && thenBBEndIter->getOpcode() != Instruction::Ret)
-    {
+    if (thenBody != nullptr && thenBBEndIter->getOpcode() != Instruction::Ret) {
         // If there is a result from the then block, create a PHI node to merge
         phi = BUILDER.CreatePHI(thenBody->getType(), 2, "iftmp");
         phi->addIncoming(thenBody, thenBB);
@@ -831,17 +739,13 @@ Value *IfStmt::codeGen(inter_gen::InterGenContext *ctx)
             phi->addIncoming(elseBody, elseBB);
         else
             phi->addIncoming(ConstantInt::get(thenBody->getType(), 0), elseBB);
-    }
-    else if (elseBody != nullptr && elseBBEndIter->getOpcode() != Instruction::Ret)
-    {
+    } else if (elseBody != nullptr && elseBBEndIter->getOpcode() != Instruction::Ret) {
         // If there is no result from the then block but there is from the else
         // block
         phi = BUILDER.CreatePHI(elseBody->getType(), 2, "iftmp");
         phi->addIncoming(ConstantInt::get(elseBody->getType(), 0), thenBB);
         phi->addIncoming(elseBody, elseBB);
-    }
-    else
-    {
+    } else {
         return ConstantInt::get(IntegerType::get(LLVMCTX, 0), 0); // Return 0 (no result)
     }
 
@@ -852,12 +756,14 @@ Value *IfStmt::codeGen(inter_gen::InterGenContext *ctx)
 // if) statements
 Value *ElifStmt::codeGen(inter_gen::InterGenContext *ctx)
 {
+    ctx->currLine = this->line;
     return nullptr;
 }
 
 // ForStmt: Generates code for a for loop
 Value *ForStmt::codeGen(inter_gen::InterGenContext *ctx)
 {
+    ctx->currLine = this->line;
     // Generate code for initialization Expression
     Value *initGen = init->codeGen(ctx);
 
@@ -867,8 +773,7 @@ Value *ForStmt::codeGen(inter_gen::InterGenContext *ctx)
 
     // Handle different types for loop condition: integer, floating point, or
     // pointer
-    switch (condVal->getType()->getTypeID())
-    {
+    switch (condVal->getType()->getTypeID()) {
     case Type::IntegerTyID:
         brCond = BUILDER.CreateICmp(CmpInst::ICMP_NE, condVal, ConstantInt::get(LLVMCTX, APInt(1, 0)));
         break;
@@ -893,11 +798,10 @@ Value *ForStmt::codeGen(inter_gen::InterGenContext *ctx)
 
     // Insert the loop body and conditional branch back to loop or exit
     BUILDER.SetInsertPoint(loopBB);
-    if (body->codeGen(ctx))
-    {
+    if (body->codeGen(ctx)) {
         BUILDER.CreateStore(step->codeGen(ctx),
                             initGen); // Update the loop step variable
-        brCond = cond->codeGen(ctx); // Re-check the loop condition
+        brCond = cond->codeGen(ctx);  // Re-check the loop condition
         BUILDER.CreateCondBr(brCond, loopBB, exitBB);
     }
 
@@ -913,16 +817,16 @@ Value *ForStmt::codeGen(inter_gen::InterGenContext *ctx)
 // VarDecl: Generates code for a variable declaration
 Value *VarDecl::codeGen(inter_gen::InterGenContext *ctx)
 {
+    ctx->currLine = this->line;
+
     ctx->setDefiningVariable(true);
     // If no block exists, it's a global variable
-    if (!ctx->hasBlock() && !ctx->isDefStruct())
-    {
+    if (!ctx->hasBlock() && !ctx->isDefStruct()) {
         assert(init && "No init in Variable Declaration!");
         auto *constant = dyn_cast<Constant>(init->codeGen(ctx));
 
         // Handle global variables, assuming non-pointer types
-        if (util::typeOf(*type, ctx, size) != Type::getInt8Ty(LLVMCTX))
-        {
+        if (util::typeOf(*type, ctx, size) != Type::getInt8Ty(LLVMCTX)) {
             ctx->setDefiningVariable(false);
             return new GlobalVariable(*MODULE, util::typeOf(*type, ctx, size), false, GlobalValue::InternalLinkage,
                                       constant, name->getName());
@@ -931,8 +835,7 @@ Value *VarDecl::codeGen(inter_gen::InterGenContext *ctx)
 
     // Declare a local variable with the specified type
     Type *valType = util::typeOf(*type, ctx, size);
-    if (llvm::isa<PointerType>(valType))
-    {
+    if (llvm::isa<PointerType>(valType)) {
         auto baseTypeName = util::getSubVector(*type->name_parts, 0, type->name_parts->size() - 1);
         Type *baseType = util::typeOf(QualifiedName(&baseTypeName), ctx);
 
@@ -946,8 +849,7 @@ Value *VarDecl::codeGen(inter_gen::InterGenContext *ctx)
         gepMapping->insert(std::make_pair(gep, allocaInst));
 
         // If there's an initializer Expression, evaluate it
-        if (init != nullptr)
-        {
+        if (init != nullptr) {
             AssignExpr assign(name, init);
             assign.codeGen(ctx);
         }
@@ -962,8 +864,7 @@ Value *VarDecl::codeGen(inter_gen::InterGenContext *ctx)
         alloc, new inter_gen::VariableMetaData(name->getName(), alloc->getAllocatedType(), is_mutable, is_nullable)};
 
     // If there's an initializer Expression, evaluate it
-    if (init != nullptr)
-    {
+    if (init != nullptr) {
         AssignExpr assign(name, init);
         assign.codeGen(ctx);
     }
@@ -975,8 +876,8 @@ Value *VarDecl::codeGen(inter_gen::InterGenContext *ctx)
 // ReturnStmt: Generates code for a return statement
 Value *ReturnStmt::codeGen(inter_gen::InterGenContext *ctx)
 {
-    if (expr == nullptr)
-    {
+    ctx->currLine = this->line;
+    if (expr == nullptr) {
         BUILDER.CreateRetVoid();
         ctx->setCurrRetVal(nullptr);
         return nullptr;
@@ -997,21 +898,21 @@ Value *ReturnStmt::codeGen(inter_gen::InterGenContext *ctx)
 // ExprStmt: Generates code for an Expression statement
 Value *ExprStmt::codeGen(inter_gen::InterGenContext *ctx)
 {
+    ctx->currLine = this->line;
     // Simply evaluate the Expression
     return expr->codeGen(ctx);
 }
 
 Value *IncludeStmt::codeGen(inter_gen::InterGenContext *ctx)
 {
+    ctx->currLine = this->line;
     const std::string target = util::getStrFromVec(*path->name_parts, ".");
-    if (!moduleMetadataMap_d->contains(target))
-    {
+    if (!moduleMetadataMap_d->contains(target)) {
         REPORT_ERROR("Include statement failed: " + target, __FILE__, __LINE__);
     }
 
     const auto moduleMetaData = moduleMetadataMap_d->at(target);
-    for (const auto fun : moduleMetaData->getFunctions())
-    {
+    for (const auto fun : moduleMetaData->getFunctions()) {
         Function::Create(fun->getType(), Function::ExternalLinkage, fun->getName(), MODULE);
         ctx->metaData->addFunction(fun);
     }
@@ -1020,16 +921,15 @@ Value *IncludeStmt::codeGen(inter_gen::InterGenContext *ctx)
 
 Value *PackageStmt::codeGen(inter_gen::InterGenContext *ctx)
 {
-    if (!ctx->package.empty())
-    {
+    ctx->currLine = this->line;
+    if (!ctx->package.empty()) {
         return nullptr;
     }
     const std::string pkg = util::getStrFromVec(*name->name_parts, ".");
     util::create_package_dir(pkg);
 
-    ctx->module = new Module(
-        pkg + "." + ctx->fileName.substr(0, ctx->fileName.find_last_of('.')),
-        *inter_gen::llvmContext);
+    ctx->module =
+        new Module(pkg + "." + ctx->fileName.substr(0, ctx->fileName.find_last_of('.')), *inter_gen::llvmContext);
     ctx->metaData = new inter_gen::ModuleMetaData(ctx->module);
     moduleMetadataMap_d->insert({pkg + "." + ctx->fileName.substr(0, ctx->fileName.find_last_of('.')), ctx->metaData});
 
@@ -1038,13 +938,12 @@ Value *PackageStmt::codeGen(inter_gen::InterGenContext *ctx)
     return nullptr;
 }
 
-
 // BlockStmt: Generates code for a block of statements
 Value *BlockStmt::codeGen(inter_gen::InterGenContext *ctx)
 {
+    ctx->currLine = this->line;
     Value *last = nullptr;
-    for (const auto &s : stmts)
-    {
+    for (const auto &s : stmts) {
         last = s->codeGen(ctx); // Generate code for each statement in the block
     }
     return last; // Return the result of the last statement
@@ -1052,9 +951,9 @@ Value *BlockStmt::codeGen(inter_gen::InterGenContext *ctx)
 
 Value *BreakStmt::codeGen(inter_gen::InterGenContext *ctx)
 {
+    ctx->currLine = this->line;
     BUILDER.CreateBr(ctx->topBlock()->loopExitBlocks.top());
-    if (expr)
-    {
+    if (expr) {
         Value *value = expr->codeGen(ctx);
 
         return value;
@@ -1067,22 +966,20 @@ Value *handleStructAssign(const QualifiedName *var, Expr *val, inter_gen::InterG
 // AssignExpr: Generates code for an assignment statement
 Value *AssignExpr::codeGen(inter_gen::InterGenContext *ctx)
 {
+    ctx->currLine = this->line;
     // check whether the value can be assigned or a value can be assigned to null
     auto [val, valMetaData] = ctx->getValWithMetadata(lhs->getName());
-    if (!valMetaData->isMutable() && !ctx->isDefiningVariable())
-    {
+    if (!valMetaData->isMutable() && !ctx->isDefiningVariable()) {
         REPORT_ERROR("can not assign to a immutable value: " + lhs->getName(), __FILE__, __LINE__);
         return nullptr;
     }
 
-    if (!valMetaData->isNullable() && isNullable(rhs, ctx))
-    {
+    if (!valMetaData->isNullable() && isNullable(rhs, ctx)) {
         REPORT_ERROR("can not assign to a non-nullable value: " + lhs->getName(), __FILE__, __LINE__);
         return nullptr;
     }
 
-    if (lhs->name_parts->size() > 1)
-    {
+    if (lhs->name_parts->size() > 1) {
         return handleStructAssign(lhs, rhs, ctx);
     }
 
@@ -1093,71 +990,53 @@ Value *AssignExpr::codeGen(inter_gen::InterGenContext *ctx)
 
 Value *ArrayAssignExpr::codeGen(inter_gen::InterGenContext *ctx)
 {
+    ctx->currLine = this->line;
     Value *base = lhs->codeGen(ctx);
-    if (!base)
-    {
+    if (!base) {
         REPORT_ERROR("Variable not found in local context", __FILE__, __LINE__);
         return nullptr;
     }
 
     Value *idxVal = idx->codeGen(ctx);
-    if (!idxVal)
-    {
+    if (!idxVal) {
         REPORT_ERROR("Index value not found in local context", __FILE__, __LINE__);
         return nullptr;
     }
-    if (llvm::isa<PointerType>(base->getType()))
-    {
+    if (llvm::isa<PointerType>(base->getType())) {
         Value *ptrAdd = BUILDER.CreatePtrAdd(base, idxVal, "ptrAccess_");
         return BUILDER.CreateStore(rhs->codeGen(ctx), ptrAdd);
     }
-    if (llvm::isa<ArrayType>(base->getType()))
-    {
-        const std::vector<Value *> idxList = {
-            ConstantInt::get(LLVMCTX, APInt(32, 0)),
-            idxVal
-        };
+    if (llvm::isa<ArrayType>(base->getType())) {
+        const std::vector<Value *> idxList = {ConstantInt::get(LLVMCTX, APInt(32, 0)), idxVal};
         Value *ptrAdd = BUILDER.CreateGEP(base->getType(), base, idxList, "ptrAccess_");
         return BUILDER.CreateStore(rhs->codeGen(ctx), ptrAdd);
     }
     return nullptr;
 }
 
-
 Value *handleStructAssign(const QualifiedName *var, Expr *val, inter_gen::InterGenContext *ctx)
 {
     Value *currentPtr = nullptr;
     // Get the pointer to the struct
-    if (Value *local = ctx->locals()[var->getFirstName()].first)
-    {
+    if (Value *local = ctx->locals()[var->getFirstName()].first) {
         // if it is a pointer, then load it
-        if (llvm::isa<StructType>(local->getType()))
-        {
+        if (llvm::isa<StructType>(local->getType())) {
             currentPtr = local;
-        }
-        else if (llvm::isa<PointerType>(local->getType()) && gepMapping->contains(local))
-        {
+        } else if (llvm::isa<PointerType>(local->getType()) && gepMapping->contains(local)) {
             currentPtr = gepMapping->at(local);
-        }
-        else
-        {
+        } else {
             // not a pointer, just get the val
             currentPtr = ctx->locals()[var->getFirstName()].first;
         }
-    }
-    else
-    {
+    } else {
         REPORT_ERROR("Variable not found in local context", __FILE__, __LINE__);
     }
 
     assert(currentPtr && "currentPtr is null");
     StringRef structName;
-    if (const AllocaInst *allocaInst = dyn_cast<AllocaInst>(currentPtr))
-    {
+    if (const AllocaInst *allocaInst = dyn_cast<AllocaInst>(currentPtr)) {
         structName = dyn_cast<StructType>(allocaInst->getAllocatedType())->getStructName();
-    }
-    else
-    {
+    } else {
         structName = dyn_cast<StructType>(currentPtr->getType())->getStructName();
     }
 
@@ -1165,8 +1044,7 @@ Value *handleStructAssign(const QualifiedName *var, Expr *val, inter_gen::InterG
     const inter_gen::StructMetaData *metaData = ctx->structs[structName.str()];
 
     // Traverse through the struct fields
-    for (int i = 1; i < var->name_parts->size(); ++i)
-    {
+    for (int i = 1; i < var->name_parts->size(); ++i) {
         // Get the field index based on the current struct's metadata
         const unsigned int fieldIndex = metaData->getFieldIndex(var->getName(i));
         Type *fieldType = metaData->getFieldType(var->getName(i));
@@ -1174,23 +1052,19 @@ Value *handleStructAssign(const QualifiedName *var, Expr *val, inter_gen::InterG
         currentPtr = BUILDER.CreateStructGEP(metaData->getStructType(), currentPtr, fieldIndex);
 
         // this is the last field, so store the value
-        if (i == var->name_parts->size() - 1)
-        {
+        if (i == var->name_parts->size() - 1) {
             return BUILDER.CreateStore(val->codeGen(ctx), currentPtr, false);
         }
 
         // If this field is a nested struct, update the struct type and metadata
-        if (i < var->name_parts->size() - 1)
-        {
+        if (i < var->name_parts->size() - 1) {
             const auto *nestedStructType = dyn_cast<StructType>(fieldType);
-            if (!nestedStructType)
-            {
+            if (!nestedStructType) {
                 return nullptr; // Error: not a valid nested struct
             }
             // Update metadata for the nested struct
             metaData = ctx->structs[nestedStructType->getStructName().str()];
-            if (!metaData)
-            {
+            if (!metaData) {
                 return nullptr; // Error: metadata for nested struct not
                 // found
             }
@@ -1203,6 +1077,7 @@ Value *handleStructAssign(const QualifiedName *var, Expr *val, inter_gen::InterG
 // UnaryExpr: Generates code for a unary Expression (increment or decrement)
 Value *UnaryExpr::codeGen(inter_gen::InterGenContext *ctx)
 {
+    ctx->currLine = this->line;
     // Generate code for the operand of the unary operation
     Value *operVal = operand->codeGen(ctx);
 
@@ -1210,8 +1085,7 @@ Value *UnaryExpr::codeGen(inter_gen::InterGenContext *ctx)
     Value *var;
     Value *varPtr;
     // Handle increment or decrement
-    switch (op)
-    {
+    switch (op) {
     case DEC:
         operVal = BUILDER.CreateSub(operVal, ConstantInt::get(LLVMCTX, APInt(1, 1)), "decrease"); // Decrement
         return operVal;
@@ -1219,8 +1093,7 @@ Value *UnaryExpr::codeGen(inter_gen::InterGenContext *ctx)
         operVal = BUILDER.CreateAdd(operVal, ConstantInt::get(operVal->getType(), 1), "increase"); // Increment
         return operVal;
     case TIMES:
-        if (llvm::isa<PointerType>(operVal->getType()))
-        {
+        if (llvm::isa<PointerType>(operVal->getType())) {
             operVal = BUILDER.CreateLoad(expectDerefType_d->top(), operVal, "dereference");
             return operVal;
         }
@@ -1228,10 +1101,8 @@ Value *UnaryExpr::codeGen(inter_gen::InterGenContext *ctx)
     case MINUS:
         return BUILDER.CreateNeg(operVal, "negate");
     case BIT_AND:
-        if (operVal->getType()->isArrayTy())
-        {
-            if (llvm::isa<LoadInst>(operVal))
-            {
+        if (operVal->getType()->isArrayTy()) {
+            if (llvm::isa<LoadInst>(operVal)) {
                 auto *castReturn = dyn_cast<LoadInst>(operVal);
                 return castReturn->getPointerOperand();
             }
@@ -1281,11 +1152,13 @@ Value *UnaryExpr::codeGen(inter_gen::InterGenContext *ctx)
 Value *VarExpr::codeGen(inter_gen::InterGenContext *ctx)
 {
     // Simply look up the value of the variable from the context
+    ctx->currLine = this->line;
     return name->codeGen(ctx);
 }
 
 Value *StructDecl::codeGen(inter_gen::InterGenContext *ctx)
 {
+    ctx->currLine = this->line;
     // Create a struct type with the specified fields
     ctx->setDefStruct(true);
     auto *smd = new inter_gen::StructMetaData(ctx, name->getName());
@@ -1293,8 +1166,7 @@ Value *StructDecl::codeGen(inter_gen::InterGenContext *ctx)
 
     std::vector<Type *> fieldTypes;
     fieldTypes.reserve(fields.size());
-    for (const auto &field : fields)
-    {
+    for (const auto &field : fields) {
         fieldTypes.push_back(util::typeOf(*field->getType(), ctx));
         smd->addField(field->getName(), fieldTypes.back());
     }
@@ -1305,11 +1177,11 @@ Value *StructDecl::codeGen(inter_gen::InterGenContext *ctx)
     // Create a global variable for the struct
     auto *globalStruct = new GlobalVariable(*MODULE, // Module in which to insert the global variable
                                             dStruct, // Type of the global variable (struct type)
-                                            false, // Whether it's constant
-                                            GlobalValue::ExternalLinkage, // Linkage type
+                                            false,   // Whether it's constant
+                                            GlobalValue::ExternalLinkage,    // Linkage type
                                             Constant::getNullValue(dStruct), // Initializer (null-initialized)
-                                            name->getName() // Name of the global variable
-        );
+                                            name->getName()                  // Name of the global variable
+    );
 
     smd->setStructType(dStruct);
 
@@ -1321,10 +1193,8 @@ namespace inter_gen
 {
 FunctionMetaData *InterGenContext::getFunMetaData(const std::string &name) const
 {
-    for (const auto &fun : metaData->getFunctions())
-    {
-        if (fun->getName() == name)
-        {
+    for (const auto &fun : metaData->getFunctions()) {
+        if (fun->getName() == name) {
             return fun;
         }
     }
@@ -1332,13 +1202,11 @@ FunctionMetaData *InterGenContext::getFunMetaData(const std::string &name) const
     return nullptr;
 }
 
-
 void InterGenContext::genIR(parser::Program *program)
 {
     program->codeGen(this);
 
-    if (!mainFunction && (sourcePath.ends_with("/main.dap") || sourcePath == "main.dap"))
-    {
+    if (!mainFunction && (sourcePath.ends_with("/main.dap") || sourcePath == "main.dap")) {
         constexpr std::vector<Type *> argTypes;
         FunctionType *ftype = FunctionType::get(Type::getInt32Ty(module->getContext()), ArrayRef(argTypes), false);
         mainFunction = Function::Create(ftype, GlobalValue::ExternalLinkage, "main", module);
@@ -1359,8 +1227,7 @@ void InterGenContext::genIR(parser::Program *program)
     outputFile.close();
     raw_fd_ostream outfile(outputPath, EC, sys::fs::OF_Text);
 
-    if (EC)
-    {
+    if (EC) {
         errs() << "Error opening output file: " << EC.message() << "\n";
         return;
     }
@@ -1383,8 +1250,7 @@ void InterGenContext::genExec(parser::Program *program)
 
     program->codeGen(this);
 
-    if (!mainFunction && (sourcePath.ends_with("/main.dap") || sourcePath == "main.dap"))
-    {
+    if (!mainFunction && (sourcePath.ends_with("/main.dap") || sourcePath == "main.dap")) {
         // Define the main function (i32 @main())
         FunctionType *ftype = FunctionType::get(Type::getInt32Ty(module->getContext()), false);
         mainFunction = Function::Create(ftype, GlobalValue::ExternalLinkage, "main", module);
@@ -1409,8 +1275,7 @@ void InterGenContext::genExec(parser::Program *program)
     std::string error;
     const Target *target = TargetRegistry::lookupTarget(targetTriple, error);
 
-    if (!target)
-    {
+    if (!target) {
         errs() << "Error: " << error;
         return;
     }
@@ -1438,15 +1303,13 @@ void InterGenContext::genExec(parser::Program *program)
     filesToCompile->push_back(outputPath);
     raw_fd_ostream dest(outputPath, EC, sys::fs::OF_None);
 
-    if (EC)
-    {
+    if (EC) {
         errs() << "Could not open file for writing: " << EC.message() << "\n";
         return;
     }
 
     legacy::PassManager pass;
-    if (targetMachine->addPassesToEmitFile(pass, dest, nullptr, CodeGenFileType::ObjectFile))
-    {
+    if (targetMachine->addPassesToEmitFile(pass, dest, nullptr, CodeGenFileType::ObjectFile)) {
         errs() << "TargetMachine can't emit a file of this type\n";
         return;
     }
@@ -1461,15 +1324,12 @@ std::unordered_map<IncludeGraphNode *, bool> visited{};
 
 void interGen_oneFile(IncludeGraphNode *node)
 {
-    if (visited.contains(node))
-    {
+    if (visited.contains(node)) {
         return;
     }
     visited.insert({node, false});
-    if (!node->getIncludes().empty())
-    {
-        for (const auto oneNode : node->getIncludes())
-        {
+    if (!node->getIncludes().empty()) {
+        for (const auto oneNode : node->getIncludes()) {
             interGen_oneFile(oneNode);
         }
     }
@@ -1479,35 +1339,27 @@ void interGen_oneFile(IncludeGraphNode *node)
 
 void interGen(const std::set<IncludeGraphNode *> &map)
 {
-    for (const auto node : map)
-    {
+    for (const auto node : map) {
         interGen_oneFile(node);
     }
 }
 
-
 Value *InterGenContext::getVal(const std::string &name)
 {
     std::stack<InterGenBlock *> tmp;
-    while (!blocks.empty())
-    {
-        if (blocks.top()->locals.contains(name))
-        {
+    while (!blocks.empty()) {
+        if (blocks.top()->locals.contains(name)) {
             Value *res = blocks.top()->locals[name].first;
 
-            while (!tmp.empty())
-            {
+            while (!tmp.empty()) {
                 blocks.push(tmp.top());
                 tmp.pop();
             }
             return res;
         }
-        if (Function *fun = blocks.top()->block->getParent())
-        {
-            for (auto &arg : fun->args())
-            {
-                if (arg.getName() == name)
-                {
+        if (Function *fun = blocks.top()->block->getParent()) {
+            for (auto &arg : fun->args()) {
+                if (arg.getName() == name) {
                     return &arg;
                 }
             }
@@ -1516,37 +1368,29 @@ Value *InterGenContext::getVal(const std::string &name)
         blocks.pop();
     }
 
-    if (module->getGlobalVariable(name))
-    {
+    if (module->getGlobalVariable(name)) {
         return module->getGlobalVariable(name);
     }
 
     return nullptr;
 }
 
-
 std::pair<Value *, VariableMetaData *> InterGenContext::getValWithMetadata(const std::string &name)
 {
     std::stack<InterGenBlock *> tmp;
-    while (!blocks.empty())
-    {
-        if (blocks.top()->locals.contains(name))
-        {
+    while (!blocks.empty()) {
+        if (blocks.top()->locals.contains(name)) {
             std::map<std::string, std::pair<Value *, VariableMetaData *>>::mapped_type res = blocks.top()->locals[name];
-            while (!tmp.empty())
-            {
+            while (!tmp.empty()) {
                 blocks.push(tmp.top());
                 tmp.pop();
             }
             return res;
         }
-        if (Function *fun = blocks.top()->block->getParent())
-        {
+        if (Function *fun = blocks.top()->block->getParent()) {
             const auto &funMetadata = functions[fun->getName().str()];
-            for (auto &arg : fun->args())
-            {
-                if (arg.getName() == name)
-                {
+            for (auto &arg : fun->args()) {
+                if (arg.getName() == name) {
                     return {&arg, funMetadata->getArgMetaData(arg.getName().str())};
                 }
             }
@@ -1555,8 +1399,7 @@ std::pair<Value *, VariableMetaData *> InterGenContext::getValWithMetadata(const
         blocks.pop();
     }
 
-    if (module->getGlobalVariable(name))
-    {
+    if (module->getGlobalVariable(name)) {
         return {module->getGlobalVariable(name), getModuleMetaData(name)->getGlobalValMetaData(name)};
     }
 

@@ -6,29 +6,24 @@
 
 bool dap::inter_gen::isNullable(parser::Expr *valToCheck, InterGenContext *ctx)
 {
-    if (valToCheck->isa(parser::NodeMetaDataType::VarExpr))
-    {
-        const auto * varExpr = dynamic_cast<parser::VarExpr*>(valToCheck);
+    if (valToCheck->isa(parser::NodeMetaDataType::VarExpr)) {
+        const auto *varExpr = dynamic_cast<parser::VarExpr *>(valToCheck);
         auto [val, metadata] = ctx->getValWithMetadata(varExpr->name->getFirstName());
-        if (metadata->isNullable())
-        {
+        if (metadata->isNullable()) {
             return true;
         }
     }
 
-    if (valToCheck->isa(parser::NodeMetaDataType::CallExpr))
-    {
-        const auto * callExpr = dynamic_cast<parser::CallExpr*>(valToCheck);
-        FunctionMetaData * functionMetaData = ctx->metaData->getFunction(callExpr->callee->getName());
-        VariableMetaData * varMetaData = functionMetaData->getReturnMetaData();
+    if (valToCheck->isa(parser::NodeMetaDataType::CallExpr)) {
+        const auto *callExpr = dynamic_cast<parser::CallExpr *>(valToCheck);
+        FunctionMetaData *functionMetaData = ctx->metaData->getFunction(callExpr->callee->getName());
+        VariableMetaData *varMetaData = functionMetaData->getReturnMetaData();
 
-        if (varMetaData == nullptr)
-        {
+        if (varMetaData == nullptr) {
             return false;
         }
 
-        if (varMetaData->isNullable())
-        {
+        if (varMetaData->isNullable()) {
             return true;
         }
     }

@@ -1,11 +1,13 @@
 
 
-#include <llvm/Pass.h>
-#include <llvm/Bitstream/BitstreamReader.h>
-#include <llvm/Support/TargetSelect.h>
 #include <getopt.h>
 #include <iostream>
+#include <llvm/Bitstream/BitstreamReader.h>
+#include <llvm/Pass.h>
+#include <llvm/Support/TargetSelect.h>
 
+#include "src/core/common/define_d.h"
+#include "src/core/common/global.h"
 #include "src/core/inter_gen/codegen_inter.h"
 #include "src/core/inter_gen/preprocessing/includeAnaylize.h"
 #include "src/core/mechine_code_gen/codeGen_mechine.h"
@@ -13,8 +15,6 @@
 #include "src/core/parser/parser.hpp"
 #include "src/core/utilities/file_util.h"
 #include "src/core/utilities/obj_util.h"
-#include "src/core/common/define_d.h"
-#include "src/core/common/global.h"
 
 using namespace std;
 extern dap::parser::Program *program;
@@ -50,10 +50,8 @@ int main(const int argc, char **argv)
                                     {"output-exec-name", required_argument, nullptr, 'n'},
                                     {nullptr, 0, nullptr, 0}};
 
-    while ((opt = getopt_long(argc, argv, "n:d:o:ievhD", long_options, nullptr)) != -1)
-    {
-        switch (opt)
-        {
+    while ((opt = getopt_long(argc, argv, "n:d:o:ievhD", long_options, nullptr)) != -1) {
+        switch (opt) {
         case 'h':
             helpRequested = true;
             break;
@@ -75,8 +73,7 @@ int main(const int argc, char **argv)
             break;
         case 'o':
             buildDir = optarg;
-            if (!buildDir.ends_with("/"))
-            {
+            if (!buildDir.ends_with("/")) {
                 buildDir.append("/");
             }
             break;
@@ -85,15 +82,15 @@ int main(const int argc, char **argv)
             break;
         default:
             cerr << "Invalid option: " << static_cast<char>(opt) << endl;
-            cerr << "Usage: " << argv[0] << " [-h] [-d <directory>] [-D] [-i] [-e] [-o <output_directory>] [-n <executable_name>]" << endl;
+            cerr << "Usage: " << argv[0]
+                 << " [-h] [-d <directory>] [-D] [-i] [-e] [-o <output_directory>] [-n <executable_name>]" << endl;
             return 1;
         }
     }
 
-    if (helpRequested)
-    {
-        cout << "Usage: " << argv[0] <<
-            " [-h] [-d <directory>] [-D] [-i] [-e] [-o <output_directory>] [-n <executable_name>]" << endl;
+    if (helpRequested) {
+        cout << "Usage: " << argv[0]
+             << " [-h] [-d <directory>] [-D] [-i] [-e] [-o <output_directory>] [-n <executable_name>]" << endl;
         cout << "  -h, --help            Show this help message and exit" << endl;
         cout << "  -d, --directory       Compile the specified directory" << endl;
         cout << "  -D, --debug           Enable debug mode" << endl;
@@ -105,19 +102,15 @@ int main(const int argc, char **argv)
         return 0;
     }
 
-    if (debugMode)
-    {
+    if (debugMode) {
 #ifdef D_DEBUG
         dbg_print(cout, "====== DEBUG MODE IS ON ======\n", dap::util::FileColor::BRIGHT_MAGENTA);
 #endif
     }
 
-    if (optind < argc)
-    {
+    if (optind < argc) {
         inputPath = argv[optind];
-    }
-    else if (inputPath.empty())
-    {
+    } else if (inputPath.empty()) {
         inputPath = "main.dap";
     }
 
@@ -127,12 +120,10 @@ int main(const int argc, char **argv)
     InitializeAllAsmParsers();
     InitializeAllAsmPrinters();
 
-    if (!inputPath.empty())
-    {
+    if (!inputPath.empty()) {
         ifstream infileOrDir;
         infileOrDir.open(inputPath);
-        if (!infileOrDir.is_open())
-        {
+        if (!infileOrDir.is_open()) {
             cerr << "Error: Unable to open file or directory: " << inputPath << endl;
             return 1;
         }
@@ -140,13 +131,10 @@ int main(const int argc, char **argv)
 
     util::delete_directory(buildDir);
 
-    if (compileDir)
-    {
+    if (compileDir) {
         std::vector<std::string> files = util::get_all_files_in_dir(inputPath);
-        for (const auto &file : files)
-        {
-            if (!file.ends_with(".dap"))
-            {
+        for (const auto &file : files) {
+            if (!file.ends_with(".dap")) {
                 continue;
             }
 #ifdef D_DEBUG
@@ -167,19 +155,13 @@ int main(const int argc, char **argv)
         auto includeAnalyzer = new dap::inter_gen::IncludeAnalyzer();
         includeAnalyzer->generateGraph();
         std::set<inter_gen::IncludeGraphNode *> roots = includeAnalyzer->getRoots();
-        if (genIR)
-        {
+        if (genIR) {
             interGen(roots);
-        }
-        else
-        {
+        } else {
             mech_gen::execGen(roots);
         }
-    }
-    else
-    {
-        if (argc > 1)
-        {
+    } else {
+        if (argc > 1) {
             openFile(inputPath.c_str());
         }
         util::copy_directory("../src/dap/runtime/asm", buildDir + "dap/runtime/asm");
@@ -189,8 +171,7 @@ int main(const int argc, char **argv)
 
         if (genIR)
             ctx->genIR(program);
-        else
-        {
+        else {
             mech_gen::execGen_singleFile(ctx, program);
         }
     }

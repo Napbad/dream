@@ -32,21 +32,15 @@ Function *genIntToChar(InterGenContext *ctx)
     // Get the function argument
 
     // Check the argument type
-    if (Argument *arg = intToChar->getArg(0); arg->getType()->getTypeID() == Type::IntegerTyID)
-    {
+    if (Argument *arg = intToChar->getArg(0); arg->getType()->getTypeID() == Type::IntegerTyID) {
         arg->setName("i");
-        funMetadata->addArg("i",
-arg,
-            Type::getInt32Ty(LLVMCTX),
-            new VariableMetaData("i",  Type::getInt32Ty(LLVMCTX)));
+        funMetadata->addArg("i", arg, Type::getInt32Ty(LLVMCTX), new VariableMetaData("i", Type::getInt32Ty(LLVMCTX)));
         // Truncate the integer to a character
         Value *charCast = BUILDER.CreateTrunc(arg, Type::getInt8Ty(LLVMCTX), "int_cast");
 
         BUILDER.CreateRet(
             BUILDER.CreateAdd(charCast, ConstantInt::get(Type::getInt8Ty(LLVMCTX), APInt(8, 48, true)), "int_add"));
-    }
-    else
-    {
+    } else {
         // Print an error message if the argument type is invalid
         REPORT_ERROR("invalid arg type", __FILE__, __LINE__);
         return nullptr;
@@ -78,16 +72,13 @@ Function *genCharToInt(InterGenContext *ctx)
     ctx->setCurrFun(charToInt);
 
     // Check the argument type
-    if (Argument *arg = charToInt->getArg(0); arg->getType()->getTypeID() == Type::IntegerTyID)
-    {
+    if (Argument *arg = charToInt->getArg(0); arg->getType()->getTypeID() == Type::IntegerTyID) {
         // Cast the character to an integer
         arg->setName("ch");
-        funMetadata->addArg("ch", arg, Type::getInt8Ty(LLVMCTX), new VariableMetaData("ch",  Type::getInt8Ty(LLVMCTX)));
+        funMetadata->addArg("ch", arg, Type::getInt8Ty(LLVMCTX), new VariableMetaData("ch", Type::getInt8Ty(LLVMCTX)));
         Value *intCast_ret = BUILDER.CreateIntCast(arg, Type::getInt32Ty(LLVMCTX), false, "char_cast");
         BUILDER.CreateRet(intCast_ret);
-    }
-    else
-    {
+    } else {
         // Print an error message if the argument type is invalid
         std::stringstream ss;
         ss << "invalid arg type: expect Integer8, but get: " << arg->getType()->getTypeID();
@@ -120,22 +111,19 @@ Function *genInt32To8(InterGenContext *ctx)
     ctx->pushBlock(entry);
     ctx->setCurrFun(int32To8);
 
-
     // Check the argument type
-    if (Argument *arg = int32To8->getArg(0); arg->getType()->getTypeID() == Type::IntegerTyID)
-    {
+    if (Argument *arg = int32To8->getArg(0); arg->getType()->getTypeID() == Type::IntegerTyID) {
         // Set argument name
         arg->setName("input");
-        funMetadata->addArg("input", arg, Type::getInt32Ty(LLVMCTX), new VariableMetaData("input",  Type::getInt32Ty(LLVMCTX)));
+        funMetadata->addArg("input", arg, Type::getInt32Ty(LLVMCTX),
+                            new VariableMetaData("input", Type::getInt32Ty(LLVMCTX)));
 
         // Perform the truncation operation
         Value *truncatedValue = ctx->builder.CreateTrunc(arg, Type::getInt8Ty(LLVMCTX), "truncated_value");
 
         // Return the result
         BUILDER.CreateRet(truncatedValue);
-    }
-    else
-    {
+    } else {
         // Print an error message if the argument type is invalid
         std::stringstream ss;
         ss << "invalid arg type: expect Integer32, but get: " << arg->getType()->getTypeID();
@@ -177,7 +165,8 @@ Function *genCharToStr(InterGenContext *ctx)
     const auto args = charToStr->arg_begin();
     Value *inputInt = &*args;
     inputInt->setName("inputInt");
-    funMetadata->addArg("inputInt", inputInt, Type::getInt8Ty(LLVMCTX), new VariableMetaData("inputInt",  Type::getInt8Ty(LLVMCTX)));
+    funMetadata->addArg("inputInt", inputInt, Type::getInt8Ty(LLVMCTX),
+                        new VariableMetaData("inputInt", Type::getInt8Ty(LLVMCTX)));
 
     // Return the pointer to the buffer (for now, we just return the buffer's address)
     Value *gep = BUILDER.CreateGEP(Type::getInt8Ty(LLVMCTX), strBuffer, ConstantInt::get(Type::getInt32Ty(LLVMCTX), 0),

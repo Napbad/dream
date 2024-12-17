@@ -14,8 +14,7 @@ namespace dap::parser
 {
 class Node;
 
-enum class NodeMetaDataType
-{
+enum class NodeMetaDataType {
     None,
     QualifiedName,
     DoubleExpr,
@@ -231,8 +230,7 @@ class ListExprMetadata final : public NodeMetadata
 
     ~ListExprMetadata() override
     {
-        for (const auto *element : elements)
-        {
+        for (const auto *element : elements) {
             delete element;
         }
     }
@@ -312,8 +310,7 @@ class CallExprMetadata final : public NodeMetadata
 
     ~CallExprMetadata() override
     {
-        for (const auto *arg : args)
-        {
+        for (const auto *arg : args) {
             delete arg;
         }
     }
@@ -366,8 +363,7 @@ class BlockStmtMetadata final : public NodeMetadata
 
     ~BlockStmtMetadata() override
     {
-        for (const auto *stmt : stmts)
-        {
+        for (const auto *stmt : stmts) {
             delete stmt;
         }
     }
@@ -391,8 +387,7 @@ class IncludeStmtMetatata final : public NodeMetadata
     {
     }
 
-    ~IncludeStmtMetatata() override
-    = default;
+    ~IncludeStmtMetatata() override = default;
 
     Node *getNode() override
     {
@@ -412,8 +407,7 @@ class PackageStmtMetadata final : public NodeMetadata
     explicit PackageStmtMetadata(QualifiedNameMetadata *name) : name(name)
     {
     }
-    ~PackageStmtMetadata() override
-    = default;
+    ~PackageStmtMetadata() override = default;
     Node *getNode() override
     {
         return node;
@@ -490,8 +484,7 @@ class BreakStmtMetadata final : public NodeMetadata
 
     Node *getNode() override
     {
-        if (Expr)
-        {
+        if (Expr) {
             return node;
         }
         return nullptr;
@@ -640,8 +633,7 @@ class IfStmtMetadata final : public NodeMetadata
     {
         delete cond;
         delete else_body;
-        for (const auto *stmt : elif_stmts)
-        {
+        for (const auto *stmt : elif_stmts) {
             delete stmt;
         }
     }
@@ -737,6 +729,6 @@ class StructDeclMetadata final : public NodeMetadata
         return NodeMetaDataType::StructDecl;
     }
 };
-} // namespace dap::inter_gen
+} // namespace dap::parser
 
 #endif // NODE_META_DATA_H

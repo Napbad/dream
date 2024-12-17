@@ -21,9 +21,8 @@ namespace inter_gen
 
 class IncludeGraphNode
 {
-public:
-    explicit IncludeGraphNode(std::string name, parser::Program *program) :
-        name(name), program(program)
+  public:
+    explicit IncludeGraphNode(std::string name, parser::Program *program) : name(name), program(program)
     {
     }
 
@@ -77,7 +76,7 @@ public:
         includes_path.push_back(path);
     }
 
-private:
+  private:
     std::string name;
     dap::parser::Program *program;
     std::vector<IncludeGraphNode *> includedBy{};
@@ -88,7 +87,7 @@ private:
 
 class IncludeAnalyzer
 {
-public:
+  public:
     void analyze();
 
     [[nodiscard]] std::set<IncludeGraphNode *> getRoots() const
@@ -98,12 +97,11 @@ public:
 
     void generateGraph();
 
-private:
+  private:
     std::map<std::string, IncludeGraphNode *> nodes;
     std::set<IncludeGraphNode *> roots;
-
 };
-}
-} // namespace dap::inter_gen
+} // namespace inter_gen
+} // namespace dap
 
-#endif //INCLUDEANAYLIZE_H
+#endif // INCLUDEANAYLIZE_H
