@@ -32,6 +32,9 @@
     util::dbg_print(std::cout, (SPACE_STR + (msg) + " \nat file: " file + ":" + std::to_string(line) + "\n"),          \
                     util::FileColor::WHITE)
 
+// Report a debug message with a specific color (default white)
+#define REPORT_DEBUG_MSG(msg) util::dbg_print(std::cout, (SPACE_STR + (msg) + " \n"), util::FileColor::WHITE)
+
 // Report a success message with a specific color (default green)
 #define REPORT_SUCCESS(msg, file, line)                                                                                \
     util::print(std::cout, (SPACE_STR + (msg) + " \nat file: " file + ":" + std::to_string(line) + "\n"),              \

@@ -46,6 +46,10 @@ class Node
         return nullptr;
     }
     virtual bool isa(NodeMetaDataType type);
+    virtual std::string toString()
+    {
+        return "statement: common";
+    }
 };
 
 class Stmt : public Node
@@ -73,7 +77,7 @@ class QualifiedName final : public Expr
 
     [[nodiscard]] std::string getName() const
     {
-        return util::getTextFromVec(*name_parts);
+        return util::getStrFromVec(*name_parts, ".");
     }
 
     [[nodiscard]] std::string getName(const int idx) const

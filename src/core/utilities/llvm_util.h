@@ -16,7 +16,7 @@ Type *typeOf(const parser::QualifiedName &type, const inter_gen::InterGenContext
  * llvm's pointer do not have type  info) */
 Type *typeOf_d(const parser::QualifiedName &type, const inter_gen::InterGenContext *ctx, parser::Expr *size);
 
-Type *getPointerOf(Type *type);
+Type *getPointerOf(Type *type, const inter_gen::InterGenContext *ctx = nullptr);
 } // namespace dap::util
 
 #endif // LLVM_UTIL_H

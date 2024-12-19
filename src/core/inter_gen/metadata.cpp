@@ -10,10 +10,10 @@ namespace dap::inter_gen
 StructMetaData::StructMetaData(InterGenContext *context, std::string name) : ctx(context), name_(std::move(name))
 {
 }
-
-void StructMetaData::addField(const std::string &fieldName, llvm::Type *fieldType)
+void StructMetaData::addField(const std::string &fieldName, VariableMetaData *varMetaData)
 {
-    fields_[fieldName] = fieldType;
+    fields_[fieldName] = varMetaData->getType();
+    fieldMetaData_[fieldName] = varMetaData;
     fieldIndexMap_[fieldName] = fields_.size() - 1;
 }
 

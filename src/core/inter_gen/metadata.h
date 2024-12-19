@@ -27,7 +27,7 @@ class StructMetaData
     explicit StructMetaData(InterGenContext *context, std::string name);
 
     // add Field
-    void addField(const std::string &fieldName, Type *fieldType);
+    void addField(const std::string &fieldName, VariableMetaData *varMetaData);
 
     // Get StructType
     StructType *getStructType() const;
@@ -45,6 +45,7 @@ class StructMetaData
     InterGenContext *ctx;
     std::string name_;
     std::unordered_map<std::string, Type *> fields_;
+    std::unordered_map<std::string, VariableMetaData*> fieldMetaData_;
     std::unordered_map<std::string, unsigned> fieldIndexMap_;
     mutable StructType *structType_ = nullptr;
 };

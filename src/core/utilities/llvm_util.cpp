@@ -37,7 +37,7 @@ Type *typeOf(const parser::QualifiedName &type, const inter_gen::InterGenContext
     if (type.name_parts->back() == D_POINTER_SUFIX) {
         const std::vector<std::string> *nameParts = type.name_parts;
         std::vector<std::string> vec = getSubVector(*nameParts, 0, type.name_parts->size() - 1);
-        return getPointerOf(typeOf(parser::QualifiedName(&vec), ctx, nullptr));
+        return getPointerOf(typeOf(parser::QualifiedName(&vec), ctx, nullptr), ctx);
     }
 
     if (type.name_parts->back() == D_ARR_SUFIX) {
@@ -92,8 +92,11 @@ Type *typeOf_d(const parser::QualifiedName &type, const inter_gen::InterGenConte
     return nullptr;
 }
 
-inline Type *getPointerOf(Type *type)
+inline Type *getPointerOf(Type *type, const inter_gen::InterGenContext *ctx)
 {
+    if (!type) {
+        return PointerType::get(LLVMCTX, 0);
+    }
     PointerType *pointer = PointerType::get(type, 0);
     return pointer;
 }

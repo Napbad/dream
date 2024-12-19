@@ -24,6 +24,7 @@
 namespace dap::parser
 {
 class Program;
+class QualifiedName;
 }
 
 namespace dap::inter_gen
@@ -85,8 +86,9 @@ class InterGenContext
     std::string package;
     std::string fileName;
 
-    FunctionMetaData *getFunMetaData(const std::string &name) const;
+    FunctionMetaData *getFunMetaData(const std::string &name, const inter_gen::InterGenContext *ctx) const;
     std::pair<Value *, VariableMetaData *> getValWithMetadata(const std::string &name);
+    std::pair<Value *, VariableMetaData *> getValWithMetadata(const parser::QualifiedName *name);
     FunctionMetaData *getCurrFunMetaData() const;
     void setCurrFunMetaData(inter_gen::FunctionMetaData *funMetaData);
 
@@ -255,6 +257,11 @@ class InterGenContext
         }
         REPORT_ERROR("Value not found in ptrValBaseTypeMapping", __FILE__, __LINE__);
         return nullptr;
+    }
+
+    std::string errMsg(const std::string &msg) const
+    {
+        return "Error at: " + sourcePath + std::to_string(currLine) + ": \n" + msg;
     }
 };
 

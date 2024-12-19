@@ -48,6 +48,7 @@ void printParseInfo(const char* ruleName, int lineNumber, const std::string& val
     dap::parser::Expr *expr;
     dap::parser::Stmt *stmt;
     dap::parser::QualifiedName *ident;
+    dap::parser::QualifiedName *type;
     dap::parser::VarDecl *var_decl;
     std::vector<dap::parser::VarDecl*> *varvec;
     std::vector<dap::parser::Expr*> *exprvec;
@@ -86,6 +87,7 @@ void printParseInfo(const char* ruleName, int lineNumber, const std::string& val
 %type <exprvec> expr_list
 %type <stmtvec> stmt_list elif_stmts
 %type <boolval> assign_nullable_flag var_mutable_flag
+%type <type> type_ident
 
 %start program
 
@@ -251,21 +253,21 @@ block:
 ;
 
 var_decl:
-    var_mutable_flag qualified_name IDENTIFIER assign_nullable_flag ASSIGN expression {
+    var_mutable_flag type_ident IDENTIFIER assign_nullable_flag ASSIGN expression {
         $$ = new VarDecl($2, new QualifiedName(new std::vector<std::string>({*$3})), $1, $4, $6);
         delete $3;
         $$->line = yylineno;
 
         printParseInfo("var_decl (var_mutable_flag qualified_name IDENTIFIER assign_nullable_flag ASSIGN expression)", yylineno);
     }
-    | var_mutable_flag qualified_name IDENTIFIER assign_nullable_flag {
+    | var_mutable_flag type_ident IDENTIFIER assign_nullable_flag {
         $$ = new VarDecl($2, new QualifiedName(new std::vector<std::string>({*$3})), $1, $4, nullptr);
         delete $3;
         $$->line = yylineno;
 
         printParseInfo("var_decl (var_mutable_flag qualified_name IDENTIFIER assign_nullable_flag)", yylineno);
     }
-    | var_mutable_flag qualified_name TIMES IDENTIFIER assign_nullable_flag ASSIGN expression {
+    | var_mutable_flag type_ident TIMES IDENTIFIER assign_nullable_flag ASSIGN expression {
     	$2->name_parts->push_back("*");
         $$ = new VarDecl($2, new QualifiedName(new std::vector<std::string>({*$4})), $1, $5, $7);
         delete $4;
@@ -273,7 +275,7 @@ var_decl:
 
         printParseInfo("var_decl (var_mutable_flag qualified_name IDENTIFIER assign_nullable_flag ASSIGN expression)", yylineno);
     }
-    | var_mutable_flag qualified_name TIMES IDENTIFIER assign_nullable_flag {
+    | var_mutable_flag type_ident TIMES IDENTIFIER assign_nullable_flag {
     	$2->name_parts->push_back("*");
         $$ = new VarDecl($2, new QualifiedName(new std::vector<std::string>({*$4})), $1, $5, nullptr);
         delete $4;
@@ -281,7 +283,7 @@ var_decl:
 
         printParseInfo("var_decl (var_mutable_flag qualified_name IDENTIFIER assign_nullable_flag)", yylineno);
     }
-    | var_mutable_flag qualified_name LBRACKET RBRACKET IDENTIFIER assign_nullable_flag {
+    | var_mutable_flag type_ident LBRACKET RBRACKET IDENTIFIER assign_nullable_flag {
     	$2->name_parts->push_back("[]");
         QualifiedName *name = new QualifiedName(new std::vector<std::string>({*$5}));
     	$$ = new VarDecl($2, name, $1, $6, nullptr);
@@ -290,7 +292,7 @@ var_decl:
 
     	printParseInfo("var_decl (array) (var_mutable_flag qualified_name LBRACKET RBRACKET IDENTIFIER)", yylineno);
     }
-    | var_mutable_flag qualified_name LBRACKET RBRACKET IDENTIFIER assign_nullable_flag ASSIGN expression {
+    | var_mutable_flag type_ident LBRACKET RBRACKET IDENTIFIER assign_nullable_flag ASSIGN expression {
     	$2->name_parts->push_back("[]");
         QualifiedName *name = new QualifiedName(new std::vector<std::string>({*$5}));
     	$$ = new VarDecl($2, name, $1, $6, $8);
@@ -299,7 +301,7 @@ var_decl:
 
     	printParseInfo("var_decl (array) (var_mutable_flag qualified_name LBRACKET RBRACKET IDENTIFIER assign", yylineno);
     }
-    | var_mutable_flag qualified_name LBRACKET expression RBRACKET IDENTIFIER assign_nullable_flag ASSIGN expression {
+    | var_mutable_flag type_ident LBRACKET expression RBRACKET IDENTIFIER assign_nullable_flag ASSIGN expression {
     	$2->name_parts->push_back("[]");
     	$$ = new VarDecl($2, new QualifiedName(new std::vector<std::string>({*$6})), $1, $6, $9, $4);
     	$$->size = $4;
@@ -323,7 +325,7 @@ assign_nullable_flag:
 ;
 
 extern_decl:
-    EXTERN FUN qualified_name LPAREN var_decl_list RPAREN qualified_name SEMICOLON {
+    EXTERN FUN qualified_name LPAREN var_decl_list RPAREN type_ident SEMICOLON {
         $$ = new ProtoDecl($7, $3, *$5);
         delete $5;
         $$->line = yylineno;
@@ -341,7 +343,7 @@ function_declaration:
         delete $4;
         printParseInfo("function_declaration (without return type)", yylineno);
     }
-    | FUN qualified_name LPAREN var_decl_list RPAREN qualified_name block  {
+    | FUN qualified_name LPAREN var_decl_list RPAREN type_ident block  {
         $$ = new FuncDecl($6, $2, *$4, $7);
         delete $4;
         $$->line = yylineno;
@@ -373,7 +375,7 @@ qualified_name:
         delete $1; // Clean up the string
         $$->line = yylineno;
 
-        printParseInfo("qualified_name (single IDENTIFIER)", yylineno);
+        printParseInfo(("qualified_name (single IDENTIFIER) | val -> " + $$->getName()).c_str(), yylineno);
     }
     | qualified_name DOT IDENTIFIER {
         $$ = $1;
@@ -381,10 +383,24 @@ qualified_name:
         delete $3; // Clean up the string
         $$->line = yylineno;
 
-        printParseInfo("qualified_name (nested)", yylineno);
+        printParseInfo(("qualified_name (nested) | val -> " + $$->getName()).c_str(), yylineno);
     }
 ;
 
+type_ident:
+    qualified_name {
+        $$ = $1;
+        $$->line = yylineno;
+
+        printParseInfo(("type_ident (qualified_name) | val -> " + $$->getName()).c_str(), yylineno);
+    }
+    | qualified_name TIMES {
+        $$ = $1;
+        $$->line = yylineno;
+        $$->name_parts->push_back("*");
+
+        printParseInfo(("type_ident (qualified_name TIMES) | val -> " + $$->getName()).c_str(), yylineno);
+    }
 
 binary_expression:
    expression binary_operator expression {
@@ -590,11 +606,11 @@ break_statement:
 ;
 
 for_var_decl:
-    qualified_name IDENTIFIER ASSIGN expression {
+    type_ident IDENTIFIER ASSIGN expression {
         $$ = new VarDecl($1, new QualifiedName(new std::vector<std::string>({*$2})), true, true, $4);
         printParseInfo("for_var_decl (qualified_name qualified_name IDENTIFIER ASSIGN expression)", yylineno);
     }
-    | qualified_name IDENTIFIER {
+    | type_ident IDENTIFIER {
         $$ = new VarDecl($1, new QualifiedName(new std::vector<std::string>({*$2})), true, true, nullptr);
         printParseInfo("for_var_decl (qualified_name qualified_name IDENTIFIER)", yylineno);
     }
@@ -631,7 +647,7 @@ assign_expr:
 ;
 
 array_assign_stmt:
-    qualified_name LBRACKET expression RBRACKET ASSIGN expression SEMICOLON {
+    type_ident LBRACKET expression RBRACKET ASSIGN expression SEMICOLON {
         $$ = new ArrayAssignExpr($1, $3, $6);
         $$->line = yylineno;
         printParseInfo("array_assign_expr", yylineno);

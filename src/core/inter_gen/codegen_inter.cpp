@@ -91,8 +91,8 @@ Value *QualifiedName::codeGen(inter_gen::InterGenContext *ctx)
     }
     // Check if the variable is declared in the current scope
     if (!ctx->getVal(getFirstName())) {
-        REPORT_ERROR("error at: " + ctx->sourcePath + ":" + std::to_string(this->line) + " \nUnknown variable name " +
-                         getFirstName(),
+        REPORT_ERROR("error at: " + ctx->sourcePath + ":" + std::to_string(ctx->currLine) +
+                         " \nUnknown variable name " + getFirstName(),
                      __FILE__, __LINE__);
         return nullptr;
     }
@@ -141,7 +141,9 @@ Value *handleStructName(const QualifiedName *name, inter_gen::InterGenContext *c
     } else {
         const AllocaInst *allocaInst = dyn_cast<AllocaInst>(ctx->locals()[name->getFirstName()].first);
         if (!allocaInst) {
-            REPORT_ERROR("Unknown variable name " + name->getFirstName(), __FILE__, __LINE__);
+            REPORT_ERROR("error at: " + ctx->sourcePath + ":" + std::to_string(ctx->currLine) +
+                             " \nUnknown variable name " + name->getFirstName(),
+                         __FILE__, __LINE__);
             return nullptr;
         }
         structName = dyn_cast<StructType>(allocaInst->getAllocatedType())->getStructName();
@@ -179,7 +181,9 @@ Value *handleStructName(const QualifiedName *name, inter_gen::InterGenContext *c
             // Update metadata for the nested struct
             metaData = ctx->structs[nestedStructType->getStructName().str()];
             if (!metaData) {
-                REPORT_ERROR("Unknown struct name " + str, __FILE__, __LINE__);
+                REPORT_ERROR("error at: " + ctx->sourcePath + ":" + std::to_string(ctx->currLine) +
+                                 " \nUnknown struct name " + str,
+                             __FILE__, __LINE__);
                 return nullptr; // Error: metadata for nested struct not
             }
         } else if (i == name->name_parts->size() - 1) {
@@ -191,7 +195,9 @@ Value *handleStructName(const QualifiedName *name, inter_gen::InterGenContext *c
             return BUILDER.CreateGEP(metaData->getFieldType(name->getName(i)), currentPtr,
                                      ConstantInt::get(Type::getInt32Ty(LLVMCTX), fieldIndex), name->getName(i));
         } else {
-            REPORT_ERROR("Unknown variable name " + name->getName(i), __FILE__, __LINE__);
+            REPORT_ERROR("error at: " + ctx->sourcePath + ":" + std::to_string(ctx->currLine) +
+                             " \nUnknown variable name " + name->getName(i),
+                         __FILE__, __LINE__);
         }
     }
     return nullptr;
@@ -216,7 +222,8 @@ Value *handleArgumentArrayExpr(const ArrayExpr *Expr, Value *arrVal, inter_gen::
             }
         }
         if (!baseType) {
-            REPORT_ERROR("Unknown base type", __FILE__, __LINE__);
+            REPORT_ERROR("error at: " + ctx->sourcePath + ":" + std::to_string(ctx->currLine) + " \nUnknown base type",
+                         __FILE__, __LINE__);
             return nullptr;
         }
 
@@ -240,7 +247,9 @@ Value *handleArgumentArrayExpr(const ArrayExpr *Expr, Value *arrVal, inter_gen::
 
         return BUILDER.CreateLoad(ptrType->getArrayElementType(), elementValue, "array_access_load");
     }
-    REPORT_ERROR("Variable must be of array type or pointerType", __FILE__, __LINE__);
+    REPORT_ERROR("error at: " + ctx->sourcePath + ":" + std::to_string(ctx->currLine) +
+                     " \nVariable must be of array type or pointerType",
+                 __FILE__, __LINE__);
     return nullptr;
 }
 
@@ -262,7 +271,9 @@ Value *handleAllocaArrayExpr(Value *arrVal, inter_gen::InterGenContext *ctx, Val
     }
     Type *arrType = arr->getAllocatedType();
     if (!llvm::isa<PointerType>(arrType)) {
-        REPORT_ERROR("Variable must be of array type", __FILE__, __LINE__);
+        REPORT_ERROR("error at: " + ctx->sourcePath + ":" + std::to_string(ctx->currLine) +
+                         " \nVariable must be of array type",
+                     __FILE__, __LINE__);
         return nullptr;
     }
 
@@ -285,17 +296,23 @@ Value *ArrayExpr::codeGen(inter_gen::InterGenContext *ctx)
     // Step 1: Generate code for the index Expression
     Value *indexValue = idx->codeGen(ctx);
     if (!indexValue) {
-        REPORT_ERROR("Error in generating code for the index Expression", __FILE__, __LINE__);
+        REPORT_ERROR("error at: " + ctx->sourcePath + ":" + std::to_string(ctx->currLine) +
+                         " \nError in generating code for the index Expression",
+                     __FILE__, __LINE__);
         return nullptr;
     }
     if (!llvm::isa<IntegerType>(indexValue->getType()) && !llvm::isa<ConstantInt>(indexValue) &&
         !llvm::isa<IntegerType>(indexValue->getType())) {
-        REPORT_ERROR("Index Expression must evaluate to an integer", __FILE__, __LINE__);
+        REPORT_ERROR("error at: " + ctx->sourcePath + ":" + std::to_string(ctx->currLine) +
+                         " \nIndex Expression must evaluate to an integer",
+                     __FILE__, __LINE__);
         return nullptr; // Error in generating code for the index
     }
     Value *arrVal = ctx->getVal(name->getName());
     if (!llvm::isa<AllocaInst>(arrVal) && !llvm::isa<Argument>(arrVal)) {
-        REPORT_ERROR("Mapped value must be an alloca instruction or argument", __FILE__, __LINE__);
+        REPORT_ERROR("error at: " + ctx->sourcePath + ":" + std::to_string(ctx->currLine) +
+                         " \nMapped value must be an alloca instruction or argument",
+                     __FILE__, __LINE__);
         return nullptr;
     }
 
@@ -306,7 +323,8 @@ Value *ArrayExpr::codeGen(inter_gen::InterGenContext *ctx)
         return handleAllocaArrayExpr(arrVal, ctx, indexValue);
     }
 
-    REPORT_ERROR("Unknown variable type", __FILE__, __LINE__);
+    REPORT_ERROR("error at: " + ctx->sourcePath + ":" + std::to_string(ctx->currLine) + " \nUnknown variable type",
+                 __FILE__, __LINE__);
     return nullptr;
 }
 
@@ -372,7 +390,9 @@ Value *BinaryExpr::codeGen(inter_gen::InterGenContext *ctx)
                 lhsVal = BUILDER.CreateSExtOrTrunc(lhsVal, rhsType, "sext_or_trunc");
             }
         } else {
-            REPORT_ERROR("Type mismatch in binary Expression", __FILE__, __LINE__);
+            REPORT_ERROR("error at: " + ctx->sourcePath + ":" + std::to_string(ctx->currLine) +
+                             " \nType mismatch in binary Expression",
+                         __FILE__, __LINE__);
             return nullptr;
         }
     }
@@ -464,7 +484,9 @@ Value *BinaryExpr::codeGen(inter_gen::InterGenContext *ctx)
     }
 
     default:
-        REPORT_ERROR("Unknown binary operator", __FILE__, __LINE__);
+        REPORT_ERROR("error at: " + ctx->sourcePath + ":" + std::to_string(ctx->currLine) +
+                         " \nUnknown binary operator",
+                     __FILE__, __LINE__);
         return nullptr;
     }
 }
@@ -501,13 +523,17 @@ Value *CallExpr::codeGen(inter_gen::InterGenContext *ctx)
     Function *calleeFun = MODULE->getFunction(callee->getName());
 
     if (calleeFun == nullptr) {
-        REPORT_ERROR("Unknown function referenced: " + callee->getName(), __FILE__, __LINE__);
+        REPORT_ERROR("error at: " + ctx->sourcePath + ":" + std::to_string(ctx->currLine) +
+                         " \nUnknown function referenced: " + callee->getName(),
+                     __FILE__, __LINE__);
         return nullptr;
     }
 
     // Check if the correct number of arguments are passed
     if (calleeFun->arg_size() != args.size()) {
-        REPORT_ERROR("Incorrect arguments passed", __FILE__, __LINE__);
+        REPORT_ERROR("error at: " + ctx->sourcePath + ":" + std::to_string(ctx->currLine) +
+                         " \nIncorrect arguments passed",
+                     __FILE__, __LINE__);
         return nullptr;
     }
 
@@ -516,9 +542,11 @@ Value *CallExpr::codeGen(inter_gen::InterGenContext *ctx)
         return res;
     }
 
-    const inter_gen::FunctionMetaData *funMetaData = ctx->getFunMetaData(callee->getName());
+    const inter_gen::FunctionMetaData *funMetaData = ctx->getFunMetaData(callee->getName(), ctx);
     if (funMetaData == nullptr) {
-        REPORT_ERROR("Unknown function referenced: " + callee->getName(), __FILE__, __LINE__);
+        REPORT_ERROR("error at: " + ctx->sourcePath + ":" + std::to_string(ctx->currLine) +
+                         " \nUnknown function referenced: " + callee->getName(),
+                     __FILE__, __LINE__);
         return nullptr;
     }
     // Generate code for each argument
@@ -537,7 +565,9 @@ Value *CallExpr::codeGen(inter_gen::InterGenContext *ctx)
             if (argType->isPointerTy()) {
                 expectDerefType_d->pop();
             }
-            REPORT_ERROR("Error in argument " + std::to_string(argIdx - 1), __FILE__, __LINE__);
+            REPORT_ERROR("error at: " + ctx->sourcePath + ":" + std::to_string(ctx->currLine) +
+                             " \nError in argument " + std::to_string(argIdx - 1),
+                         __FILE__, __LINE__);
             return nullptr;
         }
         if (argType->isPointerTy()) {
@@ -657,6 +687,7 @@ Function *ExternDecl::codeGen(inter_gen::InterGenContext *ctx)
 // and statements
 Value *Program::codeGen(inter_gen::InterGenContext *ctx)
 {
+    // get the package and setup the package directory
     ctx->currLine = this->line;
     Stmt *stmt = stmts->stmts.at(0);
     stmt->codeGen(ctx);
@@ -664,8 +695,13 @@ Value *Program::codeGen(inter_gen::InterGenContext *ctx)
     util::create_package_dir(util::getStrFromVec(*packageStmt->name->name_parts, "."));
     stmts->stmts.erase(stmts->stmts.begin());
 
+    const auto stmtRes = stmts->codeGen(ctx);
+
     if (ctx->package == "dap.runtime.sys" && ctx->sourcePath.ends_with("/sysFun.dap")) {
         genSysFun(ctx);
+    }
+
+    if (ctx->package == "dap.std.type" && ctx->sourcePath.ends_with("/convert.dap")) {
         genCharToInt(ctx);
         genIntToChar(ctx);
         genCharToStr(ctx);
@@ -673,7 +709,7 @@ Value *Program::codeGen(inter_gen::InterGenContext *ctx)
     }
 
     // Generate code for program statements
-    return stmts->codeGen(ctx);
+    return stmtRes;
 }
 
 // IfStmt: Generates code for an if statement
@@ -694,7 +730,9 @@ Value *IfStmt::codeGen(inter_gen::InterGenContext *ctx)
     } else if (condType->isPointerTy() || condType->isArrayTy()) {
         condVal = BUILDER.CreateICmpNE(condVal, ConstantPointerNull::get(cast<PointerType>(condType)), "ifcond");
     } else {
-        REPORT_ERROR("Unsupported type for conditional Expression", __FILE__, __LINE__);
+        REPORT_ERROR("error at: " + ctx->sourcePath + ":" + std::to_string(ctx->currLine) +
+                         " \nUnsupported type for conditional Expression",
+                     __FILE__, __LINE__);
         return nullptr;
     }
 
@@ -709,8 +747,8 @@ Value *IfStmt::codeGen(inter_gen::InterGenContext *ctx)
     // Then block: Execute the body of the if statement
     BUILDER.SetInsertPoint(thenBB);
     ctx->pushBlock(thenBB);
-    Value *thenBody = body->codeGen(ctx);
-    BasicBlock::iterator thenBBEndIter = thenBB->end();
+    const auto thenBody = body->codeGen(ctx);
+    auto thenBBEndIter = thenBB->end();
     if ((--thenBBEndIter)->getOpcode() != Instruction::Br && thenBBEndIter->getOpcode() != Instruction::Ret) {
         BUILDER.CreateBr(mergeBB); // Unconditionally branch to merge
     }
@@ -720,7 +758,7 @@ Value *IfStmt::codeGen(inter_gen::InterGenContext *ctx)
     BUILDER.SetInsertPoint(elseBB);
     ctx->pushBlock(elseBB);
     Value *elseBody = else_body ? else_body->codeGen(ctx) : nullptr;
-    BasicBlock::iterator elseBBEndIter = elseBB->end();
+    auto elseBBEndIter = elseBB->end();
     if ((--elseBBEndIter)->getOpcode() != Instruction::Br && elseBBEndIter->getOpcode() != Instruction::Ret) {
         BUILDER.CreateBr(mergeBB); // Unconditionally branch to merge
     }
@@ -785,7 +823,9 @@ Value *ForStmt::codeGen(inter_gen::InterGenContext *ctx)
         brCond = BUILDER.CreateICmp(CmpInst::ICMP_NE, condVal, ConstantPointerNull::get(PointerType::get(LLVMCTX, 0)));
         break;
     default:
-        REPORT_ERROR("Unknown type for conditional Expression", __FILE__, __LINE__);
+        REPORT_ERROR("error at: " + ctx->sourcePath + ":" + std::to_string(ctx->currLine) +
+                         " \nUnknown type for conditional Expression",
+                     __FILE__, __LINE__);
         return nullptr;
     }
 
@@ -822,13 +862,16 @@ Value *VarDecl::codeGen(inter_gen::InterGenContext *ctx)
     ctx->setDefiningVariable(true);
     // If no block exists, it's a global variable
     if (!ctx->hasBlock() && !ctx->isDefStruct()) {
+
+        // TODO support more types of global variable
         assert(init && "No init in Variable Declaration!");
         auto *constant = dyn_cast<Constant>(init->codeGen(ctx));
 
         // Handle global variables, assuming non-pointer types
         if (util::typeOf(*type, ctx, size) != Type::getInt8Ty(LLVMCTX)) {
             ctx->setDefiningVariable(false);
-            return new GlobalVariable(*MODULE, util::typeOf(*type, ctx, size), false, GlobalValue::InternalLinkage,
+            string name_ = name->getName();
+            return new GlobalVariable(*MODULE, util::typeOf(*type, ctx, size), false, GlobalValue::CommonLinkage,
                                       constant, name->getName());
         }
     }
@@ -908,13 +951,17 @@ Value *IncludeStmt::codeGen(inter_gen::InterGenContext *ctx)
     ctx->currLine = this->line;
     const std::string target = util::getStrFromVec(*path->name_parts, ".");
     if (!moduleMetadataMap_d->contains(target)) {
-        REPORT_ERROR("Include statement failed: " + target, __FILE__, __LINE__);
+        REPORT_ERROR("error at: " + ctx->sourcePath + ":" + std::to_string(ctx->currLine) +
+                         " \nInclude statement failed: " + target,
+                     __FILE__, __LINE__);
+        return nullptr;
     }
 
-    const auto moduleMetaData = moduleMetadataMap_d->at(target);
-    for (const auto fun : moduleMetaData->getFunctions()) {
-        Function::Create(fun->getType(), Function::ExternalLinkage, fun->getName(), MODULE);
-        ctx->metaData->addFunction(fun);
+    for (const auto moduleMetaData = moduleMetadataMap_d->at(target); const auto fun : moduleMetaData->getFunctions()) {
+        if (!ctx->metaData->getFunction(fun->getName())) {
+            Function::Create(fun->getType(), Function::ExternalLinkage, fun->getName(), MODULE);
+            ctx->metaData->addFunction(fun);
+        }
     }
     return nullptr;
 }
@@ -967,20 +1014,32 @@ Value *handleStructAssign(const QualifiedName *var, Expr *val, inter_gen::InterG
 Value *AssignExpr::codeGen(inter_gen::InterGenContext *ctx)
 {
     ctx->currLine = this->line;
+
+    if (lhs->name_parts->size() > 1) {
+        return handleStructAssign(lhs, rhs, ctx);
+    }
+
     // check whether the value can be assigned or a value can be assigned to null
     auto [val, valMetaData] = ctx->getValWithMetadata(lhs->getName());
+
+    if (!val) {
+        REPORT_ERROR("error at: " + ctx->sourcePath + ":" + std::to_string(ctx->currLine) +
+                         " \ncan not find value: " + lhs->getName(),
+                     __FILE__, __LINE__);
+        return nullptr;
+    }
     if (!valMetaData->isMutable() && !ctx->isDefiningVariable()) {
-        REPORT_ERROR("can not assign to a immutable value: " + lhs->getName(), __FILE__, __LINE__);
+        REPORT_ERROR("error at: " + ctx->sourcePath + ":" + std::to_string(ctx->currLine) +
+                         " \ncan not assign to a immutable value: " + lhs->getName(),
+                     __FILE__, __LINE__);
         return nullptr;
     }
 
     if (!valMetaData->isNullable() && isNullable(rhs, ctx)) {
-        REPORT_ERROR("can not assign to a non-nullable value: " + lhs->getName(), __FILE__, __LINE__);
+        REPORT_ERROR("error at: " + ctx->sourcePath + ":" + std::to_string(ctx->currLine) +
+                         " \ncan not assign to a non-nullable value: " + lhs->getName(),
+                     __FILE__, __LINE__);
         return nullptr;
-    }
-
-    if (lhs->name_parts->size() > 1) {
-        return handleStructAssign(lhs, rhs, ctx);
     }
 
     // Store the result of the right-hand side Expression in the left-hand side
@@ -993,13 +1052,17 @@ Value *ArrayAssignExpr::codeGen(inter_gen::InterGenContext *ctx)
     ctx->currLine = this->line;
     Value *base = lhs->codeGen(ctx);
     if (!base) {
-        REPORT_ERROR("Variable not found in local context", __FILE__, __LINE__);
+        REPORT_ERROR("error at: " + ctx->sourcePath + ":" + std::to_string(ctx->currLine) +
+                         " \nVariable not found in local context",
+                     __FILE__, __LINE__);
         return nullptr;
     }
 
     Value *idxVal = idx->codeGen(ctx);
     if (!idxVal) {
-        REPORT_ERROR("Index value not found in local context", __FILE__, __LINE__);
+        REPORT_ERROR("error at: " + ctx->sourcePath + ":" + std::to_string(ctx->currLine) +
+                         " \nIndex value not found in local context",
+                     __FILE__, __LINE__);
         return nullptr;
     }
     if (llvm::isa<PointerType>(base->getType())) {
@@ -1018,7 +1081,7 @@ Value *handleStructAssign(const QualifiedName *var, Expr *val, inter_gen::InterG
 {
     Value *currentPtr = nullptr;
     // Get the pointer to the struct
-    if (Value *local = ctx->locals()[var->getFirstName()].first) {
+    if (Value *local = ctx->getVal(var->getFirstName())) {
         // if it is a pointer, then load it
         if (llvm::isa<StructType>(local->getType())) {
             currentPtr = local;
@@ -1026,10 +1089,13 @@ Value *handleStructAssign(const QualifiedName *var, Expr *val, inter_gen::InterG
             currentPtr = gepMapping->at(local);
         } else {
             // not a pointer, just get the val
-            currentPtr = ctx->locals()[var->getFirstName()].first;
+            currentPtr = ctx->getVal(var->getFirstName());
         }
     } else {
-        REPORT_ERROR("Variable not found in local context", __FILE__, __LINE__);
+        REPORT_ERROR("error at: " + ctx->sourcePath + ":" + std::to_string(ctx->currLine) +
+                         " \nVariable not found in local context",
+                     __FILE__, __LINE__);
+        return nullptr;
     }
 
     assert(currentPtr && "currentPtr is null");
@@ -1097,7 +1163,9 @@ Value *UnaryExpr::codeGen(inter_gen::InterGenContext *ctx)
             operVal = BUILDER.CreateLoad(expectDerefType_d->top(), operVal, "dereference");
             return operVal;
         }
-        REPORT_ERROR("Invalid pointer dereference", __FILE__, __LINE__);
+        REPORT_ERROR("error at: " + ctx->sourcePath + ":" + std::to_string(ctx->currLine) +
+                         " \nInvalid pointer dereference",
+                     __FILE__, __LINE__);
     case MINUS:
         return BUILDER.CreateNeg(operVal, "negate");
     case BIT_AND:
@@ -1166,9 +1234,11 @@ Value *StructDecl::codeGen(inter_gen::InterGenContext *ctx)
 
     std::vector<Type *> fieldTypes;
     fieldTypes.reserve(fields.size());
+    // Generate the types of the fields and the metadata
     for (const auto &field : fields) {
         fieldTypes.push_back(util::typeOf(*field->getType(), ctx));
-        smd->addField(field->getName(), fieldTypes.back());
+        smd->addField(field->getName(), new inter_gen::VariableMetaData(field->getName(), fieldTypes.back(),
+                                                                        field->is_mutable, field->is_nullable));
     }
 
     StructType *dStruct = StructType::create(LLVMCTX, fieldTypes, name->getName());
@@ -1191,15 +1261,33 @@ Value *StructDecl::codeGen(inter_gen::InterGenContext *ctx)
 
 namespace inter_gen
 {
-FunctionMetaData *InterGenContext::getFunMetaData(const std::string &name) const
+FunctionMetaData *InterGenContext::getFunMetaData(const std::string &name, const InterGenContext *ctx) const
 {
     for (const auto &fun : metaData->getFunctions()) {
         if (fun->getName() == name) {
             return fun;
         }
     }
-    REPORT_ERROR("Function " + name + " not found", __FILE__, __LINE__);
+    REPORT_ERROR("error at: " + ctx->sourcePath + ":" + std::to_string(ctx->currLine) + " \nFunction " + name +
+                     " not found",
+                 __FILE__, __LINE__);
     return nullptr;
+}
+
+std::pair<Value *, VariableMetaData *> InterGenContext::getValWithMetadata(const parser::QualifiedName *name)
+{
+    int idx = 0;
+    std::pair<Value *, VariableMetaData *> val_with_metadata = this->getValWithMetadata(name->getName(idx));
+    while (val_with_metadata.first && val_with_metadata.second) {
+        if (name->name_parts->size() == idx + 1) {
+            return val_with_metadata;
+        }
+        idx++;
+    }
+    {
+        REPORT_ERROR(errMsg("Value not found" + name->getName()), __FILE__, __LINE__);
+    }
+    return {nullptr, nullptr};
 }
 
 void InterGenContext::genIR(parser::Program *program)
@@ -1292,7 +1380,7 @@ void InterGenContext::genExec(parser::Program *program)
 
     // Create the MCJIT execution engine
     std::unique_ptr<Module> modulePtr(module);
-    std::unique_ptr<SectionMemoryManager> mem_mgr = std::make_unique<SectionMemoryManager>();
+    auto mem_mgr = std::make_unique<SectionMemoryManager>();
 
     // Save the generated code to a file
     std::error_code EC;

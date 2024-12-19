@@ -24,6 +24,7 @@ void dap::mech_gen::execGen(const std::set<inter_gen::IncludeGraphNode *> &map)
 
     std::string files = util::getStrFromVec(*filesToCompile, " ");
     files.append(" ").append(buildDir).append("dap/runtime/asm/_start.o ");
+    REPORT_DEBUG_MSG("Compiling with command: " + ("ld " + files + arg + " -o " + targetExecName + " "));
     system(("ld " + files + arg + " -o " + targetExecName + " ").c_str());
 }
 

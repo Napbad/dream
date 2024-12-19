@@ -3,6 +3,20 @@ package dap.runtime.mem;
 include dap.runtime.sys.sysFun;
 
 struct block_d {
-    var int pointer;
+    var int size;
+    var byte free;
+    var block_d* next;
 };
 
+
+fun malloc(imt int size) int {
+    if size == 0 {
+      return 0;
+    }
+
+    imt int ptr = sbrk(size);
+    if ptr == -1 {
+      return 0;
+    }
+    return ptr;
+}
