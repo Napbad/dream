@@ -10,6 +10,7 @@
 #include <string>
 #include <utility>
 #include <vector>
+#include <iostream>
 
 #include "node_meta_data.h"
 #include "src/core/inter_gen/codegen_inter.h"
@@ -48,7 +49,7 @@ class Node
     virtual bool isa(NodeMetaDataType type);
     virtual std::string toString()
     {
-        return "statement: common";
+        return "";
     }
 };
 
@@ -73,6 +74,7 @@ class QualifiedName final : public Expr
     }
     explicit QualifiedName(std::string names) : name_parts(new std::vector{std::move(names)})
     {
+        std::cout << "init qualifiedName with: " << name_parts->at(0) << std::endl;
     }
 
     [[nodiscard]] std::string getName() const
@@ -125,7 +127,7 @@ class StringExpr final : public Expr
   public:
     std::string value;
 
-    explicit StringExpr(std::string value) : value(std::move(value))
+    explicit StringExpr(std::string &value) : value(std::move(value))
     {
     }
 
@@ -417,6 +419,24 @@ class BreakStmt final : public Stmt
     bool isa(NodeMetaDataType type) override;
 };
 
+class DeleteStmt final : public Stmt
+{
+  public:
+    Expr *expr;
+    DeleteStmt() : expr(nullptr)
+    {
+    }
+    explicit DeleteStmt(Expr *expr) : expr(expr)
+    {
+    }
+    ~DeleteStmt() override
+    {
+        delete expr;
+    }
+    llvm::Value *codeGen(inter_gen::InterGenContext *ctx) override;
+    bool isa(NodeMetaDataType type) override;
+};
+
 class VarDecl final : public Stmt
 {
   public:
@@ -536,11 +556,12 @@ class IfStmt final : public Stmt
     Expr *cond;
     BlockStmt *body;
     BlockStmt *else_body;
+    IfStmt *elseIf;
 
     std::vector<Stmt *> *elif_stmts{};
 
-    IfStmt(Expr *cond, BlockStmt *body, BlockStmt *else_body = nullptr, std::vector<Stmt *> *elif_stmts = {})
-        : cond(cond), body(body), else_body(else_body)
+    IfStmt(Expr *cond, BlockStmt *body, BlockStmt *else_body = nullptr, IfStmt *elifStmt = {})
+        : cond(cond), body(body), else_body(else_body), elseIf(elifStmt)
     {
     }
 

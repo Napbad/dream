@@ -653,6 +653,11 @@ Function *FuncDecl::codeGen(inter_gen::InterGenContext *ctx)
         argVal->setName(param->getName());
     }
 
+    if (fun->getName() == "main") {
+        ctx->setMainFun(fun);
+
+    }
+
     // Generate the function body
     body->codeGen(ctx);
     if (!blockMappingRet_d->contains(bblock)) {
@@ -871,8 +876,9 @@ Value *VarDecl::codeGen(inter_gen::InterGenContext *ctx)
         if (util::typeOf(*type, ctx, size) != Type::getInt8Ty(LLVMCTX)) {
             ctx->setDefiningVariable(false);
             string name_ = name->getName();
-            return new GlobalVariable(*MODULE, util::typeOf(*type, ctx, size), false, GlobalValue::CommonLinkage,
-                                      constant, name->getName());
+            const char * c_str = name_.c_str();
+            return new GlobalVariable(*MODULE, util::typeOf(*type, ctx, size), false, GlobalValue::InternalLinkage,
+                                      constant, c_str);
         }
     }
 
@@ -1257,6 +1263,11 @@ Value *StructDecl::codeGen(inter_gen::InterGenContext *ctx)
 
     return globalStruct; // Return the global variable as Value*
 }
+
+Value *DeleteStmt::codeGen(inter_gen::InterGenContext *ctx)
+{
+    return ctx->builder.CreateCall(ctx->module->getFunction("delete"), {this->expr->codeGen(ctx)});
+}
 } // namespace parser
 
 namespace inter_gen
@@ -1456,8 +1467,13 @@ Value *InterGenContext::getVal(const std::string &name)
         blocks.pop();
     }
 
-    if (module->getGlobalVariable(name)) {
-        return module->getGlobalVariable(name);
+    while (!tmp.empty()) {
+        blocks.push(tmp.top());
+        tmp.pop();
+    }
+
+    if (this->module->getGlobalVariable(name, true)) {
+        return this->module->getGlobalVariable(name, true);
     }
 
     return nullptr;

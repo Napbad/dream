@@ -1,11 +1,17 @@
 %{
 #include "node.h"
 #include "src/core/parser/parser.hpp"
+#include "src/core/common/define_d.h"
 #include <string>
 #include <cstring>
 #include "src/core/utilities/file_util.h"
 
-#define SAVE_TOKEN  yylval.string = new std::string(yytext, yyleng)
+#define SAVE_TOKEN  yylval.string = new std::string(yytext, yyleng); \
+    std::cout << "Token: " << yytext << " size: " << std::to_string(yyleng) << std::endl;\
+    for (int i = 0;i < 2147483647; ++i ) { \
+        if (yytext[i] != '\0') { yytext[i] = '\0'; } \
+        else { break; }\
+    }
 #define TOKEN(t)    (yylval.token = t)
 
 int llcolumn = 0;
@@ -16,8 +22,44 @@ std::string *handle_string_literal(const char *str) {
     return result;
 }
 
-// If defined, output the parse info, with line number, and the token recognized
 
+namespace dap::parser {
+
+std::string getOperatorString(int op) {
+    switch (op) {
+        case PLUS:         return "+";
+        case MINUS:        return "-";
+        case TIMES:        return "*";
+        case DIVIDE:       return "/";
+        case MOD:          return "%";
+        case LT:           return "<";
+        case LE:           return "<=";
+        case GT:           return ">";
+        case GE:           return ">=";
+        case EQ:           return "==";
+        case NE:           return "!=";
+        case AND:          return "&&";
+        case OR:           return "||";
+        case NOT:          return "!";
+        case XOR:          return "^";
+        case UMINUS:       return "-"; // or could be represented differently if needed
+        case UPLUS:        return "+"; // or could be represented differently if needed
+        case PLUS_ASSIGN:  return "+=";
+        case MINUS_ASSIGN: return "-=";
+        case TIMES_ASSIGN: return "*=";
+        case DIVIDE_ASSIGN:return "/=";
+        case MOD_ASSIGN:   return "%=";
+        case LSHIFT:       return "<<";
+        case RSHIFT:       return ">>";
+        case URSHIFT:      return ">>>"; // Assuming this is what URSHIFT represents
+        case BIT_AND:      return "&";
+        default:           return "Unknown operator";
+    }
+}
+
+}
+
+// If defined, output the parse info, with line number, and the token recognized
 void printTokenInfo(int token, int lineNumber, const std::string& value = "") {
 #ifdef PARSE_DBG
     const char* tokenName = nullptr;

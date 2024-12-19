@@ -164,4 +164,9 @@ bool StructDecl::isa(const NodeMetaDataType type)
     return type == NodeMetaDataType::StructDecl;
 }
 
+bool DeleteStmt::isa(NodeMetaDataType type)
+{
+    return type == NodeMetaDataType::DeleteStmt;
+}
+
 } // namespace dap::parser

@@ -138,6 +138,7 @@ int main(const int argc, char **argv)
                 continue;
             }
 #ifdef D_DEBUG
+            LOG_DEBUG("\n\n====current parsing====");
             std::string info = "Parsing file: " + file;
             LOG_DEBUG(info);
 #endif

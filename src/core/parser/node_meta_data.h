@@ -44,6 +44,7 @@ enum class NodeMetaDataType {
     IfStmt,
     ElifStmt,
     ForStmt,
+    DeleteStmt,
     StructDecl,
 };
 

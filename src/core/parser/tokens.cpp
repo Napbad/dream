@@ -522,11 +522,17 @@ char *yytext;
 #line 2 "./src/core/parser/tokens.l"
 #include "node.h"
 #include "src/core/parser/parser.hpp"
+#include "src/core/common/define_d.h"
 #include <string>
 #include <cstring>
 #include "src/core/utilities/file_util.h"
 
-#define SAVE_TOKEN  yylval.string = new std::string(yytext, yyleng)
+#define SAVE_TOKEN  yylval.string = new std::string(yytext, yyleng); \
+    std::cout << "Token: " << yytext << " size: " << std::to_string(yyleng) << std::endl;\
+    for (int i = 0;i < 2147483647; ++i ) { \
+        if (yytext[i] != '\0') { yytext[i] = '\0'; } \
+        else { break; }\
+    }
 #define TOKEN(t)    (yylval.token = t)
 
 int llcolumn = 0;
@@ -537,8 +543,44 @@ std::string *handle_string_literal(const char *str) {
     return result;
 }
 
-// If defined, output the parse info, with line number, and the token recognized
 
+namespace dap::parser {
+
+std::string getOperatorString(int op) {
+    switch (op) {
+        case PLUS:         return "+";
+        case MINUS:        return "-";
+        case TIMES:        return "*";
+        case DIVIDE:       return "/";
+        case MOD:          return "%";
+        case LT:           return "<";
+        case LE:           return "<=";
+        case GT:           return ">";
+        case GE:           return ">=";
+        case EQ:           return "==";
+        case NE:           return "!=";
+        case AND:          return "&&";
+        case OR:           return "||";
+        case NOT:          return "!";
+        case XOR:          return "^";
+        case UMINUS:       return "-"; // or could be represented differently if needed
+        case UPLUS:        return "+"; // or could be represented differently if needed
+        case PLUS_ASSIGN:  return "+=";
+        case MINUS_ASSIGN: return "-=";
+        case TIMES_ASSIGN: return "*=";
+        case DIVIDE_ASSIGN:return "/=";
+        case MOD_ASSIGN:   return "%=";
+        case LSHIFT:       return "<<";
+        case RSHIFT:       return ">>";
+        case URSHIFT:      return ">>>"; // Assuming this is what URSHIFT represents
+        case BIT_AND:      return "&";
+        default:           return "Unknown operator";
+    }
+}
+
+}
+
+// If defined, output the parse info, with line number, and the token recognized
 void printTokenInfo(int token, int lineNumber, const std::string& value = "") {
 #ifdef PARSE_DBG
     const char* tokenName = nullptr;
@@ -615,9 +657,9 @@ void printTokenInfo(int token, int lineNumber, const std::string& value = "") {
 #endif
 
 }
-#line 618 "./src/core/parser/tokens.cpp"
+#line 660 "./src/core/parser/tokens.cpp"
 /* Define the tokens */
-#line 620 "./src/core/parser/tokens.cpp"
+#line 662 "./src/core/parser/tokens.cpp"
 
 #define INITIAL 0
 
@@ -834,10 +876,10 @@ YY_DECL
 		}
 
 	{
-#line 102 "./src/core/parser/tokens.l"
+#line 144 "./src/core/parser/tokens.l"
 
 
-#line 840 "./src/core/parser/tokens.cpp"
+#line 882 "./src/core/parser/tokens.cpp"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -896,288 +938,288 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 104 "./src/core/parser/tokens.l"
+#line 146 "./src/core/parser/tokens.l"
 { printTokenInfo(INCLUDE, yylineno); llcolumn += strlen("include"); return INCLUDE; }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 105 "./src/core/parser/tokens.l"
+#line 147 "./src/core/parser/tokens.l"
 { printTokenInfo(PACKAGE, yylineno); llcolumn += strlen("package"); return PACKAGE; }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 107 "./src/core/parser/tokens.l"
+#line 149 "./src/core/parser/tokens.l"
 { printTokenInfo(IF, yylineno); llcolumn += strlen("if"); return IF; }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 108 "./src/core/parser/tokens.l"
+#line 150 "./src/core/parser/tokens.l"
 { printTokenInfo(ELSE, yylineno); llcolumn += strlen("else"); return ELSE; }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 109 "./src/core/parser/tokens.l"
+#line 151 "./src/core/parser/tokens.l"
 { printTokenInfo(ELIF, yylineno); llcolumn += strlen("elif"); return ELIF; }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 110 "./src/core/parser/tokens.l"
+#line 152 "./src/core/parser/tokens.l"
 { printTokenInfo(FOR, yylineno); llcolumn += strlen("for"); return FOR; }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 111 "./src/core/parser/tokens.l"
+#line 153 "./src/core/parser/tokens.l"
 { printTokenInfo(RETURN, yylineno); llcolumn += strlen("return"); return RETURN; }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 112 "./src/core/parser/tokens.l"
+#line 154 "./src/core/parser/tokens.l"
 { printTokenInfo(FUN, yylineno); llcolumn += strlen("fun"); return FUN; }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 113 "./src/core/parser/tokens.l"
+#line 155 "./src/core/parser/tokens.l"
 { printTokenInfo(VAR, yylineno); llcolumn += strlen("var"); return VAR; }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 114 "./src/core/parser/tokens.l"
+#line 156 "./src/core/parser/tokens.l"
 { printTokenInfo(IMT, yylineno); llcolumn += strlen("imt"); return IMT; }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 115 "./src/core/parser/tokens.l"
+#line 157 "./src/core/parser/tokens.l"
 { printTokenInfo(EXTERN, yylineno); llcolumn += strlen("extern"); return EXTERN; }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 116 "./src/core/parser/tokens.l"
+#line 158 "./src/core/parser/tokens.l"
 { printTokenInfo(STRUCT, yylineno); llcolumn += strlen("struct"); return STRUCT; }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 117 "./src/core/parser/tokens.l"
+#line 159 "./src/core/parser/tokens.l"
 { printTokenInfo(BREAK, yylineno); llcolumn += strlen("break"); return BREAK; }
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 118 "./src/core/parser/tokens.l"
+#line 160 "./src/core/parser/tokens.l"
 { printTokenInfo(NULLABLE, yylineno); llcolumn += strlen("?"); return NULLABLE; }
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 119 "./src/core/parser/tokens.l"
+#line 161 "./src/core/parser/tokens.l"
 { printTokenInfo(NON_NULLABLE, yylineno); llcolumn += strlen("!"); return NON_NULLABLE; }
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 121 "./src/core/parser/tokens.l"
+#line 163 "./src/core/parser/tokens.l"
 { printTokenInfo(ASSIGN, yylineno); llcolumn += strlen("="); return ASSIGN; }
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 122 "./src/core/parser/tokens.l"
+#line 164 "./src/core/parser/tokens.l"
 { printTokenInfo(PLUS, yylineno); llcolumn += strlen("+"); return PLUS; }
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 123 "./src/core/parser/tokens.l"
+#line 165 "./src/core/parser/tokens.l"
 { printTokenInfo(MINUS, yylineno); llcolumn += strlen("-"); return MINUS; }
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 124 "./src/core/parser/tokens.l"
+#line 166 "./src/core/parser/tokens.l"
 { printTokenInfo(TIMES, yylineno); llcolumn += strlen("*"); return TIMES; }
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 125 "./src/core/parser/tokens.l"
+#line 167 "./src/core/parser/tokens.l"
 { printTokenInfo(DIVIDE, yylineno); llcolumn += strlen("/"); return DIVIDE; }
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 126 "./src/core/parser/tokens.l"
+#line 168 "./src/core/parser/tokens.l"
 { printTokenInfo(MOD, yylineno); llcolumn += strlen("%"); return MOD; }
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 127 "./src/core/parser/tokens.l"
+#line 169 "./src/core/parser/tokens.l"
 { printTokenInfo(INC, yylineno); llcolumn += strlen("++"); return INC; }
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 128 "./src/core/parser/tokens.l"
+#line 170 "./src/core/parser/tokens.l"
 { printTokenInfo(DEC, yylineno); llcolumn += strlen("--"); return DEC; }
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 129 "./src/core/parser/tokens.l"
+#line 171 "./src/core/parser/tokens.l"
 { printTokenInfo(PLUS_ASSIGN, yylineno); llcolumn += strlen("+="); return PLUS_ASSIGN; }
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 130 "./src/core/parser/tokens.l"
+#line 172 "./src/core/parser/tokens.l"
 { printTokenInfo(MINUS_ASSIGN, yylineno); llcolumn += strlen("-="); return MINUS_ASSIGN; }
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 131 "./src/core/parser/tokens.l"
+#line 173 "./src/core/parser/tokens.l"
 { printTokenInfo(TIMES_ASSIGN, yylineno); llcolumn += strlen("*="); return TIMES_ASSIGN; }
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 132 "./src/core/parser/tokens.l"
+#line 174 "./src/core/parser/tokens.l"
 { printTokenInfo(DIVIDE_ASSIGN, yylineno); llcolumn += strlen("/="); return DIVIDE_ASSIGN; }
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 133 "./src/core/parser/tokens.l"
+#line 175 "./src/core/parser/tokens.l"
 { printTokenInfo(MOD_ASSIGN, yylineno); llcolumn += strlen("%="); return MOD_ASSIGN; }
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 134 "./src/core/parser/tokens.l"
+#line 176 "./src/core/parser/tokens.l"
 { printTokenInfo(LSHIFT, yylineno); llcolumn += strlen("<<"); return LSHIFT; }
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 135 "./src/core/parser/tokens.l"
+#line 177 "./src/core/parser/tokens.l"
 { printTokenInfo(RSHIFT, yylineno); llcolumn += strlen(">>"); return RSHIFT; }
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 136 "./src/core/parser/tokens.l"
+#line 178 "./src/core/parser/tokens.l"
 { printTokenInfo(URSHIFT, yylineno); llcolumn += strlen(">>>"); return URSHIFT; }
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 137 "./src/core/parser/tokens.l"
+#line 179 "./src/core/parser/tokens.l"
 { printTokenInfo(XOR, yylineno); llcolumn += strlen("^"); return XOR; }
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 139 "./src/core/parser/tokens.l"
+#line 181 "./src/core/parser/tokens.l"
 { printTokenInfo(SEMICOLON, yylineno); llcolumn += strlen(";"); return SEMICOLON; }
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 140 "./src/core/parser/tokens.l"
+#line 182 "./src/core/parser/tokens.l"
 { printTokenInfo(COMMA, yylineno); llcolumn += strlen(","); return COMMA; }
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 141 "./src/core/parser/tokens.l"
+#line 183 "./src/core/parser/tokens.l"
 { printTokenInfo(LPAREN, yylineno); llcolumn += strlen("("); return LPAREN; }
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 142 "./src/core/parser/tokens.l"
+#line 184 "./src/core/parser/tokens.l"
 { printTokenInfo(RPAREN, yylineno); llcolumn += strlen(")"); return RPAREN; }
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 143 "./src/core/parser/tokens.l"
+#line 185 "./src/core/parser/tokens.l"
 { printTokenInfo(LBRACE, yylineno); llcolumn += strlen("{"); return LBRACE; }
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 144 "./src/core/parser/tokens.l"
+#line 186 "./src/core/parser/tokens.l"
 { printTokenInfo(RBRACE, yylineno); llcolumn += strlen("}"); return RBRACE; }
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 146 "./src/core/parser/tokens.l"
+#line 188 "./src/core/parser/tokens.l"
 { printTokenInfo(LBRACKET, yylineno); llcolumn += strlen("["); return LBRACKET; } // Added
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 147 "./src/core/parser/tokens.l"
+#line 189 "./src/core/parser/tokens.l"
 { printTokenInfo(RBRACKET, yylineno); llcolumn += strlen("]"); return RBRACKET; } // Added
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 149 "./src/core/parser/tokens.l"
+#line 191 "./src/core/parser/tokens.l"
 { printTokenInfo(DOT, yylineno); llcolumn += strlen("."); return DOT; }
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 151 "./src/core/parser/tokens.l"
+#line 193 "./src/core/parser/tokens.l"
 { printTokenInfo(LT, yylineno); llcolumn += strlen("<"); return LT; }
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 152 "./src/core/parser/tokens.l"
+#line 194 "./src/core/parser/tokens.l"
 { printTokenInfo(LE, yylineno); llcolumn += strlen("<="); return LE; }
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 153 "./src/core/parser/tokens.l"
+#line 195 "./src/core/parser/tokens.l"
 { printTokenInfo(GT, yylineno); llcolumn += strlen(">"); return GT; }
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 154 "./src/core/parser/tokens.l"
+#line 196 "./src/core/parser/tokens.l"
 { printTokenInfo(GE, yylineno); llcolumn += strlen(">="); return GE; }
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 155 "./src/core/parser/tokens.l"
+#line 197 "./src/core/parser/tokens.l"
 { printTokenInfo(EQ, yylineno); llcolumn += strlen("=="); return EQ; }
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 156 "./src/core/parser/tokens.l"
+#line 198 "./src/core/parser/tokens.l"
 { printTokenInfo(NE, yylineno); llcolumn += strlen("!="); return NE; }
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 157 "./src/core/parser/tokens.l"
+#line 199 "./src/core/parser/tokens.l"
 { printTokenInfo(AND, yylineno); llcolumn += strlen("&&"); return AND; }
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 158 "./src/core/parser/tokens.l"
+#line 200 "./src/core/parser/tokens.l"
 { printTokenInfo(OR, yylineno); llcolumn += strlen("||"); return OR; }
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
-#line 159 "./src/core/parser/tokens.l"
+#line 201 "./src/core/parser/tokens.l"
 { printTokenInfo(NOT, yylineno); llcolumn += strlen("~"); return NOT; }
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
-#line 161 "./src/core/parser/tokens.l"
+#line 203 "./src/core/parser/tokens.l"
 { printTokenInfo(BIT_AND, yylineno); llcolumn += strlen("&"); return BIT_AND; }
 	YY_BREAK
 case 52:
 YY_RULE_SETUP
-#line 163 "./src/core/parser/tokens.l"
+#line 205 "./src/core/parser/tokens.l"
 { SAVE_TOKEN; printTokenInfo(IDENTIFIER, yylineno, *yylval.string); llcolumn += yyleng; return IDENTIFIER; }
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
-#line 164 "./src/core/parser/tokens.l"
+#line 206 "./src/core/parser/tokens.l"
 { SAVE_TOKEN; printTokenInfo(DOUBLE_TOKEN, yylineno, *yylval.string); llcolumn += yyleng; return DOUBLE_TOKEN; }
 	YY_BREAK
 case 54:
 YY_RULE_SETUP
-#line 165 "./src/core/parser/tokens.l"
+#line 207 "./src/core/parser/tokens.l"
 { SAVE_TOKEN; printTokenInfo(INT_TOKEN, yylineno, *yylval.string); llcolumn += yyleng; return INT_TOKEN; }
 	YY_BREAK
 case 55:
 /* rule 55 can match eol */
 YY_RULE_SETUP
-#line 166 "./src/core/parser/tokens.l"
+#line 208 "./src/core/parser/tokens.l"
 { SAVE_TOKEN; printTokenInfo(STRING_LITERAL, yylineno, *yylval.string); llcolumn += yyleng; return STRING_LITERAL; }
 	YY_BREAK
 case 56:
 YY_RULE_SETUP
-#line 168 "./src/core/parser/tokens.l"
+#line 210 "./src/core/parser/tokens.l"
 { llcolumn += yyleng; }
 	YY_BREAK
 case 57:
 YY_RULE_SETUP
-#line 170 "./src/core/parser/tokens.l"
+#line 212 "./src/core/parser/tokens.l"
 {
     int comment_level = 1;
     while (comment_level > 0) {
@@ -1201,26 +1243,26 @@ YY_RULE_SETUP
 	YY_BREAK
 case 58:
 YY_RULE_SETUP
-#line 191 "./src/core/parser/tokens.l"
+#line 233 "./src/core/parser/tokens.l"
 { llcolumn += yyleng; } // Update column for whitespace
 	YY_BREAK
 case 59:
 /* rule 59 can match eol */
 YY_RULE_SETUP
-#line 192 "./src/core/parser/tokens.l"
+#line 234 "./src/core/parser/tokens.l"
 { ++yylineno; llcolumn = 0; } // Increment line number and reset column on newline
 	YY_BREAK
 case 60:
 YY_RULE_SETUP
-#line 193 "./src/core/parser/tokens.l"
+#line 235 "./src/core/parser/tokens.l"
 { llcolumn += yyleng; printTokenInfo(-1, yylineno, std::string(yytext, yyleng)); }
 	YY_BREAK
 case 61:
 YY_RULE_SETUP
-#line 195 "./src/core/parser/tokens.l"
+#line 237 "./src/core/parser/tokens.l"
 ECHO;
 	YY_BREAK
-#line 1223 "./src/core/parser/tokens.cpp"
+#line 1265 "./src/core/parser/tokens.cpp"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2225,6 +2267,6 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 195 "./src/core/parser/tokens.l"
+#line 237 "./src/core/parser/tokens.l"
 
 

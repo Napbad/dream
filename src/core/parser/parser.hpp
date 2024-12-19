@@ -129,7 +129,6 @@ union YYSTYPE
     dap::parser::Expr *expr;
     dap::parser::Stmt *stmt;
     dap::parser::QualifiedName *ident;
-    dap::parser::QualifiedName *type;
     dap::parser::VarDecl *var_decl;
     std::vector<dap::parser::VarDecl*> *varvec;
     std::vector<dap::parser::Expr*> *exprvec;
@@ -138,7 +137,7 @@ union YYSTYPE
     bool boolval;
     int token;
 
-#line 142 "./src/core/parser/parser.hpp"
+#line 141 "./src/core/parser/parser.hpp"
 
 };
 typedef union YYSTYPE YYSTYPE;

@@ -1,6 +1,7 @@
 package dap.std.io;
 
 include dap.std.type.string_d;
+include dap.std.type.convert;
 include dap.runtime.sys.sysFun;
 
 fun print(imt byte* str) void {
