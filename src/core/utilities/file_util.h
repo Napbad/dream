@@ -24,7 +24,7 @@
 
 // Report an error message with a specific color (default red)
 #define REPORT_ERROR(msg, file, line)                                                                                  \
-    util::err_print(std::cout, (SPACE_STR + (msg) + " \nat file: " file + ":" + std::to_string(line) + "\n"),          \
+    util::err_print(std::cerr, (SPACE_STR + (msg) + " \nat file: " file + ":" + std::to_string(line) + "\n"),          \
                     util::FileColor::RED)
 
 // Report a debug message with a specific color (default white)
@@ -44,7 +44,7 @@
 #define LOG_WARNING(msg) util::warn_print(std::cout, (SPACE_STR + (msg) + "\n"), util::FileColor::YELLOW)
 
 // Report an error message with a specific color (default red)
-#define LOG_ERROR(msg) util::err_print(std::cout, (SPACE_STR + (msg) + "\n"), util::FileColor::RED)
+#define LOG_ERROR(msg) util::err_print(std::cerr, (SPACE_STR + (msg) + "\n"), util::FileColor::RED)
 
 // Report a debug message with a specific color (default white)
 #define LOG_DEBUG(msg) util::dbg_print(std::cout, (SPACE_STR + (msg) + "\n"), util::FileColor::WHITE)

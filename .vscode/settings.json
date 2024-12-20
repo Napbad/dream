@@ -1,5 +1,7 @@
 {
     "files.associations": {
+        "*.ndjson": "jsonl",
+        "*.dbclient-js": "javascript",
         "*.dap": "dap",
         "*.tcc": "cpp",
         "string": "cpp",
@@ -82,7 +84,8 @@
         "cinttypes": "cpp",
         "typeinfo": "cpp",
         "variant": "cpp",
-        "hash_map": "cpp"
+        "hash_map": "cpp",
+        "source_location": "cpp"
     },
     "terminal.explorerKind": "external",
     "terminal.integrated.automationProfile.linux": {

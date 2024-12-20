@@ -40,6 +40,24 @@ int main(const int argc, char **argv)
     bool genExec = false;
     string inputPath;
 
+#ifdef D_DEBUG
+    if (debugMode) {
+        dbg_print(cout, "====== DEBUG MODE IS ON ======\n", dap::util::FileColor::BRIGHT_MAGENTA);
+    }
+
+    static option long_options[] = {{"help", no_argument, nullptr, 'h'},
+                                    {"directory", required_argument, nullptr, 'd'},
+                                    {"debug", no_argument, nullptr, 'D'},
+                                    {"generate-ir", no_argument, nullptr, 'i'},
+                                    {"generate-exec", no_argument, nullptr, 'e'},
+                                    {"version", no_argument, nullptr, 'v'},
+                                    {"output", required_argument, nullptr, 'o'},
+                                    {"output-exec-name", required_argument, nullptr, 'n'},
+                                    {"source-runtime-dir", required_argument, nullptr, 's'},
+                                    {nullptr, 0, nullptr, 0}};
+    std::string sourceRuntimeDir;
+#else
+
     static option long_options[] = {{"help", no_argument, nullptr, 'h'},
                                     {"directory", required_argument, nullptr, 'd'},
                                     {"debug", no_argument, nullptr, 'D'},
@@ -50,7 +68,10 @@ int main(const int argc, char **argv)
                                     {"output-exec-name", required_argument, nullptr, 'n'},
                                     {nullptr, 0, nullptr, 0}};
 
-    while ((opt = getopt_long(argc, argv, "n:d:o:ievhD", long_options, nullptr)) != -1) {
+#endif 
+
+
+    while ((opt = getopt_long(argc, argv, "n:d:o:ievhDs:", long_options, nullptr)) != -1) {
         switch (opt) {
         case 'h':
             helpRequested = true;
@@ -80,6 +101,13 @@ int main(const int argc, char **argv)
         case 'n':
             targetExecName = optarg;
             break;
+
+#ifdef D_DEBUG
+        case 's':
+            sourceRuntimeDir = optarg;
+            break;
+#endif
+
         default:
             cerr << "Invalid option: " << static_cast<char>(opt) << endl;
             cerr << "Usage: " << argv[0]
@@ -99,6 +127,9 @@ int main(const int argc, char **argv)
         cout << "  -v, --version         Print version information and exit" << endl;
         cout << "  -o, --output          Specify the output directory" << endl;
         cout << "  -n, --output-exec-name Specify the name of the generated executable" << endl;
+        #ifdef D_DEBUG
+        cout << "  -s, --source-runtime-dir Source directory of runtime" << endl;
+        #endif
         return 0;
     }
 
@@ -152,7 +183,14 @@ int main(const int argc, char **argv)
             programMap_d->insert({program, ctx});
         }
 
+#ifdef D_DEBUG
+        util::copy_directory(sourceRuntimeDir + "/asm", buildDir + "dap/runtime/asm");
+#else 
         util::copy_directory("../src/dap/runtime/asm", buildDir + "dap/runtime/asm");
+
+#endif
+
+        
         auto includeAnalyzer = new dap::inter_gen::IncludeAnalyzer();
         includeAnalyzer->generateGraph();
         std::set<inter_gen::IncludeGraphNode *> roots = includeAnalyzer->getRoots();
@@ -165,8 +203,13 @@ int main(const int argc, char **argv)
         if (argc > 1) {
             openFile(inputPath.c_str());
         }
+
+#ifdef D_DEBUG
+        util::copy_directory(sourceRuntimeDir + "/asm", buildDir + "dap/runtime/asm");
+#else 
         util::copy_directory("../src/dap/runtime/asm", buildDir + "dap/runtime/asm");
 
+#endif
         auto *ctx = new inter_gen::InterGenContext(inputPath);
         yyparse();
 
