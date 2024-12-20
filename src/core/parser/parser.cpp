@@ -627,8 +627,8 @@ static const yytype_int16 yyrline[] =
      479,   480,   481,   482,   483,   484,   485,   486,   487,   488,
      489,   490,   491,   492,   493,   494,   495,   496,   497,   501,
      502,   503,   504,   505,   506,   507,   511,   515,   519,   527,
-     533,   539,   545,   554,   560,   570,   578,   586,   591,   599,
-     603,   610,   620,   624,   632,   640
+     533,   539,   554,   560,   568,   578,   586,   594,   599,   607,
+     611,   618,   628,   632,   640,   648
 };
 #endif
 
@@ -685,21 +685,21 @@ static const yytype_int16 yypact[] =
 {
     -126,    46,   201,  -126,  -126,  -126,  -126,  -126,    52,   643,
     -126,  -126,  -126,   643,  -126,   643,  -126,  -126,  -126,  -126,
-     643,   643,    91,   575,    91,    61,    91,    91,  -126,  -126,
+     643,   643,    91,   575,    91,    64,    91,    91,  -126,  -126,
     -126,  -126,  -126,  -126,    65,    91,  -126,  -126,    25,  -126,
-     246,  -126,   643,  -126,  -126,  -126,    95,  -126,    97,  -126,
-      94,    27,   537,    47,   149,   537,    77,   282,   282,   107,
-      11,   102,  -126,   318,    30,    91,    73,    81,  -126,     9,
-     115,   643,   643,   643,  -126,  -126,  -126,  -126,  -126,  -126,
+     246,  -126,   643,  -126,  -126,  -126,    98,  -126,   100,  -126,
+      99,    27,   537,    47,   149,   537,    77,   282,   282,   109,
+      11,   104,  -126,   318,    30,    91,    73,    81,  -126,     9,
+     118,   643,   643,   643,  -126,  -126,  -126,  -126,  -126,  -126,
     -126,  -126,  -126,  -126,  -126,  -126,  -126,  -126,  -126,  -126,
     -126,  -126,  -126,  -126,  -126,  -126,  -126,   643,   537,  -126,
-    -126,  -126,   643,  -126,  -126,   643,  -126,   -26,  -126,   105,
+    -126,  -126,   643,  -126,  -126,   643,  -126,   -26,  -126,   108,
     -126,   643,  -126,    -1,    32,  -126,  -126,    36,   609,  -126,
-     537,    50,   355,   537,   -16,   392,   537,   103,    79,    76,
-     643,   428,  -126,    51,    -1,  -126,  -126,   110,   122,   465,
-    -126,   112,   113,   116,  -126,  -126,   103,  -126,   537,   643,
-      54,    12,    82,   643,    36,   124,   643,  -126,  -126,  -126,
-     282,  -126,  -126,     5,    91,   537,   118,    36,   501,  -126,
+     537,    50,   355,   537,   -16,   392,   537,   105,  -126,    62,
+     643,   428,  -126,    51,    -1,  -126,  -126,   111,   120,   465,
+    -126,   112,   113,   115,  -126,  -126,   105,  -126,   537,   643,
+      57,    12,    82,   643,    36,   124,   643,  -126,  -126,  -126,
+     282,  -126,  -126,     5,    91,   537,   117,    36,   501,  -126,
     -126,    39,   643,   119,  -126,  -126,   537,   643,   537
 };
 
@@ -720,10 +720,10 @@ static const yytype_int8 yydefact[] =
       71,    72,    73,    74,    75,    76,    77,     0,    56,    16,
       13,   102,     0,    50,    23,     0,    54,    89,    95,   100,
       44,     0,     7,    38,     0,    21,    22,    34,     0,    42,
-     104,     0,     0,    45,    31,     0,    88,     0,    91,    93,
+     104,     0,     0,    45,    31,     0,    88,     0,    91,    92,
        0,     0,    39,     0,    38,    32,    33,    25,     0,     0,
       51,    55,     0,     0,    55,    90,     0,    94,    99,     0,
-      31,     0,     0,     0,    34,     0,     0,   101,   103,    92,
+      31,     0,     0,     0,    34,     0,     0,   101,   103,    93,
        0,    40,    36,     0,     0,    24,    26,    34,     0,    96,
       37,     0,     0,     0,   105,    35,    27,     0,    28
 };
@@ -731,9 +731,9 @@ static const yytype_int8 yydefact[] =
 /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-    -126,  -126,   117,  -126,  -126,  -126,   -48,  -106,  -126,  -125,
-    -126,  -126,     1,     0,   -34,  -126,    -9,  -126,  -126,  -126,
-      64,  -126,     8,   -99,  -126,  -126,  -126,  -126,  -126,  -126,
+    -126,  -126,   121,  -126,  -126,  -126,   -48,  -106,  -126,  -125,
+    -126,  -126,     2,     0,   -34,  -126,    -9,  -126,  -126,  -126,
+      61,  -126,     8,   -99,  -126,  -126,  -126,  -126,  -126,  -126,
     -126
 };
 
@@ -761,10 +761,10 @@ static const yytype_int16 yytable[] =
      151,    80,    81,    82,    83,    84,    85,    86,    87,   145,
       88,    68,    70,    89,    90,    91,    92,    93,   123,   115,
       70,   135,   136,   125,   105,     5,   126,   116,   159,   150,
-     106,   164,   131,   162,    94,    95,    96,    28,    29,   139,
-      65,    99,   169,   100,   101,   170,    70,   163,   111,   119,
-     130,   148,    21,    14,   146,   153,   154,   156,   167,   157,
-     171,    54,   158,   172,   177,   152,   121,   147,     0,     0,
+     106,   164,   131,   162,    94,    95,    96,   146,    21,   139,
+      28,    29,   169,    65,    99,   170,   100,   163,    70,   101,
+     111,   148,   119,   130,   154,    14,   153,   156,   167,   157,
+     171,   158,   172,   121,   177,    54,   152,   147,     0,     0,
      160,     0,     0,     0,   165,     0,     0,   168,     0,     0,
        0,    59,     4,     5,     6,     7,     8,     9,     0,    10,
       11,    12,     0,   176,    59,     0,     0,    13,   178,    14,
@@ -834,10 +834,10 @@ static const yytype_int16 yycheck[] =
       19,    24,    25,    26,    27,    28,    29,    30,    31,   127,
       33,    16,     9,    36,    37,    38,    39,    40,    97,    16,
        9,    55,    56,   102,    17,     4,   105,    16,   146,    17,
-      23,    19,   111,   151,    57,    58,    59,    53,    54,   118,
-      49,    16,   160,    16,    20,   163,     9,   151,    16,     4,
-      15,   130,    46,    20,    45,    15,     4,    15,     4,    16,
-     164,    14,    16,    15,    15,   134,    72,   129,    -1,    -1,
+      23,    19,   111,   151,    57,    58,    59,    45,    46,   118,
+      53,    54,   160,    49,    16,   163,    16,   151,     9,    20,
+      16,   130,     4,    15,     4,    20,    15,    15,     4,    16,
+     164,    16,    15,    72,    15,    14,   134,   129,    -1,    -1,
      149,    -1,    -1,    -1,   153,    -1,    -1,   156,    -1,    -1,
       -1,   151,     3,     4,     5,     6,     7,     8,    -1,    10,
       11,    12,    -1,   172,   164,    -1,    -1,    18,   177,    20,
@@ -931,7 +931,7 @@ static const yytype_int8 yyr1[] =
       78,    78,    78,    78,    78,    78,    78,    78,    78,    78,
       78,    78,    78,    78,    78,    78,    78,    78,    78,    79,
       79,    79,    79,    79,    79,    79,    80,    80,    80,    81,
-      81,    81,    81,    82,    82,    83,    84,    85,    85,    86,
+      81,    81,    82,    82,    82,    83,    84,    85,    85,    86,
       86,    87,    88,    88,    89,    90
 };
 
@@ -947,7 +947,7 @@ static const yytype_int8 yyr2[] =
        1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
        1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
        1,     1,     1,     1,     1,     1,     0,     1,     3,     3,
-       5,     4,     6,     1,     2,     3,     7,     1,     2,     4,
+       5,     4,     1,     3,     2,     3,     7,     1,     2,     4,
        2,     6,     0,     3,     3,     7
 };
 
@@ -2238,18 +2238,7 @@ yyreduce:
 #line 2239 "./src/core/parser/parser.cpp"
     break;
 
-  case 92: /* if_statement: IF expression block elif_stmts ELSE block  */
-#line 545 "./src/core/parser/parser.y"
-                                                {
-        (yyval.stmt) = new IfStmt((yyvsp[-4].expr), (yyvsp[-3].block), (yyvsp[0].block), dynamic_cast<IfStmt*>((yyvsp[-2].stmt)));
-        (yyval.stmt)->line = yylineno;
-
-        printParseInfo("if_statement (with elif_stmts)", yylineno);
-    }
-#line 2250 "./src/core/parser/parser.cpp"
-    break;
-
-  case 93: /* elif_stmts: elif_statement  */
+  case 92: /* elif_stmts: elif_statement  */
 #line 554 "./src/core/parser/parser.y"
                    {
         (yyvsp[0].stmt)->line = yylineno;
@@ -2257,11 +2246,24 @@ yyreduce:
 
         printParseInfo("elif_stmts (empty)", yylineno);
     }
-#line 2261 "./src/core/parser/parser.cpp"
+#line 2250 "./src/core/parser/parser.cpp"
+    break;
+
+  case 93: /* elif_stmts: elif_statement ELSE block  */
+#line 560 "./src/core/parser/parser.y"
+                                {
+        auto res = dynamic_cast<IfStmt*>((yyvsp[-2].stmt));
+        res->line = yylineno;
+        res->else_body = (yyvsp[0].block);
+        (yyval.stmt) = res;
+
+        printParseInfo("elif_stmts (empty)", yylineno);
+    }
+#line 2263 "./src/core/parser/parser.cpp"
     break;
 
   case 94: /* elif_stmts: elif_statement elif_stmts  */
-#line 560 "./src/core/parser/parser.y"
+#line 568 "./src/core/parser/parser.y"
                                 {
         auto res = dynamic_cast<IfStmt*>((yyvsp[-1].stmt));
         res->elseIf = dynamic_cast<IfStmt*>((yyvsp[0].stmt));
@@ -2269,69 +2271,69 @@ yyreduce:
         (yyval.stmt) = res;
         printParseInfo("elif_stmts (with elif_statement)", yylineno);
     }
-#line 2273 "./src/core/parser/parser.cpp"
+#line 2275 "./src/core/parser/parser.cpp"
     break;
 
   case 95: /* elif_statement: ELIF expression block  */
-#line 570 "./src/core/parser/parser.y"
+#line 578 "./src/core/parser/parser.y"
                           {
         (yyval.stmt) = new IfStmt((yyvsp[-1].expr), (yyvsp[0].block));
         (yyval.stmt)->line = yylineno;
         printParseInfo("elif_statement", yylineno);
     }
-#line 2283 "./src/core/parser/parser.cpp"
+#line 2285 "./src/core/parser/parser.cpp"
     break;
 
   case 96: /* for_statement: FOR for_var_decl SEMICOLON expression SEMICOLON expression block  */
-#line 578 "./src/core/parser/parser.y"
+#line 586 "./src/core/parser/parser.y"
                                                                      {
         (yyval.stmt) = new ForStmt((yyvsp[-5].var_decl), (yyvsp[-3].expr), (yyvsp[-1].expr), (yyvsp[0].block));
         (yyval.stmt)->line = yylineno;
         printParseInfo("for_statement", yylineno);
     }
-#line 2293 "./src/core/parser/parser.cpp"
+#line 2295 "./src/core/parser/parser.cpp"
     break;
 
   case 97: /* break_statement: BREAK  */
-#line 586 "./src/core/parser/parser.y"
+#line 594 "./src/core/parser/parser.y"
           {
         (yyval.stmt)->line = yylineno;
         (yyval.stmt) = new BreakStmt();
         printParseInfo("break_statement", yylineno);
     }
-#line 2303 "./src/core/parser/parser.cpp"
+#line 2305 "./src/core/parser/parser.cpp"
     break;
 
   case 98: /* break_statement: BREAK expression  */
-#line 591 "./src/core/parser/parser.y"
+#line 599 "./src/core/parser/parser.y"
                        {
         (yyval.stmt)->line = yylineno;
         (yyval.stmt) = new BreakStmt((yyvsp[0].expr));
         printParseInfo("break_statement", yylineno);
     }
-#line 2313 "./src/core/parser/parser.cpp"
+#line 2315 "./src/core/parser/parser.cpp"
     break;
 
   case 99: /* for_var_decl: type_ident IDENTIFIER ASSIGN expression  */
-#line 599 "./src/core/parser/parser.y"
+#line 607 "./src/core/parser/parser.y"
                                             {
         (yyval.var_decl) = new VarDecl((yyvsp[-3].ident), new QualifiedName(new std::vector<std::string>({*(yyvsp[-2].string)})), true, true, (yyvsp[0].expr));
         printParseInfo("for_var_decl (type_ident qualified_name IDENTIFIER ASSIGN expression)", yylineno);
     }
-#line 2322 "./src/core/parser/parser.cpp"
+#line 2324 "./src/core/parser/parser.cpp"
     break;
 
   case 100: /* for_var_decl: type_ident IDENTIFIER  */
-#line 603 "./src/core/parser/parser.y"
+#line 611 "./src/core/parser/parser.y"
                             {
         (yyval.var_decl) = new VarDecl((yyvsp[-1].ident), new QualifiedName(new std::vector<std::string>({*(yyvsp[0].string)})), true, true, nullptr);
         printParseInfo("for_var_decl (type_ident qualified_name IDENTIFIER)", yylineno);
     }
-#line 2331 "./src/core/parser/parser.cpp"
+#line 2333 "./src/core/parser/parser.cpp"
     break;
 
   case 101: /* struct_decl: STRUCT IDENTIFIER LBRACE struct_field_list RBRACE SEMICOLON  */
-#line 610 "./src/core/parser/parser.y"
+#line 618 "./src/core/parser/parser.y"
                                                                 {
         (yyval.stmt)->line = yylineno;
         (yyval.stmt) = new StructDecl(new QualifiedName({*(yyvsp[-4].string)}), *(yyvsp[-2].varvec));
@@ -2339,50 +2341,50 @@ yyreduce:
         delete (yyvsp[-2].varvec);
         printParseInfo("struct_decl", yylineno);
     }
-#line 2343 "./src/core/parser/parser.cpp"
+#line 2345 "./src/core/parser/parser.cpp"
     break;
 
   case 102: /* struct_field_list: %empty  */
-#line 620 "./src/core/parser/parser.y"
+#line 628 "./src/core/parser/parser.y"
                 {
         (yyval.varvec) = new std::vector<VarDecl*>();
         printParseInfo("struct_field_list (empty)", yylineno);
     }
-#line 2352 "./src/core/parser/parser.cpp"
+#line 2354 "./src/core/parser/parser.cpp"
     break;
 
   case 103: /* struct_field_list: struct_field_list var_decl SEMICOLON  */
-#line 624 "./src/core/parser/parser.y"
+#line 632 "./src/core/parser/parser.y"
                                            {
         (yyvsp[-2].varvec)->push_back((yyvsp[-1].var_decl));
         (yyval.varvec) = (yyvsp[-2].varvec);
         printParseInfo("struct_field_list (with var_decl)", yylineno);
     }
-#line 2362 "./src/core/parser/parser.cpp"
+#line 2364 "./src/core/parser/parser.cpp"
     break;
 
   case 104: /* assign_expr: qualified_name ASSIGN expression  */
-#line 632 "./src/core/parser/parser.y"
+#line 640 "./src/core/parser/parser.y"
                                      {
         (yyval.stmt) = new AssignExpr((yyvsp[-2].ident), (yyvsp[0].expr));
         (yyval.stmt)->line = yylineno;
         printParseInfo("assignment", yylineno);
     }
-#line 2372 "./src/core/parser/parser.cpp"
+#line 2374 "./src/core/parser/parser.cpp"
     break;
 
   case 105: /* array_assign_stmt: qualified_name LBRACKET expression RBRACKET ASSIGN expression SEMICOLON  */
-#line 640 "./src/core/parser/parser.y"
+#line 648 "./src/core/parser/parser.y"
                                                                             {
         (yyval.stmt) = new ArrayAssignExpr((yyvsp[-6].ident), (yyvsp[-4].expr), (yyvsp[-1].expr));
         (yyval.stmt)->line = yylineno;
         printParseInfo("array_assign_expr", yylineno);
     }
-#line 2382 "./src/core/parser/parser.cpp"
+#line 2384 "./src/core/parser/parser.cpp"
     break;
 
 
-#line 2386 "./src/core/parser/parser.cpp"
+#line 2388 "./src/core/parser/parser.cpp"
 
       default: break;
     }
@@ -2575,4 +2577,4 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 647 "./src/core/parser/parser.y"
+#line 655 "./src/core/parser/parser.y"

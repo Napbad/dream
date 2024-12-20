@@ -655,7 +655,6 @@ Function *FuncDecl::codeGen(inter_gen::InterGenContext *ctx)
 
     if (fun->getName() == "main") {
         ctx->setMainFun(fun);
-
     }
 
     // Generate the function body
@@ -717,6 +716,34 @@ Value *Program::codeGen(inter_gen::InterGenContext *ctx)
     return stmtRes;
 }
 
+Value *mergeBlock(Value *thenBody, BasicBlock *thenBB, BasicBlock::iterator thenBBEndIter, Value *elseBody,
+                  BasicBlock *elseBB, BasicBlock::iterator elseBBEndIter, inter_gen::InterGenContext *ctx)
+{
+    PHINode *phi;
+
+    if (thenBody != nullptr && thenBBEndIter->getOpcode() != Instruction::Ret &&
+        thenBBEndIter->getType() != Type::getVoidTy(LLVMCTX)) {
+        // If there is a result from the then block, create a PHI node to merge
+        phi = BUILDER.CreatePHI(thenBody->getType(), 2, "iftmp");
+        phi->addIncoming(thenBody, thenBB);
+        if (elseBody)
+            phi->addIncoming(elseBody, elseBB);
+        else
+            phi->addIncoming(ConstantInt::get(thenBody->getType(), 0), elseBB);
+    } else if (elseBody != nullptr && elseBBEndIter->getOpcode() != Instruction::Ret &&
+               elseBBEndIter->getType() != Type::getVoidTy(LLVMCTX)) {
+        // If there is no result from the then block but there is from the else
+        // block
+        phi = BUILDER.CreatePHI(elseBody->getType(), 2, "iftmp");
+        phi->addIncoming(ConstantInt::get(elseBody->getType(), 0), thenBB);
+        phi->addIncoming(elseBody, elseBB);
+    } else {
+        return ConstantInt::get(IntegerType::get(LLVMCTX, 0), 0); // Return 0 (no result)
+    }
+
+    return phi; // Return the result of the condition
+}
+
 // IfStmt: Generates code for an if statement
 Value *IfStmt::codeGen(inter_gen::InterGenContext *ctx)
 {
@@ -752,47 +779,79 @@ Value *IfStmt::codeGen(inter_gen::InterGenContext *ctx)
     // Then block: Execute the body of the if statement
     BUILDER.SetInsertPoint(thenBB);
     ctx->pushBlock(thenBB);
-    const auto thenBody = body->codeGen(ctx);
+
+    // the top level ifstmt
+    if (elseIf && !ctx->mergeBBInNestIf) {
+        ctx->mergeBBInNestIf = mergeBB;
+    }
+
+    Value *thenBody = body->codeGen(ctx);
     auto thenBBEndIter = thenBB->end();
     if ((--thenBBEndIter)->getOpcode() != Instruction::Br && thenBBEndIter->getOpcode() != Instruction::Ret) {
         BUILDER.CreateBr(mergeBB); // Unconditionally branch to merge
     }
     ctx->popBlock();
-    // Else block: Execute the body of the else statement (if present)
-    ctx->getCurrFun()->insert(ctx->getCurrFun()->end(), elseBB);
-    BUILDER.SetInsertPoint(elseBB);
-    ctx->pushBlock(elseBB);
-    Value *elseBody = else_body ? else_body->codeGen(ctx) : nullptr;
-    auto elseBBEndIter = elseBB->end();
-    if ((--elseBBEndIter)->getOpcode() != Instruction::Br && elseBBEndIter->getOpcode() != Instruction::Ret) {
-        BUILDER.CreateBr(mergeBB); // Unconditionally branch to merge
-    }
-    ctx->popBlock();
 
-    // Merge block: Combine the results of the then and else branches
-    ctx->getCurrFun()->insert(ctx->getCurrFun()->end(), mergeBB);
-    BUILDER.SetInsertPoint(mergeBB);
-    PHINode *phi;
+    if (elseIf) {
+        // merge else If and the then val
+        ctx->getCurrFun()->insert(ctx->getCurrFun()->end(), elseBB);
+        BUILDER.SetInsertPoint(elseBB);
+        ctx->pushBlock(elseBB);
+        Value *elifVal = elseIf->codeGen(ctx);
 
-    if (thenBody != nullptr && thenBBEndIter->getOpcode() != Instruction::Ret) {
-        // If there is a result from the then block, create a PHI node to merge
-        phi = BUILDER.CreatePHI(thenBody->getType(), 2, "iftmp");
-        phi->addIncoming(thenBody, thenBB);
-        if (elseBody)
-            phi->addIncoming(elseBody, elseBB);
-        else
-            phi->addIncoming(ConstantInt::get(thenBody->getType(), 0), elseBB);
-    } else if (elseBody != nullptr && elseBBEndIter->getOpcode() != Instruction::Ret) {
-        // If there is no result from the then block but there is from the else
-        // block
-        phi = BUILDER.CreatePHI(elseBody->getType(), 2, "iftmp");
-        phi->addIncoming(ConstantInt::get(elseBody->getType(), 0), thenBB);
-        phi->addIncoming(elseBody, elseBB);
-    } else {
-        return ConstantInt::get(IntegerType::get(LLVMCTX, 0), 0); // Return 0 (no result)
+        ctx->popBlock(); // pop else block
+
+        if (elifVal) {
+
+            // Merge block: Combine the results of the then and else branches
+            ctx->getCurrFun()->insert(ctx->getCurrFun()->end(), mergeBB);
+            BUILDER.SetInsertPoint(mergeBB);
+            ctx->pushBlock(mergeBB);
+
+            Value *phi =
+                mergeBlock(thenBody, thenBB, thenBBEndIter, ctx->mergeBBInNestIfSrcVal, ctx->mergeBBInNestIfSource, ctx->mergeBBInNestIfSource->end(), ctx);
+            ctx->mergeBBInNestIfSource = nullptr;
+
+            ctx->popBlock(); // pop merge block
+
+            return phi;
+        }
     }
 
-    return phi; // Return the result of the condition
+    if (elseBB) {
+        // Else block: Execute the body of the else statement (if present)
+        ctx->getCurrFun()->insert(ctx->getCurrFun()->end(), elseBB);
+        BUILDER.SetInsertPoint(elseBB);
+        ctx->pushBlock(elseBB);
+        Value *elseBody = else_body ? else_body->codeGen(ctx) : nullptr;
+        auto elseBBEndIter = elseBB->end();
+        if ((--elseBBEndIter)->getOpcode() != Instruction::Br && elseBBEndIter->getOpcode() != Instruction::Ret) {
+            BUILDER.CreateBr(mergeBB); // Unconditionally branch to merge
+        }
+        ctx->popBlock(); // pop else block
+
+        // Merge block: Combine the results of the then and else branches
+        ctx->getCurrFun()->insert(ctx->getCurrFun()->end(), mergeBB);
+        BUILDER.SetInsertPoint(mergeBB);
+        ctx->pushBlock(mergeBB);
+
+        Value *phi = mergeBlock(thenBody, thenBB, thenBBEndIter, elseBody, elseBB, elseBBEndIter, ctx);
+
+        if (auto mergeBBEndIter = mergeBB->end(); (--mergeBBEndIter)->getOpcode() != Instruction::Br &&
+                                                  mergeBBEndIter->getOpcode() != Instruction::Ret // with no jump stmt
+                                                  &&
+                                                  ctx->mergeBBInNestIf) { // and it is a nested ifStatement's merge stmt
+            // then jump to the top ifStmt merge Block
+            BUILDER.CreateBr(ctx->mergeBBInNestIf); // Unconditionally branch to merge
+            ctx->mergeBBInNestIfSource = mergeBB;
+            ctx->mergeBBInNestIfSrcVal = phi;
+            ctx->mergeBBInNestIf = nullptr;
+        }
+        ctx->popBlock(); // pop merge block
+
+        return phi; // Return the result of the condition
+    }
+    return thenBody;
 }
 
 // ElifStmt: Currently not implemented, but potentially used for "elif" (else
@@ -875,8 +934,8 @@ Value *VarDecl::codeGen(inter_gen::InterGenContext *ctx)
         // Handle global variables, assuming non-pointer types
         if (util::typeOf(*type, ctx, size) != Type::getInt8Ty(LLVMCTX)) {
             ctx->setDefiningVariable(false);
-            string name_ = name->getName();
-            const char * c_str = name_.c_str();
+            const string name_ = name->getName();
+            const char *c_str = name_.c_str();
             return new GlobalVariable(*MODULE, util::typeOf(*type, ctx, size), false, GlobalValue::InternalLinkage,
                                       constant, c_str);
         }
@@ -1262,11 +1321,6 @@ Value *StructDecl::codeGen(inter_gen::InterGenContext *ctx)
     smd->setStructType(dStruct);
 
     return globalStruct; // Return the global variable as Value*
-}
-
-Value *DeleteStmt::codeGen(inter_gen::InterGenContext *ctx)
-{
-    return ctx->builder.CreateCall(ctx->module->getFunction("delete"), {this->expr->codeGen(ctx)});
 }
 } // namespace parser
 

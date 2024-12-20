@@ -542,18 +542,26 @@ if_statement:
 
         printParseInfo("if_statement (with elif_stmts)", yylineno);
     }
-    | IF expression block elif_stmts ELSE block {
-        $$ = new IfStmt($2, $3, $6, dynamic_cast<IfStmt*>($4));
-        $$->line = yylineno;
+    // | IF expression block elif_stmts ELSE block {
+    //     $$ = new IfStmt($2, $3, $6);
+    //     $$->line = yylineno;
 
-        printParseInfo("if_statement (with elif_stmts)", yylineno);
-    }
+    //     printParseInfo("if_statement (with elif_stmts)", yylineno);
+    // }
 ;
 
 elif_stmts:
     elif_statement {
         $1->line = yylineno;
         $$ = $1;
+
+        printParseInfo("elif_stmts (empty)", yylineno);
+    }
+    | elif_statement ELSE block {
+        auto res = dynamic_cast<IfStmt*>($1);
+        res->line = yylineno;
+        res->else_body = $3;
+        $$ = res;
 
         printParseInfo("elif_stmts (empty)", yylineno);
     }

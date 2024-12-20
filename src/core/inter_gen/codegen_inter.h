@@ -85,6 +85,11 @@ class InterGenContext
     std::string sourcePath;
     std::string package;
     std::string fileName;
+    BasicBlock* mergeBBInNestIf = nullptr;
+    BasicBlock * mergeBBInNestIfSource = nullptr;
+    llvm::Value * mergeBBInNestIfSrcVal = nullptr;
+
+
 
     FunctionMetaData *getFunMetaData(const std::string &name, const inter_gen::InterGenContext *ctx) const;
     std::pair<Value *, VariableMetaData *> getValWithMetadata(const std::string &name);

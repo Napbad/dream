@@ -57,6 +57,15 @@ fun main() int {
   // imt byte[8] s3 = "hellooo";
   // write (1, &s3, 8);
 
+  imt byte[6] b2 = "1 > 2";
+  if 1 > 2 {
+    print(&b2);
+  } elif 1 < 2 {
+    print(&b2);
+  } else {
+    print(&b2);
+  }
+
   newline();
   print(&val);
 
