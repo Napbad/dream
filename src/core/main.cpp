@@ -39,12 +39,10 @@ int main(const int argc, char **argv)
     bool genIR = false;
     bool genExec = false;
     string inputPath;
+    std::string sourceRuntimeDir = "../src/dap/runtime/";
+
 
 #ifdef D_DEBUG
-    if (debugMode) {
-        dbg_print(cout, "====== DEBUG MODE IS ON ======\n", dap::util::FileColor::BRIGHT_MAGENTA);
-    }
-
     static option long_options[] = {{"help", no_argument, nullptr, 'h'},
                                     {"directory", required_argument, nullptr, 'd'},
                                     {"debug", no_argument, nullptr, 'D'},
@@ -55,7 +53,6 @@ int main(const int argc, char **argv)
                                     {"output-exec-name", required_argument, nullptr, 'n'},
                                     {"source-runtime-dir", required_argument, nullptr, 's'},
                                     {nullptr, 0, nullptr, 0}};
-    std::string sourceRuntimeDir;
 #else
 
     static option long_options[] = {{"help", no_argument, nullptr, 'h'},
@@ -68,8 +65,7 @@ int main(const int argc, char **argv)
                                     {"output-exec-name", required_argument, nullptr, 'n'},
                                     {nullptr, 0, nullptr, 0}};
 
-#endif 
-
+#endif
 
     while ((opt = getopt_long(argc, argv, "n:d:o:ievhDs:", long_options, nullptr)) != -1) {
         switch (opt) {
@@ -127,9 +123,9 @@ int main(const int argc, char **argv)
         cout << "  -v, --version         Print version information and exit" << endl;
         cout << "  -o, --output          Specify the output directory" << endl;
         cout << "  -n, --output-exec-name Specify the name of the generated executable" << endl;
-        #ifdef D_DEBUG
+#ifdef D_DEBUG
         cout << "  -s, --source-runtime-dir Source directory of runtime" << endl;
-        #endif
+#endif
         return 0;
     }
 
@@ -185,12 +181,11 @@ int main(const int argc, char **argv)
 
 #ifdef D_DEBUG
         util::copy_directory(sourceRuntimeDir + "/asm", buildDir + "dap/runtime/asm");
-#else 
+#else
         util::copy_directory("../src/dap/runtime/asm", buildDir + "dap/runtime/asm");
 
 #endif
 
-        
         auto includeAnalyzer = new dap::inter_gen::IncludeAnalyzer();
         includeAnalyzer->generateGraph();
         std::set<inter_gen::IncludeGraphNode *> roots = includeAnalyzer->getRoots();
@@ -206,7 +201,7 @@ int main(const int argc, char **argv)
 
 #ifdef D_DEBUG
         util::copy_directory(sourceRuntimeDir + "/asm", buildDir + "dap/runtime/asm");
-#else 
+#else
         util::copy_directory("../src/dap/runtime/asm", buildDir + "dap/runtime/asm");
 
 #endif

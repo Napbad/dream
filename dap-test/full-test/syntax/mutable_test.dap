@@ -3,7 +3,7 @@ package main;
 fun main() int {
 
     imt int a = 10;
-    a = 20;
+    a = 20; // error
 
     var int b = 20;
     b = 30;

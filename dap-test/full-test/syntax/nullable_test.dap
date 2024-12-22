@@ -1,0 +1,11 @@
+package main;
+
+fun main() int {
+    var int a? = 10;
+
+    var int b! = 10;
+
+    var int c! = a; // error
+
+    return 0;
+}

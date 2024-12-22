@@ -808,8 +808,8 @@ Value *IfStmt::codeGen(inter_gen::InterGenContext *ctx)
             BUILDER.SetInsertPoint(mergeBB);
             ctx->pushBlock(mergeBB);
 
-            Value *phi =
-                mergeBlock(thenBody, thenBB, thenBBEndIter, ctx->mergeBBInNestIfSrcVal, ctx->mergeBBInNestIfSource, ctx->mergeBBInNestIfSource->end(), ctx);
+            Value *phi = mergeBlock(thenBody, thenBB, thenBBEndIter, ctx->mergeBBInNestIfSrcVal,
+                                    ctx->mergeBBInNestIfSource, ctx->mergeBBInNestIfSource->end(), ctx);
             ctx->mergeBBInNestIfSource = nullptr;
 
             ctx->popBlock(); // pop merge block
@@ -953,7 +953,6 @@ Value *VarDecl::codeGen(inter_gen::InterGenContext *ctx)
         ctx->locals()[name->getName()] = {
             gep, new inter_gen::VariableMetaData(name->getName(), gep->getType(), is_mutable, is_nullable)};
         ctx->addPtrValBaseTypeMapping(allocaInst, baseType);
-
         gepMapping->insert(std::make_pair(gep, allocaInst));
 
         // If there's an initializer Expression, evaluate it
@@ -1102,13 +1101,21 @@ Value *AssignExpr::codeGen(inter_gen::InterGenContext *ctx)
 
     if (!valMetaData->isNullable() && isNullable(rhs, ctx)) {
         REPORT_ERROR("error at: " + ctx->sourcePath + ":" + std::to_string(ctx->currLine) +
-                         " \ncan not assign to a non-nullable value: " + lhs->getName(),
+                         " \ncan not assign a nullable value to a non-nullable value: " + lhs->getName(),
                      __FILE__, __LINE__);
         return nullptr;
     }
 
     // Store the result of the right-hand side Expression in the left-hand side
     // variable
+    Value *lhsVal = ctx->getVal(lhs->getName());
+    if (dyn_cast<AllocaInst>(lhsVal)) {
+        return BUILDER.CreateStore(rhs->codeGen(ctx), ctx->getVal(lhs->getName()), false);
+    }
+    if (lhsVal->getType()->isPointerTy()) {
+        BUILDER.CreateLoad(ctx->getPtrValBaseTy(gepMapping->at(lhsVal)), lhsVal, "lhs");
+        return BUILDER.CreateStore(rhs->codeGen(ctx), ctx->getVal(lhs->getName()), false);
+    }
     return BUILDER.CreateStore(rhs->codeGen(ctx), ctx->getVal(lhs->getName()), false);
 }
 

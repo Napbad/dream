@@ -1,0 +1,32 @@
+package combined_example;
+
+fun main() int {
+    // Simple basic type variables definition and usage
+    var int num1 = 5;  // Define a mutable integer variable named num1 and initialize it with value 5.
+    imt int num2 = 10;  // Define an immutable integer variable named num2 and initialize it with value 10.
+    var float price = 9.99;  // Define a mutable floating-point variable named price and initialize it with value 9.99.
+    imt char initial = 'A';  // Define an immutable character variable named initial and initialize it with character 'A'.
+
+    // Use the basic type variables in a simple operation (just adding num1 and num2 here as an example).
+    var int sumBasic = num1 + num2;
+
+    // Array type variables definition and operations
+    var int[3] fixedSizeArray = [1, 2, 3];  // Define a fixed-size integer array with 3 elements and initialize it.
+    var string[] dynamicSizeArray;  // Declare a dynamic-size string array.
+    dynamicSizeArray = ["apple", "banana", "cherry"];  // Initialize the dynamic array with some string values.
+    dynamicSizeArray[1] = "orange";  // Modify an element in the dynamic-size array.
+
+    // Iterate over the fixed-size array to sum up its elements.
+    var int sumArray = 0;
+    for int i = 0; i < 3; ++i {
+        sumArray += fixedSizeArray[i];
+    }
+
+    // Pointer type variables definition and operations
+    var int num = 20;  // Define an integer variable named num and initialize it with value 20.
+    var int* ptrToNum;  // Define a pointer variable named ptrToNum that can point to an integer.
+    ptrToNum = &num;  // Assign the address of num to ptrToNum.
+    ptrToNum = 30;  // Modify the value of the variable that ptrToNum points to.
+
+    return 0;
+}
