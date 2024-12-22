@@ -110,7 +110,9 @@ extern int yydebug;
     NON_NULLABLE = 311,            /* NON_NULLABLE  */
     LSHIFT = 312,                  /* LSHIFT  */
     RSHIFT = 313,                  /* RSHIFT  */
-    URSHIFT = 314                  /* URSHIFT  */
+    URSHIFT = 314,                 /* URSHIFT  */
+    TRUE = 315,                    /* TRUE  */
+    FALSE = 316                    /* FALSE  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -137,7 +139,7 @@ union YYSTYPE
     bool boolval;
     int token;
 
-#line 141 "./src/core/parser/parser.hpp"
+#line 143 "./src/core/parser/parser.hpp"
 
 };
 typedef union YYSTYPE YYSTYPE;

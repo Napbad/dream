@@ -70,12 +70,13 @@ void printParseInfo(const char* ruleName, int lineNumber, const std::string& val
 %token <token> FUN EXTERN INCLUDE PACKAGE
 %token <token> VAR IMT NULLABLE NON_NULLABLE
 %token <token> LSHIFT RSHIFT URSHIFT
+%token <boolval> TRUE FALSE
 
 /* Define the non-terminals and their types */
 %type <token> binary_operator unary_operator
 %type <node> program
 %type <block> block
-%type <expr> expression binary_expression unary_expression
+%type <expr> expression binary_expression unary_expression bool_expression
 %type <stmt> stmt
 %type <stmt> if_statement elif_statement for_statement function_declaration
 %type <stmt> extern_decl struct_decl assign_expr array_assign_stmt include_stmt
@@ -417,7 +418,12 @@ expression:
         $$ = new StringExpr(str);
         delete $1; // Clean up the string
         $$->line = yylineno;
-
+    }
+    | bool_expression {
+        $$ = $1;
+        $$->line = yylineno;
+        
+        printParseInfo("expression (bool_expression)", yylineno);
     }
     | qualified_name {
         $$ = new VarExpr($1);
@@ -462,6 +468,18 @@ expression:
         printParseInfo("expression (array access)", yylineno);
     }
 ;
+
+bool_expression:
+    TRUE {
+        printParseInfo("expression (TRUE)", yylineno);
+        $$ = new BoolExpr(true);
+        $$->line = yylineno;
+    }
+    | FALSE {
+        printParseInfo("expression (FALSE)", yylineno);
+        $$ = new BoolExpr(false);
+        $$->line = yylineno;
+    }
 
 unary_expression:
     unary_operator expression {
@@ -649,6 +667,7 @@ array_assign_stmt:
         $$ = new ArrayAssignExpr($1, $3, $6);
         $$->line = yylineno;
         printParseInfo("array_assign_expr", yylineno);
+
     }
 ;
 

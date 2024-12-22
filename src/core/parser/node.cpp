@@ -169,4 +169,11 @@ bool DeleteStmt::isa(NodeMetaDataType type)
     return type == NodeMetaDataType::DeleteStmt;
 }
 
+
+
+bool BoolExpr::isa(NodeMetaDataType type)
+{
+    return type == NodeMetaDataType::BoolExpr;
+}
+
 } // namespace dap::parser

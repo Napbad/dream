@@ -117,8 +117,10 @@ void printTokenInfo(int token, int lineNumber, const std::string& value = "") {
         case RSHIFT: tokenName = "RSHIFT"; break;
         case URSHIFT: tokenName = "URSHIFT"; break;
         case XOR: tokenName = "XOR"; break;
-        case LBRACKET: tokenName = "LBRACKET"; break; // Added
-        case RBRACKET: tokenName = "RBRACKET"; break; // Added
+        case LBRACKET: tokenName = "LBRACKET"; break; 
+        case RBRACKET: tokenName = "RBRACKET"; break; 
+        case TRUE: tokenName = "TRUE"; break;
+        case FALSE: tokenName = "FALSE"; break;
         default: tokenName = "UNKNOWN_TOKEN"; break;
     }
     std::ostringstream oss;
@@ -202,10 +204,20 @@ void printTokenInfo(int token, int lineNumber, const std::string& value = "") {
 
 "&"        { printTokenInfo(BIT_AND, yylineno); llcolumn += strlen("&"); return BIT_AND; }
 
+"true"     { printTokenInfo(TRUE, yylineno); llcolumn += strlen("true"); return TRUE; }
+"false"    { printTokenInfo(FALSE, yylineno); llcolumn += strlen("false"); return FALSE; }
+
 [a-zA-Z_][a-zA-Z0-9_]*  { SAVE_TOKEN; printTokenInfo(IDENTIFIER, yylineno, *yylval.string); llcolumn += yyleng; return IDENTIFIER; }
 [0-9]+\.[0-9]+          { SAVE_TOKEN; printTokenInfo(DOUBLE_TOKEN, yylineno, *yylval.string); llcolumn += yyleng; return DOUBLE_TOKEN; }
 [0-9]+                  { SAVE_TOKEN; printTokenInfo(INT_TOKEN, yylineno, *yylval.string); llcolumn += yyleng; return INT_TOKEN; }
 \"([^\\\"]|\\.)*\"      { SAVE_TOKEN; printTokenInfo(STRING_LITERAL, yylineno, *yylval.string); llcolumn += yyleng; return STRING_LITERAL; }
+\'[a-zA-Z]\'            { SAVE_TOKEN;
+                            printTokenInfo(INT_TOKEN, yylineno, *yylval.string);
+                            llcolumn += yyleng;
+                            int ch = int ((*yylval.string).at(1));
+                            delete yylval.string;
+                            yylval.string = new std::string(std::to_string(ch));
+                            return INT_TOKEN; }
 
 "//"[^\n]*  { llcolumn += yyleng; }
 

@@ -57,3 +57,5 @@ def test_syntax(dap_main, source_runtime_dir, d_debug = False):
 
             else:
                 print(Fore.GREEN + "PASS" + Style.RESET_ALL)
+
+                ['/home/napbad/Project/dap/build/dap_main -s /home/napbad/Project/dap/src/dap/runtime /home/napbad/Project/dap/dap-test/full-test/syntax/type_base_test.dap -i']

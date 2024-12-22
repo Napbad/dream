@@ -1,32 +1,62 @@
+
 package combined_example;
 
 fun main() int {
-    // Simple basic type variables definition and usage
-    var int num1 = 5;  // Define a mutable integer variable named num1 and initialize it with value 5.
-    imt int num2 = 10;  // Define an immutable integer variable named num2 and initialize it with value 10.
-    var float price = 9.99;  // Define a mutable floating-point variable named price and initialize it with value 9.99.
-    imt char initial = 'A';  // Define an immutable character variable named initial and initialize it with character 'A'.
+    // int type variable
+    var int numInt = 10;  // Define a mutable integer variable and initialize it with value 10.
+    imt int constNumInt = 20;  // Define an immutable integer variable and initialize it with value 20.
 
-    // Use the basic type variables in a simple operation (just adding num1 and num2 here as an example).
-    var int sumBasic = num1 + num2;
+    // byte type variable (assuming it's used similar to other integer types in this language context)
+    var byte numByte = 42;  // Define a mutable byte variable and initialize it with value 42.
+    imt byte constNumByte = 10;  // Define an immutable byte variable and initialize it with value 10.
 
-    // Array type variables definition and operations
-    var int[3] fixedSizeArray = [1, 2, 3];  // Define a fixed-size integer array with 3 elements and initialize it.
-    var string[] dynamicSizeArray;  // Declare a dynamic-size string array.
-    dynamicSizeArray = ["apple", "banana", "cherry"];  // Initialize the dynamic array with some string values.
-    dynamicSizeArray[1] = "orange";  // Modify an element in the dynamic-size array.
+    // short type variable
+    var short numShort = 300;  // Define a mutable short variable and initialize it with value 300.
+    imt short constNumShort = 400;  // Define an immutable short variable and initialize it with value 400.
 
-    // Iterate over the fixed-size array to sum up its elements.
-    var int sumArray = 0;
-    for int i = 0; i < 3; ++i {
-        sumArray += fixedSizeArray[i];
-    }
+    // long type variable
+    var long numLong = 10000000000;  // Define a mutable long variable and initialize it with a large long value.
+    imt long constNumLong = 20000000000;  // Define an immutable long variable and initialize it with another long value.
 
-    // Pointer type variables definition and operations
-    var int num = 20;  // Define an integer variable named num and initialize it with value 20.
-    var int* ptrToNum;  // Define a pointer variable named ptrToNum that can point to an integer.
-    ptrToNum = &num;  // Assign the address of num to ptrToNum.
-    ptrToNum = 30;  // Modify the value of the variable that ptrToNum points to.
+    // char type variable
+    var char charVariable = 'A';  // Define a mutable character variable and initialize it with character 'A'.
+    imt char constCharVariable = 'B';  // Define an immutable character variable and initialize it with character 'B'.
+
+    // float type variable
+    var float numFloat = 9.99;  // Define a mutable floating-point variable and initialize it with value 9.99.
+    imt float constNumFloat = 8.88;  // Define an immutable floating-point variable and initialize it with value 8.88.
+
+    // string type variable
+    var byte[14] str = "Hello, world!";  // Define a mutable string variable and initialize it with a sample string.
+    imt byte[17] constStr = "Immutable string";  // Define an immutable string variable and initialize it with another string.
+
+    // bool type variable
+    var bool isTrue = true;  // Define a mutable boolean variable and set it to true.
+    imt bool constIsTrue = false;  // Define an immutable boolean variable and set it to false.
+
+    // uint type variable (unsigned integer)
+    var uint numUint = 50;  // Define a mutable unsigned integer variable and initialize it with value 50.
+    imt uint constNumUint = 60;  // Define an immutable unsigned integer variable and initialize it with value 60.
+
+    // ushort type variable (unsigned short)
+    var ushort numUShort = 100;  // Define a mutable unsigned short variable and initialize it with value 100.
+    imt ushort constNumUShort = 200;  // Define an immutable unsigned short variable and initialize it with value 200.
+
+    // ulong type variable (unsigned long)
+    var ulong numULong = 10000000000;  // Define a mutable unsigned long variable and initialize it with a large unsigned long value.
+    imt ulong constNumULong = 20000000000;  // Define an immutable unsigned long variable and initialize it with another unsigned long value.
+
+    // llong type variable (long long, assuming it's a larger integer type)
+    var llong numLLong = 12345678901234567890;  // Define a mutable long long variable and initialize it with a very large value.
+    imt llong constNumLLong = 98765432109876543210;  // Define an immutable long long variable and initialize it with another large value.
+
+    // ullong type variable (unsigned long long)
+    var ullong numULLong = 12345678901234567890;  // Define a mutable unsigned long long variable and initialize it with a very large unsigned value.
+    imt ullong constNumULLong = 98765432109876543210;  // Define an immutable unsigned long long variable and initialize it with another large unsigned value.
+
+    // double type variable
+    var double numDouble = 199.99;  // Define a mutable double precision floating-point variable and initialize it with value 199.99.
+    imt double constNumDouble = 188.88;  // Define an immutable double precision floating-point variable and initialize it with value 188.88.
 
     return 0;
 }

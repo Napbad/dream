@@ -96,6 +96,18 @@ class QualifiedName final : public Expr
     bool isa(NodeMetaDataType type) override;
 };
 
+class BoolExpr final : public Expr
+{
+  public:
+    bool value;
+    BoolExpr(bool value) : value(value)
+    {
+    }
+
+    llvm::Value *codeGen(inter_gen::InterGenContext *ctx) override;
+    bool isa(NodeMetaDataType type) override;
+};
+
 class DoubleExpr final : public Expr
 {
   public:

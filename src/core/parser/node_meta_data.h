@@ -20,6 +20,7 @@ enum class NodeMetaDataType {
     DoubleExpr,
     IntegerExpr,
     StringExpr,
+    BoolExpr,
     VarExpr,
     BinaryExpr,
     UnaryExpr,

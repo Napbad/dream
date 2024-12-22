@@ -48,6 +48,15 @@ namespace parser
 using std::map;
 using std::string;
 
+llvm::Value *BoolExpr::codeGen(inter_gen::InterGenContext *ctx)
+{
+    ctx->currLine = this->line;
+    if (value) {
+        return llvm::ConstantInt::get(llvm::Type::getInt1Ty(LLVMCTX), 1);
+    }
+    return llvm::ConstantInt::get(llvm::Type::getInt1Ty(LLVMCTX), 0);
+}
+
 // Generates code for an Integer Expression (integer constant)
 Value *IntegerExpr::codeGen(inter_gen::InterGenContext *ctx)
 {
@@ -1122,7 +1131,7 @@ Value *AssignExpr::codeGen(inter_gen::InterGenContext *ctx)
 Value *ArrayAssignExpr::codeGen(inter_gen::InterGenContext *ctx)
 {
     ctx->currLine = this->line;
-    Value *base = lhs->codeGen(ctx);
+    Value *base = ctx->getVal(lhs->getName());
     if (!base) {
         REPORT_ERROR("error at: " + ctx->sourcePath + ":" + std::to_string(ctx->currLine) +
                          " \nVariable not found in local context",
@@ -1143,8 +1152,9 @@ Value *ArrayAssignExpr::codeGen(inter_gen::InterGenContext *ctx)
     }
     if (llvm::isa<ArrayType>(base->getType())) {
         const std::vector<Value *> idxList = {ConstantInt::get(LLVMCTX, APInt(32, 0)), idxVal};
-        Value *ptrAdd = BUILDER.CreateGEP(base->getType(), base, idxList, "ptrAccess_");
-        return BUILDER.CreateStore(rhs->codeGen(ctx), ptrAdd);
+        if (dyn_cast<AllocaInst>(base)) {
+            return BUILDER.CreateStore(rhs->codeGen(ctx), base);
+        }
     }
     return nullptr;
 }
