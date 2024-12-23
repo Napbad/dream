@@ -1,0 +1,13 @@
+package main;
+
+fun main() int {
+
+    imt int a = 10;
+    var int b = 20;
+
+    for int i = 0; i < 10; ++i {
+        b += i;
+    }
+
+    return 0;
+}

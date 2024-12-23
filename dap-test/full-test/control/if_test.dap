@@ -1,0 +1,35 @@
+package main;
+
+fun main() int {
+
+    imt int a = 10;
+    var int b = 20;
+
+    if a > b {
+        write(1, "a > b", 6);
+    } else {
+        write(1, "a <= b", 6);
+    }
+
+    a = 20; 
+
+    if a > b {
+        write(1, "a > b", 6);
+    } elif a == b {
+        write(1, "a == b", 6);
+    } else {
+        write(1, "a < b", 6);
+    }
+
+    a = 30;
+
+    if a > b {
+        write(1, "a > b", 6);
+    }
+
+    if a < b {
+        write(1, "a < b", 6);
+    }
+
+    return 0;
+}

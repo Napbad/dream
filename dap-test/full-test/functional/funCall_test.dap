@@ -1,0 +1,11 @@
+package main;
+
+
+extern int write(int fd, imt byte* buf, int n);
+
+int main() int {
+
+    
+
+    return 0;
+}
