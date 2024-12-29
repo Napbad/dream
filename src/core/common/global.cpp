@@ -8,7 +8,8 @@
 #include <llvm/IR/DerivedTypes.h>
 #include <llvm/IR/LLVMContext.h>
 #include <llvm/IR/Type.h>
-
+namespace dap
+{
 heap_d *globalHeap_d = nullptr;
 
 std::map<Value *, AllocaInst *> *gepMapping_d = new std::map<Value *, AllocaInst *>();
@@ -29,7 +30,7 @@ std::string buildDir = "./build/";
 
 std::string targetExecName = "main";
 
-dap::inter_gen::ModuleMetaData *getModuleMetaData(const std::string &name)
+inter_gen::ModuleMetaData *getModuleMetaData(const std::string &name)
 {
     for (const auto &[moduleName, metaData] : *moduleMetadataMap_d) {
         if (moduleName == name) {
@@ -39,3 +40,8 @@ dap::inter_gen::ModuleMetaData *getModuleMetaData(const std::string &name)
 
     return nullptr;
 }
+AllocaInst *getEPSrcVal(Value *ep)
+{
+    return gepMapping_d->at(ep);
+}
+} // namespace dap

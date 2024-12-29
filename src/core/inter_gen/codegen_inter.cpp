@@ -111,7 +111,7 @@ Value *QualifiedName::codeGen(inter_gen::InterGenContext *ctx)
     }
 
     if (const auto inst = dyn_cast<AllocaInst>(ctx->getVal(getFirstName()))) {
-        return BUILDER.CreateLoad(inst->getAllocatedType(), inst, false, getFirstName());
+        return BUILDER.CreateLoad(inst->getAllocatedType(), inst, "value");
     }
 
     if (llvm::isa<PointerType>(ctx->getVal(getFirstName())->getType())) {
@@ -1241,6 +1241,7 @@ Value *UnaryExpr::codeGen(inter_gen::InterGenContext *ctx)
         operVal = BUILDER.CreateAdd(operVal, ConstantInt::get(operVal->getType(), 1), "increase"); // Increment
         return operVal;
     case TIMES:
+
         if (llvm::isa<PointerType>(operVal->getType())) {
             operVal = BUILDER.CreateLoad(expectDerefType_d->top(), operVal, "dereference");
             return operVal;
@@ -1251,6 +1252,15 @@ Value *UnaryExpr::codeGen(inter_gen::InterGenContext *ctx)
     case MINUS:
         return BUILDER.CreateNeg(operVal, "negate");
     case BIT_AND:
+
+        if (LoadInst * loadInst = dyn_cast<LoadInst>(operVal)) {
+            Value * ptr = loadInst->getOperand(0);
+            return ptr;
+        }
+
+        if (dyn_cast<AllocaInst>(operVal)) {
+            return operVal;
+        }
         if (operVal->getType()->isArrayTy()) {
             if (llvm::isa<LoadInst>(operVal)) {
                 auto *castReturn = dyn_cast<LoadInst>(operVal);

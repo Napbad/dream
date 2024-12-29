@@ -107,6 +107,7 @@ int main(const int argc, char **argv)
         default:
             cerr << "Invalid option: " << static_cast<char>(opt) << endl;
             cerr << "Usage: " << argv[0]
+          
                  << " [-h] [-d <directory>] [-D] [-i] [-e] [-o <output_directory>] [-n <executable_name>]" << endl;
             return 1;
         }

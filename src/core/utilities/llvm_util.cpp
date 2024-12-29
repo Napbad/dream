@@ -100,4 +100,16 @@ inline Type *getPointerOf(Type *type, const inter_gen::InterGenContext *ctx)
     PointerType *pointer = PointerType::get(type, 0);
     return pointer;
 }
+Value *getVal(Value *src, inter_gen::InterGenContext* ctx)
+{
+    if (const auto alloc = dyn_cast<AllocaInst>(src)) {
+        return BUILDER.CreateLoad(alloc->getAllocatedType(), alloc, "cal_alloc");
+    }
+
+    if (src->getType()->isPointerTy()) {
+        return BUILDER.CreateLoad(getEPSrcVal(src)->getAllocatedType(), getEPSrcVal(src), "cal_alloc");
+    }
+
+    return src;
+}
 } // namespace dap::util

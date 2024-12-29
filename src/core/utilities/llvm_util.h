@@ -17,6 +17,8 @@ Type *typeOf(const parser::QualifiedName &type, const inter_gen::InterGenContext
 Type *typeOf_d(const parser::QualifiedName &type, const inter_gen::InterGenContext *ctx, parser::Expr *size);
 
 Type *getPointerOf(Type *type, const inter_gen::InterGenContext *ctx = nullptr);
+
+Value *getVal(Value *src, inter_gen::InterGenContext *ctx);
 } // namespace dap::util
 
 #endif // LLVM_UTIL_H

@@ -3,7 +3,10 @@ import os.path
 import subprocess
 from _ast import pattern
 
+from control.test_control import test_control
+from functional.test_functional import test_functional
 from syntax.test_syntax import test_syntax
+from test_res import print_result
 from util import get_dap_files
 from colorama import init, Fore, Style
 
@@ -38,3 +41,7 @@ for file in dap_files:
 
 
 test_syntax(dap_main, source_runtime_dir)
+test_functional(dap_main, source_runtime_dir)
+test_control(dap_main, source_runtime_dir)
+
+print_result()

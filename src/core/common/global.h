@@ -1,24 +1,35 @@
 //
 // Created by napbad on 11/19/24.
 //
+// this file stores all the information that are global to the project
 
 #ifndef GLOBAL_H
 #define GLOBAL_H
-#include "../inter_gen/metadata.h"
 
 #include <llvm/IR/Value.h>
 #include <map>
 #include <stack>
 
-namespace dap::parser
-{
-class Program;
-}
 
 namespace llvm
 {
 class AllocaInst;
 }
+
+namespace dap
+{
+
+namespace inter_gen
+{
+class ModuleMetaData;
+class InterGenContext;
+}
+
+namespace parser
+{
+class Program;
+}
+
 
 using namespace llvm;
 
@@ -67,8 +78,12 @@ extern std::string buildDir;
 // name of the executable file
 extern std::string targetExecName;
 
-dap::inter_gen::ModuleMetaData *getModuleMetaData(const std::string &name);
+inter_gen::ModuleMetaData *getModuleMetaData(const std::string &name);
+
+AllocaInst* getEPSrcVal(Value *ep);
 
 #define globalHeap globalHeap_d
 #define gepMapping gepMapping_d
+} // namespace dap
+
 #endif // GLOBAL_H

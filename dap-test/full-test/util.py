@@ -13,3 +13,7 @@ def get_dap_files(directory):
 # directory_path = "/your/specified/directory"
 # result = get_dap_files(directory_path)
 # print(result)
+
+def check_output(command, expect):
+
+    return True
