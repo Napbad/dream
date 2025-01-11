@@ -56,7 +56,11 @@ public:
     ASTNode* returnType;
     ASTNode* block;
 
-    FunctionDeclarationNode(const std::string& name) : ASTNode("function_declaration", name) {}
+    FunctionDeclarationNode(const std::string& name) : ASTNode("function_declaration", name), parameterList(nullptr),
+                                                       returnType(nullptr),
+                                                       block(nullptr) {
+    }
+
     ~FunctionDeclarationNode() {
         delete parameterList;
         delete returnType;

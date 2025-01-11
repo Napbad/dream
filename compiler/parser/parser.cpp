@@ -69,12 +69,12 @@
 /* First part of user prologue.  */
 #line 1 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
 
-#include "node.h"
-#include "compiler/parser/parser.hpp"
-#include "compiler/common/define_d.h"
-#include <string>
-#include <cstring>
-#include "compiler/utilities/file_util.h"
+//#include "node.h"
+//#include "compiler/parser/parser.hpp"
+//#include "compiler/common/define_d.h"
+//#include <string>
+//#include <cstring>
+//#include "compiler/utilities/file_util.h"
 
 #define SAVE_TOKEN  yylval.string = new std::string(yytext, yyleng); \
     std::cout << "Token: " << yytext << " size: " << std::to_string(yyleng) << std::endl;\
@@ -115,98 +115,7 @@ std::string *handle_string_literal(const char *str) {
 #  endif
 # endif
 
-
-/* Debug traces.  */
-#ifndef YYDEBUG
-# define YYDEBUG 0
-#endif
-#if YYDEBUG
-extern int yydebug;
-#endif
-
-/* Token kinds.  */
-#ifndef YYTOKENTYPE
-# define YYTOKENTYPE
-  enum yytokentype
-  {
-    YYEMPTY = -2,
-    YYEOF = 0,                     /* "end of file"  */
-    YYerror = 256,                 /* error  */
-    YYUNDEF = 257,                 /* "invalid token"  */
-    PACKAGE = 258,                 /* PACKAGE  */
-    IMPORT = 259,                  /* IMPORT  */
-    FUN = 260,                     /* FUN  */
-    VOID = 261,                    /* VOID  */
-    FOR = 262,                     /* FOR  */
-    IF = 263,                      /* IF  */
-    ELSE = 264,                    /* ELSE  */
-    MATCH = 265,                   /* MATCH  */
-    STRUCT = 266,                  /* STRUCT  */
-    TRAIT = 267,                   /* TRAIT  */
-    TYPEDEF = 268,                 /* TYPEDEF  */
-    IMT = 269,                     /* IMT  */
-    VAR = 270,                     /* VAR  */
-    INSTANCEOF = 271,              /* INSTANCEOF  */
-    RETURN = 272,                  /* RETURN  */
-    INT = 273,                     /* INT  */
-    BYTE = 274,                    /* BYTE  */
-    SHORT = 275,                   /* SHORT  */
-    LONG = 276,                    /* LONG  */
-    CHAR = 277,                    /* CHAR  */
-    FLOAT = 278,                   /* FLOAT  */
-    DOUBLE = 279,                  /* DOUBLE  */
-    BOOL = 280,                    /* BOOL  */
-    UINT = 281,                    /* UINT  */
-    USHORT = 282,                  /* USHORT  */
-    ULONG = 283,                   /* ULONG  */
-    LLLONG = 284,                  /* LLLONG  */
-    ULLONG = 285,                  /* ULLONG  */
-    IDENTIFIER = 286,              /* IDENTIFIER  */
-    INTEGER = 287,                 /* INTEGER  */
-    BINARY_LITERAL = 288,          /* BINARY_LITERAL  */
-    OCTAL_LITERAL = 289,           /* OCTAL_LITERAL  */
-    HEXADECIMAL_LITERAL = 290,     /* HEXADECIMAL_LITERAL  */
-    LITERAL = 291,                 /* LITERAL  */
-    FLOAT_LITERAL = 292,           /* FLOAT_LITERAL  */
-    STRING_LITERAL = 293,          /* STRING_LITERAL  */
-    CHAR_LITERAL = 294,            /* CHAR_LITERAL  */
-    ASSIGN = 295,                  /* ASSIGN  */
-    ADD_ASSIGN = 296,              /* ADD_ASSIGN  */
-    MINUS_ASSIGN = 297,            /* MINUS_ASSIGN  */
-    INCREMENT = 298,               /* INCREMENT  */
-    LESS_THAN = 299,               /* LESS_THAN  */
-    COMMA = 300,                   /* COMMA  */
-    SEMICOLON = 301,               /* SEMICOLON  */
-    COLON = 302,                   /* COLON  */
-    LEFT_BRACE = 303,              /* LEFT_BRACE  */
-    RIGHT_BRACE = 304,             /* RIGHT_BRACE  */
-    LEFT_PAREN = 305,              /* LEFT_PAREN  */
-    RIGHT_PAREN = 306,             /* RIGHT_PAREN  */
-    LEFT_BRACKET = 307,            /* LEFT_BRACKET  */
-    RIGHT_BRACKET = 308,           /* RIGHT_BRACKET  */
-    DOT = 309,                     /* DOT  */
-    ELLIPSIS = 310,                /* ELLIPSIS  */
-    QUESTION = 311,                /* QUESTION  */
-    BANG = 312                     /* BANG  */
-  };
-  typedef enum yytokentype yytoken_kind_t;
-#endif
-
-/* Value type.  */
-#if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-typedef int YYSTYPE;
-# define YYSTYPE_IS_TRIVIAL 1
-# define YYSTYPE_IS_DECLARED 1
-#endif
-
-
-extern YYSTYPE yylval;
-
-
-int yyparse (void);
-
-
-
+#include "parser.hpp"
 /* Symbol kind.  */
 enum yysymbol_kind_t
 {
@@ -1409,7 +1318,7 @@ yyreduce:
             }
         }
     }
-#line 1413 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1322 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 3: /* package_declaration: PACKAGE IDENTIFIER SEMICOLON  */
@@ -1417,7 +1326,7 @@ yyreduce:
                                    {
         yyval = new Node("package_declaration", yyvsp[-1]->value);
     }
-#line 1421 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1330 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 4: /* package_declaration: %empty  */
@@ -1425,7 +1334,7 @@ yyreduce:
                   {
         yyval = nullptr;
     }
-#line 1429 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1338 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 5: /* import_declarations: import_declaration import_declarations  */
@@ -1439,7 +1348,7 @@ yyreduce:
         }
         yyval = v;
     }
-#line 1443 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1352 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 6: /* import_declarations: %empty  */
@@ -1447,7 +1356,7 @@ yyreduce:
                   {
         yyval = new vector<Node*>();
     }
-#line 1451 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1360 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 7: /* import_declaration: IMPORT IDENTIFIER SEMICOLON  */
@@ -1455,7 +1364,7 @@ yyreduce:
                                   {
         yyval = new Node("import_declaration", yyvsp[-1]->value);
     }
-#line 1459 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1368 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 8: /* function_declarations: function_declaration function_declarations  */
@@ -1469,7 +1378,7 @@ yyreduce:
         }
         yyval = v;
     }
-#line 1473 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1382 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 9: /* function_declarations: %empty  */
@@ -1477,7 +1386,7 @@ yyreduce:
                   {
         yyval = new vector<Node*>();
     }
-#line 1481 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1390 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 10: /* function_declaration: FUN IDENTIFIER LEFT_PAREN parameter_list RIGHT_PAREN return_type block  */
@@ -1489,7 +1398,7 @@ yyreduce:
         funcNode->children.push_back(yyvsp[0]);
         yyval = funcNode;
     }
-#line 1493 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1402 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 11: /* parameter_list: parameter COMMA parameter_list  */
@@ -1500,7 +1409,7 @@ yyreduce:
         paramListNode->children.push_back(yyvsp[0]);
         yyval = paramListNode;
     }
-#line 1504 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1413 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 12: /* parameter_list: parameter  */
@@ -1510,7 +1419,7 @@ yyreduce:
         paramListNode->children.push_back(yyvsp[0]);
         yyval = paramListNode;
     }
-#line 1514 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1423 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 13: /* parameter_list: %empty  */
@@ -1518,7 +1427,7 @@ yyreduce:
                   {
         yyval = new Node("parameter_list", "");
     }
-#line 1522 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1431 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 14: /* parameter: IMT type IDENTIFIER  */
@@ -1529,7 +1438,7 @@ yyreduce:
         paramNode->children.push_back(yyvsp[-1]);
         yyval = paramNode;
     }
-#line 1533 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1442 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 15: /* parameter: VAR type IDENTIFIER  */
@@ -1540,7 +1449,7 @@ yyreduce:
         paramNode->children.push_back(yyvsp[-1]);
         yyval = paramNode;
     }
-#line 1544 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1453 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 16: /* return_type: type  */
@@ -1548,7 +1457,7 @@ yyreduce:
            {
         yyval = yyvsp[0];
     }
-#line 1552 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1461 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 17: /* return_type: VOID  */
@@ -1556,7 +1465,7 @@ yyreduce:
            {
         yyval = new Node("return_type", "void");
     }
-#line 1560 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1469 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 18: /* type: INT  */
@@ -1564,7 +1473,7 @@ yyreduce:
           {
         yyval = new Node("type", "int");
     }
-#line 1568 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1477 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 19: /* type: BYTE  */
@@ -1572,7 +1481,7 @@ yyreduce:
            {
         yyval = new Node("type", "byte");
     }
-#line 1576 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1485 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 20: /* type: SHORT  */
@@ -1580,7 +1489,7 @@ yyreduce:
             {
         yyval = new Node("type", "short");
     }
-#line 1584 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1493 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 21: /* type: LONG  */
@@ -1588,7 +1497,7 @@ yyreduce:
            {
         yyval = new Node("type", "long");
     }
-#line 1592 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1501 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 22: /* type: CHAR  */
@@ -1596,7 +1505,7 @@ yyreduce:
            {
         yyval = new Node("type", "char");
     }
-#line 1600 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1509 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 23: /* type: FLOAT  */
@@ -1604,7 +1513,7 @@ yyreduce:
             {
         yyval = new Node("type", "float");
     }
-#line 1608 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1517 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 24: /* type: DOUBLE  */
@@ -1612,7 +1521,7 @@ yyreduce:
              {
         yyval = new Node("type", "double");
     }
-#line 1616 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1525 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 25: /* type: BOOL  */
@@ -1620,7 +1529,7 @@ yyreduce:
            {
         yyval = new Node("type", "bool");
     }
-#line 1624 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1533 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 26: /* type: UINT  */
@@ -1628,7 +1537,7 @@ yyreduce:
            {
         yyval = new Node("type", "uint");
     }
-#line 1632 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1541 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 27: /* type: USHORT  */
@@ -1636,7 +1545,7 @@ yyreduce:
              {
         yyval = new Node("type", "ushort");
     }
-#line 1640 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1549 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 28: /* type: ULONG  */
@@ -1644,7 +1553,7 @@ yyreduce:
             {
         yyval = new Node("type", "ulong");
     }
-#line 1648 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1557 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 29: /* type: LLLONG  */
@@ -1652,7 +1561,7 @@ yyreduce:
              {
         yyval = new Node("type", "lllong");
     }
-#line 1656 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1565 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 30: /* type: ULLONG  */
@@ -1660,7 +1569,7 @@ yyreduce:
              {
         yyval = new Node("type", "ullong");
     }
-#line 1664 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1573 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 31: /* type: IDENTIFIER  */
@@ -1668,7 +1577,7 @@ yyreduce:
                  {
         yyval = new Node("type", yyvsp[0]->value);
     }
-#line 1672 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1581 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 32: /* block: LEFT_BRACE statement_list RIGHT_BRACE  */
@@ -1678,7 +1587,7 @@ yyreduce:
         blockNode->children.push_back(yyvsp[-1]);
         yyval = blockNode;
     }
-#line 1682 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1591 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 33: /* statement_list: statement statement_list  */
@@ -1689,7 +1598,7 @@ yyreduce:
         stmtListNode->children.push_back(yyvsp[0]);
         yyval = stmtListNode;
     }
-#line 1693 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1602 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 34: /* statement_list: %empty  */
@@ -1697,7 +1606,7 @@ yyreduce:
                   {
         yyval = new Node("statement_list", "");
     }
-#line 1701 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1610 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 35: /* statement: variable_declaration SEMICOLON  */
@@ -1705,7 +1614,7 @@ yyreduce:
                                      {
         yyval = yyvsp[-1];
     }
-#line 1709 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1618 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 36: /* statement: expression SEMICOLON  */
@@ -1713,7 +1622,7 @@ yyreduce:
                            {
         yyval = yyvsp[-1];
     }
-#line 1717 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1626 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 37: /* statement: for_loop  */
@@ -1721,7 +1630,7 @@ yyreduce:
                {
         yyval = yyvsp[0];
     }
-#line 1725 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1634 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 38: /* statement: if_statement  */
@@ -1729,7 +1638,7 @@ yyreduce:
                    {
         yyval = yyvsp[0];
     }
-#line 1733 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1642 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 39: /* statement: match_statement  */
@@ -1737,7 +1646,7 @@ yyreduce:
                       {
         yyval = yyvsp[0];
     }
-#line 1741 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1650 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 40: /* statement: RETURN expression SEMICOLON  */
@@ -1748,7 +1657,7 @@ yyreduce:
         returnStmtNode->children.push_back(yyvsp[-1]);
         yyval = returnStmtNode;
     }
-#line 1752 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1661 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 41: /* variable_declaration: IMT type IDENTIFIER ASSIGN expression  */
@@ -1761,7 +1670,7 @@ yyreduce:
         varDeclNode->children.push_back(yyvsp[0]);
         yyval = varDeclNode;
     }
-#line 1765 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1674 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 42: /* variable_declaration: VAR type IDENTIFIER ASSIGN expression  */
@@ -1774,7 +1683,7 @@ yyreduce:
         varDeclNode->children.push_back(yyvsp[0]);
         yyval = varDeclNode;
     }
-#line 1778 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1687 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 43: /* variable_declaration: IMT type IDENTIFIER  */
@@ -1785,7 +1694,7 @@ yyreduce:
         varDeclNode->children.push_back(yyvsp[-1]);
         yyval = varDeclNode;
     }
-#line 1789 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1698 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 44: /* variable_declaration: VAR type IDENTIFIER  */
@@ -1796,7 +1705,7 @@ yyreduce:
         varDeclNode->children.push_back(yyvsp[-1]);
         yyval = varDeclNode;
     }
-#line 1800 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1709 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 45: /* expression: INTEGER  */
@@ -1804,7 +1713,7 @@ yyreduce:
               {
         yyval = new Node("expression", to_string(yyvsp[0]->integer));
     }
-#line 1808 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1717 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 46: /* expression: BINARY_LITERAL  */
@@ -1812,7 +1721,7 @@ yyreduce:
                      {
         yyval = new Node("expression", to_string(yyvsp[0]->integer));
     }
-#line 1816 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1725 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 47: /* expression: OCTAL_LITERAL  */
@@ -1820,7 +1729,7 @@ yyreduce:
                     {
         yyval = new Node("expression", to_string(yyvsp[0]->integer));
     }
-#line 1824 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1733 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 48: /* expression: HEXADECIMAL_LITERAL  */
@@ -1828,7 +1737,7 @@ yyreduce:
                           {
         yyval = new Node("expression", to_string(yyvsp[0]->integer));
     }
-#line 1832 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1741 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 49: /* expression: FLOAT_LITERAL  */
@@ -1836,7 +1745,7 @@ yyreduce:
                     {
         yyval = new Node("expression", to_string(yyvsp[0]->float_val));
     }
-#line 1840 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1749 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 50: /* expression: STRING_LITERAL  */
@@ -1844,7 +1753,7 @@ yyreduce:
                      {
         yyval = new Node("expression", yyvsp[0]->string->c_str());
     }
-#line 1848 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1757 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 51: /* expression: CHAR_LITERAL  */
@@ -1852,7 +1761,7 @@ yyreduce:
                    {
         yyval = new Node("expression", string(1, yyvsp[0]->char_val));
     }
-#line 1856 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1765 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 52: /* expression: IDENTIFIER  */
@@ -1860,7 +1769,7 @@ yyreduce:
                  {
         yyval = new Node("expression", yyvsp[0]->value);
     }
-#line 1864 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1773 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 53: /* expression: expression ADD_ASSIGN expression  */
@@ -1871,7 +1780,7 @@ yyreduce:
         expNode->children.push_back(yyvsp[0]);
         yyval = expNode;
     }
-#line 1875 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1784 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 54: /* expression: expression INCREMENT  */
@@ -1881,7 +1790,7 @@ yyreduce:
         expNode->children.push_back(yyvsp[-1]);
         yyval = expNode;
     }
-#line 1885 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1794 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 55: /* expression: expression LESS_THAN expression  */
@@ -1892,7 +1801,7 @@ yyreduce:
         expNode->children.push_back(yyvsp[0]);
         yyval = expNode;
     }
-#line 1896 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1805 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 56: /* expression: LEFT_PAREN expression RIGHT_PAREN  */
@@ -1902,7 +1811,7 @@ yyreduce:
         expNode->children.push_back(yyvsp[-1]);
         yyval = expNode;
     }
-#line 1906 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1815 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 57: /* for_loop: FOR type IDENTIFIER ASSIGN expression SEMICOLON expression SEMICOLON expression block  */
@@ -1919,7 +1828,7 @@ yyreduce:
         forLoopNode->children.push_back(yyvsp[0]);
         yyval = forLoopNode;
     }
-#line 1923 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1832 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 58: /* if_statement: IF LEFT_PAREN expression RIGHT_PAREN block  */
@@ -1931,7 +1840,7 @@ yyreduce:
         ifStmtNode->children.push_back(yyvsp[0]);
         yyval = ifStmtNode;
     }
-#line 1935 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1844 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 59: /* if_statement: IF LEFT_PAREN expression RIGHT_PAREN block ELSE block  */
@@ -1945,7 +1854,7 @@ yyreduce:
         ifStmtNode->children.push_back(yyvsp[0]);
         yyval = ifStmtNode;
     }
-#line 1949 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1858 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 60: /* match_statement: MATCH LEFT_PAREN expression RIGHT_PAREN match_case_list  */
@@ -1957,7 +1866,7 @@ yyreduce:
         matchStmtNode->children.push_back(yyvsp[0]);
         yyval = matchStmtNode;
     }
-#line 1961 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1870 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 61: /* match_case_list: match_case match_case_list  */
@@ -1968,7 +1877,7 @@ yyreduce:
         matchCaseListNode->children.push_back(yyvsp[0]);
         yyval = matchCaseListNode;
     }
-#line 1972 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1881 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 62: /* match_case_list: %empty  */
@@ -1976,7 +1885,7 @@ yyreduce:
                   {
         yyval = new Node("match_case_list", "");
     }
-#line 1980 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1889 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 63: /* match_case: IDENTIFIER COLON block  */
@@ -1987,7 +1896,7 @@ yyreduce:
         matchCaseNode->children.push_back(yyvsp[0]);
         yyval = matchCaseNode;
     }
-#line 1991 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1900 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 64: /* match_case: LEFT_PAREN RIGHT_PAREN COLON block  */
@@ -1998,7 +1907,7 @@ yyreduce:
         matchCaseNode->children.push_back(yyvsp[0]);
         yyval = matchCaseNode;
     }
-#line 2002 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1911 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 65: /* struct_declarations: struct_declaration struct_declarations  */
@@ -2012,7 +1921,7 @@ yyreduce:
         }
         yyval = v;
     }
-#line 2016 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1925 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 66: /* struct_declarations: %empty  */
@@ -2020,7 +1929,7 @@ yyreduce:
                   {
         yyval = new vector<Node*>();
     }
-#line 2024 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1933 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 67: /* struct_declaration: STRUCT IDENTIFIER LEFT_BRACE struct_member_list RIGHT_BRACE  */
@@ -2030,7 +1939,7 @@ yyreduce:
         structDeclNode->children.push_back(yyvsp[-1]);
         yyval = structDeclNode;
     }
-#line 2034 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1943 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 68: /* struct_declaration: STRUCT IDENTIFIER LEFT_BRACE RIGHT_BRACE  */
@@ -2039,7 +1948,7 @@ yyreduce:
         Node* structDeclNode = new Node("struct_declaration", yyvsp[-2]->value);
         yyval = structDeclNode;
     }
-#line 2043 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1952 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 69: /* struct_member_list: struct_member SEMICOLON struct_member_list  */
@@ -2050,7 +1959,7 @@ yyreduce:
         structMemberListNode->children.push_back(yyvsp[0]);
         yyval = structMemberListNode;
     }
-#line 2054 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1963 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 70: /* struct_member_list: struct_member SEMICOLON  */
@@ -2060,7 +1969,7 @@ yyreduce:
         structMemberListNode->children.push_back(yyvsp[-1]);
         yyval = structMemberListNode;
     }
-#line 2064 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1973 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 71: /* struct_member_list: %empty  */
@@ -2068,7 +1977,7 @@ yyreduce:
                   {
         yyval = new Node("struct_member_list", "");
     }
-#line 2072 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1981 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 72: /* struct_member: IMT type IDENTIFIER  */
@@ -2079,7 +1988,7 @@ yyreduce:
         structMemberNode->children.push_back(yyvsp[-1]);
         yyval = structMemberNode;
     }
-#line 2083 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1992 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 73: /* struct_member: VAR type IDENTIFIER  */
@@ -2090,7 +1999,7 @@ yyreduce:
         structMemberNode->children.push_back(yyvsp[-1]);
         yyval = structMemberNode;
     }
-#line 2094 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 2003 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 74: /* trait_declarations: trait_declaration trait_declarations  */
@@ -2104,7 +2013,7 @@ yyreduce:
         }
         yyval = v;
     }
-#line 2108 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 2017 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 75: /* trait_declarations: %empty  */
@@ -2112,7 +2021,7 @@ yyreduce:
                   {
         yyval = new vector<Node*>();
     }
-#line 2116 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 2025 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 76: /* trait_declaration: TRAIT IDENTIFIER LEFT_BRACE trait_method_list RIGHT_BRACE  */
@@ -2122,7 +2031,7 @@ yyreduce:
         traitDeclNode->children.push_back(yyvsp[-1]);
         yyval = traitDeclNode;
     }
-#line 2126 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 2035 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 77: /* trait_declaration: TRAIT IDENTIFIER LEFT_BRACE RIGHT_BRACE  */
@@ -2131,7 +2040,7 @@ yyreduce:
         Node* traitDeclNode = new Node("trait_declaration", yyvsp[-2]->value);
         yyval = traitDeclNode;
     }
-#line 2135 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 2044 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 78: /* trait_method_list: trait_method SEMICOLON trait_method_list  */
@@ -2142,7 +2051,7 @@ yyreduce:
         traitMethodListNode->children.push_back(yyvsp[0]);
         yyval = traitMethodListNode;
     }
-#line 2146 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 2055 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 79: /* trait_method_list: trait_method SEMICOLON  */
@@ -2152,7 +2061,7 @@ yyreduce:
         traitMethodListNode->children.push_back(yyvsp[-1]);
         yyval = traitMethodListNode;
     }
-#line 2156 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 2065 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 80: /* trait_method_list: %empty  */
@@ -2160,7 +2069,7 @@ yyreduce:
                   {
         yyval = new Node("trait_method_list", "");
     }
-#line 2164 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 2073 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 81: /* trait_method: FUN IDENTIFIER LEFT_PAREN parameter_list RIGHT_PAREN return_type  */
@@ -2171,7 +2080,7 @@ yyreduce:
         traitMethodNode->children.push_back(yyvsp[0]);
         yyval = traitMethodNode;
     }
-#line 2175 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 2084 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 82: /* type_definitions: type_definition type_definitions  */
@@ -2185,7 +2094,7 @@ yyreduce:
         }
         yyval = v;
     }
-#line 2189 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 2098 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 83: /* type_definitions: %empty  */
@@ -2193,7 +2102,7 @@ yyreduce:
                   {
         yyval = new vector<Node*>();
     }
-#line 2197 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 2106 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 84: /* type_definition: TYPEDEF type IDENTIFIER  */
@@ -2204,11 +2113,11 @@ yyreduce:
         typeDefNode->children.push_back(yyvsp[-1]);
         yyval = typeDefNode;
     }
-#line 2208 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 2117 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
 
-#line 2212 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 2121 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
 
       default: break;
     }

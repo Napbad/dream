@@ -1,10 +1,9 @@
 %{
-#include "node.h"
-#include "src/core/parser/parser.hpp"
-#include "src/core/common/define_d.h"
+#include "astNode.h"
+#include "parser/parser.hpp"
 #include <string>
 #include <cstring>
-#include "src/core/utilities/file_util.h"
+#include "utilities/file_util.h"
 
 #define SAVE_TOKEN  yylval.string = new std::string(yytext, yyleng); \
     std::cout << "Token: " << yytext << " size: " << std::to_string(yyleng) << std::endl;\

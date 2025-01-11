@@ -28,7 +28,7 @@ endif ()
 
 add_custom_command(
         OUTPUT ${PROJECT_SOURCE_DIR}/parser/parser.cpp
-        COMMAND ${BISON_EXECUTABLE} -o ${PROJECT_SOURCE_DIR}/parser/parser.cpp ${PROJECT_SOURCE_DIR}/parser/parser.y
+        COMMAND ${BISON_EXECUTABLE} -d -o ${PROJECT_SOURCE_DIR}/parser/parser.cpp ${PROJECT_SOURCE_DIR}/parser/parser.y
         DEPENDS ${PROJECT_SOURCE_DIR}/parser/parser.y
         COMMENT "Generating parser.cpp from parser.y"
 )
@@ -57,7 +57,19 @@ add_executable(dap_compiler
         parser/astNode.cpp
         parser/astNode.h
         parser/token.cpp
-        parser/parser.cpp)
+        parser/parser.cpp
+        parser/parser.hpp
+        parser/parser.hpp
+        utilities/data_struct_util.cpp
+        utilities/data_struct_util.h
+        utilities/file_util.cpp
+        utilities/file_util.h
+        utilities/llvm_util.cpp
+        utilities/llvm_util.h
+        utilities/obj_util.cpp
+        utilities/obj_util.h
+        utilities/string_util.cpp
+        utilities/string_util.h)
 
 
 target_link_libraries(dap_compiler PRIVATE LLVM pthread dl z ncurses)
