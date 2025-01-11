@@ -18,7 +18,7 @@ parser = argparse.ArgumentParser(description='A sample script to execute differe
 
 # Add command line arguments
 parser.add_argument('command', type=str, help='The command to execute, options include list, find, etc.')
-parser.add_argument('-d', '--directory', type=str, default='./', help='Directory to test')
+parser.add_argument('-d', '--directory', type=str, default='./', help='Directory to tests')
 parser.add_argument('-s', '--source-runtime-dir', type=str, default='./', help='Source runtime directory')
 
 # Parse command line arguments
@@ -35,7 +35,7 @@ print(Fore.BLUE + f"Dap executable file: {dap_main}" + Style.RESET_ALL)
 
 dap_files = get_dap_files(directory)
 
-print(Fore.CYAN + "Dap files to be test:" + Style.RESET_ALL)
+print(Fore.CYAN + "Dap files to be tests:" + Style.RESET_ALL)
 for file in dap_files:
     print(Fore.LIGHTMAGENTA_EX + file + Style.RESET_ALL)
 
