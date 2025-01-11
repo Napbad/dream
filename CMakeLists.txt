@@ -4,72 +4,61 @@ project(dap)
 set(CMAKE_CXX_STANDARD 20)
 
 execute_process(
-        COMMAND llvm-config --cppflags
-        OUTPUT_VARIABLE LLVM_CPPFLAGS
-        OUTPUT_STRIP_TRAILING_WHITESPACE
+    COMMAND llvm-config --cppflags
+    OUTPUT_VARIABLE LLVM_CPPFLAGS
+    OUTPUT_STRIP_TRAILING_WHITESPACE
 )
 
 add_compile_options(${LLVM_CPPFLAGS})
-add_compile_definitions(D_DEBUG)
+# add_compile_definitions(D_DEBUG)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-#find_program(CLANG_TIDY_BIN NAMES "clang-tidy")
-#if(CLANG_TIDY_BIN)
-#    set(CMAKE_CXX_CLANG_TIDY "${CLANG_TIDY_BIN}" "-checks=*")
-#endif()
-
-include_directories(${PROJECT_SOURCE_DIR})
-
-add_executable(dap_main src/core/main.cpp
-        src/core/inter_gen/codegen_inter.cpp
-        src/core/inter_gen/codegen_inter.h
-        src/core/parser/parser.cpp
-        src/core/parser/parser.hpp
-        src/core/parser/tokens.cpp
-        src/core/utilities/file_util.h
-        src/core/utilities/file_util.cpp
-        src/core/common/reserve.h
-        src/core/utilities/string_util.h
-        src/core/utilities/string_util.cpp
-        src/core/parser/node.h
-        src/core/parser/node.cpp
-        src/core/utilities/llvm_util.cpp
-        src/core/utilities/llvm_util.h
-        src/core/inter_gen/funGen_sys.cpp
-        src/core/inter_gen/funGen_sys.h
-        src/core/inter_gen/metadata.cpp
-        src/core/inter_gen/metadata.h
-        src/core/gc/DGC.cpp
-        src/core/gc/DGC.h
-        src/core/inter_gen/basicElementGen_d.cpp
-        src/core/inter_gen/basicElementGen_d.h
-        src/core/inter_gen/objectGen_d.cpp
-        src/core/inter_gen/objectGen_d.h
-        src/core/common/define_d.h
-        src/core/common/macro_def.h
-        src/core/utilities/data_struct_util.cpp
-        src/core/utilities/data_struct_util.h
-        src/core/utilities/obj_util.cpp
-        src/core/utilities/obj_util.h
-        src/core/common/global.h
-        src/core/common/global.cpp
-        src/core/common/derived_type.h
-        src/core/parser/node_meta_data.cpp
-        src/core/parser/node_meta_data.h
-        src/core/inter_gen/preprocessing/includeAnaylize.cpp
-        src/core/inter_gen/preprocessing/includeAnaylize.h
-        src/core/mechine_code_gen/codeGen_mechine.cpp
-        src/core/mechine_code_gen/codeGen_mechine.h
-        src/core/inter_gen/check/variableCheck.cpp
-        src/core/inter_gen/check/variableCheck.h
-)
-
+find_package(Python3 COMPONENTS Interpreter REQUIRED)
+find_package(BISON REQUIRED)
+find_package(FLEX REQUIRED)
 find_package(LLVM REQUIRED CONFIG)
 message(STATUS "Found LLVM ${LLVM_PACKAGE_VERSION}")
+
+# 定义生成的源文件路径
+set(PARSER_SOURCE "${PROJECT_SOURCE_DIR}/compiler/parser/parser.cpp")
+set(TOKENS_SOURCE "${PROJECT_SOURCE_DIR}/compiler/parser/tokens.cpp")
+
+# 使用 BISON 生成 parser.cpp
+add_custom_command(
+    OUTPUT ${PARSER_SOURCE}
+    COMMAND ${BISON_EXECUTABLE} -o ${PARSER_SOURCE} ${PROJECT_SOURCE_DIR}/compiler/parser/parser.y
+    DEPENDS ${PROJECT_SOURCE_DIR}/compiler/parser/parser.y
+    COMMENT "Generating parser.cpp with Bison"
+)
+
+# 使用 FLEX 生成 tokens.cpp
+add_custom_command(
+    OUTPUT ${TOKENS_SOURCE}
+    COMMAND ${FLEX_EXECUTABLE} -o ${TOKENS_SOURCE} ${PROJECT_SOURCE_DIR}/compiler/parser/tokens.l
+    DEPENDS ${PROJECT_SOURCE_DIR}/compiler/parser/tokens.l
+    COMMENT "Generating tokens.cpp with Flex"
+)
+
+add_custom_target(
+        generate_parser
+
+)
+
 list(APPEND CMAKE_MODULE_PATH "${LLVM_CMAKE_DIR}")
 include(AddLLVM)
 
+include_directories(${PROJECT_SOURCE_DIR})
+
+# 添加可执行文件并依赖于生成的源文件
+add_executable(
+    dap_main
+    compiler/parser/ASTNode.cpp
+    compiler/parser/ASTNode.h
+    ${PARSER_SOURCE}
+    ${TOKENS_SOURCE}
+    compiler/main.cpp
+)
+
 target_include_directories(dap_main PRIVATE ${LLVM_INCLUDE_DIRS})
 target_link_libraries(dap_main PRIVATE LLVM pthread dl z ncurses)
-

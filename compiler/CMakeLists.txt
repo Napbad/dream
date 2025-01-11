@@ -54,11 +54,10 @@ include(AddLLVM)
 
 add_executable(dap_compiler
         main.cpp
-        parser/astNode.cpp
-        parser/astNode.h
+        parser/ASTNode.cpp
+        parser/ASTNode.h
         parser/token.cpp
         parser/parser.cpp
-        parser/parser.hpp
         parser/parser.hpp
         utilities/data_struct_util.cpp
         utilities/data_struct_util.h
@@ -69,7 +68,13 @@ add_executable(dap_compiler
         utilities/obj_util.cpp
         utilities/obj_util.h
         utilities/string_util.cpp
-        utilities/string_util.h)
+        utilities/string_util.h
+        common/config.cpp
+        common/config.h
+        common/define_d.h
+        common/reserve.h
+        inter_gen/codeGen_inter.cpp
+        inter_gen/codeGen_inter.h)
 
 
 target_link_libraries(dap_compiler PRIVATE LLVM pthread dl z ncurses)

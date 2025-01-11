@@ -1,6 +1,7 @@
 %{
-#include "astNode.h"
+#include "ASTNode.h"
 #include "parser/parser.hpp"
+// #include "parser/parser.cpp"
 #include <string>
 #include <cstring>
 #include "utilities/file_util.h"
@@ -21,6 +22,7 @@ std::string *handle_string_literal(const char *str) {
     return result;
 }
 
+extern void yyerror(const char *msg);
 
 namespace dap::parser {
 
@@ -76,7 +78,7 @@ HEXADECIMAL 0[xX][0-9a-fA-F]([0-9a-fA-F]|{UNDERSCORE})*[0-9a-fA-F]
 
 
 
-{IDENTIFIER}      { yylval.string = strdup(yytext); return IDENTIFIER; }
+{IDENTIFIER}      { yylval.ident = new std::string(strdup(yytext)); return IDENTIFIER; }
 
 {INTEGER}         { yylval.integer = strtol(yytext, NULL, 10); return INTEGER; }
 
@@ -88,7 +90,7 @@ HEXADECIMAL 0[xX][0-9a-fA-F]([0-9a-fA-F]|{UNDERSCORE})*[0-9a-fA-F]
 
 {FLOAT}           { yylval.float_val = atof(yytext); return FLOAT; }
 
-\"([^\\\n]|(\\.))*?\" { yylval.string = strdup(yytext); return STRING_LITERAL; }
+\"([^\\\n]|(\\.))*?\" { yylval.str = new std::string(strdup(yytext)); return STRING_LITERAL; }
 
 \'([^\\\n]|(\\.))*?\' { yylval.char_val = yytext[1]; return CHAR_LITERAL; }
 

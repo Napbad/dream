@@ -573,8 +573,9 @@ int yy_flex_debug = 0;
 char *yytext;
 #line 1 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
 #line 2 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
-#include "astNode.h"
+#include "ASTNode.h"
 #include "parser/parser.hpp"
+// #include "parser/parser.cpp"
 #include <string>
 #include <cstring>
 #include "utilities/file_util.h"
@@ -595,13 +596,14 @@ std::string *handle_string_literal(const char *str) {
     return result;
 }
 
+extern void yyerror(const char *msg);
 
 namespace dap::parser {
 
 }
-#line 602 "/home/napbad/Project/dap-dev-main/compiler/parser/token.cpp"
-/* Define the tokens */
 #line 604 "/home/napbad/Project/dap-dev-main/compiler/parser/token.cpp"
+/* Define the tokens */
+#line 606 "/home/napbad/Project/dap-dev-main/compiler/parser/token.cpp"
 
 #define INITIAL 0
 
@@ -818,9 +820,9 @@ YY_DECL
 		}
 
 	{
-#line 47 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
+#line 49 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
 
-#line 823 "/home/napbad/Project/dap-dev-main/compiler/parser/token.cpp"
+#line 825 "/home/napbad/Project/dap-dev-main/compiler/parser/token.cpp"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -879,286 +881,286 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 48 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
+#line 50 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
 { return PACKAGE; }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 49 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
+#line 51 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
 { return IMPORT; }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 50 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
+#line 52 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
 { return FUN; }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 51 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
+#line 53 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
 { return VOID; }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 52 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
+#line 54 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
 { return FOR; }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 53 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
+#line 55 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
 { return IF; }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 54 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
+#line 56 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
 { return ELSE; }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 55 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
+#line 57 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
 { return MATCH; }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 56 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
+#line 58 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
 { return STRUCT; }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 57 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
+#line 59 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
 { return TRAIT; }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 58 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
+#line 60 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
 { return TYPEDEF; }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 59 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
+#line 61 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
 { return IMT; }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 60 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
+#line 62 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
 { return VAR; }
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 61 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
+#line 63 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
 { return INSTANCEOF; }
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 62 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
+#line 64 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
 { return RETURN; }
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 64 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
+#line 66 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
 { return INT; }
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 65 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
+#line 67 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
 { return BYTE; }
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 66 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
+#line 68 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
 { return SHORT; }
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 67 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
+#line 69 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
 { return LONG; }
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 68 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
+#line 70 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
 { return FLOAT; }
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 69 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
+#line 71 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
 { return DOUBLE; }
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 70 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
+#line 72 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
 { return BOOL; }
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 71 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
+#line 73 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
 { return UINT; }
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 72 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
+#line 74 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
 { return USHORT; }
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 73 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
+#line 75 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
 { return ULONG; }
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 74 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
+#line 76 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
 { return LLLONG; }
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 75 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
+#line 77 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
 { return ULLONG; }
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 79 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
-{ yylval.string = strdup(yytext); return IDENTIFIER; }
+#line 81 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
+{ yylval.ident = new std::string(strdup(yytext)); return IDENTIFIER; }
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 81 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
+#line 83 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
 { yylval.integer = strtol(yytext, NULL, 10); return INTEGER; }
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 83 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
+#line 85 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
 { yylval.integer = strtol(yytext+2, NULL, 2); return BINARY_LITERAL; }
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 85 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
+#line 87 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
 { yylval.integer = strtol(yytext, NULL, 8); return OCTAL_LITERAL; }
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 87 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
+#line 89 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
 { yylval.integer = strtol(yytext+2, NULL, 16); return HEXADECIMAL_LITERAL; }
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 89 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
+#line 91 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
 { yylval.float_val = atof(yytext); return FLOAT; }
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 91 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
-{ yylval.string = strdup(yytext); return STRING_LITERAL; }
+#line 93 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
+{ yylval.str = new std::string(strdup(yytext)); return STRING_LITERAL; }
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 93 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
+#line 95 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
 { yylval.char_val = yytext[1]; return CHAR_LITERAL; }
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 95 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
+#line 97 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
 { return ASSIGN; }
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 96 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
+#line 98 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
 { return ADD_ASSIGN; }
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 97 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
+#line 99 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
 { return MINUS_ASSIGN; }
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 98 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
+#line 100 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
 { return INCREMENT; }
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 99 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
+#line 101 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
 { return LESS_THAN; }
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 101 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
+#line 103 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
 { return COMMA; }
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 102 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
+#line 104 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
 { return SEMICOLON; }
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 103 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
+#line 105 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
 { return COLON; }
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 104 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
+#line 106 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
 { return LEFT_BRACE; }
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 105 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
+#line 107 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
 { return RIGHT_BRACE; }
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 106 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
+#line 108 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
 { return LEFT_PAREN; }
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 107 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
+#line 109 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
 { return RIGHT_PAREN; }
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 108 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
+#line 110 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
 { return LEFT_BRACKET; }
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 109 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
+#line 111 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
 { return RIGHT_BRACKET; }
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
-#line 110 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
+#line 112 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
 { return DOT; }
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
-#line 111 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
+#line 113 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
 { return ELLIPSIS; }
 	YY_BREAK
 case 52:
 YY_RULE_SETUP
-#line 112 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
+#line 114 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
 { return QUESTION; }
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
-#line 113 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
+#line 115 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
 { return BANG; }
 	YY_BREAK
 case 54:
 /* rule 54 can match eol */
 YY_RULE_SETUP
-#line 116 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
+#line 118 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
 { /* 忽略空白字符 */ }
 	YY_BREAK
 case 55:
 YY_RULE_SETUP
-#line 118 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
+#line 120 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
 { yyerror("未识别的字符"); }
 	YY_BREAK
 case 56:
 YY_RULE_SETUP
-#line 120 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
+#line 122 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
 ECHO;
 	YY_BREAK
-#line 1161 "/home/napbad/Project/dap-dev-main/compiler/parser/token.cpp"
+#line 1163 "/home/napbad/Project/dap-dev-main/compiler/parser/token.cpp"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2163,5 +2165,5 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 120 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
+#line 122 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
 

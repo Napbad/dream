@@ -1,0 +1,9 @@
+dap:
+    project-path: /home/napbad/Project/dap-dev-main/
+
+    test:
+        dap-main-path: compiler/build/dap_compiler
+        target-directory: tests/dap_test
+        source-runtime-dir: dap/runtime
+        dap-main-argument:
+        D_DEBUG: True

@@ -7,7 +7,7 @@
 
 #include "file_util.h"
 
-#include "src/core/common/global.h"
+#include "common/config.h"
 
 using namespace std;
 namespace dap::util
@@ -45,7 +45,7 @@ void create_package_dir(string pkg_dir_name)
         pos = pkg_dir_name.find('.', pos + 1);
     }
 
-    pkg_dir_name = buildDir + pkg_dir_name;
+    pkg_dir_name = DEFUALT_BUILD_DIR + pkg_dir_name;
 
     try {
         if (!std::filesystem::exists(pkg_dir_name)) {
@@ -64,12 +64,12 @@ std::string convert_pkg_to_path(const std::string &pkg_name)
         if (c == '.')
             c = '/';
 
-    res = buildDir + res + "/";
+    res = DEFUALT_BUILD_DIR + res + "/";
 
     return res;
 }
 
-std::string read_line(std::fstream *opened_file, string &file_name, const int line)
+std::string read_line(std::fstream *opened_file, const string &file_name, const int line)
 {
     if (opened_file == nullptr || !opened_file->is_open())
         return ""; // Return an empty string if the opened_file pointer is null or
@@ -90,19 +90,19 @@ std::string read_line(std::fstream *opened_file, string &file_name, const int li
     return temp;
 }
 
-void dbg_print(std::ostream &stream, const std::string &message, FileColor color)
+void dbg_print(std::ostream &stream, const std::string &message, const FileColor color)
 {
     print(stream, "DEBUG: ", FileColor::BRIGHT_YELLOW);
     print(stream, message + "\n", color);
 }
 
-void warn_print(std::ostream &stream, const std::string &message, FileColor color)
+void warn_print(std::ostream &stream, const std::string &message, const FileColor color)
 {
     print(stream, ">>>>WARNING:\n", FileColor::YELLOW);
     print(stream, message + "\n", color);
 }
 
-void err_print(std::ostream &stream, const std::string &message, FileColor color)
+void err_print(std::ostream &stream, const std::string &message, const FileColor color)
 {
     print(stream, ">>>>>>>>ERROR:\n", FileColor::BRIGHT_RED);
     print(stream, message + "\n", color);
@@ -236,10 +236,9 @@ bool create_dir(const std::string &path)
         if (filesystem::create_directories(path)) {
             std::cout << "Directory created: " << path << std::endl;
             return true;
-        } else {
-            std::cout << "Directory already exists: " << path << std::endl;
-            return false;
         }
+        std::cout << "Directory already exists: " << path << std::endl;
+        return false;
     } catch (const filesystem::filesystem_error &e) {
         std::cerr << "Error creating directory: " << e.what() << std::endl;
         return false;
@@ -285,7 +284,7 @@ inline int colorCode(FileColor color)
     }
 }
 #else
-std::string colorCode(FileColor color)
+std::string colorCode(const FileColor color)
 {
     switch (color) {
     case FileColor::GREEN:

@@ -15,42 +15,6 @@
 #include <string>
 #include <vector>
 
-#define SPACE_STR std::string("")
-
-// Report a warning message with a specific color (default yellow)
-#define REPORT_WARNING(msg, file, line)                                                                                \
-    util::warn_print(std::cout, (SPACE_STR + (msg) + " \nat file: " file + ":" + std::to_string(line) + "\n"),         \
-                     util::FileColor::YELLOW)
-
-// Report an error message with a specific color (default red)
-#define REPORT_ERROR(msg, file, line)                                                                                  \
-    util::err_print(std::cerr, (SPACE_STR + (msg) + " \nat file: " file + ":" + std::to_string(line) + "\n"),          \
-                    util::FileColor::RED)
-
-// Report a debug message with a specific color (default white)
-#define REPORT_DEBUG(msg, file, line)                                                                                  \
-    util::dbg_print(std::cout, (SPACE_STR + (msg) + " \nat file: " file + ":" + std::to_string(line) + "\n"),          \
-                    util::FileColor::WHITE)
-
-// Report a debug message with a specific color (default white)
-#define REPORT_DEBUG_MSG(msg) util::dbg_print(std::cout, (SPACE_STR + (msg) + " \n"), util::FileColor::WHITE)
-
-// Report a success message with a specific color (default green)
-#define REPORT_SUCCESS(msg, file, line)                                                                                \
-    util::print(std::cout, (SPACE_STR + (msg) + " \nat file: " file + ":" + std::to_string(line) + "\n"),              \
-                util::FileColor::GREEN)
-
-// Report a warning message with a specific color (default yellow)
-#define LOG_WARNING(msg) util::warn_print(std::cout, (SPACE_STR + (msg) + "\n"), util::FileColor::YELLOW)
-
-// Report an error message with a specific color (default red)
-#define LOG_ERROR(msg) util::err_print(std::cerr, (SPACE_STR + (msg) + "\n"), util::FileColor::RED)
-
-// Report a debug message with a specific color (default white)
-#define LOG_DEBUG(msg) util::dbg_print(std::cout, (SPACE_STR + (msg) + "\n"), util::FileColor::WHITE)
-
-// Report a success message with a specific color (default green)
-#define LOG_SUCCESS(msg) util::print(std::cout, (SPACE_STR + (msg) + "\n"), util::FileColor::GREEN)
 
 // Platform-specific color setting functions
 #ifdef _WIN32
@@ -163,7 +127,7 @@ void err_print(std::ostream &stream, const std::string &message);
  * @param line Line number.
  * @return The read line.
  */
-std::string read_line(std::fstream *opened_file, std::string &file_name, int line);
+std::string read_line(std::fstream *opened_file, const std::string &file_name, int line);
 
 /**
  * @brief Creates a new file and returns a file stream.

@@ -1,8 +1,8 @@
-./compile
+# ./compile
 
 # shellcheck disable=SC2164
-cd ./dap-test/full-test
+cd ./tests/dap_test
 
-python test-all.py ../../build/dap_main -d ./ -s ../../src/dap/runtime
+python test-all.py
 
 echo "Testing finished"

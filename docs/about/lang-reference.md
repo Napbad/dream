@@ -248,3 +248,159 @@ As mentioned earlier in the `struct Point` example, the structure declaration de
 ### (IX) Package Statements
 - The `package` statement is related to program package operations. The syntax is `package packageName;`. It is used to organize the code's namespace.
 
+## Full Example:
+
+```dap
+package main;
+
+import std.string_;
+import std.io;
+
+fun test_fun(imt int x, var int y) void {
+    for int i = 0; i < 10; ++i {
+        y += x;
+    }
+    println("x = ", x, ", y = ", y);
+}
+
+struct Point {
+    imt int x;
+    imt int y;
+}
+
+struct Point<X, Y?> {
+    imt X x;
+    imt Y y;
+}
+
+@AutoToString
+struct Point<X, Y ? instanceOf Number> {
+    imt X x;
+    imt Y y;
+}
+
+trait Action {
+    fun action() void;
+}
+
+trait Move : Action {
+    fun move() void;
+    
+    fun move(imt int x, imt int y) void;
+    
+    fun showPoint() Point;
+}
+
+trait Object {
+    fun hashcode() byte*;
+    
+    fun equal() bool;
+}
+
+struct Location : Point, Move, Object {
+    // do not need to declare the Point again
+    
+    fun move() void {
+        Point.x += 1;
+        Point.y += 1;
+    }
+    
+    fun move(imt int x, imt int y) void {
+        Point.x = x;
+        Point.y = y;
+    }
+    
+    fun showPoint() Point {
+        return Point;
+    }
+}
+
+fun showPoints(Point... points) void {
+    for Point in points {
+        println(point);
+    }
+}
+
+struct status : Location {
+    var short statusCode = 1;
+    
+    fun showStatus() short {
+        return statusCode;
+    }
+}
+
+typedef char byte; // char is not same to byte
+typedef unicode int; // unicode is same to int
+
+fun typeTest() {
+
+    imt int constNumInt = 20; 
+    imt byte constNumByte = 10; 
+    
+    imt unicode constStrUnicode = "😁";
+    
+    imt short constNumShort = 400; 
+    imt long constNumLong = 20000000000; 
+    imt char constCharVariable = 'B'; 
+    imt float constNumFloat = 8.88; 
+    imt byte[17] constStr = "Immutable string"; 
+    imt bool constIsTrue = false; 
+    imt uint constNumUint = 60; 
+    imt ushort constNumUShort = 200; 
+    imt ulong constNumULong = 20000000000; 
+    imt llong constNumLLong = 98765432109876543210; 
+    imt ullong constNumULLong = 98765432109876543210; 
+    imt double constNumDouble = 188.88; 
+
+    imt int* constNumPointer = &constNumInt;
+    
+    var int[10] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+    imt int[] = {11, 12, 13}; 
+    
+    println("constNumInt: ", constNumInt);
+    
+}
+
+fun main() int {
+    imt x_test = 5;
+    var y_test = 10;
+    
+    test_fun(x_test, y_test);
+    
+    var point = Point(1, 2); // auto type inference, mutable 
+    imt test = Point(1, 2);
+    point = Point(3, 4); // auto variable type inference, immutable
+    
+    location = Location(1, 2); // auto bind number to Point
+    location1 = Location(Point(1, 2)); // manually bind
+
+    match (location) {
+        location1: {
+            println("location1");
+        }
+        (): { // default case
+            println("location");
+        }
+    }
+    
+    location3 = match (location1) {
+        location1: {
+            println("location1");
+            location1; // return location1
+        }
+
+        location: {
+            println("location");
+            location; // return location
+        }
+    }
+    
+    bool detect = false;
+    location2 = if detect { location } else { location1 };
+    
+    println("location2: ", location2.showPoint());
+    
+    return 0;
+}
+
+```
