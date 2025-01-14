@@ -6,7 +6,7 @@
 #define OBJ_UTIL_H
 #include <queue>
 
-namespace obj_util
+namespace dap::util
 {
 class DelayDeleteObjBase
 {
@@ -31,6 +31,6 @@ static std::vector<DelayDeleteObjBase *> delayedDeleteObjVector;
 
 void deleteDelayedObj();
 
-} // namespace obj_util
+} // namespace dap::util
 
 #endif // OBJ_UTIL_H

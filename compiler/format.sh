@@ -1,6 +1,6 @@
 #!/bin/bash
 
-DIR="src"
+DIR="./"
 
 if ! command -v clang-format &> /dev/null
 then

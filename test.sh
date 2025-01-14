@@ -1,7 +1,5 @@
-# ./compile
-
 # shellcheck disable=SC2164
-cd ./tests/dap_test
+cd ./tests/compiler
 
 python test-all.py
 

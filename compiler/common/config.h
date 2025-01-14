@@ -7,8 +7,7 @@
 #include <string>
 
 namespace dap {
-
-    const std::string DEFUALT_BUILD_DIR = "../build";
+    const std::string DEFUALT_BUILD_DIR = "./build";
     const std::string DEFAULT_TARGET_NAME = "executable";
 
     extern std::string buildDir;
@@ -16,6 +15,8 @@ namespace dap {
     extern std::string targetExecName;
 
     extern std::string D_VERSION;
-}
 
-#endif //CONFIG_H
+    void readConfig(std::string configPath);
+} // namespace dap
+
+#endif // CONFIG_H

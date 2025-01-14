@@ -171,9 +171,8 @@
 //             currentPtr = BUILDER.CreateStructGEP(metaData->getStructType(), currentPtr, fieldIndex,
 //                                                  "struct_" + metaData->getName());
 //         } else if (llvm::isa<PointerType>(elementType)) {
-//             currentPtr = BUILDER.CreateStructGEP(elementType, currentPtr, fieldIndex, "struct_" + metaData->getName());
-//             currentPtr = BUILDER.CreateBitCast(currentPtr, elementType);
-//             return currentPtr;
+//             currentPtr = BUILDER.CreateStructGEP(elementType, currentPtr, fieldIndex, "struct_" +
+//             metaData->getName()); currentPtr = BUILDER.CreateBitCast(currentPtr, elementType); return currentPtr;
 //         } else {
 //             currentPtr = BUILDER.CreateLoad(metaData->getStructType()->getElementType(fieldIndex), currentPtr, false,
 //                                             "struct_" + metaData->getName());
@@ -183,8 +182,8 @@
 //         // If this field is a nested struct, update the struct type and
 //         // metadata
 //         if (i < name->name_parts->size() - 1) {
-//             const auto *nestedStructType = dyn_cast<StructType>(metaData->getStructType()->getElementType(fieldIndex));
-//             if (!nestedStructType) {
+//             const auto *nestedStructType =
+//             dyn_cast<StructType>(metaData->getStructType()->getElementType(fieldIndex)); if (!nestedStructType) {
 //                 return nullptr; // Error: not a valid nested struct
 //             }
 //             // Update metadata for the nested struct
@@ -231,7 +230,8 @@
 //             }
 //         }
 //         if (!baseType) {
-//             REPORT_ERROR("error at: " + ctx->sourcePath + ":" + std::to_string(ctx->currLine) + " \nUnknown base type",
+//             REPORT_ERROR("error at: " + ctx->sourcePath + ":" + std::to_string(ctx->currLine) + " \nUnknown base
+//             type",
 //                          __FILE__, __LINE__);
 //             return nullptr;
 //         }
@@ -615,7 +615,8 @@
 //     for (auto &arg : fun->args()) {
 //         funMetaData->addArg(
 //             params[idx]->getName(), &arg, util::typeOf_d(*params[idx]->type, ctx, nullptr),
-//             new inter_gen::VariableMetaData(params[idx]->getName(), util::typeOf_d(*params[idx]->type, ctx, nullptr)));
+//             new inter_gen::VariableMetaData(params[idx]->getName(), util::typeOf_d(*params[idx]->type, ctx,
+//             nullptr)));
 //         arg.setName(params[idx++]->getName());
 //     }
 
@@ -658,7 +659,8 @@
 //         Type *typeOfArg = util::typeOf_d(*param->type, ctx, nullptr);
 //         funMetaData->addArg(
 //             param->name->getName(), argVal, typeOfArg,
-//             new inter_gen::VariableMetaData(param->name->getName(), typeOfArg, param->is_mutable, param->is_nullable));
+//             new inter_gen::VariableMetaData(param->name->getName(), typeOfArg, param->is_mutable,
+//             param->is_nullable));
 //         argVal->setName(param->getName());
 //     }
 
@@ -847,9 +849,11 @@
 //         Value *phi = mergeBlock(thenBody, thenBB, thenBBEndIter, elseBody, elseBB, elseBBEndIter, ctx);
 
 //         if (auto mergeBBEndIter = mergeBB->end(); (--mergeBBEndIter)->getOpcode() != Instruction::Br &&
-//                                                   mergeBBEndIter->getOpcode() != Instruction::Ret // with no jump stmt
+//                                                   mergeBBEndIter->getOpcode() != Instruction::Ret // with no jump
+//                                                   stmt
 //                                                   &&
-//                                                   ctx->mergeBBInNestIf) { // and it is a nested ifStatement's merge stmt
+//                                                   ctx->mergeBBInNestIf) { // and it is a nested ifStatement's merge
+//                                                   stmt
 //             // then jump to the top ifStmt merge Block
 //             BUILDER.CreateBr(ctx->mergeBBInNestIf); // Unconditionally branch to merge
 //             ctx->mergeBBInNestIfSource = mergeBB;
@@ -893,8 +897,8 @@
 //         brCond = BUILDER.CreateFCmp(CmpInst::FCMP_ONE, condVal, ConstantFP::get(LLVMCTX, APFloat(0.0)));
 //         break;
 //     case Type::PointerTyID:
-//         brCond = BUILDER.CreateICmp(CmpInst::ICMP_NE, condVal, ConstantPointerNull::get(PointerType::get(LLVMCTX, 0)));
-//         break;
+//         brCond = BUILDER.CreateICmp(CmpInst::ICMP_NE, condVal, ConstantPointerNull::get(PointerType::get(LLVMCTX,
+//         0))); break;
 //     default:
 //         REPORT_ERROR("error at: " + ctx->sourcePath + ":" + std::to_string(ctx->currLine) +
 //                          " \nUnknown type for conditional Expression",
@@ -958,8 +962,8 @@
 
 //         AllocaInst *allocaInst = BUILDER.CreateAlloca(baseType, nullptr, name->getName());
 
-//         Value *gep = BUILDER.CreateGEP(baseType, dyn_cast<Value>(allocaInst), ConstantInt::get(LLVMCTX, APInt(32, 0)));
-//         ctx->locals()[name->getName()] = {
+//         Value *gep = BUILDER.CreateGEP(baseType, dyn_cast<Value>(allocaInst), ConstantInt::get(LLVMCTX, APInt(32,
+//         0))); ctx->locals()[name->getName()] = {
 //             gep, new inter_gen::VariableMetaData(name->getName(), gep->getType(), is_mutable, is_nullable)};
 //         ctx->addPtrValBaseTypeMapping(allocaInst, baseType);
 //         gepMapping->insert(std::make_pair(gep, allocaInst));
@@ -1030,7 +1034,8 @@
 //         return nullptr;
 //     }
 
-//     for (const auto moduleMetaData = moduleMetadataMap_d->at(target); const auto fun : moduleMetaData->getFunctions()) {
+//     for (const auto moduleMetaData = moduleMetadataMap_d->at(target); const auto fun :
+//     moduleMetaData->getFunctions()) {
 //         if (!ctx->metaData->getFunction(fun->getName())) {
 //             Function::Create(fun->getType(), Function::ExternalLinkage, fun->getName(), MODULE);
 //             ctx->metaData->addFunction(fun);
@@ -1051,7 +1056,8 @@
 //     ctx->module =
 //         new Module(pkg + "." + ctx->fileName.substr(0, ctx->fileName.find_last_of('.')), *inter_gen::llvmContext);
 //     ctx->metaData = new inter_gen::ModuleMetaData(ctx->module);
-//     moduleMetadataMap_d->insert({pkg + "." + ctx->fileName.substr(0, ctx->fileName.find_last_of('.')), ctx->metaData});
+//     moduleMetadataMap_d->insert({pkg + "." + ctx->fileName.substr(0, ctx->fileName.find_last_of('.')),
+//     ctx->metaData});
 
 //     ctx->package = pkg;
 
@@ -1565,8 +1571,8 @@
 //     std::stack<InterGenBlock *> tmp;
 //     while (!blocks.empty()) {
 //         if (blocks.top()->locals.contains(name)) {
-//             std::map<std::string, std::pair<Value *, VariableMetaData *>>::mapped_type res = blocks.top()->locals[name];
-//             while (!tmp.empty()) {
+//             std::map<std::string, std::pair<Value *, VariableMetaData *>>::mapped_type res =
+//             blocks.top()->locals[name]; while (!tmp.empty()) {
 //                 blocks.push(tmp.top());
 //                 tmp.pop();
 //             }

@@ -14,7 +14,6 @@
 #include <llvm/IR/LLVMContext.h>
 #include <llvm/IR/Module.h>
 
-
 #define LLVMCTX ctx->module->getContext()
 #define MODULE ctx->module
 #define BUILDER ctx->builder
@@ -22,7 +21,7 @@ namespace dap::parser
 {
 class Program;
 class QualifiedName;
-}
+} // namespace dap::parser
 
 namespace dap::inter_gen
 {
@@ -82,11 +81,9 @@ class InterGenContext
     std::string sourcePath;
     std::string package;
     std::string fileName;
-    BasicBlock* mergeBBInNestIf = nullptr;
-    BasicBlock * mergeBBInNestIfSource = nullptr;
-    llvm::Value * mergeBBInNestIfSrcVal = nullptr;
-
-
+    BasicBlock *mergeBBInNestIf = nullptr;
+    BasicBlock *mergeBBInNestIfSource = nullptr;
+    llvm::Value *mergeBBInNestIfSrcVal = nullptr;
 
     FunctionMetaData *getFunMetaData(const std::string &name, const inter_gen::InterGenContext *ctx) const;
     std::pair<Value *, VariableMetaData *> getValWithMetadata(const std::string &name);

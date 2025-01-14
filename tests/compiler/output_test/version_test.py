@@ -26,11 +26,14 @@ def test_version(dap_main, source_runtime_dir, D_DEBUG = False):
             if result.stdout.__contains__("dap version: ") :
 
                 print(Fore.GREEN + "version output PASSED!" + Style.RESET_ALL)
+                success()
             
             else:
                 print(Fore.RED + "version output FAILED" + Style.RESET_ALL)   
                 print(Fore.RED + result.stderr + Style.RESET_ALL)
                 print(Fore.RED + result.stdout + Style.RESET_ALL)
+                add_failed_test(Fore.BLUE + "<version output> " + Fore.RED + "[failed] " +  Fore.CYAN + " path: " + os.path.abspath(__file__))
+
     else:
         print(Fore.RED + "version output FAILED" + Style.RESET_ALL)
         print(Fore.RED + result.stderr + Style.RESET_ALL)

@@ -13,7 +13,7 @@ execute_process(
 )
 
 add_compile_options(${LLVM_CPPFLAGS})
-add_compile_definitions(D_DEBUG)
+#add_compile_definitions(D_DEBUG)
 
 find_package(BISON REQUIRED)
 find_package(FLEX REQUIRED)
@@ -57,8 +57,8 @@ add_executable(dap_compiler
         parser/ASTNode.cpp
         parser/ASTNode.h
         parser/token.cpp
-        parser/parser.cpp
         parser/parser.hpp
+        parser/parser.cpp
         utilities/data_struct_util.cpp
         utilities/data_struct_util.h
         utilities/file_util.cpp
@@ -74,7 +74,11 @@ add_executable(dap_compiler
         common/define_d.h
         common/reserve.h
         inter_gen/codeGen_inter.cpp
-        inter_gen/codeGen_inter.h)
+        inter_gen/codeGen_inter.h
+        utilities/log_util.h
+        utilities/log_util.cpp
+        parser/parserMain.cpp
+)
 
 
 target_link_libraries(dap_compiler PRIVATE LLVM pthread dl z ncurses)

@@ -90,63 +90,6 @@ std::string read_line(std::fstream *opened_file, const string &file_name, const 
     return temp;
 }
 
-void dbg_print(std::ostream &stream, const std::string &message, const FileColor color)
-{
-    print(stream, "DEBUG: ", FileColor::BRIGHT_YELLOW);
-    print(stream, message + "\n", color);
-}
-
-void warn_print(std::ostream &stream, const std::string &message, const FileColor color)
-{
-    print(stream, ">>>>WARNING:\n", FileColor::YELLOW);
-    print(stream, message + "\n", color);
-}
-
-void err_print(std::ostream &stream, const std::string &message, const FileColor color)
-{
-    print(stream, ">>>>>>>>ERROR:\n", FileColor::BRIGHT_RED);
-    print(stream, message + "\n", color);
-}
-
-void dbg_print(std::ostream &stream, const std::string &message)
-{
-    print(stream, "DEBUG: ", FileColor::BRIGHT_YELLOW);
-    print(stream, message + "\n", FileColor::WHITE);
-}
-
-void warn_print(std::ostream &stream, const std::string &message)
-{
-    print(stream, ">>>>WARNING:\n", FileColor::YELLOW);
-    print(stream, message + "\n", FileColor::WHITE);
-}
-
-void err_print(std::ostream &stream, const std::string &message)
-{
-    print(stream, ">>>>>>>>ERROR:\n", FileColor::BRIGHT_RED);
-    print(stream, message + "\n", FileColor::WHITE);
-}
-
-void print(std::ostream &stream, const std::string &message, FileColor color)
-{
-    if (stream.rdbuf() == std::cout.rdbuf()) {
-#ifdef _WIN32
-        setColor(colorCode(color));
-#else
-        std::cout << colorCode(color);
-#endif
-    }
-    stream << message;
-    if (stream.rdbuf() == std::cout.rdbuf()) {
-#ifdef _WIN32
-        setColor(color); // Default white
-#else
-        setColor(colorCode(FileColor::BLACK).c_str()); // Reset color
-#endif
-    }
-
-    stream.flush();
-}
-
 void copy_directory(const std::string &source_dir, const std::string &destination_dir)
 {
     if (!filesystem::exists(source_dir) || !filesystem::is_directory(source_dir))
@@ -245,81 +188,63 @@ bool create_dir(const std::string &path)
     }
 }
 
-#ifdef _WIN32
-inline int colorCode(FileColor color)
-{
-    switch (color) {
-    case FileColor::GREEN:
-        return FOREGROUND_GREEN;
-    case FileColor::WHITE:
-        return FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE;
-    case FileColor::RED:
-        return FOREGROUND_RED;
-    case FileColor::YELLOW:
-        return FOREGROUND_RED | FOREGROUND_GREEN;
-    case FileColor::BLUE:
-        return FOREGROUND_BLUE;
-    case FileColor::BLACK:
-        return 0;
-    case FileColor::MAGENTA:
-        return FOREGROUND_RED | FOREGROUND_BLUE;
-    case FileColor::CYAN:
-        return FOREGROUND_GREEN | FOREGROUND_BLUE;
-    case FileColor::BRIGHT_GREEN:
-        return FOREGROUND_GREEN | FOREGROUND_INTENSITY;
-    case FileColor::BRIGHT_WHITE:
-        return FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY;
-    case FileColor::BRIGHT_RED:
-        return FOREGROUND_RED | FOREGROUND_INTENSITY;
-    case FileColor::BRIGHT_YELLOW:
-        return FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY;
-    case FileColor::BRIGHT_BLUE:
-        return FOREGROUND_BLUE | FOREGROUND_INTENSITY;
-    case FileColor::BRIGHT_MAGENTA:
-        return FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_INTENSITY;
-    case FileColor::BRIGHT_CYAN:
-        return FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY;
-    default:
-        return FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE;
+YAMLNode parseYAML(const std::string &yamlString) {
+    YAMLNode root;
+    std::istringstream iss(yamlString);
+    std::string line;
+    std::vector<YAMLNode*> currentNodes;
+    currentNodes.push_back(&root);
+
+    while (std::getline(iss, line)) {
+        size_t indent = 0;
+        while (indent < line.size() && std::isspace(line[indent])) {
+            indent++;
+        }
+        line = line.substr(indent);
+
+        if (line.empty() || line[0] == '#') {
+            continue;
+        }
+
+        if (line.find(':')!= std::string::npos) {
+            size_t colonPos = line.find(':');
+            std::string key = line.substr(0, colonPos);
+            std::string value = line.substr(colonPos + 1);
+            trim(key);
+            trim(value);
+
+            YAMLNode node;
+            node.value = value;
+            while (currentNodes.size() > indent) {
+                currentNodes.pop_back();
+            }
+            currentNodes.back()->map[key] = node;
+        } else if (line[0] == '-') {
+            YAMLNode node;
+            std::string value = line.substr(1);
+            trim(value);
+            node.value = value;
+            while (currentNodes.size() > indent) {
+                currentNodes.pop_back();
+            }
+            currentNodes.back()->sequence.push_back(node);
+        } else {
+            std::cerr << "Invalid YAML line: " << line << std::endl;
+        }
     }
+    return root;
 }
-#else
-std::string colorCode(const FileColor color)
-{
-    switch (color) {
-    case FileColor::GREEN:
-        return "\033[32m";
-    case FileColor::WHITE:
-        return "\033[37m";
-    case FileColor::RED:
-        return "\033[31m";
-    case FileColor::YELLOW:
-        return "\033[33m";
-    case FileColor::BLUE:
-        return "\033[34m";
-    case FileColor::BLACK:
-        return "\033[30m";
-    case FileColor::MAGENTA:
-        return "\033[35m";
-    case FileColor::CYAN:
-        return "\033[36m";
-    case FileColor::BRIGHT_GREEN:
-        return "\033[92m";
-    case FileColor::BRIGHT_WHITE:
-        return "\033[97m";
-    case FileColor::BRIGHT_RED:
-        return "\033[91m";
-    case FileColor::BRIGHT_YELLOW:
-        return "\033[93m";
-    case FileColor::BRIGHT_BLUE:
-        return "\033[94m";
-    case FileColor::BRIGHT_MAGENTA:
-        return "\033[95m";
-    case FileColor::BRIGHT_CYAN:
-        return "\033[96m";
-    default:
-        return "\033[37m";
+
+void trim(std::string &str) {
+    size_t start = 0;
+    size_t end = str.size() - 1;
+    while (start < str.size() && std::isspace(str[start])) {
+        start++;
     }
+    while (end > start && std::isspace(str[end])) {
+        end--;
+    }
+    str = str.substr(start, end - start + 1);
 }
-}
-#endif
+
+} // namespace dap::util

@@ -44,11 +44,11 @@ else:
     print(Fore.BLUE + f"D_DEBUG is set to {D_debug}" + Style.RESET_ALL)
     if (D_debug is True):
         print(Fore.YELLOW + "D_DEBUG is set to True, will print debug information" + Style.RESET_ALL)
-        print(Fore.BLUE + f"dap_main: \t\t\t\t{dap_main}" + Style.RESET_ALL)
-        print(Fore.BLUE + f"project_path: \t\t\t{project_path}" + Style.RESET_ALL)
-        print(Fore.BLUE + f"directory: \t\t\t\t{directory}" + Style.RESET_ALL)
-        print(Fore.BLUE + f"source_runtime_dir: \t{source_runtime_dir}" + Style.RESET_ALL)
-        print(Fore.BLUE + f"Dap executable file: \t{dap_main}" + Style.RESET_ALL)
+        print(Fore.BLUE + f"dap_main:            {dap_main}" + Style.RESET_ALL)
+        print(Fore.BLUE + f"project_path:        {project_path}" + Style.RESET_ALL)
+        print(Fore.BLUE + f"directory:           {directory}" + Style.RESET_ALL)
+        print(Fore.BLUE + f"source_runtime_dir:  {source_runtime_dir}" + Style.RESET_ALL)
+        print(Fore.BLUE + f"Dap executable file: {dap_main}" + Style.RESET_ALL)
         print("\n")
 
 
@@ -59,11 +59,11 @@ dap_files = get_dap_files(directory)
 
 print(Fore.CYAN + "Dap files to be tests:" + Style.RESET_ALL)
 for file in dap_files:
-    print(Fore.LIGHTMAGENTA_EX + "\t" + file + Style.RESET_ALL)
+    print(Fore.LIGHTMAGENTA_EX + "  " + file + Style.RESET_ALL)
 
 print("\n")
 
-# test_syntax(dap_main, source_runtime_dir, D_debug)
+test_syntax(dap_main, source_runtime_dir, D_debug)
 # test_functional(dap_main, source_runtime_dir, D_debug)
 # test_control(dap_main, source_runtime_dir, D_debug)
 test_output(dap_main, source_runtime_dir, D_debug)

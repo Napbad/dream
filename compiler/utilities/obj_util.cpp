@@ -4,7 +4,7 @@
 
 #include "obj_util.h"
 
-void obj_util::deleteDelayedObj()
+void dap::util::deleteDelayedObj()
 {
     while (!delayedDeleteObjVector.empty()) {
         const auto obj = delayedDeleteObjVector.back();

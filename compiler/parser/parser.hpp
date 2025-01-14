@@ -73,41 +73,71 @@ extern int yydebug;
     BYTE = 274,                    /* BYTE  */
     SHORT = 275,                   /* SHORT  */
     LONG = 276,                    /* LONG  */
-    CHAR = 277,                    /* CHAR  */
-    FLOAT = 278,                   /* FLOAT  */
-    DOUBLE = 279,                  /* DOUBLE  */
-    BOOL = 280,                    /* BOOL  */
-    UINT = 281,                    /* UINT  */
-    USHORT = 282,                  /* USHORT  */
-    ULONG = 283,                   /* ULONG  */
-    LLLONG = 284,                  /* LLLONG  */
-    ULLONG = 285,                  /* ULLONG  */
-    IDENTIFIER = 286,              /* IDENTIFIER  */
-    INTEGER = 287,                 /* INTEGER  */
-    BINARY_LITERAL = 288,          /* BINARY_LITERAL  */
-    OCTAL_LITERAL = 289,           /* OCTAL_LITERAL  */
-    HEXADECIMAL_LITERAL = 290,     /* HEXADECIMAL_LITERAL  */
-    FLOAT_LITERAL = 291,           /* FLOAT_LITERAL  */
-    STRING_LITERAL = 292,          /* STRING_LITERAL  */
-    CHAR_LITERAL = 293,            /* CHAR_LITERAL  */
-    ASSIGN = 294,                  /* ASSIGN  */
-    ADD_ASSIGN = 295,              /* ADD_ASSIGN  */
-    MINUS_ASSIGN = 296,            /* MINUS_ASSIGN  */
-    INCREMENT = 297,               /* INCREMENT  */
-    LESS_THAN = 298,               /* LESS_THAN  */
-    COMMA = 299,                   /* COMMA  */
-    SEMICOLON = 300,               /* SEMICOLON  */
-    COLON = 301,                   /* COLON  */
-    LEFT_BRACE = 302,              /* LEFT_BRACE  */
-    RIGHT_BRACE = 303,             /* RIGHT_BRACE  */
-    LEFT_PAREN = 304,              /* LEFT_PAREN  */
-    RIGHT_PAREN = 305,             /* RIGHT_PAREN  */
-    LEFT_BRACKET = 306,            /* LEFT_BRACKET  */
-    RIGHT_BRACKET = 307,           /* RIGHT_BRACKET  */
-    DOT = 308,                     /* DOT  */
-    ELLIPSIS = 309,                /* ELLIPSIS  */
-    QUESTION = 310,                /* QUESTION  */
-    BANG = 311                     /* BANG  */
+    FLOAT = 277,                   /* FLOAT  */
+    DOUBLE = 278,                  /* DOUBLE  */
+    BOOL = 279,                    /* BOOL  */
+    UINT = 280,                    /* UINT  */
+    USHORT = 281,                  /* USHORT  */
+    ULONG = 282,                   /* ULONG  */
+    LLONG = 283,                   /* LLONG  */
+    ULLONG = 284,                  /* ULLONG  */
+    IDENTIFIER = 285,              /* IDENTIFIER  */
+    INTEGER = 286,                 /* INTEGER  */
+    BINARY_LITERAL = 287,          /* BINARY_LITERAL  */
+    OCTAL_LITERAL = 288,           /* OCTAL_LITERAL  */
+    HEXADECIMAL_LITERAL = 289,     /* HEXADECIMAL_LITERAL  */
+    STRING_LITERAL = 290,          /* STRING_LITERAL  */
+    CHAR_LITERAL = 291,            /* CHAR_LITERAL  */
+    FLOAT_LITERAL = 292,           /* FLOAT_LITERAL  */
+    PLUS = 293,                    /* PLUS  */
+    MINUS = 294,                   /* MINUS  */
+    MUL = 295,                     /* MUL  */
+    DIV = 296,                     /* DIV  */
+    MOD = 297,                     /* MOD  */
+    BIT_AND = 298,                 /* BIT_AND  */
+    BIT_OR = 299,                  /* BIT_OR  */
+    BIT_XOR = 300,                 /* BIT_XOR  */
+    BIT_NOT = 301,                 /* BIT_NOT  */
+    SHIFT_LEFT = 302,              /* SHIFT_LEFT  */
+    SHIFT_RIGHT = 303,             /* SHIFT_RIGHT  */
+    LOGIC_SHIFT_LEFT = 304,        /* LOGIC_SHIFT_LEFT  */
+    ASSIGN = 305,                  /* ASSIGN  */
+    ADD_ASSIGN = 306,              /* ADD_ASSIGN  */
+    MUL_ASSIGN = 307,              /* MUL_ASSIGN  */
+    DIV_ASSIGN = 308,              /* DIV_ASSIGN  */
+    MINUS_ASSIGN = 309,            /* MINUS_ASSIGN  */
+    MOD_ASSIGN = 310,              /* MOD_ASSIGN  */
+    BIT_AND_ASSIGN = 311,          /* BIT_AND_ASSIGN  */
+    BIT_OR_ASSIGN = 312,           /* BIT_OR_ASSIGN  */
+    BIT_XOR_ASSIGN = 313,          /* BIT_XOR_ASSIGN  */
+    SHIFT_LEFT_ASSIGN = 314,       /* SHIFT_LEFT_ASSIGN  */
+    SHIFT_RIGHT_ASSIGN = 315,      /* SHIFT_RIGHT_ASSIGN  */
+    LOGIC_SHIFT_LEFT_ASSIGN = 316, /* LOGIC_SHIFT_LEFT_ASSIGN  */
+    INCREMENT = 317,               /* INCREMENT  */
+    DECREMENT = 318,               /* DECREMENT  */
+    LESS_THAN = 319,               /* LESS_THAN  */
+    GREATER_THAN = 320,            /* GREATER_THAN  */
+    LESS_THAN_EQUAL = 321,         /* LESS_THAN_EQUAL  */
+    GREATER_THAN_EQUAL = 322,      /* GREATER_THAN_EQUAL  */
+    EQUAL = 323,                   /* EQUAL  */
+    NOT_EQUAL = 324,               /* NOT_EQUAL  */
+    AND = 325,                     /* AND  */
+    OR = 326,                      /* OR  */
+    COMMA = 327,                   /* COMMA  */
+    SEMICOLON = 328,               /* SEMICOLON  */
+    COLON = 329,                   /* COLON  */
+    LEFT_BRACE = 330,              /* LEFT_BRACE  */
+    RIGHT_BRACE = 331,             /* RIGHT_BRACE  */
+    LEFT_PAREN = 332,              /* LEFT_PAREN  */
+    RIGHT_PAREN = 333,             /* RIGHT_PAREN  */
+    LEFT_BRACKET = 334,            /* LEFT_BRACKET  */
+    RIGHT_BRACKET = 335,           /* RIGHT_BRACKET  */
+    DOT = 336,                     /* DOT  */
+    ELLIPSIS = 337,                /* ELLIPSIS  */
+    QUESTION = 338,                /* QUESTION  */
+    BANG = 339,                    /* BANG  */
+    LBRACK = 340,                  /* LBRACK  */
+    RBRACK = 341                   /* RBRACK  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -116,29 +146,31 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 21 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+#line 38 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
 
 #include <vector>
 #include "parser/ASTNode.h"
 
     // dap::parser::ASTNode *node;
     // dap::parser::BlockStmt *block;
-    // dap::parser::Expr *expr;
-    // dap::parser::Stmt *stmt;
-    // dap::parser::QualifiedName *ident;
-    // dap::parser::VarDecl *var_decl;
-    // std::vector<dap::parser::VarDecl*> *varvec;
-    // std::vector<dap::parser::Expr*> *exprvec;
-    // std::vector<dap::parser::Stmt*> *stmtvec;
+    dap::parser::Expression *expr;
+    dap::parser::Statement *stmt;
+    dap::parser::QualifiedName *ident;
+    dap::parser::TypeNode *typeNode;
+    std::vector<dap::parser::TypeNode*> *typeNodeVec;
+    dap::parser::Integer *intExpr;
+    dap::parser::String *strExpr;
+    dap::parser::Float *floatExpr;
+    std::vector<dap::parser::Expression*> *exprVec;
+    std::vector<dap::parser::Statement*> *stmtVec;
     std::string *str;
-    std::string *ident;
-    char char_val;
+    char charVal;
     int integer;
-    double float_val;
-    // bool boolval;
-    // int token;
+    double floatVal;
+    bool boolval;
+    int token;
 
-#line 142 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.hpp"
+#line 174 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.hpp"
 
 };
 typedef union YYSTYPE YYSTYPE;

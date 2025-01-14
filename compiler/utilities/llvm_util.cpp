@@ -36,7 +36,6 @@
 //         return it->second(LLVMCTX);
 //     }
 
-
 //     // Handle custom types or return nullptr for unsupported types
 //     if (type.getName() == "Point") {
 //         StructType *structType = StructType::getTypeByName(LLVMCTX, type.getName());
@@ -68,7 +67,6 @@
 //         }
 //         return ArrayType::get(typeOf(parser::QualifiedName(type.getName(0)), ctx, nullptr), integerExpr->value);
 //     }
-
 
 //     return nullptr;
 // }

@@ -1,0 +1,46 @@
+package main;
+
+import a;
+
+/* ****************GLOBAL VARIABLES******************* */
+
+// global variable
+var int a! = 1;
+
+// const b = 10; // global constant
+
+imt c = 100; // global constant with implicit type
+
+
+var a1 = 2;
+// b1 = 20;
+// c1 = 200;
+
+var int a2 = 3;
+// const int b2 = 30;
+// const int c2 = 300;
+
+/* ****************GLOBAL VARIABLES******************* */
+
+fun main()  {
+
+/* ****************LOCAL VARIABLES******************* */
+
+    var x = 1;      // local variable
+
+    // const y = 10;   // local constant
+
+    imt z = 100;    // local constant with implicit type
+
+    // x1 = 2;
+    // y1 = 20;
+    // z1 = 200;
+
+    var int x2 = 3;
+    // const int y2 = 30;
+    // const int z2 = 300;
+
+/* ****************LOCAL VARIABLES******************* */
+
+    // return 0;
+}

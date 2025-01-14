@@ -91,5 +91,6 @@
     "terminal.integrated.automationProfile.linux": {
 
     },
-    "terminal.external.linuxExec": "konsole"
+    "terminal.external.linuxExec": "konsole",
+    "cmake.sourceDirectory": "/home/napbad/Project/dap-dev-main/compiler"
 }

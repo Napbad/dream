@@ -17,3 +17,8 @@ def get_dap_files(directory):
 def check_output(command, expect):
 
     return True
+
+
+def test_single_file(dap_main, source_runtime_dir, dap_file):
+    
+    return 
