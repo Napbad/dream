@@ -60,7 +60,7 @@ void parserLog(std::string msg) {
 }
 
 // Define the tokens
-%token PACKAGE IMPORT FUN VOID FOR IF ELSE MATCH STRUCT TRAIT TYPEDEF IMT VAR INSTANCEOF RETURN
+%token PACKAGE IMPORT FUN VOID FOR IF ELSE MATCH STRUCT TRAIT TYPEDEF IMT VAR INSTANCEOF RETURN CONST
 %token INT BYTE SHORT LONG FLOAT DOUBLE BOOL UINT USHORT ULONG LLONG ULLONG
 %token IDENTIFIER INTEGER BINARY_LITERAL OCTAL_LITERAL HEXADECIMAL_LITERAL
 %token STRING_LITERAL CHAR_LITERAL FLOAT_LITERAL
@@ -75,7 +75,7 @@ void parserLog(std::string msg) {
 %type <str> IDENTIFIER INTEGER BINARY_LITERAL OCTAL_LITERAL HEXADECIMAL_LITERAL FLOAT_LITERAL STRING_LITERAL
 %type <ident> identifier
 %type <expr> expression
-%type <stmt> importStmt packageDecl statement funDecl variableDecl
+%type <stmt> importStmt packageDecl statement funDecl variableDecl constantDecl
 %type <stmtVec> statements
 %type <exprVec> expressions
 %type <typeNode> type
@@ -106,6 +106,19 @@ variableDecl:
         // Log message when parsing a variable declaration node without explicit type
         parserLog("Parsed variable declaration node without explicit type");
     };
+
+constantDecl:
+    CONST type identifier ASSIGN expression SEMICOLON {
+        $$ = new dap::parser::ConstantDeclarationNode($2, $3, $5);
+        // Log message when parsing a constant declaration node
+        parserLog("Parsed constant declaration node");
+    } 
+    | CONST identifier ASSIGN expression SEMICOLON {
+        $$ = new dap::parser::ConstantDeclarationNode(nullptr, $2, $4);
+        // Log message when parsing a constant declaration node
+        parserLog("Parsed constant declaration node");
+    }
+    ;
 
 expression:
     integer {
@@ -368,6 +381,11 @@ statement:
         $$ = $1;
         // Log message when parsing a variable declaration statement node
         parserLog("Parsed variable declaration statement node: [" + (dynamic_cast<dap::parser::VariableDeclarationNode*>($1))->variableName->getName() + "]");
+    }
+    | constantDecl {
+        $$ = $1;
+        // Log message when parsing a constant declaration statement node
+        parserLog("Parsed constant declaration statement node: [" + (dynamic_cast<dap::parser::ConstantDeclarationNode*>($1))->name->getName() + "]");
     };
 
 statements:

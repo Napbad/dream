@@ -12,10 +12,9 @@
 #include <filesystem>
 #include <fstream>
 #include <iostream>
+#include <map>
 #include <string>
 #include <vector>
-#include <map>
-
 
 // Platform-specific color setting functions
 #ifdef _WIN32
@@ -114,11 +113,21 @@ bool create_dir(const std::string &path);
 
 // =================== YAML parser functions ===================
 // YAML Node
-class YAMLNode {
-public:
-    bool isScalar() const { return value!= ""; }
-    bool isSequence() const { return sequence.size() > 0; }
-    bool isMap() const { return map.size() > 0; }
+class YAMLNode
+{
+  public:
+    bool isScalar() const
+    {
+        return value != "";
+    }
+    bool isSequence() const
+    {
+        return sequence.size() > 0;
+    }
+    bool isMap() const
+    {
+        return map.size() > 0;
+    }
 
     std::string value;
     std::vector<YAMLNode> sequence;
@@ -126,9 +135,9 @@ public:
 };
 
 // parse YAML String
-YAMLNode parseYAML(const std::string& yamlString);
+YAMLNode parseYAML(const std::string &yamlString);
 
-void trim(std::string& str);
+void trim(std::string &str);
 
 } // namespace dap::util
 

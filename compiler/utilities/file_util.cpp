@@ -188,11 +188,12 @@ bool create_dir(const std::string &path)
     }
 }
 
-YAMLNode parseYAML(const std::string &yamlString) {
+YAMLNode parseYAML(const std::string &yamlString)
+{
     YAMLNode root;
     std::istringstream iss(yamlString);
     std::string line;
-    std::vector<YAMLNode*> currentNodes;
+    std::vector<YAMLNode *> currentNodes;
     currentNodes.push_back(&root);
 
     while (std::getline(iss, line)) {
@@ -206,7 +207,7 @@ YAMLNode parseYAML(const std::string &yamlString) {
             continue;
         }
 
-        if (line.find(':')!= std::string::npos) {
+        if (line.find(':') != std::string::npos) {
             size_t colonPos = line.find(':');
             std::string key = line.substr(0, colonPos);
             std::string value = line.substr(colonPos + 1);
@@ -235,7 +236,8 @@ YAMLNode parseYAML(const std::string &yamlString) {
     return root;
 }
 
-void trim(std::string &str) {
+void trim(std::string &str)
+{
     size_t start = 0;
     size_t end = str.size() - 1;
     while (start < str.size() && std::isspace(str[start])) {

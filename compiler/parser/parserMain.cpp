@@ -10,7 +10,6 @@ namespace parser
 
 std::string currentParsingFile = "";
 
-
 void parseFile(const std::string &file)
 {
     // init

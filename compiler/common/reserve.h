@@ -137,9 +137,7 @@ inline unsigned bitWidth = 32; // Default to 32-bit if unknown
 #include <unordered_map>
 #include <vector>
 
-
-enum class BasicType
-{
+enum class BasicType {
     BOOL,
     BYTE,
     SHORT,

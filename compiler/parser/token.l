@@ -55,6 +55,7 @@ HEXADECIMAL 0[xX][0-9a-fA-F]([0-9a-fA-F]|{UNDERSCORE})*[0-9a-fA-F]
 "else"                  { return ELSE; }
 "match"                 { return MATCH; }
 "struct"                { return STRUCT; }
+"const"                 { return CONST; }
 "trait"                 { return TRAIT; }
 "typedef"               { return TYPEDEF; }
 "imt"                   { return IMT; }

@@ -45,7 +45,7 @@ static option long_options[] = {{"help", no_argument, nullptr, 'h'},
 
 #endif
 
-bool checkInputPathValidWithRemind(const std::string& inputPath);
+bool checkInputPathValidWithRemind(const std::string &inputPath);
 
 int main(const int argc, char **argv)
 {
@@ -172,14 +172,13 @@ int main(const int argc, char **argv)
             auto *ctx = new dap::inter_gen::InterGenContext(inputPath);
             dap::parser::parseFile(file);
         }
-
     }
 
     dap::util::deleteDelayedObj();
     return 0;
 }
 
-bool checkInputPathValidWithRemind(const std::string& inputPath)
+bool checkInputPathValidWithRemind(const std::string &inputPath)
 {
     if (!inputPath.empty()) {
         std::ifstream infileOrDir;

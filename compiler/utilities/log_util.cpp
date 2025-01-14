@@ -32,11 +32,12 @@ void printHelpMsg()
 #endif
 }
 
-void warn(const std::string &msg, const std::string &file, int line) {
-
+void warn(const std::string &msg, const std::string &file, int line)
+{
 }
 
-void log(const std::string &msg, const std::string &file, int line) {
+void log(const std::string &msg, const std::string &file, int line)
+{
     cout << "Log: [ " << msg << " ] in " << file << ":" << line << endl;
 }
 

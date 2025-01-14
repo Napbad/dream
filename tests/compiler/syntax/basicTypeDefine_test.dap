@@ -17,8 +17,8 @@ var a1 = 2;
 // c1 = 200;
 
 var int a2 = 3;
-// const int b2 = 30;
-// const int c2 = 300;
+const int b2 = 30;
+const int c2 = 300;
 
 /* ****************GLOBAL VARIABLES******************* */
 

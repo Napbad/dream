@@ -5,10 +5,11 @@
 #ifndef ASTNODE_H
 #define ASTNODE_H
 
+#include "common/reserve.h"
 #include <llvm/IR/Value.h>
 #include <string>
+#include <utility>
 #include <vector>
-#include "common/reserve.h"
 
 namespace dap::parser
 {
@@ -73,7 +74,7 @@ class QualifiedName final : public Expression
         name_parts->at(0) = std::string(name_parts->at(0).c_str());
     }
 
-    std::string getName() const;
+    [[nodiscard]] std::string getName() const;
 };
 
 class Integer : public Expression
@@ -194,16 +195,20 @@ class Float : public Expression
     union value {
         float floatVal;
         double doubleVal;
-    } floatValue;
+    } floatValue{};
 
-    Float(float value)
+    bool isDouble;
+
+    explicit Float(float value)
     {
         this->floatValue.floatVal = value;
+        this->isDouble = false;
     }
 
-    Float(double value)
+    explicit Float(double value)
     {
         this->floatValue.doubleVal = value;
+        this->isDouble = true;
     }
 };
 
@@ -212,9 +217,9 @@ class String : public Expression
   public:
     std::string stringValue;
 
-    String(std::string value)
+    explicit String(std::string value)
     {
-        this->stringValue = value;
+        this->stringValue = std::move(value);
     }
 };
 
@@ -342,23 +347,23 @@ class TypeNode final : public ASTNode
 {
   public:
     // Constructor for TypeNode
-    bool isArray;
-    bool isPointer;
+    bool isArray{};
+    bool isPointer{};
     bool isBasicType;
-    int arraySize;
-    
+    int arraySize{};
 
-    BasicType basicType;
+    BasicType basicType = BasicType::UNKNOWN;
 
-    QualifiedName *typeBase;
+    QualifiedName *typeBase{};
 
-    TypeNode(QualifiedName *typeBase, bool isArray = false, bool isPointer = false, int arraySize = 0)
+    explicit TypeNode(QualifiedName *typeBase, bool isArray = false, bool isPointer = false, int arraySize = 0)
         : typeBase(typeBase), isArray(isArray), isPointer(isPointer), arraySize(arraySize)
     {
         isBasicType = false;
     }
 
-    TypeNode(BasicType basicType) : basicType(basicType) {
+    explicit TypeNode(BasicType basicType) : basicType(basicType)
+    {
         isBasicType = true;
     }
 
@@ -380,6 +385,27 @@ class BlockNode final : public Statement
     ~BlockNode() override
     {
         delete statementList;
+    }
+};
+
+class ConstantDeclarationNode final : public Statement
+{
+  public:
+    TypeNode *type;
+    QualifiedName *name;
+    Expression *value;
+
+    // Constructor for StatementListNode
+    ConstantDeclarationNode(TypeNode *typeInput, QualifiedName *nameInput, Expression *valueInput)
+        : type(typeInput), name(nameInput), value(valueInput)
+    {
+    }
+
+    // Destructor for StatementListNode
+    ~ConstantDeclarationNode() override
+    {
+        delete name;
+        delete value;
     }
 };
 
@@ -405,25 +431,16 @@ class StatementListNode final : public ASTNode
 class VariableDeclarationNode final : public Statement
 {
   public:
-    QualifiedName* variableName;
+    QualifiedName *variableName;
     bool nullable_;
     bool mutable_;
     TypeNode *type;
     Expression *expression;
 
     // Constructor for VariableDeclarationNode
-    VariableDeclarationNode(
-      TypeNode *type,
-      Expression *expression,
-      QualifiedName* variableName,
-      bool nullable = false,
-      bool mutable_ = false
-    ) :
-      nullable_(nullable),
-      mutable_(mutable_),
-      type(type),
-      variableName(variableName),
-      expression(expression)
+    VariableDeclarationNode(TypeNode *type, Expression *expression, QualifiedName *variableName, bool nullable = false,
+                            bool mutable_ = false)
+        : nullable_(nullable), mutable_(mutable_), type(type), variableName(variableName), expression(expression)
     {
     }
 
@@ -431,8 +448,7 @@ class VariableDeclarationNode final : public Statement
     ~VariableDeclarationNode() override
     {
         delete type;
-        if (expression)
-            delete expression;
+        delete expression;
     }
 };
 
@@ -484,8 +500,7 @@ class IfStatementNode final : public Statement
     {
         delete conditionExpression;
         delete thenBlock;
-        if (elseBlock)
-            delete elseBlock;
+        delete elseBlock;
     }
 };
 
@@ -541,8 +556,8 @@ class MatchCaseNode final : public ASTNode
     // Destructor for MatchCaseNode
     ~MatchCaseNode() override
     {
-        if (block)
-            delete block;
+
+        delete block;
     }
 };
 
@@ -560,8 +575,8 @@ class StructDeclarationNode final : public Statement
     // Destructor for StructDeclarationNode
     ~StructDeclarationNode() override
     {
-        if (structMemberList)
-            delete structMemberList;
+
+        delete structMemberList;
     }
 };
 
@@ -617,8 +632,8 @@ class TraitDeclarationNode final : public Statement
     // Destructor for TraitDeclarationNode
     ~TraitDeclarationNode() override
     {
-        if (traitMethodList)
-            delete traitMethodList;
+
+        delete traitMethodList;
     }
 };
 
@@ -674,8 +689,8 @@ class TypeDefinitionNode final : public ASTNode
     // Destructor for TypeDefinitionNode
     ~TypeDefinitionNode() override
     {
-        if (type)
-            delete type;
+
+        delete type;
     }
 };
 } // namespace dap::parser
