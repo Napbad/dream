@@ -8,13 +8,15 @@ from test_res import success, add_failed_test
 from util import get_dap_files
 
 
-def testBasicTypeDefine(dap_main, source_runtime_dir, d_debug = False):
+def testStructTypeDefine(dap_main, source_runtime_dir, d_debug = False):
     arg = ""
 
-    dap_file = "./syntax/basicTypeDefine_test.dap"
+    dap_file = "./syntax/structTypeDefine_test.dap"
     # Correct the command list by removing the extra spaces around -s
     command_list = [
         Path(os.path.abspath(dap_main)).__str__(),
+        "-s",
+        source_runtime_dir,
         os.path.abspath(dap_file),
         arg.strip()  # Also remove any extra spaces from the arg if present
     ]
@@ -27,16 +29,13 @@ def testBasicTypeDefine(dap_main, source_runtime_dir, d_debug = False):
         print(Fore.RED + result.stderr + Style.RESET_ALL)
         print(Fore.GREEN + result.stdout + Style.RESET_ALL)
 
-    if dap_file.__contains__("basicTypeDefine_test.dap"):
+    if dap_file.__contains__("structTypeDefine_test.dap"):
         if (result.stderr.__contains__("error") or result.stderr.__contains__("warning") or result.stderr.__contains__("Error")) \
             or (result.stdout.__contains__("error") or result.stdout.__contains__("warning") or result.stdout.__contains__("Error")):
-
-            print(Fore.RED    + "FAIL:" + Fore.BLUE + " <basic type definition>\n" + Style.RESET_ALL)
-            print(Fore.YELLOW + "command:\n"            + Style.RESET_ALL)
-            print(Fore.BLUE   + command_list.__str__()  + Style.RESET_ALL)
-            print(Fore.YELLOW + "stderr:"               + Style.RESET_ALL)
-            print(Fore.YELLOW + result.stderr           + Style.RESET_ALL)
+            print(Fore.RED, "FAIL:" + Fore.BLUE + " <struct type definition>\n" + Style.RESET_ALL)
+            print(Fore.YELLOW + "stderr:" + Style.RESET_ALL)
+            print(Fore.YELLOW + result.stderr + Style.RESET_ALL)
             add_failed_test(dap_file)
         else:
             success()
-            print(Fore.GREEN + "basic type definition test PASS!" + Style.RESET_ALL)
+            print(Fore.GREEN + "struct type definition test PASS!" + Style.RESET_ALL)

@@ -1,0 +1,11 @@
+package main;
+
+
+
+fun main()  {
+    return 0;
+}
+
+fun foo() int {
+    return a;
+}

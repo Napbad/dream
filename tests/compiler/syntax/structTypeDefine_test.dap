@@ -1,0 +1,32 @@
+package main;
+
+import a;
+
+struct TypeDefine {
+    var int a;
+    imt int b;
+    var int c;
+};
+
+struct TypeDefine2 {
+    var a;
+    imt b;
+    var c;
+};
+
+struct TypeDefine3 {
+    var int a? = 1;
+    imt byte b! = 10;
+    var short c?;
+    imt byte d;
+
+    var TypeDefine2 td;
+};
+
+
+
+
+fun main()  {
+
+    // return 0;
+}
