@@ -43,17 +43,18 @@ void parserLog(std::string msg) {
     // dap::parser::BlockStmt *block;
     dap::parser::Expression *expr;
     dap::parser::Statement *stmt;
-    dap::parser::QualifiedName *ident;
+    dap::parser::QualifiedNameNode *ident;
     dap::parser::TypeNode *typeNode;
     std::vector<dap::parser::TypeNode*> *typeNodeVec;
-    dap::parser::Integer *intExpr;
+    dap::parser::IntegerNode *intExpr;
     dap::parser::String *strExpr;
-    dap::parser::Float *floatExpr;
+    dap::parser::FloatNode *floatExpr;
     std::vector<dap::parser::Expression*> *exprVec;
     std::vector<dap::parser::Statement*> *stmtVec;
+    std::vector<dap::parser::VariableDeclarationNode*> *varDeclVec;
     std::string *str;
     char charVal;
-    int integer;
+    int IntegerNode;
     double floatVal;
     bool boolval;
     int token;
@@ -75,7 +76,7 @@ void parserLog(std::string msg) {
 %type <str> IDENTIFIER INTEGER BINARY_LITERAL OCTAL_LITERAL HEXADECIMAL_LITERAL FLOAT_LITERAL STRING_LITERAL
 %type <ident> identifier
 %type <expr> expression
-%type <stmt> importStmt packageDecl statement funDecl variableDecl constantDecl
+%type <stmt> importStmt packageDecl statement funDecl variableDecl constantDecl structDecl returnStmt
 %type <stmtVec> statements
 %type <exprVec> expressions
 %type <typeNode> type
@@ -84,6 +85,7 @@ void parserLog(std::string msg) {
 %type <intExpr> integer
 %type <floatExpr> float_
 %type <strExpr> string_ CHAR_LITERAL
+%type <varDeclVec> structFields
 
 %start program
 %%
@@ -105,7 +107,18 @@ variableDecl:
         $$ = new dap::parser::VariableDeclarationNode(nullptr, $5, $2, $3, $1);
         // Log message when parsing a variable declaration node without explicit type
         parserLog("Parsed variable declaration node without explicit type");
-    };
+    }
+    | mutableModifier type identifier nullableModifier SEMICOLON {
+        $$ = new dap::parser::VariableDeclarationNode($2, nullptr, $3, $4, $1);
+        // Log message when parsing a variable declaration node
+        parserLog("Parsed variable declaration node");
+    }
+    | mutableModifier identifier nullableModifier SEMICOLON {
+        $$ = new dap::parser::VariableDeclarationNode(nullptr, nullptr, $2, $3, $1);
+        // Log message when parsing a variable declaration node without explicit type
+        parserLog("Parsed variable declaration node without explicit type");
+    }
+    ;
 
 constantDecl:
     CONST type identifier ASSIGN expression SEMICOLON {
@@ -123,8 +136,8 @@ constantDecl:
 expression:
     integer {
         $$ = $1;
-        // Log message when parsing an integer expression node
-        parserLog("Parsed integer expression node");
+        // Log message when parsing an IntegerNode expression node
+        parserLog("Parsed IntegerNode expression node");
     }
     | identifier {
         $$ = $1;
@@ -221,7 +234,7 @@ mutableModifier:
 
 identifier:
     IDENTIFIER {
-        $$ = new dap::parser::QualifiedName(*$1);
+        $$ = new dap::parser::QualifiedNameNode(*$1);
         delete $1;
         // Log message when parsing an identifier node
         parserLog("Parsed identifier node");
@@ -236,14 +249,14 @@ identifier:
 
 integer:
     INTEGER {
-        $$ = new dap::parser::Integer(atol($1->c_str()));
-        // Log message when parsing an integer node
-        parserLog("Parsed integer node");
+        $$ = new dap::parser::IntegerNode(atol($1->c_str()));
+        // Log message when parsing an IntegerNode node
+        parserLog("Parsed IntegerNode node");
     };
 
 float_:
     FLOAT_LITERAL {
-        $$ = new dap::parser::Float(atof($1->c_str()));
+        $$ = new dap::parser::FloatNode(atof($1->c_str()));
         // Log message when parsing a float node
         parserLog("Parsed float node");
     };
@@ -386,6 +399,16 @@ statement:
         $$ = $1;
         // Log message when parsing a constant declaration statement node
         parserLog("Parsed constant declaration statement node: [" + (dynamic_cast<dap::parser::ConstantDeclarationNode*>($1))->name->getName() + "]");
+    } 
+    | structDecl {
+        $$ = $1;
+        // Log message when parsing a struct declaration statement node
+        parserLog("Parsed struct declaration statement node: [" + (dynamic_cast<dap::parser::StructDeclarationNode*>($1))->name->getName() + "]");
+    }
+    | returnStmt {
+        $$ = $1;
+        // Log message when parsing a return statement node
+        parserLog("Parsed return statement node");
     };
 
 statements:
@@ -411,4 +434,30 @@ expressions:
         // Log message when adding an expression to the expressions list
         parserLog("Added expression to expressions list");
     };
+
+structDecl: 
+    STRUCT identifier LEFT_BRACE structFields RIGHT_BRACE SEMICOLON {
+        $$ = new dap::parser::StructDeclarationNode($2, $4);
+    };
+
+
+structFields:
+    /* empty */ {
+        $$ = new std::vector<dap::parser::VariableDeclarationNode*>();
+        // Log message when starting to parse a list of struct fields
+        parserLog("Started parsing struct fields list");
+    }
+    | structFields variableDecl {
+        $$->push_back(dynamic_cast<dap::parser::VariableDeclarationNode*>($2));
+        // Log message when adding a struct field to the struct fields list
+        parserLog("Added struct field to struct fields list");
+    };
+
+returnStmt:
+    RETURN expression SEMICOLON {
+        $$ = new dap::parser::ReturnStatementNode($2);
+        // Log message when parsing a return statement node
+        parserLog("Parsed return statement node");
+    };
 %%
+

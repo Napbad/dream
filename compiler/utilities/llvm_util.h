@@ -10,12 +10,12 @@
 namespace dap::util
 {
 // /* Returns an LLVM type based on the identifier */
-// llvm::Type *typeOf(const parser::QualifiedName &type, const inter_gen::InterGenContext *ctx, parser::Expr *size =
+// llvm::Type *typeOf(const parser::QualifiedNameNode &type, const inter_gen::InterGenContext *ctx, parser::Expr *size =
 // nullptr);
 
 // /* Returns an LLVM type based on the identifier, which returns type for metadata (specially for pointer cause that
 //  * llvm's pointer do not have type  info) */
-// llvm::Type *typeOf_d(const parser::QualifiedName &type, const inter_gen::InterGenContext *ctx, parser::Expr *size);
+// llvm::Type *typeOf_d(const parser::QualifiedNameNode &type, const inter_gen::InterGenContext *ctx, parser::Expr *size);
 
 // llvm::Type *getPointerOf(llvm::Type *type, const inter_gen::InterGenContext *ctx = nullptr);
 

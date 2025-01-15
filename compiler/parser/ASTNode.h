@@ -58,18 +58,18 @@ class Statement : public ASTNode
     explicit Statement() = default;
 };
 
-class QualifiedName final : public Expression
+class QualifiedNameNode final : public Expression
 {
   public:
     std::vector<std::string> *name_parts;
 
-    // Constructor for QualifiedName
-    QualifiedName() : name_parts(new std::vector<std::string>)
+    // Constructor for QualifiedNameNode
+    QualifiedNameNode() : name_parts(new std::vector<std::string>)
     {
     }
 
-    // Constructor for QualifiedName with a given name
-    explicit QualifiedName(std::string names) : name_parts(new std::vector{std::move(names)})
+    // Constructor for QualifiedNameNode with a given name
+    explicit QualifiedNameNode(std::string names) : name_parts(new std::vector{std::move(names)})
     {
         name_parts->at(0) = std::string(name_parts->at(0).c_str());
     }
@@ -77,73 +77,73 @@ class QualifiedName final : public Expression
     [[nodiscard]] std::string getName() const;
 };
 
-class Integer : public Expression
+class IntegerNode : public Expression
 {
   public:
-    explicit Integer(int value)
+    explicit IntegerNode(int value)
     {
         this->intType = INT;
         this->intValue.signedVal = value;
         this->isSigned = true;
     }
 
-    explicit Integer(unsigned int value)
+    explicit IntegerNode(unsigned int value)
     {
         this->intType = UNSIGNED_INT;
         this->intValue.unsignedVal = value;
         this->isSigned = false;
     }
 
-    explicit Integer(short value)
+    explicit IntegerNode(short value)
     {
         this->intType = SHORT;
         this->intValue.shortVal = value;
         this->isSigned = true;
     }
 
-    explicit Integer(unsigned short value)
+    explicit IntegerNode(unsigned short value)
     {
         this->intType = UNSIGNED_SHORT;
         this->intValue.unsignedShortVal = value;
         this->isSigned = false;
     }
 
-    explicit Integer(char value)
+    explicit IntegerNode(char value)
     {
         this->intType = CHAR;
         this->intValue.charVal = value;
         this->isSigned = true;
     }
 
-    explicit Integer(unsigned char value)
+    explicit IntegerNode(unsigned char value)
     {
         this->intType = UNSIGNED_CHAR;
         this->intValue.unsignedCharVal = value;
         this->isSigned = false;
     }
 
-    explicit Integer(long value)
+    explicit IntegerNode(long value)
     {
         this->intType = LONG;
         this->intValue.longVal = value;
         this->isSigned = true;
     }
 
-    explicit Integer(unsigned long value)
+    explicit IntegerNode(unsigned long value)
     {
         this->intType = UNSIGNED_LONG;
         this->intValue.unsignedLongVal = value;
         this->isSigned = false;
     }
 
-    explicit Integer(long long value)
+    explicit IntegerNode(long long value)
     {
         this->intType = LONG_LONG;
         this->intValue.longLongVal = value;
         this->isSigned = true;
     }
 
-    explicit Integer(unsigned long long value)
+    explicit IntegerNode(unsigned long long value)
     {
         this->intType = UNSIGNED_LONG_LONG;
         this->intValue.unsignedLongLongVal = value;
@@ -189,7 +189,7 @@ class Integer : public Expression
     } intType;
 };
 
-class Float : public Expression
+class FloatNode : public Expression
 {
   public:
     union value {
@@ -199,13 +199,13 @@ class Float : public Expression
 
     bool isDouble;
 
-    explicit Float(float value)
+    explicit FloatNode(float value)
     {
         this->floatValue.floatVal = value;
         this->isDouble = false;
     }
 
-    explicit Float(double value)
+    explicit FloatNode(double value)
     {
         this->floatValue.doubleVal = value;
         this->isDouble = true;
@@ -229,10 +229,10 @@ class ProgramNode final : public ASTNode
   public:
     std::vector<ASTNode *> children{}; // List of child nodes
 
-    QualifiedName *packageName = nullptr;
+    QualifiedNameNode *packageName = nullptr;
 
     struct importedPackageInfo {
-        QualifiedName *packageName;
+        QualifiedNameNode *packageName;
         bool all;
     };
 
@@ -285,15 +285,8 @@ class FunctionDeclarationNode final : public Statement
     }
 
     // Destructor for FunctionDeclarationNode
-    ~FunctionDeclarationNode() override
-    {
-        delete parameterList;
-        delete returnType;
-        for (const Statement *stmt : *block) {
-            delete stmt;
-        }
-        delete block;
-    }
+    ~FunctionDeclarationNode() override;
+    
 };
 
 // Represents a parameter list in the AST
@@ -354,9 +347,9 @@ class TypeNode final : public ASTNode
 
     BasicType basicType = BasicType::UNKNOWN;
 
-    QualifiedName *typeBase{};
+    QualifiedNameNode *typeBase{};
 
-    explicit TypeNode(QualifiedName *typeBase, bool isArray = false, bool isPointer = false, int arraySize = 0)
+    explicit TypeNode(QualifiedNameNode *typeBase, bool isArray = false, bool isPointer = false, int arraySize = 0)
         : typeBase(typeBase), isArray(isArray), isPointer(isPointer), arraySize(arraySize)
     {
         isBasicType = false;
@@ -392,11 +385,11 @@ class ConstantDeclarationNode final : public Statement
 {
   public:
     TypeNode *type;
-    QualifiedName *name;
+    QualifiedNameNode *name;
     Expression *value;
 
     // Constructor for StatementListNode
-    ConstantDeclarationNode(TypeNode *typeInput, QualifiedName *nameInput, Expression *valueInput)
+    ConstantDeclarationNode(TypeNode *typeInput, QualifiedNameNode *nameInput, Expression *valueInput)
         : type(typeInput), name(nameInput), value(valueInput)
     {
     }
@@ -431,14 +424,14 @@ class StatementListNode final : public ASTNode
 class VariableDeclarationNode final : public Statement
 {
   public:
-    QualifiedName *variableName;
+    QualifiedNameNode *variableName;
     bool nullable_;
     bool mutable_;
     TypeNode *type;
     Expression *expression;
 
     // Constructor for VariableDeclarationNode
-    VariableDeclarationNode(TypeNode *type, Expression *expression, QualifiedName *variableName, bool nullable = false,
+    VariableDeclarationNode(TypeNode *type, Expression *expression, QualifiedNameNode *variableName, bool nullable = false,
                             bool mutable_ = false)
         : nullable_(nullable), mutable_(mutable_), type(type), variableName(variableName), expression(expression)
     {
@@ -565,11 +558,17 @@ class MatchCaseNode final : public ASTNode
 class StructDeclarationNode final : public Statement
 {
   public:
-    ASTNode *structMemberList;
+    QualifiedNameNode *name;
+    std::vector<VariableDeclarationNode*> *structMemberList;
 
     // Constructor for StructDeclarationNode
-    explicit StructDeclarationNode(const std::string &name) : structMemberList(nullptr)
+    explicit StructDeclarationNode(
+        QualifiedNameNode * nameInput,
+        std::vector<VariableDeclarationNode*> *structMemberListInput) 
+        : name(nameInput),
+          structMemberList(structMemberListInput)
     {
+
     }
 
     // Destructor for StructDeclarationNode
@@ -691,6 +690,25 @@ class TypeDefinitionNode final : public ASTNode
     {
 
         delete type;
+    }
+};
+
+
+class ReturnStatementNode final : public Statement
+{
+  public:
+    Expression *expression;
+
+    // Constructor for ReturnStatementNode
+    explicit ReturnStatementNode(Expression *exprInput) : expression(exprInput)
+    {
+    }
+
+    // Destructor for ReturnStatementNode
+    ~ReturnStatementNode() override
+    {
+
+        delete expression;
     }
 };
 } // namespace dap::parser

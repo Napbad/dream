@@ -33,7 +33,7 @@ enum class FileColor {
 /**
  * @brief Converts FileColor to Windows console color or ANSI color code.
  * @param color The FileColor enum value.
- * @return On Windows, returns an integer color code; on other platforms,
+ * @return On Windows, returns an IntegerNode color code; on other platforms,
  * returns an ANSI color code.
  */
 #ifdef _WIN32

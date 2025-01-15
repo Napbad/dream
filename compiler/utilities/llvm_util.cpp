@@ -25,7 +25,7 @@
 //     {"ullong", llvm::Type::getInt128Ty()},
 //     {"double", llvm::Type::getDoubleTy()}};
 
-// llvm::Type *typeOf(const parser::QualifiedName &type, const inter_gen::InterGenContext *ctx, parser::Expr *size)
+// llvm::Type *typeOf(const parser::QualifiedNameNode &type, const inter_gen::InterGenContext *ctx, parser::Expr *size)
 // {
 
 //     if (type.name_parts == nullptr || type.name_parts->empty() || type.getName() == "void") {
@@ -55,23 +55,23 @@
 //     if (type.name_parts->back() == D_POINTER_SUFIX) {
 //         const std::vector<std::string> *nameParts = type.name_parts;
 //         std::vector<std::string> vec = getSubVector(*nameParts, 0, type.name_parts->size() - 1);
-//         return getPointerOf(typeOf(parser::QualifiedName(&vec), ctx, nullptr), ctx);
+//         return getPointerOf(typeOf(parser::QualifiedNameNode(&vec), ctx, nullptr), ctx);
 //     }
 
 //     if (type.name_parts->back() == D_ARR_SUFIX) {
-//         const parser::IntegerExpr *integerExpr = dynamic_cast<parser::IntegerExpr *>(size);
-//         if (integerExpr == nullptr) {
+//         const parser::IntegerNodeExpr *IntegerNodeExpr = dynamic_cast<parser::IntegerNodeExpr *>(size);
+//         if (IntegerNodeExpr == nullptr) {
 //             REPORT_ERROR("warn at: " + ctx->sourcePath + ":" + std::to_string(ctx->currLine) +
-//                          " \n array size must be integer", __FILE__, __LINE__);
-//             return ArrayType::get(typeOf(parser::QualifiedName(type.getName(0)), ctx, nullptr), 1);
+//                          " \n array size must be IntegerNode", __FILE__, __LINE__);
+//             return ArrayType::get(typeOf(parser::QualifiedNameNode(type.getName(0)), ctx, nullptr), 1);
 //         }
-//         return ArrayType::get(typeOf(parser::QualifiedName(type.getName(0)), ctx, nullptr), integerExpr->value);
+//         return ArrayType::get(typeOf(parser::QualifiedNameNode(type.getName(0)), ctx, nullptr), IntegerNodeExpr->value);
 //     }
 
 //     return nullptr;
 // }
 
-// llvm::Type *typeOf_d(const parser::QualifiedName &type, const inter_gen::InterGenContext *ctx, parser::Expr *size)
+// llvm::Type *typeOf_d(const parser::QualifiedNameNode &type, const inter_gen::InterGenContext *ctx, parser::Expr *size)
 // {
 //     if (type.name_parts == nullptr || type.name_parts->empty()) {
 //         return llvm::Type::getVoidTy(LLVMCTX);
@@ -80,16 +80,16 @@
 //     if (type.name_parts->back() == D_POINTER_SUFIX) {
 //         const std::vector<std::string> *nameParts = type.name_parts;
 //         std::vector<std::string> vec = getSubVector(*nameParts, 0, type.name_parts->size() - 1);
-//         return PointerType_d::get(LLVMCTX, typeOf(parser::QualifiedName(&vec), ctx, nullptr));
+//         return PointerType_d::get(LLVMCTX, typeOf(parser::QualifiedNameNode(&vec), ctx, nullptr));
 //     }
 
 //     if (type.name_parts->back() == D_ARR_SUFIX) {
-//         const parser::IntegerExpr *integerExpr = dynamic_cast<parser::IntegerExpr *>(size);
-//         if (integerExpr == nullptr) {
-//             REPORT_ERROR("array size must be integer", __FILE__, __LINE__);
-//             return ArrayType::get(typeOf(parser::QualifiedName(type.getName(0)), ctx, nullptr), 1);
+//         const parser::IntegerNodeExpr *IntegerNodeExpr = dynamic_cast<parser::IntegerNodeExpr *>(size);
+//         if (IntegerNodeExpr == nullptr) {
+//             REPORT_ERROR("array size must be IntegerNode", __FILE__, __LINE__);
+//             return ArrayType::get(typeOf(parser::QualifiedNameNode(type.getName(0)), ctx, nullptr), 1);
 //         }
-//         return ArrayType::get(typeOf(parser::QualifiedName(type.getName(0)), ctx, nullptr), integerExpr->value);
+//         return ArrayType::get(typeOf(parser::QualifiedNameNode(type.getName(0)), ctx, nullptr), IntegerNodeExpr->value);
 //     }
 //     if (const auto it = typeMap.find(type.getName()); it != typeMap.end()) {
 //         return it->second(LLVMCTX);

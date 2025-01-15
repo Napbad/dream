@@ -139,7 +139,7 @@ IndentWrappedFunctionNames: false
 InsertBraces:    false
 InsertNewlineAtEOF: false
 InsertTrailingCommas: None
-IntegerLiteralSeparator:
+IntegerNodeLiteralSeparator:
   Binary:          0
   BinaryMinDigits: 0
   Decimal:         0

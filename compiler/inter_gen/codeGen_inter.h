@@ -19,8 +19,8 @@
 #define BUILDER ctx->builder
 namespace dap::parser
 {
-class Program;
-class QualifiedName;
+class ProgramNode;
+class QualifiedNameNode;
 } // namespace dap::parser
 
 namespace dap::inter_gen
@@ -87,7 +87,7 @@ class InterGenContext
 
     FunctionMetaData *getFunMetaData(const std::string &name, const inter_gen::InterGenContext *ctx) const;
     std::pair<Value *, VariableMetaData *> getValWithMetadata(const std::string &name);
-    std::pair<Value *, VariableMetaData *> getValWithMetadata(const parser::QualifiedName *name);
+    std::pair<Value *, VariableMetaData *> getValWithMetadata(const parser::QualifiedNameNode *name);
     FunctionMetaData *getCurrFunMetaData() const;
     void setCurrFunMetaData(inter_gen::FunctionMetaData *funMetaData);
 
@@ -188,13 +188,13 @@ class InterGenContext
      * @brief Generate IR code for the given program.
      * @param program Pointer to the program
      */
-    void genIR(parser::Program *program);
+    void genIR(parser::ProgramNode *program);
 
     /**
      * @brief Generate executable code for the given program.
      * @param program Pointer to the program
      */
-    void genExec(parser::Program *program);
+    void genExec(parser::ProgramNode *program);
     /**
      * @brief Set the main function.
      * @param fun Pointer to the main function

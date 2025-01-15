@@ -7,7 +7,7 @@
 #include "utilities/llvm_util.h"
 #include "utilities/string_util.h"
 
-std::string dap::parser::Integer::getVal()
+std::string dap::parser::IntegerNode::getVal()
 {
     switch (intType) {
     case INT:
@@ -22,7 +22,17 @@ std::string dap::parser::Integer::getVal()
     return "";
 }
 
-std::string dap::parser::QualifiedName::getName() const
+std::string dap::parser::QualifiedNameNode::getName() const
 {
     return util::getStrFromVec(*name_parts, ".");
+}
+
+dap::parser::FunctionDeclarationNode::~FunctionDeclarationNode()
+{
+    delete parameterList;
+    delete returnType;
+    for (const Statement *stmt : *block) {
+        delete stmt;
+    }
+    delete block;
 }

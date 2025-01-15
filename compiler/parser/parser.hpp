@@ -156,22 +156,23 @@ union YYSTYPE
     // dap::parser::BlockStmt *block;
     dap::parser::Expression *expr;
     dap::parser::Statement *stmt;
-    dap::parser::QualifiedName *ident;
+    dap::parser::QualifiedNameNode *ident;
     dap::parser::TypeNode *typeNode;
     std::vector<dap::parser::TypeNode*> *typeNodeVec;
-    dap::parser::Integer *intExpr;
+    dap::parser::IntegerNode *intExpr;
     dap::parser::String *strExpr;
-    dap::parser::Float *floatExpr;
+    dap::parser::FloatNode *floatExpr;
     std::vector<dap::parser::Expression*> *exprVec;
     std::vector<dap::parser::Statement*> *stmtVec;
+    std::vector<dap::parser::VariableDeclarationNode*> *varDeclVec;
     std::string *str;
     char charVal;
-    int integer;
+    int IntegerNode;
     double floatVal;
     bool boolval;
     int token;
 
-#line 175 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.hpp"
+#line 176 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.hpp"
 
 };
 typedef union YYSTYPE YYSTYPE;

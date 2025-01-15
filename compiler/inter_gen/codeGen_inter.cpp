@@ -57,11 +57,11 @@
 //     return llvm::ConstantInt::get(llvm::Type::getInt1Ty(LLVMCTX), 0);
 // }
 
-// // Generates code for an Integer Expression (integer constant)
-// Value *IntegerExpr::codeGen(inter_gen::InterGenContext *ctx)
+// // Generates code for an IntegerNode Expression (IntegerNode constant)
+// Value *IntegerNodeExpr::codeGen(inter_gen::InterGenContext *ctx)
 // {
 //     ctx->currLine = this->line;
-//     // Return an integer constant (64-bit)
+//     // Return an IntegerNode constant (64-bit)
 //     return ConstantInt::get(LLVMCTX, APInt(INT_BIT_WIDTH, value, true));
 // }
 
@@ -84,10 +84,10 @@
 //     return stringConstant;
 // }
 
-// Value *handleStructName(const QualifiedName *name, inter_gen::InterGenContext *ctx);
+// Value *handleStructName(const QualifiedNameNode *name, inter_gen::InterGenContext *ctx);
 
 // // Generates code for a Qualified Name (variable lookup and access)
-// Value *QualifiedName::codeGen(inter_gen::InterGenContext *ctx)
+// Value *QualifiedNameNode::codeGen(inter_gen::InterGenContext *ctx)
 // {
 //     ctx->currLine = this->line;
 //     // check the functions
@@ -121,7 +121,7 @@
 //     // Handle the case where the variable is an array, and we need to return a pointer
 //     if (dyn_cast<AllocaInst>(ctx->getVal(getFirstName()))->getAllocatedType()->isArrayTy()) {
 //         return BUILDER.CreateGEP(PointerType::getInt8Ty(LLVMCTX), ctx->getVal(getFirstName()),
-//                                  {ConstantInt::get(IntegerType::get(LLVMCTX, 64), 0)});
+//                                  {ConstantInt::get(IntegerNodeType::get(LLVMCTX, 64), 0)});
 //     }
 
 //     // If it's a pointer type, return a pointer to it
@@ -130,15 +130,15 @@
 //     if (llvm::isa<StructType>(allocatedType)) {
 //         return handleStructName(this, ctx);
 //     }
-//     if (allocatedType == PointerType::get(IntegerType::get(LLVMCTX, 8), 0)) {
+//     if (allocatedType == PointerType::get(IntegerNodeType::get(LLVMCTX, 8), 0)) {
 //         return BUILDER.CreateInBoundsGEP(PointerType::getInt8Ty(LLVMCTX), ctx->getVal(getFirstName()),
-//                                          {ConstantInt::get(IntegerType::get(LLVMCTX, 64), 0)});
+//                                          {ConstantInt::get(IntegerNodeType::get(LLVMCTX, 64), 0)});
 //     }
 
 //     return BUILDER.CreateLoad(val->getAllocatedType(), val, false, getFirstName());
 // }
 
-// Value *handleStructName(const QualifiedName *name, inter_gen::InterGenContext *ctx)
+// Value *handleStructName(const QualifiedNameNode *name, inter_gen::InterGenContext *ctx)
 // {
 //     auto [value, metadata] = ctx->locals()[name->getFirstName()];
 //     Value *currentPtr = value;
@@ -310,10 +310,10 @@
 //                      __FILE__, __LINE__);
 //         return nullptr;
 //     }
-//     if (!llvm::isa<IntegerType>(indexValue->getType()) && !llvm::isa<ConstantInt>(indexValue) &&
-//         !llvm::isa<IntegerType>(indexValue->getType())) {
+//     if (!llvm::isa<IntegerNodeType>(indexValue->getType()) && !llvm::isa<ConstantInt>(indexValue) &&
+//         !llvm::isa<IntegerNodeType>(indexValue->getType())) {
 //         REPORT_ERROR("error at: " + ctx->sourcePath + ":" + std::to_string(ctx->currLine) +
-//                          " \nIndex Expression must evaluate to an integer",
+//                          " \nIndex Expression must evaluate to an IntegerNode",
 //                      __FILE__, __LINE__);
 //         return nullptr; // Error in generating code for the index
 //     }
@@ -358,7 +358,7 @@
 //     }
 
 //     // If the base value is not a pointer, create a pointer to it
-//     // For example, if base_value is an integer, create a pointer to that integer
+//     // For example, if base_value is an IntegerNode, create a pointer to that IntegerNode
 
 //     // Create an alloca instruction to allocate space for the base value on the stack
 //     AllocaInst *alloca = BUILDER.CreateAlloca(base_type, nullptr, "ptr_temp");
@@ -392,10 +392,10 @@
 //     // Check if both operands are of the same type
 //     const auto lhsType = lhsVal->getType();
 //     if (const auto rhsType = rhsVal->getType(); lhsType != rhsType) {
-//         if (llvm::isa<IntegerType>(lhsType) && llvm::isa<IntegerType>(rhsType)) {
-//             if (lhsType->getIntegerBitWidth() > rhsType->getIntegerBitWidth()) {
+//         if (llvm::isa<IntegerNodeType>(lhsType) && llvm::isa<IntegerNodeType>(rhsType)) {
+//             if (lhsType->getIntegerNodeBitWidth() > rhsType->getIntegerNodeBitWidth()) {
 //                 rhsVal = BUILDER.CreateSExtOrTrunc(rhsVal, lhsType, "sext_or_trunc");
-//             } else if (lhsType->getIntegerBitWidth() < rhsType->getIntegerBitWidth()) {
+//             } else if (lhsType->getIntegerNodeBitWidth() < rhsType->getIntegerNodeBitWidth()) {
 //                 lhsVal = BUILDER.CreateSExtOrTrunc(lhsVal, rhsType, "sext_or_trunc");
 //             }
 //         } else {
@@ -749,7 +749,7 @@
 //         phi->addIncoming(ConstantInt::get(elseBody->getType(), 0), thenBB);
 //         phi->addIncoming(elseBody, elseBB);
 //     } else {
-//         return ConstantInt::get(IntegerType::get(LLVMCTX, 0), 0); // Return 0 (no result)
+//         return ConstantInt::get(IntegerNodeType::get(LLVMCTX, 0), 0); // Return 0 (no result)
 //     }
 
 //     return phi; // Return the result of the condition
@@ -764,9 +764,9 @@
 //     if (!condVal)
 //         return nullptr;
 
-//     // Normalize condition to boolean (for integer, floating point, or pointer
+//     // Normalize condition to boolean (for IntegerNode, floating point, or pointer
 //     // types)
-//     if (Type *condType = condVal->getType(); condType->isIntegerTy()) {
+//     if (Type *condType = condVal->getType(); condType->isIntegerNodeTy()) {
 //         condVal = BUILDER.CreateICmpNE(condVal, ConstantInt::get(condType, 0), "ifcond");
 //     } else if (condType->isFloatingPointTy()) {
 //         condVal = BUILDER.CreateFCmpONE(condVal, ConstantFP::get(condType, 0.0), "ifcond");
@@ -886,10 +886,10 @@
 //     Value *condVal = cond->codeGen(ctx);
 //     Value *brCond;
 
-//     // Handle different types for loop condition: integer, floating point, or
+//     // Handle different types for loop condition: IntegerNode, floating point, or
 //     // pointer
 //     switch (condVal->getType()->getTypeID()) {
-//     case Type::IntegerTyID:
+//     case Type::IntegerNodeTyID:
 //         brCond = BUILDER.CreateICmp(CmpInst::ICMP_NE, condVal, ConstantInt::get(LLVMCTX, APInt(1, 0)));
 //         break;
 //     case Type::DoubleTyID:
@@ -958,7 +958,7 @@
 //     Type *valType = util::typeOf(*type, ctx, size);
 //     if (llvm::isa<PointerType>(valType)) {
 //         auto baseTypeName = util::getSubVector(*type->name_parts, 0, type->name_parts->size() - 1);
-//         Type *baseType = util::typeOf(QualifiedName(&baseTypeName), ctx);
+//         Type *baseType = util::typeOf(QualifiedNameNode(&baseTypeName), ctx);
 
 //         AllocaInst *allocaInst = BUILDER.CreateAlloca(baseType, nullptr, name->getName());
 
@@ -1087,7 +1087,7 @@
 //     return nullptr;
 // }
 
-// Value *handleStructAssign(const QualifiedName *var, Expr *val, inter_gen::InterGenContext *ctx);
+// Value *handleStructAssign(const QualifiedNameNode *var, Expr *val, inter_gen::InterGenContext *ctx);
 
 // // AssignExpr: Generates code for an assignment statement
 // Value *AssignExpr::codeGen(inter_gen::InterGenContext *ctx)
@@ -1165,7 +1165,7 @@
 //     return nullptr;
 // }
 
-// Value *handleStructAssign(const QualifiedName *var, Expr *val, inter_gen::InterGenContext *ctx)
+// Value *handleStructAssign(const QualifiedNameNode *var, Expr *val, inter_gen::InterGenContext *ctx)
 // {
 //     Value *currentPtr = nullptr;
 //     // Get the pointer to the struct
@@ -1372,7 +1372,7 @@
 //     return nullptr;
 // }
 
-// std::pair<Value *, VariableMetaData *> InterGenContext::getValWithMetadata(const parser::QualifiedName *name)
+// std::pair<Value *, VariableMetaData *> InterGenContext::getValWithMetadata(const parser::QualifiedNameNode *name)
 // {
 //     int idx = 0;
 //     std::pair<Value *, VariableMetaData *> val_with_metadata = this->getValWithMetadata(name->getName(idx));
