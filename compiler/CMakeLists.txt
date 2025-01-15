@@ -78,6 +78,8 @@ add_executable(dap_compiler
         utilities/log_util.h
         utilities/log_util.cpp
         parser/parserMain.cpp
+        inter_gen/metadata.h
+        inter_gen/metadata.cpp
 )
 
 

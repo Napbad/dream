@@ -25,9 +25,8 @@ class QualifiedNameNode;
 
 namespace dap::inter_gen
 {
-using namespace llvm;
 
-static LLVMContext *llvmContext = new LLVMContext();
+static llvm::LLVMContext *llvmContext = new llvm::LLVMContext();
 
 class FunctionMetaData;
 class StructMetaData;
@@ -43,18 +42,18 @@ class IncludeGraphNode;
 class InterGenBlock
 {
   public:
-    BasicBlock *block{};  ///< The current basic block
-    Value *returnValue{}; ///< The return value of the current block
-    std::map<std::string, std::pair<Value *, VariableMetaData *>> locals{};
-    std::stack<BasicBlock *> loopExitBlocks{};
-    std::unordered_map<Value *, Type *> ptrValBaseTypeMapping{};
+    llvm::BasicBlock *block{};  ///< The current basic block
+    llvm::Value *returnValue{}; ///< The return value of the current block
+    std::map<std::string, std::pair<llvm::Value *, VariableMetaData *>> locals{};
+    std::stack<llvm::BasicBlock *> loopExitBlocks{};
+    std::unordered_map<llvm::Value *, llvm::Type *> ptrValBaseTypeMapping{};
     ///< Local variables of the current block
 
     /**
      * @brief Constructor to initialize the basic block.
      * @param block Pointer to the basic block
      */
-    explicit InterGenBlock(BasicBlock *block) : block(block)
+    explicit InterGenBlock(llvm::BasicBlock *block) : block(block)
     {
     }
 };
@@ -65,15 +64,15 @@ class InterGenBlock
 class InterGenContext
 {
     std::stack<InterGenBlock *> blocks; ///< Stack of blocks
-    Function *mainFunction{};           ///< Main function
-    Function *currFun = nullptr;        ///< Current function
+    llvm::Function *mainFunction{};           ///< Main function
+    llvm::Function *currFun = nullptr;        ///< Current function
     FunctionMetaData *currentFunMetaData = nullptr;
     bool definingStruct = false;   ///< if now defining struct
     bool definingVariable = false; ///< if now defining variable
 
   public:
-    Module *module = nullptr;                        ///< LLVM module
-    IRBuilder<> builder;                             ///< IR builder
+    llvm::Module *module = nullptr;                        ///< LLVM module
+    llvm::IRBuilder<> builder;                             ///< IR builder
     std::map<std::string, StructMetaData *> structs; ///< Struct metadata
     std::unordered_map<std::string, FunctionMetaData *> functions{};
     ModuleMetaData *metaData = nullptr;
@@ -81,13 +80,13 @@ class InterGenContext
     std::string sourcePath;
     std::string package;
     std::string fileName;
-    BasicBlock *mergeBBInNestIf = nullptr;
-    BasicBlock *mergeBBInNestIfSource = nullptr;
+    llvm::BasicBlock *mergeBBInNestIf = nullptr;
+    llvm::BasicBlock *mergeBBInNestIfSource = nullptr;
     llvm::Value *mergeBBInNestIfSrcVal = nullptr;
 
     FunctionMetaData *getFunMetaData(const std::string &name, const inter_gen::InterGenContext *ctx) const;
-    std::pair<Value *, VariableMetaData *> getValWithMetadata(const std::string &name);
-    std::pair<Value *, VariableMetaData *> getValWithMetadata(const parser::QualifiedNameNode *name);
+    std::pair<llvm::Value *, VariableMetaData *> getValWithMetadata(const std::string &name);
+    std::pair<llvm::Value *, VariableMetaData *> getValWithMetadata(const parser::QualifiedNameNode *name);
     FunctionMetaData *getCurrFunMetaData() const;
     void setCurrFunMetaData(inter_gen::FunctionMetaData *funMetaData);
 
@@ -95,18 +94,18 @@ class InterGenContext
      * @brief Constructor to initialize the module and IR builder.
      */
     explicit InterGenContext(std::string sourcePathInput)
-        : builder(IRBuilder(*llvmContext)), sourcePath(std::move(std::move(sourcePathInput)))
+        : builder(llvm::IRBuilder(*llvmContext)), sourcePath(std::move(std::move(sourcePathInput)))
     {
         fileName = sourcePath.substr(sourcePath.find_last_of('/') + 1);
     }
 
-    Value *getVal(const std::string &name);
+    llvm::Value *getVal(const std::string &name);
 
     /**
      * @brief Get the basic block of the current block.
      * @return Pointer to the current block's basic block
      */
-    BasicBlock *currBlock()
+    llvm::BasicBlock *currBlock()
     {
         return blocks.top()->block;
     }
@@ -115,7 +114,7 @@ class InterGenContext
      * @brief Get the map of local variables of the current block.
      * @return Map of local variables of the current block
      */
-    std::map<std::string, std::pair<Value *, VariableMetaData *>> &locals()
+    std::map<std::string, std::pair<llvm::Value *, VariableMetaData *>> &locals()
     {
         return blocks.top()->locals;
     }
@@ -124,7 +123,7 @@ class InterGenContext
      * @brief Push a new basic block onto the block stack.
      * @param block Pointer to the new basic block
      */
-    void pushBlock(BasicBlock *block)
+    void pushBlock(llvm::BasicBlock *block)
     {
         blocks.push(new InterGenBlock{block});
     }
@@ -152,7 +151,7 @@ class InterGenContext
      * @brief Set the return value of the current block.
      * @param value Return value
      */
-    void setCurrRetVal(Value *value)
+    void setCurrRetVal(llvm::Value *value)
     {
         blocks.top()->returnValue = value;
     }
@@ -161,7 +160,7 @@ class InterGenContext
      * @brief Set the current function.
      * @param fun Pointer to the function
      */
-    void setCurrFun(Function *fun)
+    void setCurrFun(llvm::Function *fun)
     {
         currFun = fun;
     }
@@ -170,7 +169,7 @@ class InterGenContext
      * @brief Get the current function.
      * @return Pointer to the current function
      */
-    [[nodiscard]] Function *getCurrFun() const
+    [[nodiscard]] llvm::Function *getCurrFun() const
     {
         return currFun;
     }
@@ -179,7 +178,7 @@ class InterGenContext
      * @brief Get the return value of the current block.
      * @return Return value of the current block
      */
-    Value *getCurrRetVal()
+    llvm::Value *getCurrRetVal()
     {
         return blocks.top()->returnValue;
     }
@@ -199,7 +198,7 @@ class InterGenContext
      * @brief Set the main function.
      * @param fun Pointer to the main function
      */
-    void setMainFun(Function *fun)
+    void setMainFun(llvm::Function *fun)
     {
         mainFunction = fun;
     }
@@ -242,14 +241,14 @@ class InterGenContext
         return definingVariable;
     }
 
-    void addPtrValBaseTypeMapping(Value *val, Type *baseType)
+    void addPtrValBaseTypeMapping(llvm::Value *val, llvm::Type *baseType)
     {
         if (blocks.top()) {
             blocks.top()->ptrValBaseTypeMapping.insert({val, baseType});
         }
     }
 
-    Type *getPtrValBaseTy(Value *value)
+    llvm::Type *getPtrValBaseTy(llvm::Value *value)
     {
         if (blocks.top() && blocks.top()->ptrValBaseTypeMapping.contains(value)) {
             return blocks.top()->ptrValBaseTypeMapping.at(value);

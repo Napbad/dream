@@ -11,7 +11,14 @@
 #include <utility>
 #include <vector>
 
-namespace dap::parser
+namespace dap
+{
+
+namespace inter_gen {
+class InterGenContext;
+}
+
+namespace parser
 {
 
 class TypeNode;
@@ -31,7 +38,7 @@ class ASTNode
     // Destructor for ASTNode
     virtual ~ASTNode() = default;
 
-    llvm::Value *gen();
+    llvm::Value *codeGen(inter_gen::InterGenContext *ctx);
 };
 
 // Base class for all AST nodes related to expressions
@@ -242,6 +249,8 @@ class ProgramNode final : public ASTNode
 
     // Constructor for ProgramNode
     ProgramNode() = default;
+
+    llvm::Value* codeGen(inter_gen::InterGenContext *ctx);
 
     // Destructor for ProgramNode
     ~ProgramNode() override
@@ -711,6 +720,7 @@ class ReturnStatementNode final : public Statement
         delete expression;
     }
 };
+}
 } // namespace dap::parser
 
 #endif // ASTNODE_H

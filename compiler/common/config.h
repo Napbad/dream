@@ -5,6 +5,7 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 #include <string>
+#include <vector>
 
 namespace dap
 {
@@ -16,6 +17,8 @@ extern std::string buildDir;
 extern std::string targetExecName;
 
 extern std::string D_VERSION;
+
+extern std::vector<std::string> *filesToCompile;
 
 void readConfig(std::string configPath);
 } // namespace dap
