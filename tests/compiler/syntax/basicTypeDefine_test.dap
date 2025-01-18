@@ -35,14 +35,14 @@ const int c2 = 300;
     // long type variable
     var long numLong = 10000000000;  // Define a mutable long variable and initialize it with a large long value.
     imt long constNumLong = 20000000000;  // Define an immutable long variable and initialize it with another long value.
-    
-    // float type variable
-    var float numFloat = 9.99;  // Define a mutable floating-point variable and initialize it with value 9.99.
-    imt float constNumFloat = 8.88;  // Define an immutable floating-point variable and initialize it with value 8.88.
 
     // string type variable
     var byte[14] str = "Hello, world!";  // Define a mutable string variable and initialize it with a sample string.
     imt byte[17] constStr = "Immutable string";  // Define an immutable string variable and initialize it with another string.
+
+    // float type variable
+    var float numFloat = 9.99;  // Define a mutable floating-point variable and initialize it with value 9.99.
+    imt float constNumFloat = 8.88;  // Define an immutable floating-point variable and initialize it with value 8.88.
 
     // bool type variable
     var bool isTrue = true;  // Define a mutable boolean variable and set it to true.

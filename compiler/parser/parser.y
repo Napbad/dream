@@ -92,7 +92,7 @@ void parserLog(std::string msg) {
 program:
     packageDecl importStmt statements {
         // Create a new program node
-        program = new dap::parser::ProgramNode();
+        program->statements = $3;
         // Log message when parsing a program node
         parserLog("Parsed program node");
     };
@@ -399,13 +399,13 @@ importStmt:
     }
     | IMPORT identifier SEMICOLON {
         auto info = new dap::parser::ProgramNode::importedPackageInfo($2, false);
-        program->importedPackages.push_back(info);
+        program->importedPackages->push_back(info);
         // Log message when parsing an import statement node
         parserLog("Parsed import statement node: import [" + $2->getName() + "]");
     }
     | IMPORT identifier DOT MUL SEMICOLON {
         auto info = new dap::parser::ProgramNode::importedPackageInfo($2, true);
-        program->importedPackages.push_back(info);
+        program->importedPackages->push_back(info);
         // Log message when parsing an import wildcard statement node
         parserLog("Parsed import wildcard statement node: import [" + $2->getName() + "] [all]");
     };

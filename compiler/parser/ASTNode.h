@@ -255,7 +255,6 @@ class BoolNode final : public Expression
 class ProgramNode final : public ASTNode
 {
   public:
-    std::vector<ASTNode *> children{}; // List of child nodes
 
     QualifiedNameNode *packageName = nullptr;
 
@@ -264,20 +263,26 @@ class ProgramNode final : public ASTNode
         bool all;
     };
 
-    std::vector<importedPackageInfo *> importedPackages{};
+    std::vector<importedPackageInfo *> *importedPackages{};
 
-    std::vector<Statement *> statements{};
+    std::vector<Statement *> *statements{};
 
     // Constructor for ProgramNode
-    ProgramNode() = default;
+    ProgramNode() {
+        importedPackages = new std::vector<importedPackageInfo*>();
+    };
+
+    ProgramNode(std::vector<Statement*> *statements) : statements(statements)
+    {
+    } 
 
     llvm::Value *codeGen(inter_gen::InterGenContext *ctx);
 
     // Destructor for ProgramNode
     ~ProgramNode() override
     {
-        for (const ASTNode *child : children) {
-            delete child;
+        for (const ASTNode *statement : *statements) {
+            delete statement;
         }
     }
 };
