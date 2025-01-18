@@ -45,7 +45,7 @@ class StructMetaData
     InterGenContext *ctx;
     std::string name_;
     std::unordered_map<std::string, Type *> fields_;
-    std::unordered_map<std::string, VariableMetaData*> fieldMetaData_;
+    std::unordered_map<std::string, VariableMetaData *> fieldMetaData_;
     std::unordered_map<std::string, unsigned> fieldIndexMap_;
     mutable StructType *structType_ = nullptr;
 };
@@ -131,7 +131,7 @@ class ModuleMetaData
     // Get a structure metadata by name
     StructMetaData *getStruct(const std::string &name) const
     {
-        if (const auto it = structMap.find(name);it != structMap.end()) {
+        if (const auto it = structMap.find(name); it != structMap.end()) {
             return it->second;
         }
         return nullptr;
@@ -147,7 +147,7 @@ class ModuleMetaData
     // Get a function metadata by name
     FunctionMetaData *getFunction(const std::string &name) const
     {
-        if (auto it = functionMap.find(name);it != functionMap.end()) {
+        if (auto it = functionMap.find(name); it != functionMap.end()) {
             return it->second;
         }
         return nullptr;

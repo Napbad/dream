@@ -64,15 +64,15 @@ class InterGenBlock
 class InterGenContext
 {
     std::stack<InterGenBlock *> blocks; ///< Stack of blocks
-    llvm::Function *mainFunction{};           ///< Main function
-    llvm::Function *currFun = nullptr;        ///< Current function
+    llvm::Function *mainFunction{};     ///< Main function
+    llvm::Function *currFun = nullptr;  ///< Current function
     FunctionMetaData *currentFunMetaData = nullptr;
     bool definingStruct = false;   ///< if now defining struct
     bool definingVariable = false; ///< if now defining variable
 
   public:
-    llvm::Module *module = nullptr;                        ///< LLVM module
-    llvm::IRBuilder<> builder;                             ///< IR builder
+    llvm::Module *module = nullptr;                  ///< LLVM module
+    llvm::IRBuilder<> builder;                       ///< IR builder
     std::map<std::string, StructMetaData *> structs; ///< Struct metadata
     std::unordered_map<std::string, FunctionMetaData *> functions{};
     ModuleMetaData *metaData = nullptr;

@@ -6,7 +6,6 @@
 
 #include "codeGen_inter.h"
 
-
 namespace dap::inter_gen
 {
 StructMetaData::StructMetaData(InterGenContext *context, std::string name) : ctx(context), name_(std::move(name))

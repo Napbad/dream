@@ -9,51 +9,35 @@
 
 std::string dap::parser::IntegerNode::getVal()
 {
-    switch (intType)
-    {
+    switch (intType) {
     case INT:
-        if (isSigned)
-        {
+        if (isSigned) {
             return std::to_string(intValue.signedVal);
-        }
-        else
-        {
+        } else {
             return std::to_string(intValue.unsignedVal);
         }
     case LONG:
-        if (isSigned)
-        {
+        if (isSigned) {
             return std::to_string(intValue.longVal);
-        }
-        else
-        {
+        } else {
             return std::to_string(intValue.unsignedLongVal);
         }
     case SHORT:
-        if (isSigned)
-        {
+        if (isSigned) {
             return std::to_string(intValue.shortVal);
-        }
-        else
-        {
+        } else {
             return std::to_string(intValue.unsignedShortVal);
         }
     case CHAR:
-        if (isSigned)
-        {
+        if (isSigned) {
             return std::to_string(intValue.charVal);
-        }
-        else
-        {
+        } else {
             return std::to_string(intValue.unsignedCharVal);
         }
     case LONG_LONG:
-        if (isSigned)
-        {
+        if (isSigned) {
             return std::to_string(intValue.longLongVal);
-        }
-        else
-        {
+        } else {
             return std::to_string(intValue.unsignedLongLongVal);
         }
     default:
@@ -70,8 +54,7 @@ dap::parser::FunctionDeclarationNode::~FunctionDeclarationNode()
 {
     delete parameterList;
     delete returnType;
-    for (const Statement *stmt : *block)
-    {
+    for (const Statement *stmt : *block) {
         delete stmt;
     }
     delete block;

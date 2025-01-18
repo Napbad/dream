@@ -14,7 +14,8 @@
 namespace dap
 {
 
-namespace inter_gen {
+namespace inter_gen
+{
 class InterGenContext;
 }
 
@@ -55,7 +56,8 @@ class Expression : public ASTNode
         }
     }
     std::vector<ASTNode *> children;
-    llvm::Value *codeGen(inter_gen::InterGenContext *ctx) {
+    llvm::Value *codeGen(inter_gen::InterGenContext *ctx)
+    {
         return nullptr;
     }
 };
@@ -70,12 +72,13 @@ class Statement : public ASTNode
 
     explicit Statement() = default;
 
-    llvm::Value *codeGen(inter_gen::InterGenContext *ctx) {
-      if (value != nullptr){
-        return value->codeGen(ctx);
-      }
+    llvm::Value *codeGen(inter_gen::InterGenContext *ctx)
+    {
+        if (value != nullptr) {
+            return value->codeGen(ctx);
+        }
 
-      return nullptr;
+        return nullptr;
     }
 };
 
@@ -226,7 +229,7 @@ class FloatNode : public Expression
     }
 };
 
-class String final: public Expression
+class String final : public Expression
 {
   public:
     std::string stringValue;
@@ -268,7 +271,7 @@ class ProgramNode final : public ASTNode
     // Constructor for ProgramNode
     ProgramNode() = default;
 
-    llvm::Value* codeGen(inter_gen::InterGenContext *ctx);
+    llvm::Value *codeGen(inter_gen::InterGenContext *ctx);
 
     // Destructor for ProgramNode
     ~ProgramNode() override
@@ -313,7 +316,6 @@ class FunctionDeclarationNode final : public Statement
 
     // Destructor for FunctionDeclarationNode
     ~FunctionDeclarationNode() override;
-    
 };
 
 // Represents a parameter list in the AST
@@ -358,12 +360,10 @@ class FunctionCallExpressionNode final : public Expression
 {
   public:
     QualifiedNameNode *name;
-    std::vector<Expression*> *args;
+    std::vector<Expression *> *args;
 
     // Constructor for FunctionCallExpressionNode
-    FunctionCallExpressionNode(
-      QualifiedNameNode *name,
-      std::vector<Expression*> *args) : name(name), args(args)
+    FunctionCallExpressionNode(QualifiedNameNode *name, std::vector<Expression *> *args) : name(name), args(args)
     {
     }
 
@@ -372,7 +372,7 @@ class FunctionCallExpressionNode final : public Expression
     {
         delete name;
         for (auto arg : *args) {
-          delete arg;
+            delete arg;
         }
         delete args;
     }
@@ -482,8 +482,8 @@ class VariableDeclarationNode final : public Statement
     Expression *expression;
 
     // Constructor for VariableDeclarationNode
-    VariableDeclarationNode(TypeNode *type, Expression *expression, QualifiedNameNode *variableName, bool nullable = false,
-                            bool mutable_ = false)
+    VariableDeclarationNode(TypeNode *type, Expression *expression, QualifiedNameNode *variableName,
+                            bool nullable = false, bool mutable_ = false)
         : nullable_(nullable), mutable_(mutable_), type(type), variableName(variableName), expression(expression)
     {
     }
@@ -610,16 +610,13 @@ class StructDeclarationNode final : public Statement
 {
   public:
     QualifiedNameNode *name;
-    std::vector<VariableDeclarationNode*> *structMemberList;
+    std::vector<VariableDeclarationNode *> *structMemberList;
 
     // Constructor for StructDeclarationNode
-    explicit StructDeclarationNode(
-        QualifiedNameNode * nameInput,
-        std::vector<VariableDeclarationNode*> *structMemberListInput) 
-        : name(nameInput),
-          structMemberList(structMemberListInput)
+    explicit StructDeclarationNode(QualifiedNameNode *nameInput,
+                                   std::vector<VariableDeclarationNode *> *structMemberListInput)
+        : name(nameInput), structMemberList(structMemberListInput)
     {
-
     }
 
     // Destructor for StructDeclarationNode
@@ -744,7 +741,6 @@ class TypeDefinitionNode final : public ASTNode
     }
 };
 
-
 class ReturnStatementNode final : public Statement
 {
   public:
@@ -762,7 +758,7 @@ class ReturnStatementNode final : public Statement
         delete expression;
     }
 };
-}
-} // namespace dap::parser
+} // namespace parser
+} // namespace dap
 
 #endif // ASTNODE_H

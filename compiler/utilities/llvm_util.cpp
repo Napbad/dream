@@ -65,13 +65,15 @@
 //                          " \n array size must be IntegerNode", __FILE__, __LINE__);
 //             return ArrayType::get(typeOf(parser::QualifiedNameNode(type.getName(0)), ctx, nullptr), 1);
 //         }
-//         return ArrayType::get(typeOf(parser::QualifiedNameNode(type.getName(0)), ctx, nullptr), IntegerNodeExpr->value);
+//         return ArrayType::get(typeOf(parser::QualifiedNameNode(type.getName(0)), ctx, nullptr),
+//         IntegerNodeExpr->value);
 //     }
 
 //     return nullptr;
 // }
 
-// llvm::Type *typeOf_d(const parser::QualifiedNameNode &type, const inter_gen::InterGenContext *ctx, parser::Expr *size)
+// llvm::Type *typeOf_d(const parser::QualifiedNameNode &type, const inter_gen::InterGenContext *ctx, parser::Expr
+// *size)
 // {
 //     if (type.name_parts == nullptr || type.name_parts->empty()) {
 //         return llvm::Type::getVoidTy(LLVMCTX);
@@ -89,7 +91,8 @@
 //             REPORT_ERROR("array size must be IntegerNode", __FILE__, __LINE__);
 //             return ArrayType::get(typeOf(parser::QualifiedNameNode(type.getName(0)), ctx, nullptr), 1);
 //         }
-//         return ArrayType::get(typeOf(parser::QualifiedNameNode(type.getName(0)), ctx, nullptr), IntegerNodeExpr->value);
+//         return ArrayType::get(typeOf(parser::QualifiedNameNode(type.getName(0)), ctx, nullptr),
+//         IntegerNodeExpr->value);
 //     }
 //     if (const auto it = typeMap.find(type.getName()); it != typeMap.end()) {
 //         return it->second(LLVMCTX);

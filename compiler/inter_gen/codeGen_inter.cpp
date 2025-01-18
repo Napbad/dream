@@ -2,8 +2,8 @@
 // // Created by napbad on 10/24/24.
 // //
 
-#include <iostream>
 #include <fstream>
+#include <iostream>
 #include <unordered_set>
 
 #include <llvm/Bitstream/BitstreamReader.h>
@@ -29,20 +29,20 @@
 
 #include "codeGen_inter.h"
 
-#include "parser/ASTNode.h"
 #include "common/config.h"
-#include "utilities/string_util.h"
+#include "parser/ASTNode.h"
 #include "utilities/file_util.h"
+#include "utilities/string_util.h"
 
 namespace dap
 {
 
-using llvm::Function;
-using llvm::Value;
-using llvm::Type;
 using llvm::BasicBlock;
-using llvm::Module;
 using llvm::ConstantInt;
+using llvm::Function;
+using llvm::Module;
+using llvm::Type;
+using llvm::Value;
 
 namespace parser
 {
@@ -706,24 +706,24 @@ llvm::Value *ProgramNode::codeGen(inter_gen::InterGenContext *ctx)
     // get the package and setup the package directory
     ctx->currLine = this->lineNum;
     util::create_package_dir(util::getStrFromVec(*packageName->name_parts, "."));
-    for (Statement * stmt : statements) {
+    for (Statement *stmt : statements) {
         stmt->codeGen(ctx);
     }
-     // Stmt *stmt = stmts->stmts.at(0);
-     // stmt->codeGen(ctx);
-     // const auto packageStmt = dynamic_cast<PackageStmt *>(stmt);
-     // util::create_package_dir(util::getStrFromVec(*packageStmt->name->name_parts, "."));
-     // stmts->stmts.erase(stmts->stmts.begin());
- //
-     // const auto stmtRes = stmts->codeGen(ctx);
- //
-     // if (ctx->package == "dap.runtime.sys" && ctx->sourcePath.ends_with("/sysFun.dap")) {
- //
-     // }
- //
-     // if (ctx->package == "dap.std.type" && ctx->sourcePath.ends_with("/convert.dap")) {
- //
-     // }
+    // Stmt *stmt = stmts->stmts.at(0);
+    // stmt->codeGen(ctx);
+    // const auto packageStmt = dynamic_cast<PackageStmt *>(stmt);
+    // util::create_package_dir(util::getStrFromVec(*packageStmt->name->name_parts, "."));
+    // stmts->stmts.erase(stmts->stmts.begin());
+    //
+    // const auto stmtRes = stmts->codeGen(ctx);
+    //
+    // if (ctx->package == "dap.runtime.sys" && ctx->sourcePath.ends_with("/sysFun.dap")) {
+    //
+    // }
+    //
+    // if (ctx->package == "dap.std.type" && ctx->sourcePath.ends_with("/convert.dap")) {
+    //
+    // }
 
     // Generate code for program statements
     return nullptr;
@@ -1396,8 +1396,8 @@ void InterGenContext::genIR(parser::ProgramNode *program)
 
     if (!mainFunction && (sourcePath.ends_with("/main.dap") || sourcePath == "main.dap")) {
         constexpr std::vector<Type *> argTypes;
-        // FunctionType *ftype = FunctionType::get(Type::getInt32Ty(module->getContext()), llvm::ArrayRef(argTypes), false);
-        // mainFunction = Function::Create(ftype, GlobalValue::ExternalLinkage, "main", module);
+        // FunctionType *ftype = FunctionType::get(Type::getInt32Ty(module->getContext()), llvm::ArrayRef(argTypes),
+        // false); mainFunction = Function::Create(ftype, GlobalValue::ExternalLinkage, "main", module);
         BasicBlock *bblock = BasicBlock::Create(module->getContext(), "entry", mainFunction, nullptr);
 
         builder.SetInsertPoint(bblock);
@@ -1474,7 +1474,8 @@ void InterGenContext::genExec(parser::ProgramNode *program)
 
     const llvm::TargetOptions opt;
     std::optional<llvm::Reloc::Model>();
-    llvm::TargetMachine *targetMachine = target->createTargetMachine(targetTriple, cpu, features, opt, llvm::Reloc::PIC_);
+    llvm::TargetMachine *targetMachine =
+        target->createTargetMachine(targetTriple, cpu, features, opt, llvm::Reloc::PIC_);
 
     module->setDataLayout(targetMachine->createDataLayout());
 
@@ -1573,8 +1574,8 @@ std::pair<Value *, VariableMetaData *> InterGenContext::getValWithMetadata(const
     std::stack<InterGenBlock *> tmp;
     while (!blocks.empty()) {
         if (blocks.top()->locals.contains(name)) {
-            std::map<std::string, std::pair<Value *, VariableMetaData *>>::mapped_type res =
-            blocks.top()->locals[name]; while (!tmp.empty()) {
+            std::map<std::string, std::pair<Value *, VariableMetaData *>>::mapped_type res = blocks.top()->locals[name];
+            while (!tmp.empty()) {
                 blocks.push(tmp.top());
                 tmp.pop();
             }
