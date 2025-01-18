@@ -64,23 +64,23 @@ void parserLog(std::string msg) {
 %token PACKAGE IMPORT FUN VOID FOR IF ELSE MATCH STRUCT TRAIT TYPEDEF IMT VAR INSTANCEOF RETURN CONST
 %token INT BYTE SHORT LONG FLOAT DOUBLE BOOL UINT USHORT ULONG LLONG ULLONG
 %token IDENTIFIER INTEGER BINARY_LITERAL OCTAL_LITERAL HEXADECIMAL_LITERAL
-%token STRING_LITERAL CHAR_LITERAL FLOAT_LITERAL
+%token STRING_LITERAL CHAR_LITERAL FLOAT_LITERAL TRUE FALSE
 %token PLUS MINUS MUL DIV MOD BIT_AND BIT_OR BIT_XOR BIT_NOT SHIFT_LEFT SHIFT_RIGHT LOGIC_SHIFT_LEFT
 %token ASSIGN ADD_ASSIGN MUL_ASSIGN DIV_ASSIGN MINUS_ASSIGN MOD_ASSIGN
 %token BIT_AND_ASSIGN BIT_OR_ASSIGN BIT_XOR_ASSIGN SHIFT_LEFT_ASSIGN SHIFT_RIGHT_ASSIGN LOGIC_SHIFT_LEFT_ASSIGN
 %token INCREMENT DECREMENT LESS_THAN GREATER_THAN LESS_THAN_EQUAL GREATER_THAN_EQUAL EQUAL NOT_EQUAL
 %token AND OR
 %token COMMA SEMICOLON COLON LEFT_BRACE RIGHT_BRACE LEFT_PAREN RIGHT_PAREN LEFT_BRACKET RIGHT_BRACKET
-%token DOT ELLIPSIS QUESTION BANG LBRACK RBRACK
+%token DOT ELLIPSIS QUESTION BANG 
 
 %type <str> IDENTIFIER INTEGER BINARY_LITERAL OCTAL_LITERAL HEXADECIMAL_LITERAL FLOAT_LITERAL STRING_LITERAL
 %type <ident> identifier
-%type <expr> expression functionCall
+%type <expr> expression functionCall bool_
 %type <stmt> importStmt packageDecl statement funDecl variableDecl constantDecl structDecl returnStmt
 %type <stmtVec> statements
 %type <exprVec> expressions
 %type <typeNode> type
-%type <boolval> mutableModifier nullableModifier
+%type <boolval> mutableModifier nullableModifier TRUE FALSE
 
 %type <intExpr> integer
 %type <floatExpr> float_
@@ -143,11 +143,23 @@ expression:
         $$ = $1;
 
         parserLog("Parsed identifier expression node: [" + $1->getName() + "]");
-    } 
+    }
+    | float_ {
+        $$ = $1;
+        // Log message when parsing a FloatNode expression node
+        parserLog("Parsed FloatNode expression node");
+    }
+    | string_ {
+        $$ = $1;
+        // Log message when parsing a String expression node
+        parserLog("Parsed String expression node");
+    }
+    | bool_ {}
     | functionCall {
         $$ = $1;
 
-        parserLog("Parsed function call expression node: [" + $1->getName() + "]");
+        parserLog("Parsed function call expression node: [" + dynamic_cast<dap::parser::FunctionCallExpressionNode*>($1)
+                                                        ->name->getName() + "]");
     };
 
 funDecl:
@@ -256,7 +268,7 @@ integer:
     INTEGER {
         $$ = new dap::parser::IntegerNode(atol($1->c_str()));
         // Log message when parsing an IntegerNode node
-        parserLog("Parsed IntegerNode node: integer[" + $$->getValue() + "]");
+        parserLog("Parsed IntegerNode node: integer[" + $$->getVal() + "]");
     };
 
 float_:
@@ -273,6 +285,18 @@ string_:
         parserLog("Parsed string node");
     };
 
+bool_:
+    TRUE {
+        $$ = new dap::parser::BoolNode(true);
+        // Log message when parsing a boolean node
+        parserLog("Parsed boolean node: [ TRUE ]");
+    }
+    | FALSE {
+        $$ = new dap::parser::BoolNode(false);
+        // Log message when parsing a boolean node
+        parserLog("Parsed boolean node: [ FALSE ]");
+    };
+
 type:
     identifier {
         $$ = new dap::parser::TypeNode($1);
@@ -285,13 +309,13 @@ type:
         // Log message when parsing a pointer type node
         parserLog("Parsed pointer type node");
     }
-    | type LBRACK RBRACK {
+    | type LEFT_BRACKET RIGHT_BRACKET {
         $$ = $1;
         $$->isArray = true;
         // Log message when parsing an array type node without size
         parserLog("Parsed array type node without size");
     }
-    | type LBRACK integer RBRACK {
+    | type LEFT_BRACKET integer RIGHT_BRACKET {
         $$ = $1;
         $$->isArray = true;
         $$->arraySize = std::stoi($3->getVal());
@@ -387,11 +411,7 @@ importStmt:
     };
 
 statement:
-    expression SEMICOLON {
-        // Log message when parsing an expression statement node
-        parserLog("Parsed expression statement node");
-    }
-    | funDecl {
+    funDecl {
         $$ = $1;
         // Log message when parsing a function declaration statement node
         parserLog("Parsed function declaration statement node: [" + (dynamic_cast<dap::parser::FunctionDeclarationNode*>($1))->name + "]");
@@ -418,7 +438,7 @@ statement:
     }
     | expression SEMICOLON {
         $$ = new dap::parser::Statement();
-        $$.value = $1;
+        $$->value = $1;
         // Log message when parsing a function call statement node
         parserLog("Parsed function call statement node");
     };
@@ -474,7 +494,7 @@ returnStmt:
 
 functionCall:
     identifier LEFT_PAREN expressions RIGHT_PAREN {
-        $$ = new dap::parser::FunctionCallExpressionNode(, $3);
+        $$ = new dap::parser::FunctionCallExpressionNode($1, $3);
         // Log message when parsing a function call statement node
         parserLog("Parsed function call experssion node: [" + $1->getName() + "]");
     };

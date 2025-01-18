@@ -28,7 +28,7 @@ endif ()
 
 add_custom_command(
         OUTPUT ${PROJECT_SOURCE_DIR}/parser/parser.cpp
-        COMMAND ${BISON_EXECUTABLE} -d -o ${PROJECT_SOURCE_DIR}/parser/parser.cpp ${PROJECT_SOURCE_DIR}/parser/parser.y
+        COMMAND ${BISON_EXECUTABLE} -d -o ${PROJECT_SOURCE_DIR}/parser/parser.cpp ${PROJECT_SOURCE_DIR}/parser/parser.y -Wcounterexamples
         DEPENDS ${PROJECT_SOURCE_DIR}/parser/parser.y
         COMMENT "Generating parser.cpp from parser.y"
 )

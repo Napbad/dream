@@ -41,16 +41,12 @@ std::string dap::parser::IntegerNode::getVal()
     case CHAR:
         if (isSigned)
         {
-            return std::string(1, intValue.charVal);
+            return std::to_string(intValue.charVal);
         }
         else
         {
-            return std::string(1, intValue.unsignedCharVal);
+            return std::to_string(intValue.unsignedCharVal);
         }
-    case UNSIGNED_SHORT:
-        return std::to_string(intValue.unsignedShortVal);
-    case UNSIGNED_CHAR:
-        return std::string(1, intValue.unsignedCharVal);
     case LONG_LONG:
         if (isSigned)
         {
@@ -60,8 +56,6 @@ std::string dap::parser::IntegerNode::getVal()
         {
             return std::to_string(intValue.unsignedLongLongVal);
         }
-    case UNSIGNED_LONG_LONG:
-        return std::to_string(intValue.unsignedLongLongVal);
     default:
         return "";
     }

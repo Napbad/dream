@@ -55,6 +55,9 @@ class Expression : public ASTNode
         }
     }
     std::vector<ASTNode *> children;
+    llvm::Value *codeGen(inter_gen::InterGenContext *ctx) {
+        return nullptr;
+    }
 };
 
 // Base class for all AST nodes related to statements
@@ -95,7 +98,7 @@ class QualifiedNameNode final : public Expression
     [[nodiscard]] std::string getName() const;
 };
 
-class IntegerNode : public Expression
+class IntegerNode final : public Expression
 {
   public:
     explicit IntegerNode(int value)
@@ -223,7 +226,7 @@ class FloatNode : public Expression
     }
 };
 
-class String : public Expression
+class String final: public Expression
 {
   public:
     std::string stringValue;
@@ -231,6 +234,17 @@ class String : public Expression
     explicit String(std::string value)
     {
         this->stringValue = std::move(value);
+    }
+};
+
+class BoolNode final : public Expression
+{
+  public:
+    bool boolValue;
+
+    explicit BoolNode(bool value)
+    {
+        this->boolValue = value;
     }
 };
 
@@ -343,20 +357,20 @@ class ParameterNode final : public ASTNode
 class FunctionCallExpressionNode final : public Expression
 {
   public:
-    QualifiedNameNode *functionName;
+    QualifiedNameNode *name;
     std::vector<Expression*> *args;
 
     // Constructor for FunctionCallExpressionNode
     FunctionCallExpressionNode(
-      QualifiedNameNode *functionName,
-      std::vector<Expression*> *args) : functionName(functionName), args(args)
+      QualifiedNameNode *name,
+      std::vector<Expression*> *args) : name(name), args(args)
     {
     }
 
     // Destructor for FunctionCallExpressionNode
     ~FunctionCallExpressionNode() override
     {
-        delete functionName;
+        delete name;
         for (auto arg : *args) {
           delete arg;
         }
