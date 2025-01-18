@@ -151,98 +151,99 @@ enum yysymbol_kind_t
   YYSYMBOL_INSTANCEOF = 16,                /* INSTANCEOF  */
   YYSYMBOL_RETURN = 17,                    /* RETURN  */
   YYSYMBOL_CONST = 18,                     /* CONST  */
-  YYSYMBOL_INT = 19,                       /* INT  */
-  YYSYMBOL_BYTE = 20,                      /* BYTE  */
-  YYSYMBOL_SHORT = 21,                     /* SHORT  */
-  YYSYMBOL_LONG = 22,                      /* LONG  */
-  YYSYMBOL_FLOAT = 23,                     /* FLOAT  */
-  YYSYMBOL_DOUBLE = 24,                    /* DOUBLE  */
-  YYSYMBOL_BOOL = 25,                      /* BOOL  */
-  YYSYMBOL_UINT = 26,                      /* UINT  */
-  YYSYMBOL_USHORT = 27,                    /* USHORT  */
-  YYSYMBOL_ULONG = 28,                     /* ULONG  */
-  YYSYMBOL_LLONG = 29,                     /* LLONG  */
-  YYSYMBOL_ULLONG = 30,                    /* ULLONG  */
-  YYSYMBOL_IDENTIFIER = 31,                /* IDENTIFIER  */
-  YYSYMBOL_INTEGER = 32,                   /* INTEGER  */
-  YYSYMBOL_BINARY_LITERAL = 33,            /* BINARY_LITERAL  */
-  YYSYMBOL_OCTAL_LITERAL = 34,             /* OCTAL_LITERAL  */
-  YYSYMBOL_HEXADECIMAL_LITERAL = 35,       /* HEXADECIMAL_LITERAL  */
-  YYSYMBOL_STRING_LITERAL = 36,            /* STRING_LITERAL  */
-  YYSYMBOL_CHAR_LITERAL = 37,              /* CHAR_LITERAL  */
-  YYSYMBOL_FLOAT_LITERAL = 38,             /* FLOAT_LITERAL  */
-  YYSYMBOL_TRUE = 39,                      /* TRUE  */
-  YYSYMBOL_FALSE = 40,                     /* FALSE  */
-  YYSYMBOL_PLUS = 41,                      /* PLUS  */
-  YYSYMBOL_MINUS = 42,                     /* MINUS  */
-  YYSYMBOL_MUL = 43,                       /* MUL  */
-  YYSYMBOL_DIV = 44,                       /* DIV  */
-  YYSYMBOL_MOD = 45,                       /* MOD  */
-  YYSYMBOL_BIT_AND = 46,                   /* BIT_AND  */
-  YYSYMBOL_BIT_OR = 47,                    /* BIT_OR  */
-  YYSYMBOL_BIT_XOR = 48,                   /* BIT_XOR  */
-  YYSYMBOL_BIT_NOT = 49,                   /* BIT_NOT  */
-  YYSYMBOL_SHIFT_LEFT = 50,                /* SHIFT_LEFT  */
-  YYSYMBOL_SHIFT_RIGHT = 51,               /* SHIFT_RIGHT  */
-  YYSYMBOL_LOGIC_SHIFT_LEFT = 52,          /* LOGIC_SHIFT_LEFT  */
-  YYSYMBOL_ASSIGN = 53,                    /* ASSIGN  */
-  YYSYMBOL_ADD_ASSIGN = 54,                /* ADD_ASSIGN  */
-  YYSYMBOL_MUL_ASSIGN = 55,                /* MUL_ASSIGN  */
-  YYSYMBOL_DIV_ASSIGN = 56,                /* DIV_ASSIGN  */
-  YYSYMBOL_MINUS_ASSIGN = 57,              /* MINUS_ASSIGN  */
-  YYSYMBOL_MOD_ASSIGN = 58,                /* MOD_ASSIGN  */
-  YYSYMBOL_BIT_AND_ASSIGN = 59,            /* BIT_AND_ASSIGN  */
-  YYSYMBOL_BIT_OR_ASSIGN = 60,             /* BIT_OR_ASSIGN  */
-  YYSYMBOL_BIT_XOR_ASSIGN = 61,            /* BIT_XOR_ASSIGN  */
-  YYSYMBOL_SHIFT_LEFT_ASSIGN = 62,         /* SHIFT_LEFT_ASSIGN  */
-  YYSYMBOL_SHIFT_RIGHT_ASSIGN = 63,        /* SHIFT_RIGHT_ASSIGN  */
-  YYSYMBOL_LOGIC_SHIFT_LEFT_ASSIGN = 64,   /* LOGIC_SHIFT_LEFT_ASSIGN  */
-  YYSYMBOL_INCREMENT = 65,                 /* INCREMENT  */
-  YYSYMBOL_DECREMENT = 66,                 /* DECREMENT  */
-  YYSYMBOL_LESS_THAN = 67,                 /* LESS_THAN  */
-  YYSYMBOL_GREATER_THAN = 68,              /* GREATER_THAN  */
-  YYSYMBOL_LESS_THAN_EQUAL = 69,           /* LESS_THAN_EQUAL  */
-  YYSYMBOL_GREATER_THAN_EQUAL = 70,        /* GREATER_THAN_EQUAL  */
-  YYSYMBOL_EQUAL = 71,                     /* EQUAL  */
-  YYSYMBOL_NOT_EQUAL = 72,                 /* NOT_EQUAL  */
-  YYSYMBOL_AND = 73,                       /* AND  */
-  YYSYMBOL_OR = 74,                        /* OR  */
-  YYSYMBOL_COMMA = 75,                     /* COMMA  */
-  YYSYMBOL_SEMICOLON = 76,                 /* SEMICOLON  */
-  YYSYMBOL_COLON = 77,                     /* COLON  */
-  YYSYMBOL_LEFT_BRACE = 78,                /* LEFT_BRACE  */
-  YYSYMBOL_RIGHT_BRACE = 79,               /* RIGHT_BRACE  */
-  YYSYMBOL_LEFT_PAREN = 80,                /* LEFT_PAREN  */
-  YYSYMBOL_RIGHT_PAREN = 81,               /* RIGHT_PAREN  */
-  YYSYMBOL_LEFT_BRACKET = 82,              /* LEFT_BRACKET  */
-  YYSYMBOL_RIGHT_BRACKET = 83,             /* RIGHT_BRACKET  */
-  YYSYMBOL_DOT = 84,                       /* DOT  */
-  YYSYMBOL_ELLIPSIS = 85,                  /* ELLIPSIS  */
-  YYSYMBOL_QUESTION = 86,                  /* QUESTION  */
-  YYSYMBOL_BANG = 87,                      /* BANG  */
-  YYSYMBOL_YYACCEPT = 88,                  /* $accept  */
-  YYSYMBOL_program = 89,                   /* program  */
-  YYSYMBOL_variableDecl = 90,              /* variableDecl  */
-  YYSYMBOL_constantDecl = 91,              /* constantDecl  */
-  YYSYMBOL_expression = 92,                /* expression  */
-  YYSYMBOL_funDecl = 93,                   /* funDecl  */
-  YYSYMBOL_nullableModifier = 94,          /* nullableModifier  */
-  YYSYMBOL_mutableModifier = 95,           /* mutableModifier  */
-  YYSYMBOL_identifier = 96,                /* identifier  */
-  YYSYMBOL_integer = 97,                   /* integer  */
-  YYSYMBOL_float_ = 98,                    /* float_  */
-  YYSYMBOL_string_ = 99,                   /* string_  */
-  YYSYMBOL_bool_ = 100,                    /* bool_  */
-  YYSYMBOL_type = 101,                     /* type  */
-  YYSYMBOL_packageDecl = 102,              /* packageDecl  */
-  YYSYMBOL_importStmt = 103,               /* importStmt  */
-  YYSYMBOL_statement = 104,                /* statement  */
-  YYSYMBOL_statements = 105,               /* statements  */
-  YYSYMBOL_expressions = 106,              /* expressions  */
-  YYSYMBOL_structDecl = 107,               /* structDecl  */
-  YYSYMBOL_structFields = 108,             /* structFields  */
-  YYSYMBOL_returnStmt = 109,               /* returnStmt  */
-  YYSYMBOL_functionCall = 110              /* functionCall  */
+  YYSYMBOL_EXTERN = 19,                    /* EXTERN  */
+  YYSYMBOL_INT = 20,                       /* INT  */
+  YYSYMBOL_BYTE = 21,                      /* BYTE  */
+  YYSYMBOL_SHORT = 22,                     /* SHORT  */
+  YYSYMBOL_LONG = 23,                      /* LONG  */
+  YYSYMBOL_FLOAT = 24,                     /* FLOAT  */
+  YYSYMBOL_DOUBLE = 25,                    /* DOUBLE  */
+  YYSYMBOL_BOOL = 26,                      /* BOOL  */
+  YYSYMBOL_UINT = 27,                      /* UINT  */
+  YYSYMBOL_USHORT = 28,                    /* USHORT  */
+  YYSYMBOL_ULONG = 29,                     /* ULONG  */
+  YYSYMBOL_LLONG = 30,                     /* LLONG  */
+  YYSYMBOL_ULLONG = 31,                    /* ULLONG  */
+  YYSYMBOL_IDENTIFIER = 32,                /* IDENTIFIER  */
+  YYSYMBOL_INTEGER = 33,                   /* INTEGER  */
+  YYSYMBOL_BINARY_LITERAL = 34,            /* BINARY_LITERAL  */
+  YYSYMBOL_OCTAL_LITERAL = 35,             /* OCTAL_LITERAL  */
+  YYSYMBOL_HEXADECIMAL_LITERAL = 36,       /* HEXADECIMAL_LITERAL  */
+  YYSYMBOL_STRING_LITERAL = 37,            /* STRING_LITERAL  */
+  YYSYMBOL_CHAR_LITERAL = 38,              /* CHAR_LITERAL  */
+  YYSYMBOL_FLOAT_LITERAL = 39,             /* FLOAT_LITERAL  */
+  YYSYMBOL_TRUE = 40,                      /* TRUE  */
+  YYSYMBOL_FALSE = 41,                     /* FALSE  */
+  YYSYMBOL_PLUS = 42,                      /* PLUS  */
+  YYSYMBOL_MINUS = 43,                     /* MINUS  */
+  YYSYMBOL_MUL = 44,                       /* MUL  */
+  YYSYMBOL_DIV = 45,                       /* DIV  */
+  YYSYMBOL_MOD = 46,                       /* MOD  */
+  YYSYMBOL_BIT_AND = 47,                   /* BIT_AND  */
+  YYSYMBOL_BIT_OR = 48,                    /* BIT_OR  */
+  YYSYMBOL_BIT_XOR = 49,                   /* BIT_XOR  */
+  YYSYMBOL_BIT_NOT = 50,                   /* BIT_NOT  */
+  YYSYMBOL_SHIFT_LEFT = 51,                /* SHIFT_LEFT  */
+  YYSYMBOL_SHIFT_RIGHT = 52,               /* SHIFT_RIGHT  */
+  YYSYMBOL_LOGIC_SHIFT_LEFT = 53,          /* LOGIC_SHIFT_LEFT  */
+  YYSYMBOL_ASSIGN = 54,                    /* ASSIGN  */
+  YYSYMBOL_ADD_ASSIGN = 55,                /* ADD_ASSIGN  */
+  YYSYMBOL_MUL_ASSIGN = 56,                /* MUL_ASSIGN  */
+  YYSYMBOL_DIV_ASSIGN = 57,                /* DIV_ASSIGN  */
+  YYSYMBOL_MINUS_ASSIGN = 58,              /* MINUS_ASSIGN  */
+  YYSYMBOL_MOD_ASSIGN = 59,                /* MOD_ASSIGN  */
+  YYSYMBOL_BIT_AND_ASSIGN = 60,            /* BIT_AND_ASSIGN  */
+  YYSYMBOL_BIT_OR_ASSIGN = 61,             /* BIT_OR_ASSIGN  */
+  YYSYMBOL_BIT_XOR_ASSIGN = 62,            /* BIT_XOR_ASSIGN  */
+  YYSYMBOL_SHIFT_LEFT_ASSIGN = 63,         /* SHIFT_LEFT_ASSIGN  */
+  YYSYMBOL_SHIFT_RIGHT_ASSIGN = 64,        /* SHIFT_RIGHT_ASSIGN  */
+  YYSYMBOL_LOGIC_SHIFT_LEFT_ASSIGN = 65,   /* LOGIC_SHIFT_LEFT_ASSIGN  */
+  YYSYMBOL_INCREMENT = 66,                 /* INCREMENT  */
+  YYSYMBOL_DECREMENT = 67,                 /* DECREMENT  */
+  YYSYMBOL_LESS_THAN = 68,                 /* LESS_THAN  */
+  YYSYMBOL_GREATER_THAN = 69,              /* GREATER_THAN  */
+  YYSYMBOL_LESS_THAN_EQUAL = 70,           /* LESS_THAN_EQUAL  */
+  YYSYMBOL_GREATER_THAN_EQUAL = 71,        /* GREATER_THAN_EQUAL  */
+  YYSYMBOL_EQUAL = 72,                     /* EQUAL  */
+  YYSYMBOL_NOT_EQUAL = 73,                 /* NOT_EQUAL  */
+  YYSYMBOL_AND = 74,                       /* AND  */
+  YYSYMBOL_OR = 75,                        /* OR  */
+  YYSYMBOL_COMMA = 76,                     /* COMMA  */
+  YYSYMBOL_SEMICOLON = 77,                 /* SEMICOLON  */
+  YYSYMBOL_COLON = 78,                     /* COLON  */
+  YYSYMBOL_LEFT_BRACE = 79,                /* LEFT_BRACE  */
+  YYSYMBOL_RIGHT_BRACE = 80,               /* RIGHT_BRACE  */
+  YYSYMBOL_LEFT_PAREN = 81,                /* LEFT_PAREN  */
+  YYSYMBOL_RIGHT_PAREN = 82,               /* RIGHT_PAREN  */
+  YYSYMBOL_LEFT_BRACKET = 83,              /* LEFT_BRACKET  */
+  YYSYMBOL_RIGHT_BRACKET = 84,             /* RIGHT_BRACKET  */
+  YYSYMBOL_DOT = 85,                       /* DOT  */
+  YYSYMBOL_ELLIPSIS = 86,                  /* ELLIPSIS  */
+  YYSYMBOL_QUESTION = 87,                  /* QUESTION  */
+  YYSYMBOL_BANG = 88,                      /* BANG  */
+  YYSYMBOL_YYACCEPT = 89,                  /* $accept  */
+  YYSYMBOL_program = 90,                   /* program  */
+  YYSYMBOL_variableDecl = 91,              /* variableDecl  */
+  YYSYMBOL_constantDecl = 92,              /* constantDecl  */
+  YYSYMBOL_expression = 93,                /* expression  */
+  YYSYMBOL_functionDeclaration = 94,       /* functionDeclaration  */
+  YYSYMBOL_nullableModifier = 95,          /* nullableModifier  */
+  YYSYMBOL_mutableModifier = 96,           /* mutableModifier  */
+  YYSYMBOL_identifier = 97,                /* identifier  */
+  YYSYMBOL_integer = 98,                   /* integer  */
+  YYSYMBOL_float_ = 99,                    /* float_  */
+  YYSYMBOL_string_ = 100,                  /* string_  */
+  YYSYMBOL_bool_ = 101,                    /* bool_  */
+  YYSYMBOL_type = 102,                     /* type  */
+  YYSYMBOL_packageDecl = 103,              /* packageDecl  */
+  YYSYMBOL_importStmt = 104,               /* importStmt  */
+  YYSYMBOL_statement = 105,                /* statement  */
+  YYSYMBOL_statements = 106,               /* statements  */
+  YYSYMBOL_expressions = 107,              /* expressions  */
+  YYSYMBOL_structDecl = 108,               /* structDecl  */
+  YYSYMBOL_structFields = 109,             /* structFields  */
+  YYSYMBOL_returnStmt = 110,               /* returnStmt  */
+  YYSYMBOL_functionCall = 111              /* functionCall  */
 };
 typedef enum yysymbol_kind_t yysymbol_kind_t;
 
@@ -570,19 +571,19 @@ union yyalloc
 /* YYFINAL -- State number of the termination state.  */
 #define YYFINAL  6
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   258
+#define YYLAST   229
 
 /* YYNTOKENS -- Number of terminals.  */
-#define YYNTOKENS  88
+#define YYNTOKENS  89
 /* YYNNTS -- Number of nonterminals.  */
 #define YYNNTS  23
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  67
+#define YYNRULES  71
 /* YYNSTATES -- Number of states.  */
 #define YYNSTATES  118
 
 /* YYMAXUTOK -- Last valid token kind.  */
-#define YYMAXUTOK   342
+#define YYMAXUTOK   343
 
 
 /* YYTRANSLATE(TOKEN-NUM) -- Symbol number corresponding to TOKEN-NUM
@@ -630,7 +631,7 @@ static const yytype_int8 yytranslate[] =
       55,    56,    57,    58,    59,    60,    61,    62,    63,    64,
       65,    66,    67,    68,    69,    70,    71,    72,    73,    74,
       75,    76,    77,    78,    79,    80,    81,    82,    83,    84,
-      85,    86,    87
+      85,    86,    87,    88
 };
 
 #if YYDEBUG
@@ -638,12 +639,13 @@ static const yytype_int8 yytranslate[] =
 static const yytype_int16 yyrline[] =
 {
        0,    93,    93,   101,   106,   111,   116,   124,   129,   137,
-     142,   147,   152,   157,   158,   166,   178,   190,   204,   220,
-     225,   231,   238,   242,   246,   253,   259,   268,   275,   282,
-     289,   294,   301,   306,   312,   318,   325,   330,   335,   340,
-     345,   350,   355,   360,   365,   370,   375,   380,   387,   390,
-     397,   400,   406,   414,   419,   424,   429,   434,   439,   447,
-     452,   459,   464,   471,   477,   482,   489,   496
+     142,   147,   152,   157,   158,   166,   178,   190,   204,   217,
+     229,   241,   255,   271,   276,   282,   289,   293,   297,   304,
+     310,   319,   326,   333,   340,   345,   352,   357,   363,   369,
+     376,   381,   386,   391,   396,   401,   406,   411,   416,   421,
+     426,   431,   438,   441,   448,   451,   457,   465,   470,   475,
+     480,   485,   490,   498,   503,   510,   515,   522,   528,   533,
+     540,   547
 };
 #endif
 
@@ -661,24 +663,25 @@ static const char *const yytname[] =
 {
   "\"end of file\"", "error", "\"invalid token\"", "PACKAGE", "IMPORT",
   "FUN", "VOID", "FOR", "IF", "ELSE", "MATCH", "STRUCT", "TRAIT",
-  "TYPEDEF", "IMT", "VAR", "INSTANCEOF", "RETURN", "CONST", "INT", "BYTE",
-  "SHORT", "LONG", "FLOAT", "DOUBLE", "BOOL", "UINT", "USHORT", "ULONG",
-  "LLONG", "ULLONG", "IDENTIFIER", "INTEGER", "BINARY_LITERAL",
-  "OCTAL_LITERAL", "HEXADECIMAL_LITERAL", "STRING_LITERAL", "CHAR_LITERAL",
-  "FLOAT_LITERAL", "TRUE", "FALSE", "PLUS", "MINUS", "MUL", "DIV", "MOD",
-  "BIT_AND", "BIT_OR", "BIT_XOR", "BIT_NOT", "SHIFT_LEFT", "SHIFT_RIGHT",
-  "LOGIC_SHIFT_LEFT", "ASSIGN", "ADD_ASSIGN", "MUL_ASSIGN", "DIV_ASSIGN",
-  "MINUS_ASSIGN", "MOD_ASSIGN", "BIT_AND_ASSIGN", "BIT_OR_ASSIGN",
-  "BIT_XOR_ASSIGN", "SHIFT_LEFT_ASSIGN", "SHIFT_RIGHT_ASSIGN",
-  "LOGIC_SHIFT_LEFT_ASSIGN", "INCREMENT", "DECREMENT", "LESS_THAN",
-  "GREATER_THAN", "LESS_THAN_EQUAL", "GREATER_THAN_EQUAL", "EQUAL",
-  "NOT_EQUAL", "AND", "OR", "COMMA", "SEMICOLON", "COLON", "LEFT_BRACE",
-  "RIGHT_BRACE", "LEFT_PAREN", "RIGHT_PAREN", "LEFT_BRACKET",
-  "RIGHT_BRACKET", "DOT", "ELLIPSIS", "QUESTION", "BANG", "$accept",
-  "program", "variableDecl", "constantDecl", "expression", "funDecl",
-  "nullableModifier", "mutableModifier", "identifier", "integer", "float_",
-  "string_", "bool_", "type", "packageDecl", "importStmt", "statement",
-  "statements", "expressions", "structDecl", "structFields", "returnStmt",
+  "TYPEDEF", "IMT", "VAR", "INSTANCEOF", "RETURN", "CONST", "EXTERN",
+  "INT", "BYTE", "SHORT", "LONG", "FLOAT", "DOUBLE", "BOOL", "UINT",
+  "USHORT", "ULONG", "LLONG", "ULLONG", "IDENTIFIER", "INTEGER",
+  "BINARY_LITERAL", "OCTAL_LITERAL", "HEXADECIMAL_LITERAL",
+  "STRING_LITERAL", "CHAR_LITERAL", "FLOAT_LITERAL", "TRUE", "FALSE",
+  "PLUS", "MINUS", "MUL", "DIV", "MOD", "BIT_AND", "BIT_OR", "BIT_XOR",
+  "BIT_NOT", "SHIFT_LEFT", "SHIFT_RIGHT", "LOGIC_SHIFT_LEFT", "ASSIGN",
+  "ADD_ASSIGN", "MUL_ASSIGN", "DIV_ASSIGN", "MINUS_ASSIGN", "MOD_ASSIGN",
+  "BIT_AND_ASSIGN", "BIT_OR_ASSIGN", "BIT_XOR_ASSIGN", "SHIFT_LEFT_ASSIGN",
+  "SHIFT_RIGHT_ASSIGN", "LOGIC_SHIFT_LEFT_ASSIGN", "INCREMENT",
+  "DECREMENT", "LESS_THAN", "GREATER_THAN", "LESS_THAN_EQUAL",
+  "GREATER_THAN_EQUAL", "EQUAL", "NOT_EQUAL", "AND", "OR", "COMMA",
+  "SEMICOLON", "COLON", "LEFT_BRACE", "RIGHT_BRACE", "LEFT_PAREN",
+  "RIGHT_PAREN", "LEFT_BRACKET", "RIGHT_BRACKET", "DOT", "ELLIPSIS",
+  "QUESTION", "BANG", "$accept", "program", "variableDecl", "constantDecl",
+  "expression", "functionDeclaration", "nullableModifier",
+  "mutableModifier", "identifier", "integer", "float_", "string_", "bool_",
+  "type", "packageDecl", "importStmt", "statement", "statements",
+  "expressions", "structDecl", "structFields", "returnStmt",
   "functionCall", YY_NULLPTR
 };
 
@@ -689,12 +692,12 @@ yysymbol_name (yysymbol_kind_t yysymbol)
 }
 #endif
 
-#define YYPACT_NINF (-76)
+#define YYPACT_NINF (-75)
 
 #define yypact_value_is_default(Yyn) \
   ((Yyn) == YYPACT_NINF)
 
-#define YYTABLE_NINF (-20)
+#define YYTABLE_NINF (-24)
 
 #define yytable_value_is_error(Yyn) \
   0
@@ -703,18 +706,18 @@ yysymbol_name (yysymbol_kind_t yysymbol)
    STATE-NUM.  */
 static const yytype_int16 yypact[] =
 {
-      46,     1,    51,    55,   -76,   -43,   -76,     1,   -76,   -76,
-      31,   -40,   199,   -76,   -76,   -20,     1,     1,   -76,   -76,
-      53,   227,   -76,   -76,   -76,   -76,   -76,   -76,   -76,    -5,
-     -76,   227,   -30,   -76,   -76,   -76,   -76,   -76,   -76,   -76,
-     -76,    -3,     3,   -49,     0,   -76,   -76,   -76,   -76,   -76,
-     -76,   -76,   -76,   -76,   -76,   -76,   -76,   -50,   -29,   -76,
-      29,   -29,   -76,   -76,    15,   -76,   -76,    53,   -76,   -25,
-     -44,   -76,   -76,   -45,    33,    -9,   154,    25,   -10,    12,
-     -76,    14,    53,    53,   -76,   -34,    53,   -76,   -76,    28,
-     -26,   167,    38,   -76,   -76,   -76,    42,    45,    53,   -76,
-     -76,     7,   -76,   -76,   -17,   -76,   -76,   -76,    47,   -76,
-      63,    93,   -76,   -76,   -76,   -76,   123,   -76
+       6,   -20,    71,    68,   -75,   -64,   -75,   -20,   -75,   -75,
+      41,    36,   161,   -75,   -75,   -30,   -20,   -20,   -75,   -75,
+     188,   187,   -75,   -75,   -75,   -75,   -75,   -75,   -75,    10,
+     -75,   187,   -74,   -75,   -75,   -75,   -75,   -75,   -75,   -75,
+     -75,    11,    44,    -3,    21,   -75,   -75,   -75,   -75,   -75,
+     -75,   -75,   -75,   -75,   -75,   -75,   -75,   -36,   -22,   -75,
+      30,   -22,   -75,   -75,     4,   -75,   -75,   188,   -75,   -25,
+      12,   -75,   -75,    16,   -61,     9,    13,    48,   -11,    24,
+     -75,     5,   188,   188,   -75,    29,   188,   -75,   -75,    43,
+     -27,   127,    37,   -75,   -75,   -75,    55,    59,   188,   -75,
+     -75,    14,   -75,   -75,   -21,   -75,   -75,   -75,    62,   -75,
+      63,    94,   -75,   -75,   -75,   -75,   105,   -75
 };
 
 /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -722,26 +725,26 @@ static const yytype_int16 yypact[] =
    means the default is an error.  */
 static const yytype_int8 yydefact[] =
 {
-      48,     0,     0,    50,    25,     0,     1,     0,    59,    49,
-       0,     0,    22,    26,    51,     0,     0,     0,    23,    24,
-       0,     0,    27,    29,    28,    30,    31,    54,    55,     0,
-      53,     0,    10,     9,    11,    12,    13,    60,    56,    57,
-      14,     0,     0,     0,     0,    36,    37,    38,    39,    40,
-      41,    42,    43,    44,    45,    46,    47,    32,     0,    58,
-      32,     0,    61,    52,    61,    64,    66,     0,    33,     0,
-       0,    20,    21,     0,    19,     0,     0,     0,    22,     0,
-      34,     0,     0,     0,     6,     0,     0,    67,    59,    32,
-       0,     0,     0,    65,     8,    35,     0,     0,     0,     5,
-      62,    22,    59,    59,     0,    63,     7,     4,     0,    15,
-      22,    22,    59,     3,    16,    17,    22,    18
+      52,     0,     0,    54,    29,     0,     1,     0,    63,    53,
+       0,     0,    26,    30,    55,     0,     0,     0,    27,    28,
+       0,     0,    31,    33,    32,    34,    35,    58,    59,     0,
+      57,     0,    10,     9,    11,    12,    13,    64,    60,    61,
+      14,     0,     0,     0,     0,    40,    41,    42,    43,    44,
+      45,    46,    47,    48,    49,    50,    51,    36,     0,    62,
+      36,     0,    65,    56,    65,    68,    70,     0,    37,     0,
+       0,    24,    25,     0,    23,     0,    19,     0,    26,     0,
+      38,     0,     0,     0,     6,     0,     0,    71,    63,    36,
+      20,    21,     0,    69,     8,    39,     0,     0,     0,     5,
+      66,    26,    63,    63,    22,    67,     7,     4,     0,    15,
+      26,    26,    63,     3,    16,    17,    26,    18
 };
 
 /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-     -76,   -76,    44,   -76,   -19,   -76,    35,   -76,    -1,    57,
-     -76,   -76,   -76,   -21,   -76,   -76,   -76,   -75,    66,   -76,
-     -76,   -76,   -76
+     -75,   -75,    82,   -75,   -19,   -75,    66,   -75,    -1,    72,
+     -75,   -75,   -75,   -26,   -75,   -75,   -75,    79,    98,   -75,
+     -75,   -75,   -75
 };
 
 /* YYDEFGOTO[NTERM-NUM].  */
@@ -757,104 +760,100 @@ static const yytype_int8 yydefgoto[] =
    number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_int8 yytable[] =
 {
-       5,    44,     4,    67,    18,    19,    11,    22,    83,    82,
-      61,    13,    16,   101,    68,    42,    43,    68,    17,    98,
-      57,    18,    19,    41,    20,    21,    68,   110,   111,    65,
-      60,    84,     4,     9,    10,    10,    14,   116,     4,    22,
-      10,    10,    99,    23,    15,    24,    25,    26,    79,     1,
-      62,     6,   102,    69,    10,    90,    69,    70,    80,     7,
-      74,   112,    13,    96,    97,    69,    86,   100,    16,    92,
-     104,    59,    87,    63,    17,    89,    66,    18,    19,   108,
-      20,    21,   -19,    64,     4,    22,   109,    10,    94,    23,
-      89,    24,    25,    26,     4,    22,    76,    95,    16,    23,
-      86,    24,    25,    26,    17,   -19,    91,    18,    19,    85,
-      20,    21,    10,    10,   105,    71,    72,    10,   106,    71,
-      72,   107,    93,   113,     4,    22,    81,     0,    16,    23,
-      77,    24,    25,    26,    17,     0,     0,    18,    19,     0,
-      20,    21,   114,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     4,    22,     0,     0,     0,    23,
-       0,    24,    25,    26,     0,     0,     0,     0,     0,     0,
-       0,     0,   115,    45,    46,    47,    48,    49,    50,    51,
-      52,    53,    54,    55,    56,     4,    45,    46,    47,    48,
-      49,    50,    51,    52,    53,    54,    55,    56,     4,    -2,
-       0,     0,   117,     0,    16,     0,     0,     0,     0,     0,
-      17,     0,     0,    18,    19,     0,    20,    21,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       4,    22,    88,     0,     0,    23,     0,    24,    25,    26,
-       0,     0,     0,     0,     0,   103,    45,    46,    47,    48,
-      49,    50,    51,    52,    53,    54,    55,    56,     4
+       5,    44,    13,    18,    19,    61,    11,    62,    22,     1,
+       4,    10,     4,     9,    41,    42,    43,    68,    67,    16,
+      57,    10,    68,    68,    10,    17,    71,    72,    18,    19,
+      60,    20,    21,    45,    46,    47,    48,    49,    50,    51,
+      52,    53,    54,    55,    56,     4,     4,    22,    79,    10,
+      90,    23,   102,    24,    25,    26,    69,    70,   112,    80,
+      74,    69,    69,    96,    97,   104,    82,   100,    16,    92,
+      83,     6,     7,    13,    17,    89,    65,    18,    19,   108,
+      20,    21,    10,    98,   -23,    86,    76,    59,    63,    95,
+      89,    87,    88,    84,   109,     4,    22,    10,    66,    16,
+      23,    94,    24,    25,    26,    17,    99,   -23,    18,    19,
+      16,    20,    21,    14,   105,    10,    17,    71,    72,    18,
+      19,    15,    20,    21,    86,    64,     4,    22,    10,    10,
+      91,    23,   106,    24,    25,    26,   107,     4,    22,   113,
+      85,    81,    23,   114,    24,    25,    26,    45,    46,    47,
+      48,    49,    50,    51,    52,    53,    54,    55,    56,     4,
+      93,    -2,    77,     0,     0,     0,    16,   101,     0,     0,
+       0,     0,    17,     0,   115,    18,    19,     0,    20,    21,
+       0,   110,   111,     0,     0,   117,     0,     0,     0,     0,
+       0,   116,     0,     4,    22,     0,     0,     0,    23,     0,
+      24,    25,    26,     0,     0,     0,   103,    45,    46,    47,
+      48,    49,    50,    51,    52,    53,    54,    55,    56,     4,
+       4,    22,     0,     0,     0,    23,     0,    24,    25,    26
 };
 
 static const yytype_int8 yycheck[] =
 {
-       1,    20,    31,    53,    14,    15,     7,    32,    53,    53,
-      31,    31,     5,    88,    43,    16,    17,    43,    11,    53,
-      21,    14,    15,    43,    17,    18,    43,   102,   103,    78,
-      31,    76,    31,    76,    84,    84,    76,   112,    31,    32,
-      84,    84,    76,    36,    84,    38,    39,    40,    67,     3,
-      80,     0,    78,    82,    84,    76,    82,    58,    83,     4,
-      61,    78,    31,    82,    83,    82,    75,    86,     5,    79,
-      91,    76,    81,    76,    11,    76,    76,    14,    15,    98,
-      17,    18,    53,    80,    31,    32,    79,    84,    76,    36,
-      91,    38,    39,    40,    31,    32,    81,    83,     5,    36,
-      75,    38,    39,    40,    11,    76,    81,    14,    15,    74,
-      17,    18,    84,    84,    76,    86,    87,    84,    76,    86,
-      87,    76,    78,    76,    31,    32,    69,    -1,     5,    36,
-      64,    38,    39,    40,    11,    -1,    -1,    14,    15,    -1,
-      17,    18,    79,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    31,    32,    -1,    -1,    -1,    36,
-      -1,    38,    39,    40,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    79,    19,    20,    21,    22,    23,    24,    25,
-      26,    27,    28,    29,    30,    31,    19,    20,    21,    22,
-      23,    24,    25,    26,    27,    28,    29,    30,    31,     0,
-      -1,    -1,    79,    -1,     5,    -1,    -1,    -1,    -1,    -1,
-      11,    -1,    -1,    14,    15,    -1,    17,    18,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      31,    32,    78,    -1,    -1,    36,    -1,    38,    39,    40,
-      -1,    -1,    -1,    -1,    -1,    78,    19,    20,    21,    22,
-      23,    24,    25,    26,    27,    28,    29,    30,    31
+       1,    20,    32,    14,    15,    31,     7,    81,    33,     3,
+      32,    85,    32,    77,    44,    16,    17,    44,    54,     5,
+      21,    85,    44,    44,    85,    11,    87,    88,    14,    15,
+      31,    17,    18,    20,    21,    22,    23,    24,    25,    26,
+      27,    28,    29,    30,    31,    32,    32,    33,    67,    85,
+      76,    37,    79,    39,    40,    41,    83,    58,    79,    84,
+      61,    83,    83,    82,    83,    91,    54,    86,     5,    80,
+      54,     0,     4,    32,    11,    76,    79,    14,    15,    98,
+      17,    18,    85,    54,    54,    76,    82,    77,    77,    84,
+      91,    82,    79,    77,    80,    32,    33,    85,    77,     5,
+      37,    77,    39,    40,    41,    11,    77,    77,    14,    15,
+       5,    17,    18,    77,    77,    85,    11,    87,    88,    14,
+      15,    85,    17,    18,    76,    81,    32,    33,    85,    85,
+      82,    37,    77,    39,    40,    41,    77,    32,    33,    77,
+      74,    69,    37,    80,    39,    40,    41,    20,    21,    22,
+      23,    24,    25,    26,    27,    28,    29,    30,    31,    32,
+      78,     0,    64,    -1,    -1,    -1,     5,    88,    -1,    -1,
+      -1,    -1,    11,    -1,    80,    14,    15,    -1,    17,    18,
+      -1,   102,   103,    -1,    -1,    80,    -1,    -1,    -1,    -1,
+      -1,   112,    -1,    32,    33,    -1,    -1,    -1,    37,    -1,
+      39,    40,    41,    -1,    -1,    -1,    79,    20,    21,    22,
+      23,    24,    25,    26,    27,    28,    29,    30,    31,    32,
+      32,    33,    -1,    -1,    -1,    37,    -1,    39,    40,    41
 };
 
 /* YYSTOS[STATE-NUM] -- The symbol kind of the accessing symbol of
    state STATE-NUM.  */
 static const yytype_int8 yystos[] =
 {
-       0,     3,    89,   102,    31,    96,     0,     4,   103,    76,
-      84,    96,   105,    31,    76,    84,     5,    11,    14,    15,
-      17,    18,    32,    36,    38,    39,    40,    90,    91,    92,
-      93,    95,    96,    97,    98,    99,   100,   104,   107,   109,
-     110,    43,    96,    96,    92,    19,    20,    21,    22,    23,
-      24,    25,    26,    27,    28,    29,    30,    96,   101,    76,
-      96,   101,    80,    76,    80,    78,    76,    53,    43,    82,
-      96,    86,    87,    94,    96,   106,    81,   106,   108,    92,
-      83,    97,    53,    53,    76,    94,    75,    81,    78,    96,
-     101,    81,    79,    90,    76,    83,    92,    92,    53,    76,
-      92,   105,    78,    78,   101,    76,    76,    76,    92,    79,
-     105,   105,    78,    76,    79,    79,   105,    79
+       0,     3,    90,   103,    32,    97,     0,     4,   104,    77,
+      85,    97,   106,    32,    77,    85,     5,    11,    14,    15,
+      17,    18,    33,    37,    39,    40,    41,    91,    92,    93,
+      94,    96,    97,    98,    99,   100,   101,   105,   108,   110,
+     111,    44,    97,    97,    93,    20,    21,    22,    23,    24,
+      25,    26,    27,    28,    29,    30,    31,    97,   102,    77,
+      97,   102,    81,    77,    81,    79,    77,    54,    44,    83,
+      97,    87,    88,    95,    97,   107,    82,   107,   109,    93,
+      84,    98,    54,    54,    77,    95,    76,    82,    79,    97,
+     102,    82,    80,    91,    77,    84,    93,    93,    54,    77,
+      93,   106,    79,    79,   102,    77,    77,    77,    93,    80,
+     106,   106,    79,    77,    80,    80,   106,    80
 };
 
 /* YYR1[RULE-NUM] -- Symbol kind of the left-hand side of rule RULE-NUM.  */
 static const yytype_int8 yyr1[] =
 {
-       0,    88,    89,    90,    90,    90,    90,    91,    91,    92,
-      92,    92,    92,    92,    92,    93,    93,    93,    93,    94,
-      94,    94,    95,    95,    95,    96,    96,    97,    98,    99,
-     100,   100,   101,   101,   101,   101,   101,   101,   101,   101,
-     101,   101,   101,   101,   101,   101,   101,   101,   102,   102,
-     103,   103,   103,   104,   104,   104,   104,   104,   104,   105,
-     105,   106,   106,   107,   108,   108,   109,   110
+       0,    89,    90,    91,    91,    91,    91,    92,    92,    93,
+      93,    93,    93,    93,    93,    94,    94,    94,    94,    94,
+      94,    94,    94,    95,    95,    95,    96,    96,    96,    97,
+      97,    98,    99,   100,   101,   101,   102,   102,   102,   102,
+     102,   102,   102,   102,   102,   102,   102,   102,   102,   102,
+     102,   102,   103,   103,   104,   104,   104,   105,   105,   105,
+     105,   105,   105,   106,   106,   107,   107,   108,   109,   109,
+     110,   111
 };
 
 /* YYR2[RULE-NUM] -- Number of symbols on the right-hand side of rule RULE-NUM.  */
 static const yytype_int8 yyr2[] =
 {
        0,     2,     3,     7,     6,     5,     4,     6,     5,     1,
-       1,     1,     1,     1,     1,     7,     8,     8,     9,     0,
-       1,     1,     0,     1,     1,     1,     3,     1,     1,     1,
-       1,     1,     1,     2,     3,     4,     1,     1,     1,     1,
-       1,     1,     1,     1,     1,     1,     1,     1,     0,     3,
-       0,     3,     5,     1,     1,     1,     1,     1,     2,     0,
-       2,     0,     3,     6,     0,     2,     3,     4
+       1,     1,     1,     1,     1,     7,     8,     8,     9,     4,
+       5,     5,     6,     0,     1,     1,     0,     1,     1,     1,
+       3,     1,     1,     1,     1,     1,     1,     2,     3,     4,
+       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
+       1,     1,     0,     3,     0,     3,     5,     1,     1,     1,
+       1,     1,     2,     0,     2,     0,     3,     6,     0,     2,
+       3,     4
 };
 
 
@@ -1325,7 +1324,7 @@ yyreduce:
         // Log message when parsing a program node
         parserLog("Parsed program node");
     }
-#line 1329 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1328 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 3: /* variableDecl: mutableModifier type identifier nullableModifier ASSIGN expression SEMICOLON  */
@@ -1335,7 +1334,7 @@ yyreduce:
         // Log message when parsing a variable declaration node
         parserLog("Parsed variable declaration node");
     }
-#line 1339 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1338 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 4: /* variableDecl: mutableModifier identifier nullableModifier ASSIGN expression SEMICOLON  */
@@ -1345,7 +1344,7 @@ yyreduce:
         // Log message when parsing a variable declaration node without explicit type
         parserLog("Parsed variable declaration node without explicit type");
     }
-#line 1349 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1348 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 5: /* variableDecl: mutableModifier type identifier nullableModifier SEMICOLON  */
@@ -1355,7 +1354,7 @@ yyreduce:
         // Log message when parsing a variable declaration node
         parserLog("Parsed variable declaration node");
     }
-#line 1359 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1358 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 6: /* variableDecl: mutableModifier identifier nullableModifier SEMICOLON  */
@@ -1365,7 +1364,7 @@ yyreduce:
         // Log message when parsing a variable declaration node without explicit type
         parserLog("Parsed variable declaration node without explicit type");
     }
-#line 1369 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1368 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 7: /* constantDecl: CONST type identifier ASSIGN expression SEMICOLON  */
@@ -1375,7 +1374,7 @@ yyreduce:
         // Log message when parsing a constant declaration node
         parserLog("Parsed constant declaration node");
     }
-#line 1379 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1378 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 8: /* constantDecl: CONST identifier ASSIGN expression SEMICOLON  */
@@ -1385,7 +1384,7 @@ yyreduce:
         // Log message when parsing a constant declaration node
         parserLog("Parsed constant declaration node");
     }
-#line 1389 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1388 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 9: /* expression: integer  */
@@ -1395,7 +1394,7 @@ yyreduce:
         // Log message when parsing an IntegerNode expression node
         parserLog("Parsed IntegerNode expression node");
     }
-#line 1399 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1398 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 10: /* expression: identifier  */
@@ -1405,7 +1404,7 @@ yyreduce:
 
         parserLog("Parsed identifier expression node: [" + (yyvsp[0].ident)->getName() + "]");
     }
-#line 1409 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1408 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 11: /* expression: float_  */
@@ -1415,7 +1414,7 @@ yyreduce:
         // Log message when parsing a FloatNode expression node
         parserLog("Parsed FloatNode expression node");
     }
-#line 1419 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1418 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 12: /* expression: string_  */
@@ -1425,13 +1424,13 @@ yyreduce:
         // Log message when parsing a String expression node
         parserLog("Parsed String expression node");
     }
-#line 1429 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1428 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 13: /* expression: bool_  */
 #line 157 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
             {}
-#line 1435 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1434 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 14: /* expression: functionCall  */
@@ -1442,10 +1441,10 @@ yyreduce:
         parserLog("Parsed function call expression node: [" + dynamic_cast<dap::parser::FunctionCallExpressionNode*>((yyvsp[0].expr))
                                                         ->name->getName() + "]");
     }
-#line 1446 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1445 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
-  case 15: /* funDecl: FUN identifier LEFT_PAREN RIGHT_PAREN LEFT_BRACE statements RIGHT_BRACE  */
+  case 15: /* functionDeclaration: FUN identifier LEFT_PAREN RIGHT_PAREN LEFT_BRACE statements RIGHT_BRACE  */
 #line 166 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
                                                                             {
         if ((yyvsp[-5].ident)->name_parts->size()!= 1) {
@@ -1459,10 +1458,10 @@ yyreduce:
         // Log message when parsing a function declaration node without parameters
         parserLog("Parsed function declaration node without parameters");
     }
-#line 1463 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1462 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
-  case 16: /* funDecl: FUN identifier LEFT_PAREN RIGHT_PAREN type LEFT_BRACE statements RIGHT_BRACE  */
+  case 16: /* functionDeclaration: FUN identifier LEFT_PAREN RIGHT_PAREN type LEFT_BRACE statements RIGHT_BRACE  */
 #line 178 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
                                                                                    {
         if ((yyvsp[-6].ident)->name_parts->size()!= 1) {
@@ -1476,10 +1475,10 @@ yyreduce:
         // Log message when parsing a function declaration node without parameters
         parserLog("Parsed function declaration node without parameters");
     }
-#line 1480 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1479 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
-  case 17: /* funDecl: FUN identifier LEFT_PAREN expressions RIGHT_PAREN LEFT_BRACE statements RIGHT_BRACE  */
+  case 17: /* functionDeclaration: FUN identifier LEFT_PAREN expressions RIGHT_PAREN LEFT_BRACE statements RIGHT_BRACE  */
 #line 190 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
                                                                                           {
         if ((yyvsp[-6].ident)->name_parts->size()!= 1) {
@@ -1495,10 +1494,10 @@ yyreduce:
         parserLog("Parsed function declaration node with parameters");
 
     }
-#line 1499 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1498 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
-  case 18: /* funDecl: FUN identifier LEFT_PAREN expressions RIGHT_PAREN type LEFT_BRACE statements RIGHT_BRACE  */
+  case 18: /* functionDeclaration: FUN identifier LEFT_PAREN expressions RIGHT_PAREN type LEFT_BRACE statements RIGHT_BRACE  */
 #line 204 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
                                                                                                {
         if ((yyvsp[-7].ident)->name_parts->size()!= 1) {
@@ -1513,80 +1512,151 @@ yyreduce:
         // Log message when parsing a function declaration node with parameters and return type
         parserLog("Parsed function declaration node with parameters and return type");
     }
-#line 1517 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1516 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
-  case 19: /* nullableModifier: %empty  */
-#line 220 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+  case 19: /* functionDeclaration: FUN identifier LEFT_PAREN RIGHT_PAREN  */
+#line 217 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+                                            {
+        if ((yyvsp[-2].ident)->name_parts->size()!= 1) {
+            // Call the error function if the identifier is invalid
+            yyerror("Invalid identifier");
+        }
+        (yyval.stmt) = new dap::parser::FunctionDeclarationNode((yyvsp[-2].ident)->name_parts->at(0),
+                                                        nullptr,
+                                                        nullptr,
+                                                        nullptr);
+        // Log message when parsing a function declaration node without parameters
+        parserLog("Parsed function declaration node without parameters");
+    }
+#line 1533 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+    break;
+
+  case 20: /* functionDeclaration: FUN identifier LEFT_PAREN RIGHT_PAREN type  */
+#line 229 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+                                                 {
+        if ((yyvsp[-3].ident)->name_parts->size()!= 1) {
+            // Call the error function if the identifier is invalid
+            yyerror("Invalid identifier");
+        }
+        (yyval.stmt) = new dap::parser::FunctionDeclarationNode((yyvsp[-3].ident)->name_parts->at(0),
+                                                        nullptr,
+                                                        nullptr,
+                                                        nullptr);
+        // Log message when parsing a function declaration node without parameters
+        parserLog("Parsed function declaration node without parameters");
+    }
+#line 1550 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+    break;
+
+  case 21: /* functionDeclaration: FUN identifier LEFT_PAREN expressions RIGHT_PAREN  */
+#line 241 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+                                                        {
+        if ((yyvsp[-3].ident)->name_parts->size()!= 1) {
+            // Call the error function if the identifier is invalid
+            yyerror("Invalid identifier");
+        }
+
+        (yyval.stmt) = new dap::parser::FunctionDeclarationNode((yyvsp[-3].ident)->name_parts->at(0),
+                                                        (yyvsp[-1].exprVec),
+                                                        nullptr,
+                                                        nullptr);
+        // Log message when parsing a function declaration node with parameters
+        parserLog("Parsed function declaration node with parameters");
+
+    }
+#line 1569 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+    break;
+
+  case 22: /* functionDeclaration: FUN identifier LEFT_PAREN expressions RIGHT_PAREN type  */
+#line 255 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+                                                             {
+        if ((yyvsp[-4].ident)->name_parts->size()!= 1) {
+            // Call the error function if the identifier is invalid
+            yyerror("Invalid identifier");
+        }
+
+        (yyval.stmt) = new dap::parser::FunctionDeclarationNode((yyvsp[-4].ident)->name_parts->at(0),
+                                                        (yyvsp[-2].exprVec),
+                                                        (yyvsp[0].typeNode),
+                                                        nullptr);
+        // Log message when parsing a function declaration node with parameters and return type
+        parserLog("Parsed function declaration node with parameters and return type");
+    }
+#line 1587 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+    break;
+
+  case 23: /* nullableModifier: %empty  */
+#line 271 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
                 {
         (yyval.boolval) = false;
         // Log message when parsing a variable declaration node without explicit type
         parserLog("Parsed variable declaration node without explicit nullablity");
     }
-#line 1527 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1597 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
-  case 20: /* nullableModifier: QUESTION  */
-#line 225 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+  case 24: /* nullableModifier: QUESTION  */
+#line 276 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
                {
         (yyval.boolval) = true;
         // Log message when parsing a variable declaration node
         parserLog("Parsed variable declaration node");
         (yyval.boolval) = true;
     }
-#line 1538 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1608 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
-  case 21: /* nullableModifier: BANG  */
-#line 231 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+  case 25: /* nullableModifier: BANG  */
+#line 282 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
            {
         (yyval.boolval) = false;
         // Log message when parsing a variable declaration node
         parserLog("Parsed variable declaration node");
     }
-#line 1548 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1618 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
-  case 22: /* mutableModifier: %empty  */
-#line 238 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+  case 26: /* mutableModifier: %empty  */
+#line 289 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
                 {
         (yyval.boolval) = false;
         parserLog("Parsed variable declaration node without explicit mutability");
     }
-#line 1557 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1627 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
-  case 23: /* mutableModifier: IMT  */
-#line 242 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+  case 27: /* mutableModifier: IMT  */
+#line 293 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
           {
         (yyval.boolval) = false;
         parserLog("Parsed variable declaration node");
     }
-#line 1566 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1636 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
-  case 24: /* mutableModifier: VAR  */
-#line 246 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+  case 28: /* mutableModifier: VAR  */
+#line 297 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
           {
         (yyval.boolval) = true;
         parserLog("Parsed variable declaration node");
     }
-#line 1575 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1645 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
-  case 25: /* identifier: IDENTIFIER  */
-#line 253 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+  case 29: /* identifier: IDENTIFIER  */
+#line 304 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
                {
         (yyval.ident) = new dap::parser::QualifiedNameNode(*(yyvsp[0].str));
         delete (yyvsp[0].str);
         // Log message when parsing an identifier node
         parserLog("Parsed identifier node");
     }
-#line 1586 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1656 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
-  case 26: /* identifier: identifier DOT IDENTIFIER  */
-#line 259 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+  case 30: /* identifier: identifier DOT IDENTIFIER  */
+#line 310 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
                                 {
         (yyvsp[-2].ident)->name_parts->push_back(*(yyvsp[0].str));
         (yyval.ident) = (yyvsp[-2].ident);
@@ -1594,93 +1664,93 @@ yyreduce:
         // Log message when parsing a qualified identifier node
         parserLog("Parsed qualified identifier node");
     }
-#line 1598 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1668 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
-  case 27: /* integer: INTEGER  */
-#line 268 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+  case 31: /* integer: INTEGER  */
+#line 319 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
             {
         (yyval.intExpr) = new dap::parser::IntegerNode(atol((yyvsp[0].str)->c_str()));
         // Log message when parsing an IntegerNode node
         parserLog("Parsed IntegerNode node: integer[" + (yyval.intExpr)->getVal() + "]");
     }
-#line 1608 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1678 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
-  case 28: /* float_: FLOAT_LITERAL  */
-#line 275 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+  case 32: /* float_: FLOAT_LITERAL  */
+#line 326 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
                   {
         (yyval.floatExpr) = new dap::parser::FloatNode(atof((yyvsp[0].str)->c_str()));
         // Log message when parsing a float node
         parserLog("Parsed float node");
     }
-#line 1618 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1688 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
-  case 29: /* string_: STRING_LITERAL  */
-#line 282 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+  case 33: /* string_: STRING_LITERAL  */
+#line 333 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
                    {
         (yyval.strExpr) = new dap::parser::String(*(yyvsp[0].str));
         // Log message when parsing a string node
         parserLog("Parsed string node");
     }
-#line 1628 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1698 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
-  case 30: /* bool_: TRUE  */
-#line 289 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+  case 34: /* bool_: TRUE  */
+#line 340 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
          {
         (yyval.expr) = new dap::parser::BoolNode(true);
         // Log message when parsing a boolean node
         parserLog("Parsed boolean node: [ TRUE ]");
     }
-#line 1638 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1708 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
-  case 31: /* bool_: FALSE  */
-#line 294 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+  case 35: /* bool_: FALSE  */
+#line 345 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
             {
         (yyval.expr) = new dap::parser::BoolNode(false);
         // Log message when parsing a boolean node
         parserLog("Parsed boolean node: [ FALSE ]");
     }
-#line 1648 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1718 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
-  case 32: /* type: identifier  */
-#line 301 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+  case 36: /* type: identifier  */
+#line 352 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
                {
         (yyval.typeNode) = new dap::parser::TypeNode((yyvsp[0].ident));
         // Log message when parsing a type node
         parserLog("Parsed type node");
     }
-#line 1658 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1728 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
-  case 33: /* type: type MUL  */
-#line 306 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+  case 37: /* type: type MUL  */
+#line 357 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
                {
         (yyval.typeNode) = (yyvsp[-1].typeNode);
         (yyval.typeNode)->isPointer = true;
         // Log message when parsing a pointer type node
         parserLog("Parsed pointer type node");
     }
-#line 1669 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1739 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
-  case 34: /* type: type LEFT_BRACKET RIGHT_BRACKET  */
-#line 312 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+  case 38: /* type: type LEFT_BRACKET RIGHT_BRACKET  */
+#line 363 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
                                       {
         (yyval.typeNode) = (yyvsp[-2].typeNode);
         (yyval.typeNode)->isArray = true;
         // Log message when parsing an array type node without size
         parserLog("Parsed array type node without size");
     }
-#line 1680 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1750 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
-  case 35: /* type: type LEFT_BRACKET integer RIGHT_BRACKET  */
-#line 318 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+  case 39: /* type: type LEFT_BRACKET integer RIGHT_BRACKET  */
+#line 369 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
                                               {
         (yyval.typeNode) = (yyvsp[-3].typeNode);
         (yyval.typeNode)->isArray = true;
@@ -1688,328 +1758,328 @@ yyreduce:
         // Log message when parsing an array type node with size
         parserLog("Parsed array type node with size");
     }
-#line 1692 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1762 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
-  case 36: /* type: INT  */
-#line 325 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+  case 40: /* type: INT  */
+#line 376 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
           {
         (yyval.typeNode) = new dap::parser::TypeNode(BasicType::INT);
         // Log message when parsing an int type node
         parserLog("Parsed int type node");
     }
-#line 1702 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1772 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
-  case 37: /* type: BYTE  */
-#line 330 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+  case 41: /* type: BYTE  */
+#line 381 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
            {
         (yyval.typeNode) = new dap::parser::TypeNode(BasicType::BYTE);
         // Log message when parsing a byte type node
         parserLog("Parsed byte type node");
     }
-#line 1712 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1782 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
-  case 38: /* type: SHORT  */
-#line 335 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+  case 42: /* type: SHORT  */
+#line 386 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
             {
         (yyval.typeNode) = new dap::parser::TypeNode(BasicType::SHORT);
         // Log message when parsing a short type node
         parserLog("Parsed short type node");
     }
-#line 1722 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1792 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
-  case 39: /* type: LONG  */
-#line 340 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+  case 43: /* type: LONG  */
+#line 391 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
            {
         (yyval.typeNode) = new dap::parser::TypeNode(BasicType::LONG);
         // Log message when parsing a long type node
         parserLog("Parsed long type node");
     }
-#line 1732 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1802 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
-  case 40: /* type: FLOAT  */
-#line 345 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+  case 44: /* type: FLOAT  */
+#line 396 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
             {
         (yyval.typeNode) = new dap::parser::TypeNode(BasicType::FLOAT);
         // Log message when parsing a float type node
         parserLog("Parsed float type node");
     }
-#line 1742 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1812 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
-  case 41: /* type: DOUBLE  */
-#line 350 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+  case 45: /* type: DOUBLE  */
+#line 401 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
              {
         (yyval.typeNode) = new dap::parser::TypeNode(BasicType::DOUBLE);
         // Log message when parsing a double type node
         parserLog("Parsed double type node");
     }
-#line 1752 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1822 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
-  case 42: /* type: BOOL  */
-#line 355 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+  case 46: /* type: BOOL  */
+#line 406 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
            {
         (yyval.typeNode) = new dap::parser::TypeNode(BasicType::BOOL);
         // Log message when parsing a bool type node
         parserLog("Parsed bool type node");
     }
-#line 1762 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1832 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
-  case 43: /* type: UINT  */
-#line 360 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+  case 47: /* type: UINT  */
+#line 411 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
            {
         (yyval.typeNode) = new dap::parser::TypeNode(BasicType::UINT);
         // Log message when parsing a uint type node
         parserLog("Parsed uint type node");
     }
-#line 1772 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1842 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
-  case 44: /* type: USHORT  */
-#line 365 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+  case 48: /* type: USHORT  */
+#line 416 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
              {
         (yyval.typeNode) = new dap::parser::TypeNode(BasicType::USHORT);
         // Log message when parsing a ushort type node
         parserLog("Parsed ushort type node");
     }
-#line 1782 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1852 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
-  case 45: /* type: ULONG  */
-#line 370 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+  case 49: /* type: ULONG  */
+#line 421 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
             {
         (yyval.typeNode) = new dap::parser::TypeNode(BasicType::ULONG);
         // Log message when parsing a ulong type node
         parserLog("Parsed ulong type node");
     }
-#line 1792 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1862 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
-  case 46: /* type: LLONG  */
-#line 375 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+  case 50: /* type: LLONG  */
+#line 426 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
             {
         (yyval.typeNode) = new dap::parser::TypeNode(BasicType::LLONG);
         // Log message when parsing a lllong type node
         parserLog("Parsed lllong type node");
     }
-#line 1802 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1872 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
-  case 47: /* type: ULLONG  */
-#line 380 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+  case 51: /* type: ULLONG  */
+#line 431 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
              {
         (yyval.typeNode) = new dap::parser::TypeNode(BasicType::ULLONG);
         // Log message when parsing a ullong type node
         parserLog("Parsed ullong type node");
     }
-#line 1812 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1882 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
-  case 48: /* packageDecl: %empty  */
-#line 387 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+  case 52: /* packageDecl: %empty  */
+#line 438 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
                 {
 
     }
-#line 1820 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1890 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
-  case 49: /* packageDecl: PACKAGE identifier SEMICOLON  */
-#line 390 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+  case 53: /* packageDecl: PACKAGE identifier SEMICOLON  */
+#line 441 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
                                  {
         program->packageName = (yyvsp[-1].ident);
         // Log message when parsing a package declaration node
         parserLog("Parsed package declaration node: package [" + (yyvsp[-1].ident)->getName() + "]");
     }
-#line 1830 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1900 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
-  case 50: /* importStmt: %empty  */
-#line 397 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+  case 54: /* importStmt: %empty  */
+#line 448 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
                 {
 
     }
-#line 1838 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1908 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
-  case 51: /* importStmt: IMPORT identifier SEMICOLON  */
-#line 400 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+  case 55: /* importStmt: IMPORT identifier SEMICOLON  */
+#line 451 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
                                   {
         auto info = new dap::parser::ProgramNode::importedPackageInfo((yyvsp[-1].ident), false);
         program->importedPackages->push_back(info);
         // Log message when parsing an import statement node
         parserLog("Parsed import statement node: import [" + (yyvsp[-1].ident)->getName() + "]");
     }
-#line 1849 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1919 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
-  case 52: /* importStmt: IMPORT identifier DOT MUL SEMICOLON  */
-#line 406 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+  case 56: /* importStmt: IMPORT identifier DOT MUL SEMICOLON  */
+#line 457 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
                                           {
         auto info = new dap::parser::ProgramNode::importedPackageInfo((yyvsp[-3].ident), true);
         program->importedPackages->push_back(info);
         // Log message when parsing an import wildcard statement node
         parserLog("Parsed import wildcard statement node: import [" + (yyvsp[-3].ident)->getName() + "] [all]");
     }
-#line 1860 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1930 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
-  case 53: /* statement: funDecl  */
-#line 414 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
-            {
+  case 57: /* statement: functionDeclaration  */
+#line 465 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+                        {
         (yyval.stmt) = (yyvsp[0].stmt);
         // Log message when parsing a function declaration statement node
         parserLog("Parsed function declaration statement node: [" + (dynamic_cast<dap::parser::FunctionDeclarationNode*>((yyvsp[0].stmt)))->name + "]");
     }
-#line 1870 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1940 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
-  case 54: /* statement: variableDecl  */
-#line 419 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+  case 58: /* statement: variableDecl  */
+#line 470 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
                    {
         (yyval.stmt) = (yyvsp[0].stmt);
         // Log message when parsing a variable declaration statement node
         parserLog("Parsed variable declaration statement node: [" + (dynamic_cast<dap::parser::VariableDeclarationNode*>((yyvsp[0].stmt)))->variableName->getName() + "]");
     }
-#line 1880 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1950 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
-  case 55: /* statement: constantDecl  */
-#line 424 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
-                   {
+  case 59: /* statement: constantDecl  */
+#line 475 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+                   { 
         (yyval.stmt) = (yyvsp[0].stmt);
         // Log message when parsing a constant declaration statement node
         parserLog("Parsed constant declaration statement node: [" + (dynamic_cast<dap::parser::ConstantDeclarationNode*>((yyvsp[0].stmt)))->name->getName() + "]");
     }
-#line 1890 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1960 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
-  case 56: /* statement: structDecl  */
-#line 429 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+  case 60: /* statement: structDecl  */
+#line 480 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
                  {
         (yyval.stmt) = (yyvsp[0].stmt);
         // Log message when parsing a struct declaration statement node
         parserLog("Parsed struct declaration statement node: [" + (dynamic_cast<dap::parser::StructDeclarationNode*>((yyvsp[0].stmt)))->name->getName() + "]");
     }
-#line 1900 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1970 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
-  case 57: /* statement: returnStmt  */
-#line 434 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+  case 61: /* statement: returnStmt  */
+#line 485 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
                  {
         (yyval.stmt) = (yyvsp[0].stmt);
         // Log message when parsing a return statement node
         parserLog("Parsed return statement node");
     }
-#line 1910 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1980 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
-  case 58: /* statement: expression SEMICOLON  */
-#line 439 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+  case 62: /* statement: expression SEMICOLON  */
+#line 490 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
                            {
         (yyval.stmt) = new dap::parser::Statement();
         (yyval.stmt)->value = (yyvsp[-1].expr);
         // Log message when parsing a function call statement node
         parserLog("Parsed function call statement node");
     }
-#line 1921 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 1991 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
-  case 59: /* statements: %empty  */
-#line 447 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+  case 63: /* statements: %empty  */
+#line 498 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
                 {
         (yyval.stmtVec) = new std::vector<dap::parser::Statement*>();
         // Log message when starting to parse a list of statements
         parserLog("Started parsing statements list");
     }
-#line 1931 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 2001 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
-  case 60: /* statements: statements statement  */
-#line 452 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+  case 64: /* statements: statements statement  */
+#line 503 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
                            {
         (yyval.stmtVec)->push_back((yyvsp[0].stmt));
         // Log message when adding a statement to the statements list
         parserLog("Added statement to statements list");
     }
-#line 1941 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 2011 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
-  case 61: /* expressions: %empty  */
-#line 459 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+  case 65: /* expressions: %empty  */
+#line 510 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
                 {
         (yyval.exprVec) = new std::vector<dap::parser::Expression*>();
         // Log message when starting to parse a list of expressions
         parserLog("Started parsing expressions list");
     }
-#line 1951 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 2021 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
-  case 62: /* expressions: expressions COMMA expression  */
-#line 464 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+  case 66: /* expressions: expressions COMMA expression  */
+#line 515 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
                                    {
         (yyval.exprVec)->push_back((yyvsp[0].expr));
         // Log message when adding an expression to the expressions list
         parserLog("Added expression to expressions list");
     }
-#line 1961 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 2031 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
-  case 63: /* structDecl: STRUCT identifier LEFT_BRACE structFields RIGHT_BRACE SEMICOLON  */
-#line 471 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+  case 67: /* structDecl: STRUCT identifier LEFT_BRACE structFields RIGHT_BRACE SEMICOLON  */
+#line 522 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
                                                                     {
         (yyval.stmt) = new dap::parser::StructDeclarationNode((yyvsp[-4].ident), (yyvsp[-2].varDeclVec));
     }
-#line 1969 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 2039 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
-  case 64: /* structFields: %empty  */
-#line 477 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+  case 68: /* structFields: %empty  */
+#line 528 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
                 {
         (yyval.varDeclVec) = new std::vector<dap::parser::VariableDeclarationNode*>();
         // Log message when starting to parse a list of struct fields
         parserLog("Started parsing struct fields list");
     }
-#line 1979 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 2049 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
-  case 65: /* structFields: structFields variableDecl  */
-#line 482 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+  case 69: /* structFields: structFields variableDecl  */
+#line 533 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
                                 {
         (yyval.varDeclVec)->push_back(dynamic_cast<dap::parser::VariableDeclarationNode*>((yyvsp[0].stmt)));
         // Log message when adding a struct field to the struct fields list
         parserLog("Added struct field to struct fields list");
     }
-#line 1989 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 2059 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
-  case 66: /* returnStmt: RETURN expression SEMICOLON  */
-#line 489 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+  case 70: /* returnStmt: RETURN expression SEMICOLON  */
+#line 540 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
                                 {
         (yyval.stmt) = new dap::parser::ReturnStatementNode((yyvsp[-1].expr));
         // Log message when parsing a return statement node
         parserLog("Parsed return statement node");
     }
-#line 1999 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 2069 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
-  case 67: /* functionCall: identifier LEFT_PAREN expressions RIGHT_PAREN  */
-#line 496 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+  case 71: /* functionCall: identifier LEFT_PAREN expressions RIGHT_PAREN  */
+#line 547 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
                                                   {
         (yyval.expr) = new dap::parser::FunctionCallExpressionNode((yyvsp[-3].ident), (yyvsp[-1].exprVec));
         // Log message when parsing a function call statement node
         parserLog("Parsed function call experssion node: [" + (yyvsp[-3].ident)->getName() + "]");
     }
-#line 2009 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 2079 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
 
-#line 2013 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 2083 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
 
       default: break;
     }
@@ -2202,6 +2272,6 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 503 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+#line 554 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
 
 

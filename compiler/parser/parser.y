@@ -61,7 +61,7 @@ void parserLog(std::string msg) {
 }
 
 // Define the tokens
-%token PACKAGE IMPORT FUN VOID FOR IF ELSE MATCH STRUCT TRAIT TYPEDEF IMT VAR INSTANCEOF RETURN CONST
+%token PACKAGE IMPORT FUN VOID FOR IF ELSE MATCH STRUCT TRAIT TYPEDEF IMT VAR INSTANCEOF RETURN CONST EXTERN
 %token INT BYTE SHORT LONG FLOAT DOUBLE BOOL UINT USHORT ULONG LLONG ULLONG
 %token IDENTIFIER INTEGER BINARY_LITERAL OCTAL_LITERAL HEXADECIMAL_LITERAL
 %token STRING_LITERAL CHAR_LITERAL FLOAT_LITERAL TRUE FALSE
@@ -76,7 +76,7 @@ void parserLog(std::string msg) {
 %type <str> IDENTIFIER INTEGER BINARY_LITERAL OCTAL_LITERAL HEXADECIMAL_LITERAL FLOAT_LITERAL STRING_LITERAL
 %type <ident> identifier
 %type <expr> expression functionCall bool_
-%type <stmt> importStmt packageDecl statement funDecl variableDecl constantDecl structDecl returnStmt
+%type <stmt> importStmt packageDecl statement functionDeclaration variableDecl constantDecl structDecl returnStmt
 %type <stmtVec> statements
 %type <exprVec> expressions
 %type <typeNode> type
@@ -162,7 +162,7 @@ expression:
                                                         ->name->getName() + "]");
     };
 
-funDecl:
+functionDeclaration:
     FUN identifier LEFT_PAREN RIGHT_PAREN LEFT_BRACE statements RIGHT_BRACE {
         if ($2->name_parts->size()!= 1) {
             // Call the error function if the identifier is invalid
@@ -211,6 +211,57 @@ funDecl:
                                                         $4,
                                                         $6,
                                                         $8);
+        // Log message when parsing a function declaration node with parameters and return type
+        parserLog("Parsed function declaration node with parameters and return type");
+    }
+    | FUN identifier LEFT_PAREN RIGHT_PAREN {
+        if ($2->name_parts->size()!= 1) {
+            // Call the error function if the identifier is invalid
+            yyerror("Invalid identifier");
+        }
+        $$ = new dap::parser::FunctionDeclarationNode($2->name_parts->at(0),
+                                                        nullptr,
+                                                        nullptr,
+                                                        nullptr);
+        // Log message when parsing a function declaration node without parameters
+        parserLog("Parsed function declaration node without parameters");
+    }
+    | FUN identifier LEFT_PAREN RIGHT_PAREN type {
+        if ($2->name_parts->size()!= 1) {
+            // Call the error function if the identifier is invalid
+            yyerror("Invalid identifier");
+        }
+        $$ = new dap::parser::FunctionDeclarationNode($2->name_parts->at(0),
+                                                        nullptr,
+                                                        nullptr,
+                                                        nullptr);
+        // Log message when parsing a function declaration node without parameters
+        parserLog("Parsed function declaration node without parameters");
+    }
+    | FUN identifier LEFT_PAREN expressions RIGHT_PAREN {
+        if ($2->name_parts->size()!= 1) {
+            // Call the error function if the identifier is invalid
+            yyerror("Invalid identifier");
+        }
+
+        $$ = new dap::parser::FunctionDeclarationNode($2->name_parts->at(0),
+                                                        $4,
+                                                        nullptr,
+                                                        nullptr);
+        // Log message when parsing a function declaration node with parameters
+        parserLog("Parsed function declaration node with parameters");
+
+    }
+    | FUN identifier LEFT_PAREN expressions RIGHT_PAREN type {
+        if ($2->name_parts->size()!= 1) {
+            // Call the error function if the identifier is invalid
+            yyerror("Invalid identifier");
+        }
+
+        $$ = new dap::parser::FunctionDeclarationNode($2->name_parts->at(0),
+                                                        $4,
+                                                        $6,
+                                                        nullptr);
         // Log message when parsing a function declaration node with parameters and return type
         parserLog("Parsed function declaration node with parameters and return type");
     };
@@ -411,7 +462,7 @@ importStmt:
     };
 
 statement:
-    funDecl {
+    functionDeclaration {
         $$ = $1;
         // Log message when parsing a function declaration statement node
         parserLog("Parsed function declaration statement node: [" + (dynamic_cast<dap::parser::FunctionDeclarationNode*>($1))->name + "]");
@@ -421,7 +472,7 @@ statement:
         // Log message when parsing a variable declaration statement node
         parserLog("Parsed variable declaration statement node: [" + (dynamic_cast<dap::parser::VariableDeclarationNode*>($1))->variableName->getName() + "]");
     }
-    | constantDecl {
+    | constantDecl { 
         $$ = $1;
         // Log message when parsing a constant declaration statement node
         parserLog("Parsed constant declaration statement node: [" + (dynamic_cast<dap::parser::ConstantDeclarationNode*>($1))->name->getName() + "]");

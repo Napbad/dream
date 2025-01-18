@@ -65,6 +65,7 @@ void lexerLog(std::string msg) {
 "var"                   { std::string logMsg = "Parsing token: VAR"; lexerLog(logMsg); return VAR; }
 "instanceOf"            { std::string logMsg = "Parsing token: INSTANCEOF"; lexerLog(logMsg); return INSTANCEOF; }
 "return"                { std::string logMsg = "Parsing token: RETURN"; lexerLog(logMsg); return RETURN; }
+"extern"                { std::string logMsg = "Parsing token: EXTERN"; lexerLog(logMsg); return EXTERN; }
 
 "int"                   { std::string logMsg = "Parsing token: INT"; lexerLog(logMsg); return INT; }
 "byte"                  { std::string logMsg = "Parsing token: BYTE"; lexerLog(logMsg); return BYTE; }
