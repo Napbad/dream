@@ -14,7 +14,6 @@
 - `fun`: Used to define a function, specifying the function name, parameter list, and function body.
 - `var`: Declares a mutable variable. The value of the variable can be modified within its lifetime.
 - `imt`: Presumably used to declare an immutable variable. Once initialized, its value cannot be changed.
-- `extern`: Probably used to declare functions or variables defined externally so that they can be used in the current code module.
 - `struct`: Defines a structure type, used to combine multiple member variables of different types to create a custom data structure.
 - `break`: Used to break out of the current loop (such as a `for` loop).
 - `include`: Used to import external files or modules, probably for code reuse or functionality expansion.
