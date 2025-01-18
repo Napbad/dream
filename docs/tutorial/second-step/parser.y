@@ -28,7 +28,7 @@ void yyerror(const char *s) {
     ast_::BlockStmt *block;
     ast_::Expr *expr;
     ast_::Stmt *stmt;
-    ast_::QualifiedName *ident;
+    ast_::QualifiedNameNode *ident;
     ast_::VarDecl *var_decl;
     std::vector<ast_::VarDecl*> *varvec;
     std::vector<ast_::Expr*> *exprvec;
@@ -102,7 +102,7 @@ block:
 
 function_declaration:
     FUN qualified_name LPAREN var_decl_list RPAREN block {
-        $$ = new ast_::FuncDecl(new ast_::QualifiedName(), $2, *$4, $6);
+        $$ = new ast_::FuncDecl(new ast_::QualifiedNameNode(), $2, *$4, $6);
         delete $4;
     }
     | FUN qualified_name LPAREN var_decl_list RPAREN qualified_name block  {
@@ -126,7 +126,7 @@ var_decl_list:
 
 qualified_name:
     IDENTIFIER {
-        $$ = new ast_::QualifiedName({*$1});
+        $$ = new ast_::QualifiedNameNode({*$1});
         delete $1; // Clean up the string
     }
 ;
@@ -134,7 +134,7 @@ qualified_name:
 
 expression:
     INT_TOKEN {
-        $$ = new ast_::IntegerExpr(atol($1->c_str()));
+        $$ = new ast_::IntegerNodeExpr(atol($1->c_str()));
     }
     | STRING_LITERAL {
         $$ = new ast_::StringExpr($1->substr(1, $1->length() - 2));
@@ -164,11 +164,11 @@ expr_list:
 
 var_decl:
     qualified_name IDENTIFIER ASSIGN expression {
-        $$ = new ast_::VarDecl($1, new ast_::QualifiedName(new std::vector<std::string>({*$2})),$4);
+        $$ = new ast_::VarDecl($1, new ast_::QualifiedNameNode(new std::vector<std::string>({*$2})),$4);
         delete $2;
     }
     | qualified_name IDENTIFIER  {
-        $$ = new ast_::VarDecl($1, new ast_::QualifiedName(new std::vector<std::string>({*$2})), nullptr);
+        $$ = new ast_::VarDecl($1, new ast_::QualifiedNameNode(new std::vector<std::string>({*$2})), nullptr);
         delete $2;
     }
 %%

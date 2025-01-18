@@ -13,7 +13,7 @@ keyword "if"|"else"|"while"|"for"|"return"|"int"|"float"|"char"|"void"
 %%
 
 {digit}+ {
-    // Match integer sequences
+    // Match IntegerNode sequences
     printf("Matched digit sequence: %s\n", yytext);
     // More processing about digit sequence can be done here, such as converting to numeric type, etc.
 }

@@ -32,6 +32,7 @@
 #include "parser/ASTNode.h"
 #include "common/config.h"
 #include "utilities/string_util.h"
+#include "utilities/file_util.h"
 
 namespace dap
 {
@@ -704,6 +705,10 @@ llvm::Value *ProgramNode::codeGen(inter_gen::InterGenContext *ctx)
 {
     // get the package and setup the package directory
     ctx->currLine = this->lineNum;
+    util::create_package_dir(util::getStrFromVec(*packageName->name_parts, "."));
+    for (Statement * stmt : statements) {
+        stmt->codeGen(ctx);
+    }
      // Stmt *stmt = stmts->stmts.at(0);
      // stmt->codeGen(ctx);
      // const auto packageStmt = dynamic_cast<PackageStmt *>(stmt);

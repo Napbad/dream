@@ -404,7 +404,7 @@ We define that the 'int' keyword corresponds to a enum "INT", and the 'identifie
 
 The lexer said: "I read a token 'int' ", then it just return a token "INT", but not the string "int". From the return result, parser could know what the token is.
 After that, lexer read another token 'identifier', and return a token "IDENTIFIER". Then parser got another token "IDENTIFIER".
-Now we have two tokens, "INT" and "IDENTIFIER". And they can combine to a complete statement, an integer variable's declaration.
+Now we have two tokens, "INT" and "IDENTIFIER". And they can combine to a complete statement, an IntegerNode variable's declaration.
 
 > Why don't we just use a string "int" to represent the token "INT"?
 > 

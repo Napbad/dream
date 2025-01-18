@@ -1,0 +1,20 @@
+package main;
+
+fun foo() int {
+    return 11;
+}
+
+fun foo(imt int a) int {
+    return a;
+}
+
+
+fun main()  {
+
+    var a = foo();
+
+    var b = foo(a);
+
+    return 0;
+}
+

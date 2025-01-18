@@ -62,7 +62,18 @@ class Statement : public ASTNode
 {
   public:
     // Constructor for Statement
+
+    Expression *value = nullptr;
+
     explicit Statement() = default;
+
+    llvm::Value *codeGen(inter_gen::InterGenContext *ctx) {
+      if (value != nullptr){
+        return value->codeGen(ctx);
+      }
+
+      return nullptr;
+    }
 };
 
 class QualifiedNameNode final : public Expression
@@ -96,7 +107,7 @@ class IntegerNode : public Expression
 
     explicit IntegerNode(unsigned int value)
     {
-        this->intType = UNSIGNED_INT;
+        this->intType = INT;
         this->intValue.unsignedVal = value;
         this->isSigned = false;
     }
@@ -110,7 +121,7 @@ class IntegerNode : public Expression
 
     explicit IntegerNode(unsigned short value)
     {
-        this->intType = UNSIGNED_SHORT;
+        this->intType = SHORT;
         this->intValue.unsignedShortVal = value;
         this->isSigned = false;
     }
@@ -124,7 +135,7 @@ class IntegerNode : public Expression
 
     explicit IntegerNode(unsigned char value)
     {
-        this->intType = UNSIGNED_CHAR;
+        this->intType = CHAR;
         this->intValue.unsignedCharVal = value;
         this->isSigned = false;
     }
@@ -138,7 +149,7 @@ class IntegerNode : public Expression
 
     explicit IntegerNode(unsigned long value)
     {
-        this->intType = UNSIGNED_LONG;
+        this->intType = LONG;
         this->intValue.unsignedLongVal = value;
         this->isSigned = false;
     }
@@ -152,7 +163,7 @@ class IntegerNode : public Expression
 
     explicit IntegerNode(unsigned long long value)
     {
-        this->intType = UNSIGNED_LONG_LONG;
+        this->intType = LONG_LONG;
         this->intValue.unsignedLongLongVal = value;
         this->isSigned = false;
     }
@@ -186,13 +197,6 @@ class IntegerNode : public Expression
         FLOAT,
         DOUBLE,
         LONG_LONG,
-        UNSIGNED_INT,
-        UNSIGNED_LONG,
-        UNSIGNED_LONG_LONG,
-        UNSIGNED_SHORT,
-        UNSIGNED_CHAR,
-        UNSIGNED_BYTE,
-        UNSIGNED_FLOAT,
     } intType;
 };
 
@@ -333,6 +337,30 @@ class ParameterNode final : public ASTNode
     {
         delete modifier;
         delete type;
+    }
+};
+
+class FunctionCallExpressionNode final : public Expression
+{
+  public:
+    QualifiedNameNode *functionName;
+    std::vector<Expression*> *args;
+
+    // Constructor for FunctionCallExpressionNode
+    FunctionCallExpressionNode(
+      QualifiedNameNode *functionName,
+      std::vector<Expression*> *args) : functionName(functionName), args(args)
+    {
+    }
+
+    // Destructor for FunctionCallExpressionNode
+    ~FunctionCallExpressionNode() override
+    {
+        delete functionName;
+        for (auto arg : *args) {
+          delete arg;
+        }
+        delete args;
     }
 };
 

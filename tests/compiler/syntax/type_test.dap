@@ -3,8 +3,8 @@ package combined_example;
 fun main() int {
     // Struct type variables definition and member access
     struct Point {  // Define a struct named Point.
-        var int x;  // Define an integer member variable x inside the struct.
-        var int y;  // Define an integer member variable y inside the struct.
+        var int x;  // Define an IntegerNode member variable x inside the struct.
+        var int y;  // Define an IntegerNode member variable y inside the struct.
     };
     var Point myPoint;  // Create an instance of the struct Point.
     myPoint.x = 10;  // Initialize the x member of myPoint.
@@ -16,14 +16,14 @@ fun main() int {
     var int sumBasic = num1 + num2;
 
     // Array type variables definition and operations
-    var int[3] fixedSizeArray = [1, 2, 3];  // Define a fixed-size integer array with 3 elements and initialize it.
+    var int[3] fixedSizeArray = [1, 2, 3];  // Define a fixed-size IntegerNode array with 3 elements and initialize it.
     var string[] dynamicSizeArray;  // Declare a dynamic-size string array.
     dynamicSizeArray = ["apple", "banana", "cherry"];  // Initialize the dynamic array with some string values.
     dynamicSizeArray[1] = "orange";  // Modify an element in the dynamic-size array.
 
     // Pointer type variables definition and operations
-    var int num = 20;  // Define an integer variable named num and initialize it with value 20.
-    var int* ptrToNum;  // Define a pointer variable named ptrToNum that can point to an integer.
+    var int num = 20;  // Define an IntegerNode variable named num and initialize it with value 20.
+    var int* ptrToNum;  // Define a pointer variable named ptrToNum that can point to an IntegerNode.
     ptrToNum = &num;  // Assign the address of num to ptrToNum.
     ptrToNum = 30;  // Modify the value of the variable that ptrToNum points to.
 

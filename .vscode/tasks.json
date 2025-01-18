@@ -15,7 +15,7 @@
             "type": "shell",
             "command": "rm",
             "args": [
-                "${workspaceFolder}/build",
+                "${workspaceFolder}/compiler/cmake-build-debug",
                 "-Rf",
             ],
             "group": {
@@ -32,9 +32,9 @@
             "command": "cmake",
             "args": [
                 "-S",
-                "${workspaceFolder}",
+                "${workspaceFolder}/compiler/",
                 "-B",
-                "${workspaceFolder}/build",
+                "${workspaceFolder}/compiler/cmake-build-debug",
                 "-G",
                 "\"Ninja\""
             ],
@@ -44,7 +44,7 @@
             },
             "dependsOn": [
                 // "clean",
-                "pre-build"
+                // "pre-build"
             ],
             "problemMatcher": [
                 "$gcc"
@@ -56,10 +56,10 @@
             "command": "/usr/bin/cmake",
             "args": [
                 "--build",
-                "${workspaceFolder}/build",
+                "${workspaceFolder}/compiler/cmake-build-debug",
                 "-j", "22",
                 "--target", 
-                "dap_main"
+                "dap_compiler"
             ],
             "group": {
                 "kind": "build",
@@ -92,6 +92,17 @@
             ],
             "dependsOn": [
                 "cmake all"
+            ]
+        },
+        {
+            "label": "test prepare",
+            "type": "shell",
+            "command": "cd",
+            "args": [
+                "${workspaceFolder}/tests/compiler"
+            ],
+            "dependsOn": [
+                "debug prepare"
             ]
         }
     ]

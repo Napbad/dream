@@ -27,13 +27,13 @@ def test_single_file(dap_main, source_runtime_dir, dap_file):
     
     return 
 
-def test_report_default(result, dap_file):
+def test_report_default(result, dap_file, test_name):
     if (result.stderr.__contains__("error") or result.stderr.__contains__("warning") or result.stderr.__contains__("Error")) \
         or (result.stdout.__contains__("error") or result.stdout.__contains__("warning") or result.stdout.__contains__("Error")):
-        print(Fore.RED, "FAIL:" + Fore.BLUE + " <struct type definition>\n" + Style.RESET_ALL)
+        print(Fore.RED, "FAIL:" + Fore.BLUE + " <" + test_name + ">\n" + Style.RESET_ALL)
         print(Fore.YELLOW + "stderr:" + Style.RESET_ALL)
         print(Fore.YELLOW + result.stderr + Style.RESET_ALL)
         add_failed_test(dap_file)
     else:
         success()
-        print(Fore.GREEN + "struct type definition test PASS!" + Style.RESET_ALL)
+        print(Fore.GREEN + "" + test_name + " test PASS!" + Style.RESET_ALL)

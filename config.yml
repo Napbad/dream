@@ -5,5 +5,5 @@ dap:
         dap-main-path: compiler/cmake-build-debug/dap_compiler
         target-directory: tests/dap_test
         source-runtime-dir: dap/runtime
-        dap-main-argument:
-        D_DEBUG: True
+        dap-main-argument: 
+        D_DEBUG: False

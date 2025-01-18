@@ -24,7 +24,7 @@
 
 /* end standard C headers. */
 
-/* flex integer type definitions */
+/* flex IntegerNode type definitions */
 
 #ifndef FLEXINT_H
 #define FLEXINT_H
@@ -107,7 +107,7 @@ typedef unsigned int flex_uint32_t;
 #define YY_NULL 0
 
 /* Promotes a possibly negative, possibly signed char to an
- *   integer in range [0..255] for use as an array index.
+ *   IntegerNode in range [0..255] for use as an array index.
  */
 #define YY_SC_TO_UI(c) ((YY_CHAR) (c))
 

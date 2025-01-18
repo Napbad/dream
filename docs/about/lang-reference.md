@@ -26,7 +26,7 @@
 Identifiers are used to name programming entities such as variables, functions, and structures. They must start with a letter (`a - z` or `A - Z`) or an underscore (`_`), and can be followed by any number of letters, numbers (`0 - 9`), or underscores. For example, `my_variable`, `_private_function`, `MyStruct`, etc. are all legal identifiers.
 
 ### (III) Constants
-- **Integer Constants**: Consist of a sequence of digits, such as `42`, `0`, `-123`, etc., representing integer values.
+- **IntegerNode Constants**: Consist of a sequence of digits, such as `42`, `0`, `-123`, etc., representing IntegerNode values.
 - **Floating-Point Constants**: A sequence of numbers containing a decimal point, such as `3.14`, `-0.5`, etc., used to represent values with a decimal part.
 - **String Constants**: A sequence of characters enclosed in double quotes (`"`), such as `"Hello, World!"`. Escape characters can be used in strings, such as `\n` representing a newline and `\t` representing a tab character, etc., to represent special or invisible characters.
 
@@ -36,7 +36,7 @@ Identifiers are used to name programming entities such as variables, functions, 
   - `-`: Subtraction operation, used for subtracting numerical values.
   - `*`: Multiplication operation, performs the multiplication of numerical values.
   - `/`: Division operation, calculates the division of numerical values.
-  - `%`: Modulo operation, returns the remainder of the division of two integers.
+  - `%`: Modulo operation, returns the remainder of the division of two IntegerNodes.
   - `++`: Increment operator, increases the value of a variable by 1. It can be a pre-increment (such as `++x`), and its exact semantics and precedence may vary slightly in different scenarios.
   - `--`: Decrement operator, decreases the value of a variable by 1, with two forms of pre-decrement (`--x`).
   - `+=`, `-=`, `*=`, `/=`, `%=`: Compound assignment operators. For example, `x += 5` is equivalent to `x = x + 5`, and the others are similar, used to simplify assignment operations and combine arithmetic operations.
@@ -52,13 +52,13 @@ Identifiers are used to name programming entities such as variables, functions, 
   - `||`: Logical OR operator. The entire expression is true as long as one of the conditions on the left and right is true. It also has the short-circuit evaluation characteristic, that is, if the left condition is true, the right condition will not be evaluated.
   - `!`: Logical NOT operator, inverts a single condition, changing true to false and false to true.
 - **Bitwise Operators**
-  - `&`: Bitwise AND operator, performs a bitwise AND operation on the binary representations of two integers.
-  - `|`: Bitwise OR operator, performs a bitwise OR operation on the binary bits of an integer.
-  - `^`: Bitwise XOR operator, performs a bitwise XOR operation on the binary bits of an integer.
-  - `~`: Bitwise NOT operator, performs a bitwise NOT operation on the binary representation of an integer.
-  - `<<`: Left shift operator, shifts the binary bits of an integer to the left by a specified number of bits, filling the right side with 0s.
-  - `>>`: Right shift operator, shifts the binary bits of an integer to the right by a specified number of bits. For signed integers, the left padding bit is the sign bit extension.
-  - `>>>`: Unsigned right shift operator, shifts the binary bits of an unsigned integer to the right by a specified number of bits, always filling the left side with 0s.
+  - `&`: Bitwise AND operator, performs a bitwise AND operation on the binary representations of two IntegerNodes.
+  - `|`: Bitwise OR operator, performs a bitwise OR operation on the binary bits of an IntegerNode.
+  - `^`: Bitwise XOR operator, performs a bitwise XOR operation on the binary bits of an IntegerNode.
+  - `~`: Bitwise NOT operator, performs a bitwise NOT operation on the binary representation of an IntegerNode.
+  - `<<`: Left shift operator, shifts the binary bits of an IntegerNode to the left by a specified number of bits, filling the right side with 0s.
+  - `>>`: Right shift operator, shifts the binary bits of an IntegerNode to the right by a specified number of bits. For signed IntegerNodes, the left padding bit is the sign bit extension.
+  - `>>>`: Unsigned right shift operator, shifts the binary bits of an unsigned IntegerNode to the right by a specified number of bits, always filling the left side with 0s.
 - **Other Operators**
   - `=`: Assignment operator, assigns the value on the right to the variable or expression on the left.
   - `.`: Used to access the properties of an object or the member variables of a structure.
@@ -77,7 +77,7 @@ Identifiers are used to name programming entities such as variables, functions, 
 ## III. Data Types
 
 ### (I) Basic Data Types
-- **Integer Type**: Represented by integer constants, used to store integer values. The specific byte size and value range may vary depending on the language implementation.
+- **IntegerNode Type**: Represented by IntegerNode constants, used to store IntegerNode values. The specific byte size and value range may vary depending on the language implementation.
 - **Floating-Point Type**: Used to handle values with a decimal part, following specific floating-point representation standards and precision rules.
 - **String Type**: Defined by string constants, capable of storing text information and supporting various string operations such as concatenation, extraction, and searching.
 - **Boolean Type**: Although boolean literals are not explicitly shown in the lexical units, boolean values will be generated in scenarios such as conditional judgment and logical operations, used to represent the logical states of true (`true`) or false (`false`).
@@ -92,9 +92,9 @@ struct Point {
 }
 ```
 
-The above code defines a structure named `Point` with two integer member variables `x` and `y`. The members of the structure can be accessed by the `.` operator, such as `point.x` and `point.y` (assuming `point` is an instance of the `Point` structure).
+The above code defines a structure named `Point` with two IntegerNode member variables `x` and `y`. The members of the structure can be accessed by the `.` operator, such as `point.x` and `point.y` (assuming `point` is an instance of the `Point` structure).
 
-- **Array Type**: Can be declared and operated on using `[` and `]`. For example, `var int[3] arr;` declares an integer array. Array elements can be accessed by index, such as `arr[0]` representing the first element of the array `arr`. The length of the array is fixed.
+- **Array Type**: Can be declared and operated on using `[` and `]`. For example, `var int[3] arr;` declares an IntegerNode array. Array elements can be accessed by index, such as `arr[0]` representing the first element of the array `arr`. The length of the array is fixed.
 
 ## IV. Expressions
 
@@ -122,7 +122,7 @@ The above code defines a structure named `Point` with two integer member variabl
 var dataType variableName [= initialValue];
 ```
 
-where `variableName` is the variable name, `dataType` is the variable's data type, and `initialValue` is an optional initial value. For example, `var int x = 5;` declares an integer variable named `x` and initializes it to 5; `var string str;` declares a string variable `str` without initializing it, and its initial value will be determined according to the default rules.
+where `variableName` is the variable name, `dataType` is the variable's data type, and `initialValue` is an optional initial value. For example, `var int x = 5;` declares an IntegerNode variable named `x` and initializes it to 5; `var string str;` declares a string variable `str` without initializing it, and its initial value will be determined according to the default rules.
 
 - Use the `imt` keyword to declare an immutable variable. The syntax is:
 
@@ -132,7 +132,7 @@ imt dataType constantName = initialValue;
 
 For example, `imt float PI = 3.14;` declares an immutable double-precision floating-point variable named `PI` and initializes it to 3.14. Once declared, the value of `PI` cannot be modified.
 
-After variable declaration, array type declaration can also be carried out. For example, `var int[10] arr;` declares an integer array variable `arr`.
+After variable declaration, array type declaration can also be carried out. For example, `var int[10] arr;` declares an IntegerNode array variable `arr`.
 
 ### (II) Assignment Statements
 The assignment statement uses the `=` operator to assign the value on the right to the variable or expression on the left. For example, `x = 10;` assigns the value 10 to the variable `x`; `arr[0] = 5;` assigns 5 to the first element of the array `arr`. Compound assignment operators can also be used for more concise assignment operations. For example, `x += 3` is equivalent to `x = x + 3`.
@@ -227,7 +227,7 @@ fun add(imt int x, var int y): int {
 }
 ```
 
-The above code defines a function named `add` that accepts two integer parameters `x` and `y` and returns their sum. The code in the function body is executed when the function is called, and after execution, a value is returned according to the function's definition (if a return value is declared) or the function execution is ended (if no return value is declared).
+The above code defines a function named `add` that accepts two IntegerNode parameters `x` and `y` and returns their sum. The code in the function body is executed when the function is called, and after execution, a value is returned according to the function's definition (if a return value is declared) or the function execution is ended (if no return value is declared).
 
 ### (VI) Return Statements
 - Use the `return` keyword to return a value from a function. If the function has a return value, the syntax is `return expression;` for example, `return x + y;`. If the function has no return value, only `return;` can be used to end the execution of the function and return the control flow to the function call location.

@@ -4,7 +4,15 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
-        
+        {
+            "name": "Python Test",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/tests/compiler/test-all.py",
+            "console": "integratedTerminal",
+            "preLaunchTask": "test prepare",
+            "cwd": "${workspaceFolder}/tests/compiler"
+        },
         {
             "name": "build",
             "type": "cppdbg",
@@ -52,9 +60,7 @@
                 }
             ],
             "preLaunchTask": "debug prepare",
-            
             "miDebuggerPath": "/usr/bin/gdb"
         }
-
     ]
 }

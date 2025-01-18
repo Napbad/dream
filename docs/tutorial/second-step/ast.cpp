@@ -1,34 +1,34 @@
 #include "ast.hpp"
 namespace ast_
 {
-QualifiedName::QualifiedName() : name_parts(new std::vector<std::string>) {}
+QualifiedNameNode::QualifiedNameNode() : name_parts(new std::vector<std::string>) {}
 
-QualifiedName::QualifiedName(std::vector<std::string> *names) : name_parts(names) {}
+QualifiedNameNode::QualifiedNameNode(std::vector<std::string> *names) : name_parts(names) {}
 
-QualifiedName::QualifiedName(std::string names) : name_parts(new std::vector<std::string>{std::move(names)}) {}
+QualifiedNameNode::QualifiedNameNode(std::string names) : name_parts(new std::vector<std::string>{std::move(names)}) {}
 
-std::string QualifiedName::getName(int idx) const
+std::string QualifiedNameNode::getName(int idx) const
 {
     return name_parts->at(idx);
 }
 
-std::string QualifiedName::getFirstName() const
+std::string QualifiedNameNode::getFirstName() const
 {
     return name_parts->at(0);
 }
 
-IntegerExpr::IntegerExpr(long long value) : value(value) {}
+IntegerNodeExpr::IntegerNodeExpr(long long value) : value(value) {}
 
 StringExpr::StringExpr(std::string value) : value(std::move(value)) {}
 
-VarExpr::VarExpr(QualifiedName *name) : name(name) {}
+VarExpr::VarExpr(QualifiedNameNode *name) : name(name) {}
 
 VarExpr::~VarExpr()
 {
     delete name;
 }
 
-CallExpr::CallExpr(QualifiedName *callee, std::vector<Expr *> args) : callee(callee), args(std::move(args)) {}
+CallExpr::CallExpr(QualifiedNameNode *callee, std::vector<Expr *> args) : callee(callee), args(std::move(args)) {}
 
 CallExpr::~CallExpr()
 {
@@ -58,7 +58,7 @@ ReturnStmt::~ReturnStmt()
     delete expr;
 }
 
-VarDecl::VarDecl(QualifiedName *type, QualifiedName *name, Expr *init)
+VarDecl::VarDecl(QualifiedNameNode *type, QualifiedNameNode *name, Expr *init)
     : type(type), name(name), init(init) {}
 
 VarDecl::~VarDecl()
@@ -73,17 +73,17 @@ std::string VarDecl::getName() const
     return name->getFirstName();
 }
 
-const QualifiedName *VarDecl::getQualifiedName() const
+const QualifiedNameNode *VarDecl::getQualifiedNameNode() const
 {
     return name;
 }
 
-const QualifiedName *VarDecl::getType() const
+const QualifiedNameNode *VarDecl::getType() const
 {
     return type;
 }
 
-ProtoDecl::ProtoDecl(const QualifiedName *return_type, QualifiedName *name, std::vector<VarDecl *> params)
+ProtoDecl::ProtoDecl(const QualifiedNameNode *return_type, QualifiedNameNode *name, std::vector<VarDecl *> params)
     : return_type(return_type), name(name), params(std::move(params)) {}
 
 ProtoDecl::~ProtoDecl()
@@ -96,7 +96,7 @@ ProtoDecl::~ProtoDecl()
     delete return_type;
 }
 
-FuncDecl::FuncDecl(QualifiedName *type, QualifiedName *name, std::vector<VarDecl *> params, BlockStmt *body)
+FuncDecl::FuncDecl(QualifiedNameNode *type, QualifiedNameNode *name, std::vector<VarDecl *> params, BlockStmt *body)
     : proto(new ProtoDecl(type, name, std::move(params))), body(body) {}
 
 FuncDecl::~FuncDecl()

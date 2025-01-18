@@ -75,7 +75,7 @@
         },
         {
           "match": "\\b(0|[1-9]\\d*)\\b",
-          "name": "constant.numeric.integer.dap"
+          "name": "constant.numeric.IntegerNode.dap"
         },
         {
           "match": "\\b(0|[1-9]\\d*)\\.\\d+\\b",

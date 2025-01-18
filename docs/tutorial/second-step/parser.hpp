@@ -86,7 +86,7 @@ union YYSTYPE
     ast_::BlockStmt *block;
     ast_::Expr *expr;
     ast_::Stmt *stmt;
-    ast_::QualifiedName *ident;
+    ast_::QualifiedNameNode *ident;
     ast_::VarDecl *var_decl;
     std::vector<ast_::VarDecl*> *varvec;
     std::vector<ast_::Expr*> *exprvec;

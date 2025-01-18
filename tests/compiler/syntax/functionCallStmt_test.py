@@ -8,10 +8,10 @@ from test_res import success, add_failed_test
 from util import get_dap_files, test_report_default
 
 
-def testReturnStmt(dap_main, source_runtime_dir, d_debug = False):
+def testFunctionCallStmt(dap_main, source_runtime_dir, d_debug = False):
     arg = ""
 
-    dap_file = "./syntax/returnStmt_test.dap"
+    dap_file = "./syntax/functionCallStmt.dap"
     # Correct the command list by removing the extra spaces around -s
     command_list = [
         Path(os.path.abspath(dap_main)).__str__(),
@@ -29,4 +29,4 @@ def testReturnStmt(dap_main, source_runtime_dir, d_debug = False):
         print(Fore.RED + result.stderr + Style.RESET_ALL)
         print(Fore.GREEN + result.stdout + Style.RESET_ALL)
 
-    test_report_default(result, dap_file, "return statement syntax")
+    test_report_default(result, dap_file, "function call syntax test")

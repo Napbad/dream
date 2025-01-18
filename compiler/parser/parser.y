@@ -75,7 +75,7 @@ void parserLog(std::string msg) {
 
 %type <str> IDENTIFIER INTEGER BINARY_LITERAL OCTAL_LITERAL HEXADECIMAL_LITERAL FLOAT_LITERAL STRING_LITERAL
 %type <ident> identifier
-%type <expr> expression
+%type <expr> expression functionCall
 %type <stmt> importStmt packageDecl statement funDecl variableDecl constantDecl structDecl returnStmt
 %type <stmtVec> statements
 %type <exprVec> expressions
@@ -143,6 +143,11 @@ expression:
         $$ = $1;
 
         parserLog("Parsed identifier expression node: [" + $1->getName() + "]");
+    } 
+    | functionCall {
+        $$ = $1;
+
+        parserLog("Parsed function call expression node: [" + $1->getName() + "]");
     };
 
 funDecl:
@@ -251,7 +256,7 @@ integer:
     INTEGER {
         $$ = new dap::parser::IntegerNode(atol($1->c_str()));
         // Log message when parsing an IntegerNode node
-        parserLog("Parsed IntegerNode node");
+        parserLog("Parsed IntegerNode node: integer[" + $$->getValue() + "]");
     };
 
 float_:
@@ -267,6 +272,7 @@ string_:
         // Log message when parsing a string node
         parserLog("Parsed string node");
     };
+
 type:
     identifier {
         $$ = new dap::parser::TypeNode($1);
@@ -409,6 +415,12 @@ statement:
         $$ = $1;
         // Log message when parsing a return statement node
         parserLog("Parsed return statement node");
+    }
+    | expression SEMICOLON {
+        $$ = new dap::parser::Statement();
+        $$.value = $1;
+        // Log message when parsing a function call statement node
+        parserLog("Parsed function call statement node");
     };
 
 statements:
@@ -459,5 +471,14 @@ returnStmt:
         // Log message when parsing a return statement node
         parserLog("Parsed return statement node");
     };
+
+functionCall:
+    identifier LEFT_PAREN expressions RIGHT_PAREN {
+        $$ = new dap::parser::FunctionCallExpressionNode(, $3);
+        // Log message when parsing a function call statement node
+        parserLog("Parsed function call experssion node: [" + $1->getName() + "]");
+    };
+
+
 %%
 

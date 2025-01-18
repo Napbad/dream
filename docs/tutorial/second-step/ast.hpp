@@ -25,25 +25,25 @@ class Expr : public Node
 {
 };
 
-class QualifiedName : public Expr
+class QualifiedNameNode : public Expr
 {
 public:
     std::vector<std::string> *name_parts;
 
-    QualifiedName();
-    explicit QualifiedName(std::vector<std::string> *names);
-    explicit QualifiedName(std::string names);
+    QualifiedNameNode();
+    explicit QualifiedNameNode(std::vector<std::string> *names);
+    explicit QualifiedNameNode(std::string names);
 
     [[nodiscard]] std::string getName(int idx) const;
     [[nodiscard]] std::string getFirstName() const;
 };
 
-class IntegerExpr : public Expr
+class IntegerNodeExpr : public Expr
 {
 public:
     long long value;
 
-    explicit IntegerExpr(long long value);
+    explicit IntegerNodeExpr(long long value);
 };
 
 class StringExpr : public Expr
@@ -57,19 +57,19 @@ public:
 class VarExpr : public Expr
 {
 public:
-    QualifiedName *name;
+    QualifiedNameNode *name;
 
-    explicit VarExpr(QualifiedName *name);
+    explicit VarExpr(QualifiedNameNode *name);
     ~VarExpr() override;
 };
 
 class CallExpr : public Expr
 {
 public:
-    QualifiedName *callee;
+    QualifiedNameNode *callee;
     std::vector<Expr *> args;
 
-    CallExpr(QualifiedName *callee, std::vector<Expr *> args);
+    CallExpr(QualifiedNameNode *callee, std::vector<Expr *> args);
     ~CallExpr() override;
 };
 
@@ -95,26 +95,26 @@ public:
 class VarDecl : public Stmt
 {
 public:
-    QualifiedName *type;
-    QualifiedName *name;
+    QualifiedNameNode *type;
+    QualifiedNameNode *name;
     Expr *init;
 
-    VarDecl(QualifiedName *type, QualifiedName *name, Expr *init);
+    VarDecl(QualifiedNameNode *type, QualifiedNameNode *name, Expr *init);
     ~VarDecl() override;
 
     [[nodiscard]] std::string getName() const;
-    [[nodiscard]] const QualifiedName *getQualifiedName() const;
-    [[nodiscard]] const QualifiedName *getType() const;
+    [[nodiscard]] const QualifiedNameNode *getQualifiedNameNode() const;
+    [[nodiscard]] const QualifiedNameNode *getType() const;
 };
 
 class ProtoDecl : public Stmt
 {
 public:
     std::vector<VarDecl *> params;
-    const QualifiedName *return_type;
-    QualifiedName *name;
+    const QualifiedNameNode *return_type;
+    QualifiedNameNode *name;
 
-    ProtoDecl(const QualifiedName *return_type, QualifiedName *name, std::vector<VarDecl *> params);
+    ProtoDecl(const QualifiedNameNode *return_type, QualifiedNameNode *name, std::vector<VarDecl *> params);
     ~ProtoDecl() override;
 };
 
@@ -124,7 +124,7 @@ public:
     ProtoDecl *proto;
     BlockStmt *body;
 
-    FuncDecl(QualifiedName *type, QualifiedName *name, std::vector<VarDecl *> params, BlockStmt *body);
+    FuncDecl(QualifiedNameNode *type, QualifiedNameNode *name, std::vector<VarDecl *> params, BlockStmt *body);
     ~FuncDecl() override;
 };
 

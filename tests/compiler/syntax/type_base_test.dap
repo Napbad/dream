@@ -3,10 +3,10 @@ package combined_example;
 
 fun main() int {
     // int type variable
-    var int numInt = 10;  // Define a mutable integer variable and initialize it with value 10.
-    imt int constNumInt = 20;  // Define an immutable integer variable and initialize it with value 20.
+    var int numInt = 10;  // Define a mutable IntegerNode variable and initialize it with value 10.
+    imt int constNumInt = 20;  // Define an immutable IntegerNode variable and initialize it with value 20.
 
-    // byte type variable (assuming it's used similar to other integer types in this language context)
+    // byte type variable (assuming it's used similar to other IntegerNode types in this language context)
     var byte numByte = 42;  // Define a mutable byte variable and initialize it with value 42.
     imt byte constNumByte = 10;  // Define an immutable byte variable and initialize it with value 10.
 
@@ -34,9 +34,9 @@ fun main() int {
     var bool isTrue = true;  // Define a mutable boolean variable and set it to true.
     imt bool constIsTrue = false;  // Define an immutable boolean variable and set it to false.
 
-    // uint type variable (unsigned integer)
-    var uint numUint = 50;  // Define a mutable unsigned integer variable and initialize it with value 50.
-    imt uint constNumUint = 60;  // Define an immutable unsigned integer variable and initialize it with value 60.
+    // uint type variable (unsigned IntegerNode)
+    var uint numUint = 50;  // Define a mutable unsigned IntegerNode variable and initialize it with value 50.
+    imt uint constNumUint = 60;  // Define an immutable unsigned IntegerNode variable and initialize it with value 60.
 
     // ushort type variable (unsigned short)
     var ushort numUShort = 100;  // Define a mutable unsigned short variable and initialize it with value 100.
@@ -46,7 +46,7 @@ fun main() int {
     var ulong numULong = 10000000000;  // Define a mutable unsigned long variable and initialize it with a large unsigned long value.
     imt ulong constNumULong = 20000000000;  // Define an immutable unsigned long variable and initialize it with another unsigned long value.
 
-    // llong type variable (long long, assuming it's a larger integer type)
+    // llong type variable (long long, assuming it's a larger IntegerNode type)
     var llong numLLong = 12345678901234567890;  // Define a mutable long long variable and initialize it with a very large value.
     imt llong constNumLLong = 98765432109876543210;  // Define an immutable long long variable and initialize it with another large value.
 

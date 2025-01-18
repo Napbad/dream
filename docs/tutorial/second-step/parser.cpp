@@ -155,7 +155,7 @@ typedef enum yysymbol_kind_t yysymbol_kind_t;
 
 /* On compilers that do not define __PTRDIFF_MAX__ etc., make sure
    <limits.h> and (if available) <stdint.h> are included
-   so that the code can choose integer types of a good width.  */
+   so that the code can choose IntegerNode types of a good width.  */
 
 #ifndef __PTRDIFF_MAX__
 # include <limits.h> /* INFRINGES ON USER NAME SPACE */
@@ -166,9 +166,9 @@ typedef enum yysymbol_kind_t yysymbol_kind_t;
 #endif
 
 /* Narrow types that promote to a signed type and that can represent a
-   signed or unsigned integer of at least N bits.  In tables they can
+   signed or unsigned IntegerNode of at least N bits.  In tables they can
    save space and decrease cache pressure.  Promoting to a signed type
-   helps avoid bugs in integer arithmetic.  */
+   helps avoid bugs in IntegerNode arithmetic.  */
 
 #ifdef __INT_LEAST8_MAX__
 typedef __INT_LEAST8_TYPE__ yytype_int8;
@@ -832,7 +832,7 @@ int yydebug;
 
    Do not make this value too large; the results are undefined if
    YYSTACK_ALLOC_MAXIMUM < YYSTACK_BYTES (YYMAXDEPTH)
-   evaluated with infinite-precision integer arithmetic.  */
+   evaluated with infinite-precision IntegerNode arithmetic.  */
 
 #ifndef YYMAXDEPTH
 # define YYMAXDEPTH 10000
@@ -1196,7 +1196,7 @@ yyreduce:
   case 11: /* function_declaration: FUN qualified_name LPAREN var_decl_list RPAREN block  */
 #line 104 "./parser.y"
                                                          {
-        (yyval.stmt) = new ast_::FuncDecl(new ast_::QualifiedName(), (yyvsp[-4].ident), *(yyvsp[-2].varvec), (yyvsp[0].block));
+        (yyval.stmt) = new ast_::FuncDecl(new ast_::QualifiedNameNode(), (yyvsp[-4].ident), *(yyvsp[-2].varvec), (yyvsp[0].block));
         delete (yyvsp[-2].varvec);
     }
 #line 1203 "./parser.cpp"
@@ -1239,7 +1239,7 @@ yyreduce:
   case 16: /* qualified_name: IDENTIFIER  */
 #line 128 "./parser.y"
                {
-        (yyval.ident) = new ast_::QualifiedName({*(yyvsp[0].string)});
+        (yyval.ident) = new ast_::QualifiedNameNode({*(yyvsp[0].string)});
         delete (yyvsp[0].string); // Clean up the string
     }
 #line 1246 "./parser.cpp"
@@ -1248,7 +1248,7 @@ yyreduce:
   case 17: /* expression: INT_TOKEN  */
 #line 136 "./parser.y"
               {
-        (yyval.expr) = new ast_::IntegerExpr(atol((yyvsp[0].string)->c_str()));
+        (yyval.expr) = new ast_::IntegerNodeExpr(atol((yyvsp[0].string)->c_str()));
     }
 #line 1254 "./parser.cpp"
     break;
@@ -1306,7 +1306,7 @@ yyreduce:
   case 24: /* var_decl: qualified_name IDENTIFIER ASSIGN expression  */
 #line 166 "./parser.y"
                                                 {
-        (yyval.var_decl) = new ast_::VarDecl((yyvsp[-3].ident), new ast_::QualifiedName(new std::vector<std::string>({*(yyvsp[-2].string)})),(yyvsp[0].expr));
+        (yyval.var_decl) = new ast_::VarDecl((yyvsp[-3].ident), new ast_::QualifiedNameNode(new std::vector<std::string>({*(yyvsp[-2].string)})),(yyvsp[0].expr));
         delete (yyvsp[-2].string);
     }
 #line 1313 "./parser.cpp"
@@ -1315,7 +1315,7 @@ yyreduce:
   case 25: /* var_decl: qualified_name IDENTIFIER  */
 #line 170 "./parser.y"
                                  {
-        (yyval.var_decl) = new ast_::VarDecl((yyvsp[-1].ident), new ast_::QualifiedName(new std::vector<std::string>({*(yyvsp[0].string)})), nullptr);
+        (yyval.var_decl) = new ast_::VarDecl((yyvsp[-1].ident), new ast_::QualifiedNameNode(new std::vector<std::string>({*(yyvsp[0].string)})), nullptr);
         delete (yyvsp[0].string);
     }
 #line 1322 "./parser.cpp"

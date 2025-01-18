@@ -50,22 +50,22 @@
 | Memory Operations         | 35     | Fence          | Memory Fence                       |
 | Memory Operations         | 36     | AtomicCmpXchg  | Atomic Compare and Swap            |
 | Memory Operations         | 37     | AtomicRMW      | Atomic Read-Modify-Write           |
-| Type Conversion Operators | 38     | Trunc          | Truncate Integer                   |
-| Type Conversion Operators | 39     | ZExt           | Zero Extend Integer                |
-| Type Conversion Operators | 40     | SExt           | Sign Extend Integer                |
-| Type Conversion Operators | 41     | FPToUI         | Floating-point to Unsigned Integer |
-| Type Conversion Operators | 42     | FPToSI         | Floating-point to Signed Integer   |
-| Type Conversion Operators | 43     | UIToFP         | Unsigned Integer to Floating-point |
-| Type Conversion Operators | 44     | SIToFP         | Signed Integer to Floating-point   |
+| Type Conversion Operators | 38     | Trunc          | Truncate IntegerNode                   |
+| Type Conversion Operators | 39     | ZExt           | Zero Extend IntegerNode                |
+| Type Conversion Operators | 40     | SExt           | Sign Extend IntegerNode                |
+| Type Conversion Operators | 41     | FPToUI         | Floating-point to Unsigned IntegerNode |
+| Type Conversion Operators | 42     | FPToSI         | Floating-point to Signed IntegerNode   |
+| Type Conversion Operators | 43     | UIToFP         | Unsigned IntegerNode to Floating-point |
+| Type Conversion Operators | 44     | SIToFP         | Signed IntegerNode to Floating-point   |
 | Type Conversion Operators | 45     | FPTrunc        | Truncate Floating-point            |
 | Type Conversion Operators | 46     | FPExt          | Extend Floating-point              |
-| Type Conversion Operators | 47     | PtrToInt       | Pointer to Integer                 |
-| Type Conversion Operators | 48     | IntToPtr       | Integer to Pointer                 |
+| Type Conversion Operators | 47     | PtrToInt       | Pointer to IntegerNode                 |
+| Type Conversion Operators | 48     | IntToPtr       | IntegerNode to Pointer                 |
 | Type Conversion Operators | 49     | BitCast        | Type Cast                          |
 | Type Conversion Operators | 50     | AddrSpaceCast  | Address Space Cast                 |
 | Function Pad Instructions | 51     | CleanupPad     | Cleanup Pad                        |
 | Function Pad Instructions | 52     | CatchPad       | Catch Pad                          |
-| Other Instructions        | 53     | ICmp           | Integer Comparison                 |
+| Other Instructions        | 53     | ICmp           | IntegerNode Comparison                 |
 | Other Instructions        | 54     | FCmp           | Floating-point Comparison          |
 | Other Instructions        | 55     | PHI            | PHI Node                           |
 | Other Instructions        | 56     | Call           | Call Function                      |
