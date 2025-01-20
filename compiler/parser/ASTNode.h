@@ -255,7 +255,6 @@ class BoolNode final : public Expression
 class ProgramNode final : public ASTNode
 {
   public:
-
     QualifiedNameNode *packageName = nullptr;
 
     struct importedPackageInfo {
@@ -268,13 +267,14 @@ class ProgramNode final : public ASTNode
     std::vector<Statement *> *statements{};
 
     // Constructor for ProgramNode
-    ProgramNode() {
-        importedPackages = new std::vector<importedPackageInfo*>();
+    ProgramNode()
+    {
+        importedPackages = new std::vector<importedPackageInfo *>();
     };
 
-    ProgramNode(std::vector<Statement*> *statements) : statements(statements)
+    ProgramNode(std::vector<Statement *> *statements) : statements(statements)
     {
-    } 
+    }
 
     llvm::Value *codeGen(inter_gen::InterGenContext *ctx);
 
@@ -321,6 +321,8 @@ class FunctionDeclarationNode final : public Statement
 
     // Destructor for FunctionDeclarationNode
     ~FunctionDeclarationNode() override;
+
+    llvm::Value *codeGen(inter_gen::InterGenContext *ctx);
 };
 
 // Represents a parameter list in the AST
@@ -415,6 +417,8 @@ class TypeNode final : public ASTNode
     {
         isBasicType = true;
     }
+    [[nodiscard]]
+    std::string getName() const;
 
     explicit TypeNode(const std::string &type);
 };
@@ -499,6 +503,9 @@ class VariableDeclarationNode final : public Statement
         delete type;
         delete expression;
     }
+
+
+    llvm::Value *codeGen(inter_gen::InterGenContext *ctx);
 };
 
 // Represents a for loop in the AST

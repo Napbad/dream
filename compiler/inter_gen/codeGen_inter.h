@@ -84,9 +84,9 @@ class InterGenContext
     llvm::BasicBlock *mergeBBInNestIfSource = nullptr;
     llvm::Value *mergeBBInNestIfSrcVal = nullptr;
 
-    FunctionMetaData *getFunMetaData(const std::string &name, const inter_gen::InterGenContext *ctx) const;
+    static FunctionMetaData *getFunMetaData(const std::string &name, const inter_gen::InterGenContext *ctx) ;
     std::pair<llvm::Value *, VariableMetaData *> getValWithMetadata(const std::string &name);
-    std::pair<llvm::Value *, VariableMetaData *> getValWithMetadata(const parser::QualifiedNameNode *name);
+    static std::pair<llvm::Value *, VariableMetaData *> getValWithMetadata(const parser::QualifiedNameNode *name);
     FunctionMetaData *getCurrFunMetaData() const;
     void setCurrFunMetaData(inter_gen::FunctionMetaData *funMetaData);
 

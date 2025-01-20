@@ -9,9 +9,11 @@
 #include <llvm/IR/Type.h>
 namespace dap::util
 {
-// /* Returns an LLVM type based on the identifier */
-// llvm::Type *typeOf(const parser::QualifiedNameNode &type, const inter_gen::InterGenContext *ctx, parser::Expr *size =
-// nullptr);
+// Returns an LLVM type based on the TypeNode
+llvm::Type *typeOf(const parser::TypeNode *type, const inter_gen::InterGenContext *ctx,
+                   parser::Expression *size = nullptr);
+
+void initTypeMap(llvm::LLVMContext *llvmCtx);
 
 // /* Returns an LLVM type based on the identifier, which returns type for metadata (specially for pointer cause that
 //  * llvm's pointer do not have type  info) */

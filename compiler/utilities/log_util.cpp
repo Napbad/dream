@@ -1,19 +1,15 @@
 #include <iostream>
 
+#include "inter_gen/codeGen_inter.h"
 #include "log_util.h"
 
 namespace dap::util
 {
 
-#ifdef D_DEBUG
-
+using std::cerr;
 using std::cout;
 using std::endl;
 
-void err(const std::string &msg, const std::string &file, int line)
-{
-    std::cerr << "Error: " << msg << " in " << file << ":" << line << std::endl;
-}
 
 void printHelpMsg()
 {
@@ -32,22 +28,45 @@ void printHelpMsg()
 #endif
 }
 
-void warn(const std::string &msg, const std::string &file, int line)
+#ifdef D_DEBUG
+
+void logErr(const std::string &msg, const inter_gen::InterGenContext *ctx, const std::string &file, int line)
 {
+    if (!ctx) {
+        cerr << colorCode(FileColor::BRIGHT_YELLOW) << "Error: [ " << msg << " ] in " << file << ":" << line << endl;
+        return;
+    }
+    cerr << colorCode(FileColor::BRIGHT_YELLOW) << "Error: [ " << msg << " ] in " << file << ":" << line << endl
+         << "    Source: " << ctx->sourcePath << ":" << ctx->currLine << endl;
 }
 
-void log(const std::string &msg, const std::string &file, int line)
+void logWarn(const std::string &msg, const inter_gen::InterGenContext *ctx, const std::string &file, int line)
 {
-    cout << "Log: [ " << msg << " ] in " << file << ":" << line << endl;
+    if (!ctx) {
+        cout << colorCode(FileColor::BRIGHT_YELLOW) << "Warning: [ " << msg << " ] in " << file << ":" << line << endl;
+            return;
+}
+    cout << colorCode(FileColor::BRIGHT_YELLOW) << "Warning: [ " << msg << " ] in " << file << ":" << line << endl
+         << "    Source: " << ctx->sourcePath << ":" << ctx->currLine << endl;
+}
+
+void logInfo(const std::string &msg, const inter_gen::InterGenContext *ctx, const std::string &file, int line)
+{
+    if (!ctx) {
+        cout << "Log: [ " << msg << " ] in " << file << ":" << line << endl;
+        return;
+    }
+    cout << "Log: [ " << msg << " ] in " << file << ":" << line << endl
+         << "    Source: " << ctx->sourcePath << ":" << ctx->currLine << endl;
 }
 
 #else
 
-void err(const std::string &msg);
+void logErr(const std::string &msg);
 
-void warn(const std::string &msg);
+void logWarn(const std::string &msg);
 
-void log();
+void logInfo();
 
 #endif
 

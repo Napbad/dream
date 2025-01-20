@@ -50,6 +50,20 @@ std::string dap::parser::QualifiedNameNode::getName() const
     return util::getStrFromVec(*name_parts, ".");
 }
 
+std::string dap::parser::TypeNode::getName() const
+{
+    std::string baseType = util::getStrFromVec(*typeBase->name_parts, ".");
+    if (isArray) {
+        return baseType + "[" + std::to_string(arraySize) + "]";
+    }
+    if (isPointer) {
+        return baseType + "*";
+    }
+    return baseType;
+}
+
+
+
 dap::parser::FunctionDeclarationNode::~FunctionDeclarationNode()
 {
     delete parameterList;

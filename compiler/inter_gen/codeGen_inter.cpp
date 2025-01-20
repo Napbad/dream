@@ -4,10 +4,10 @@
 
 #include <fstream>
 #include <iostream>
-#include <unordered_set>
 
 #include <llvm/Bitstream/BitstreamReader.h>
 #include <llvm/ExecutionEngine/SectionMemoryManager.h>
+#include <llvm/IR/BasicBlock.h>
 #include <llvm/IR/DerivedTypes.h>
 #include <llvm/IR/IRBuilder.h>
 #include <llvm/IR/IRPrintingPasses.h>
@@ -30,8 +30,12 @@
 #include "codeGen_inter.h"
 
 #include "common/config.h"
+#include "metadata.h"
 #include "parser/ASTNode.h"
 #include "utilities/file_util.h"
+#include "utilities/llvm_util.h"
+#include "utilities/log_util.h"
+#include "utilities/name_format_util.h"
 #include "utilities/string_util.h"
 
 namespace dap
@@ -49,9 +53,9 @@ namespace parser
 using std::map;
 using std::string;
 
-llvm::Value *ProgramNode::codeGen(inter_gen::InterGenContext *ctx)
+Value *ProgramNode::codeGen(inter_gen::InterGenContext *ctx)
 {
-    // get the package and setup the package directory
+    // get the package and set the package directory
     ctx->currLine = this->lineNum;
     util::create_package_dir(util::getStrFromVec(*packageName->name_parts, "."));
     for (Statement *stmt : *statements) {
@@ -59,18 +63,82 @@ llvm::Value *ProgramNode::codeGen(inter_gen::InterGenContext *ctx)
     }
     util::create_package_dir(util::getStrFromVec(*packageName->name_parts, "."));
 
-    for (auto statement : *statements) {
+    for (const auto statement : *statements) {
         statement->codeGen(ctx);
     }
 
     // Generate code for program statements
     return nullptr;
 }
+
+Value *VariableDeclarationNode::codeGen(inter_gen::InterGenContext *ctx)
+{
+    // sync the context position
+    ctx->currLine = this->lineNum;
+
+    // find the type of variable
+    llvm::Type *varType = util::typeOf(this->type, ctx);
+    if (varType == nullptr) {
+        util::logErr("unknown type: " + type->getName(), ctx, __FILE__, __LINE__);
+    }
+
+    // generate the variable
+    llvm::AllocaInst *allocaVar = BUILDER.CreateAlloca(varType, nullptr, this->variableName->getName());
+
+    auto varMetaData = new inter_gen::VariableMetaData(variableName->getName(), varType, mutable_, nullable_);
+    ctx->locals().emplace(this->variableName->getName(),
+                          std::pair<Value *, inter_gen::VariableMetaData *>(allocaVar, varMetaData));
+    // return the value
+
+    return allocaVar;
+}
+
+Value *FunctionDeclarationNode::codeGen(inter_gen::InterGenContext *ctx)
+{
+    // sync the context of the node
+    ctx->currLine = this->lineNum;
+
+    // get the function declaration info
+    auto params = std::vector<Type *>();
+    for (const auto param : *this->parameterList) {
+        const auto node = dynamic_cast<parser::VariableDeclarationNode *>(param);
+        params.push_back(util::typeOf(node->type, ctx));
+    }
+
+    // generate the function info
+    const auto type = FunctionType::get(util::typeOf(this->returnType, ctx), params, false);
+    Function *function = Function::Create(type, Function::ExternalLinkage, 0, this->name, MODULE);
+
+    ctx->setCurrFun(function);
+
+    auto funMetaData = new inter_gen::FunctionMetaData(this->name, type);
+    ctx->functions.insert(std::pair(this->name, funMetaData));
+
+    // generate the basic block
+    auto basicBlock = BasicBlock::Create(LLVMCTX, util::getFunBasicBlockName(&this->name), function);
+    ctx->pushBlock(basicBlock);
+
+
+    for (const auto stmt: *this->block) {
+        stmt->codeGen(ctx);
+    }
+#ifdef D_DEBUG
+    util::logInfo("Function Declaration: " + this->name, ctx, __FILE__, __LINE__);
+#endif // D_DEBUG
+
+    // register the function
+
+    // pop the block
+    ctx->popBlock();
+
+    return function;
+}
+
 } // namespace parser
 
 namespace inter_gen
 {
-FunctionMetaData *InterGenContext::getFunMetaData(const std::string &name, const InterGenContext *ctx) const
+FunctionMetaData *InterGenContext::getFunMetaData(const std::string &name, const InterGenContext *ctx)
 {
     // for (const auto &fun : metaData->getFunctions()) {
     //     if (fun->getName() == name) {
@@ -122,14 +190,14 @@ void InterGenContext::genIR(parser::ProgramNode *program)
     std::string outputPath = buildDir + package + "/" + fileName + ".ll";
     std::fstream outputFile(outputPath, std::ios::out);
     outputFile.close();
-    llvm::raw_fd_ostream outfile(outputPath, EC, llvm::sys::fs::OF_Text);
+    raw_fd_ostream outfile(outputPath, EC, sys::fs::OF_Text);
 
     if (EC) {
-        llvm::errs() << "Error opening output file: " << EC.message() << "\n";
+        errs() << "Error opening output file: " << EC.message() << "\n";
         return;
     }
-    llvm::legacy::PassManager pm;
-    pm.add(llvm::createPrintModulePass(outfile));
+    legacy::PassManager pm;
+    pm.add(createPrintModulePass(outfile));
     pm.run(*module);
 
     outfile.flush();
@@ -139,11 +207,11 @@ void InterGenContext::genIR(parser::ProgramNode *program)
 void InterGenContext::genExec(parser::ProgramNode *program)
 {
     // Initialize LLVM targets
-    llvm::InitializeAllTargetInfos();
-    llvm::InitializeAllTargets();
-    llvm::InitializeAllTargetMCs();
-    llvm::InitializeAllAsmParsers();
-    llvm::InitializeAllAsmPrinters();
+    InitializeAllTargetInfos();
+    InitializeAllTargets();
+    InitializeAllTargetMCs();
+    InitializeAllAsmParsers();
+    InitializeAllAsmPrinters();
 
     // program->codeGen(this);
 

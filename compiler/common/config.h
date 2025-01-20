@@ -21,6 +21,8 @@ extern std::string D_VERSION;
 extern std::vector<std::string> *filesToCompile;
 
 void readConfig(std::string configPath);
+
+int initCompiler();
 } // namespace dap
 
 #endif // CONFIG_H

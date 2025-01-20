@@ -24,13 +24,13 @@ void yyerror(const char *s) {
 }
 void parserLog(const char *msg) {
 #ifdef D_DEBUG
-    dap::util::log(msg, dap::parser::currentParsingFile, yylineno);
+    dap::util::logInfo(msg, nullptr, dap::parser::currentParsingFile, yylineno);
 #endif
 }
 
 void parserLog(std::string msg) {
 #ifdef D_DEBUG
-    dap::util::log(msg, dap::parser::currentParsingFile, yylineno);
+    dap::util::logInfo(msg, nullptr, dap::parser::currentParsingFile, yylineno);
 #endif
 }
 %}

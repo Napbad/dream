@@ -6,6 +6,12 @@
 #include <string>
 
 #include "common/define_d.h"
+
+// namespace dap::inter_gen
+// {
+// class InterGenContext;
+// };
+
 namespace dap::util
 {
 /**
@@ -34,7 +40,8 @@ enum class FileColor {
  * @brief Converts FileColor to Windows console color or ANSI color code.
  * @param color The FileColor enum value.
  * @return On Windows, returns an IntegerNode color code; on other platforms,
- * returns an ANSI color code.
+ * returns an ANSI colovoid err(const std::string &msg, inter_gen::InterGenContext *ctx, const std::string &file, int
+ * line)r code.
  */
 #ifdef _WIN32
 inline int colorCode(FileColor color);
@@ -95,23 +102,24 @@ void warn_print(std::ostream &stream, const std::string &message);
  */
 void err_print(std::ostream &stream, const std::string &message);
 
+void printHelpMsg();
+
 #ifdef D_DEBUG
 
-void err(const std::string &msg, const std::string &file, int line);
+void logErr(const std::string &msg, const inter_gen::InterGenContext *ctx, const std::string &file, int line);
 
-void warn(const std::string &msg, const std::string &file, int line);
+void logWarn(const std::string &msg, const inter_gen::InterGenContext *ctx, const std::string &file, int line);
 
-void log(const std::string &msg, const std::string &file, int line);
+void logInfo(const std::string &msg, const inter_gen::InterGenContext *ctx, const std::string &file, int line);
 
-void printHelpMsg();
 
 #else
 
-void err(const std::string &msg);
+void logErr(const std::string &msg);
 
-void warn(const std::string &msg);
+void logWarn(const std::string &msg);
 
-void log();
+void logInfo();
 
 #endif
 } // namespace dap::util
