@@ -253,6 +253,43 @@ class BoolNode final : public Expression
     }
 };
 
+class BinaryExpressionNode final : public Expression 
+{
+    public:
+    Expression *left = nullptr;
+    Expression *right = nullptr;
+    int operatorType;
+
+    BinaryExpressionNode(Expression *left, int operatorType, Expression *right)
+    {
+        this->left = left;
+        this->right = right;
+        this->operatorType = operatorType;
+    }
+
+    llvm::Value *codeGen(inter_gen::InterGenContext *ctx) const;
+};
+
+class UnaryExpressionNode final : public Expression
+{
+public:
+    int operatorType;
+    Expression *expression;
+
+    UnaryExpressionNode(
+        int operatorType,
+        Expression *expression
+    ): operatorType(operatorType), expression(expression) {
+
+    }
+    ~UnaryExpressionNode() {
+        delete expression;
+    }
+
+    llvm::Value *codeGen(inter_gen::InterGenContext *ctx) const;
+};
+
+
 // Represents a program in the AST
 class ProgramNode final : public ASTNode
 {
@@ -324,7 +361,7 @@ class FunctionDeclarationNode final : public Statement
     // Destructor for FunctionDeclarationNode
     ~FunctionDeclarationNode() override;
 
-    llvm::Value *codeGen(inter_gen::InterGenContext *ctx);
+    llvm::Value *codeGen(inter_gen::InterGenContext *ctx) const;
 };
 
 // Represents a parameter list in the AST
@@ -505,9 +542,12 @@ class VariableDeclarationNode final : public Statement
         delete type;
         delete expression;
     }
-
-
     llvm::Value *codeGen(inter_gen::InterGenContext *ctx) const;
+
+    void generateVariable(llvm::Value *value);
+private:
+    bool variableGenerated = false;
+    llvm::Value *variableGenerateValue = nullptr;
 };
 
 // Represents a for loop in the AST
@@ -528,7 +568,9 @@ class ForLoopNode final : public Statement
     {
     }
 
-    // Destructor for ForLoopNode
+    // Destructor for F
+
+    // Destructor foorLoopNode
     ~ForLoopNode() override
     {
         delete type;

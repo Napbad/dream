@@ -355,8 +355,8 @@ static void yynoreturn yy_fatal_error ( const char* msg  );
 	(yy_hold_char) = *yy_cp; \
 	*yy_cp = '\0'; \
 	(yy_c_buf_p) = yy_cp;
-#define YY_NUM_RULES 91
-#define YY_END_OF_BUFFER 92
+#define YY_NUM_RULES 93
+#define YY_END_OF_BUFFER 94
 /* This struct is not used in this scanner,
    but its presence is necessary. */
 struct yy_trans_info
@@ -364,32 +364,32 @@ struct yy_trans_info
 	flex_int32_t yy_verify;
 	flex_int32_t yy_nxt;
 	};
-static const flex_int16_t yy_accept[217] =
+static const flex_int16_t yy_accept[218] =
     {   0,
-        0,    0,   92,   90,   88,   89,   85,   90,   43,   44,
-       90,   78,   79,   41,   39,   73,   40,   82,   42,   33,
-       33,   75,   74,   65,   51,   66,   84,   32,   80,   81,
+        0,    0,   94,   92,   90,   91,   87,   92,   43,   44,
+       92,   80,   81,   41,   39,   75,   40,   84,   42,   33,
+       33,   77,   76,   67,   51,   68,   86,   32,   82,   83,
        46,   32,   32,   32,   32,   32,   32,   32,   32,   32,
-       32,   32,   32,   32,   32,   76,   45,   77,   47,   70,
-        0,   37,    0,   56,   71,   57,    0,   38,    0,   53,
-       63,   52,   64,   55,    0,   87,   86,   54,    0,   33,
-        0,    0,    0,   48,   67,   69,   68,   49,   32,   59,
+       32,   32,   32,   32,   32,   78,   45,   79,   47,   72,
+        0,   37,    0,   56,   73,   59,    0,   38,    0,   53,
+       65,   52,   66,   55,    0,   89,   88,   54,    0,   33,
+        0,    0,    0,   48,   69,   71,   70,   49,   32,   61,
        32,   32,   32,   32,   32,   32,   32,   32,   32,   32,
         6,   32,   32,   32,   32,   32,   32,   32,   32,   32,
 
-       32,   32,   32,   32,   32,   32,   32,   58,   72,   83,
-       86,   35,    0,    0,   33,   50,   60,   61,    0,   32,
+       32,   32,   32,   32,   32,   32,   32,   60,   74,   57,
+       85,   88,   35,    0,    0,   33,   62,   63,   50,   32,
        32,   32,   32,   32,   32,   32,   32,    5,    3,   32,
        13,   32,   18,   32,   32,   32,   32,   32,   32,   32,
-       32,   32,   32,   32,   32,   32,   32,   14,   32,   34,
-        0,   36,    0,   62,   24,   19,   32,   32,    7,   32,
-       32,   32,   32,   32,   32,   21,   32,   32,   32,   32,
-       32,   32,   30,   32,   25,   32,   32,   32,    4,    0,
-        0,   10,   32,   32,   31,   22,   32,   32,   28,    8,
-       32,   32,   20,   32,   11,   32,   32,   27,   32,   23,
+       32,   32,   32,   32,   32,   32,   32,   14,   32,   58,
+       34,    0,   36,    0,   64,   24,   19,   32,   32,    7,
+       32,   32,   32,   32,   32,   32,   21,   32,   32,   32,
+       32,   32,   32,   30,   32,   25,   32,   32,   32,    4,
+        0,    0,   10,   32,   32,   31,   22,   32,   32,   28,
+        8,   32,   32,   20,   32,   11,   32,   32,   27,   32,
 
-       17,    2,   32,   32,   16,    9,   32,   29,   26,   32,
-        1,   12,   32,   32,   15,    0
+       23,   17,    2,   32,   32,   16,    9,   32,   29,   26,
+       32,    1,   12,   32,   32,   15,    0
     } ;
 
 static const YY_CHAR yy_ec[256] =
@@ -435,65 +435,65 @@ static const YY_CHAR yy_meta[62] =
         1
     } ;
 
-static const flex_int16_t yy_base[224] =
+static const flex_int16_t yy_base[225] =
     {   0,
-        0,    0,  284,  285,  285,  285,  260,   57,  259,   56,
-       56,  285,  285,  258,   53,  285,   52,  265,   57,   66,
-       52,  285,  285,   55,  256,   67,  285,    0,  285,  285,
-      255,   25,  228,  227,   46,   58,   58,   49,  239,  238,
-      233,   57,   57,   65,   77,  285,   74,  285,  285,  285,
-      110,  285,  269,  285,  285,  285,  108,  111,    0,  285,
-      285,  285,  285,  285,  256,  285,    0,  285,  106,  112,
-      103,    0,  117,  115,  285,  285,  285,  121,    0,  285,
-      221,  216,  220,  213,  214,  212,  218,  214,  211,  213,
-        0,   96,   98,  211,  211,  205,  219,  203,  206,  203,
+        0,    0,  285,  286,  286,  286,  261,   57,  260,   56,
+       56,  286,  286,  259,   53,  286,   52,  266,   57,   66,
+       52,  286,  286,   55,  257,   67,  286,    0,  286,  286,
+      256,   25,  229,  228,   46,   58,   58,   49,  240,  239,
+      234,   57,   57,   65,   77,  286,   74,  286,  286,  286,
+      110,  286,  270,  286,  249,  286,  108,  111,    0,  286,
+      286,  286,  286,  286,  256,  286,    0,  286,  106,  112,
+      103,    0,  117,  247,  286,  286,  286,  114,    0,  286,
+      220,  215,  219,  212,  213,  211,  217,  213,  210,  212,
+        0,   91,   93,  210,  210,  204,  218,  202,  205,  202,
 
-      103,  203,  204,  106,  208,  199,  205,  285,  285,  285,
-        0,  141,  136,  213,  144,  285,  285,  285,  224,  200,
-      205,  192,  206,  202,  201,  188,  203,    0,    0,  189,
-        0,  184,    0,  188,  193,  196,  188,  178,  180,  176,
-      185,  188,  187,  173,  176,  176,  174,    0,  183,  147,
-      149,  186,    0,  285,    0,    0,  167,  173,    0,  167,
-      177,  163,  164,  178,  171,    0,  169,  175,  159,  156,
-      170,  153,    0,  162,    0,  145,  143,  133,    0,  151,
-      148,    0,  141,  132,    0,    0,  125,  129,    0,    0,
-      134,  127,    0,  121,    0,  133,  130,    0,  117,    0,
+       96,  202,  203,  102,  207,  198,  204,  286,  224,  286,
+      286,    0,  135,  138,  211,  140,  286,  286,  222,  198,
+      203,  190,  204,  200,  199,  186,  201,    0,    0,  187,
+        0,  182,    0,  186,  191,  194,  186,  176,  178,  174,
+      183,  186,  185,  171,  174,  174,  172,    0,  181,  286,
+      143,  145,  184,    0,  286,    0,    0,  165,  171,    0,
+      165,  175,  161,  162,  176,  169,    0,  167,  173,  157,
+      154,  168,  152,    0,  165,    0,  154,  155,  138,    0,
+      147,  146,    0,  140,  131,    0,    0,  124,  128,    0,
+        0,  132,  124,    0,  118,    0,  130,  127,    0,  115,
 
-        0,    0,  118,  108,    0,    0,  100,    0,    0,   92,
-        0,    0,   99,   77,    0,  285,  186,  191,  194,  199,
-       83,  202,   69
+        0,    0,    0,  129,  126,    0,    0,  108,    0,    0,
+       99,    0,    0,   99,   77,    0,  286,  182,  187,  190,
+      195,   83,  198,   69
     } ;
 
-static const flex_int16_t yy_def[224] =
+static const flex_int16_t yy_def[225] =
     {   0,
-      216,    1,  216,  216,  216,  216,  216,  217,  216,  216,
-      218,  216,  216,  216,  216,  216,  216,  216,  216,  216,
-      216,  216,  216,  216,  216,  216,  216,  219,  216,  216,
-      216,  219,  219,  219,  219,  219,  219,  219,  219,  219,
-      219,  219,  219,  219,  219,  216,  216,  216,  216,  216,
-      217,  216,  217,  216,  216,  216,  218,  218,  218,  216,
-      216,  216,  216,  216,  216,  216,  220,  216,  216,  216,
-      216,  221,  216,  216,  216,  216,  216,  216,  219,  216,
-      219,  219,  219,  219,  219,  219,  219,  219,  219,  219,
-      219,  219,  219,  219,  219,  219,  219,  219,  219,  219,
+      217,    1,  217,  217,  217,  217,  217,  218,  217,  217,
+      219,  217,  217,  217,  217,  217,  217,  217,  217,  217,
+      217,  217,  217,  217,  217,  217,  217,  220,  217,  217,
+      217,  220,  220,  220,  220,  220,  220,  220,  220,  220,
+      220,  220,  220,  220,  220,  217,  217,  217,  217,  217,
+      218,  217,  218,  217,  217,  217,  219,  219,  219,  217,
+      217,  217,  217,  217,  217,  217,  221,  217,  217,  217,
+      217,  222,  217,  217,  217,  217,  217,  217,  220,  217,
+      220,  220,  220,  220,  220,  220,  220,  220,  220,  220,
+      220,  220,  220,  220,  220,  220,  220,  220,  220,  220,
 
-      219,  219,  219,  219,  219,  219,  219,  216,  216,  216,
-      220,  216,  216,  222,  216,  216,  216,  216,  216,  219,
-      219,  219,  219,  219,  219,  219,  219,  219,  219,  219,
-      219,  219,  219,  219,  219,  219,  219,  219,  219,  219,
-      219,  219,  219,  219,  219,  219,  219,  219,  219,  216,
-      216,  222,  223,  216,  219,  219,  219,  219,  219,  219,
-      219,  219,  219,  219,  219,  219,  219,  219,  219,  219,
-      219,  219,  219,  219,  219,  219,  219,  219,  219,  216,
-      222,  219,  219,  219,  219,  219,  219,  219,  219,  219,
-      219,  219,  219,  219,  219,  219,  219,  219,  219,  219,
+      220,  220,  220,  220,  220,  220,  220,  217,  217,  217,
+      217,  221,  217,  217,  223,  217,  217,  217,  217,  220,
+      220,  220,  220,  220,  220,  220,  220,  220,  220,  220,
+      220,  220,  220,  220,  220,  220,  220,  220,  220,  220,
+      220,  220,  220,  220,  220,  220,  220,  220,  220,  217,
+      217,  217,  223,  224,  217,  220,  220,  220,  220,  220,
+      220,  220,  220,  220,  220,  220,  220,  220,  220,  220,
+      220,  220,  220,  220,  220,  220,  220,  220,  220,  220,
+      217,  223,  220,  220,  220,  220,  220,  220,  220,  220,
+      220,  220,  220,  220,  220,  220,  220,  220,  220,  220,
 
-      219,  219,  219,  219,  219,  219,  219,  219,  219,  219,
-      219,  219,  219,  219,  219,    0,  216,  216,  216,  216,
-      216,  216,  216
+      220,  220,  220,  220,  220,  220,  220,  220,  220,  220,
+      220,  220,  220,  220,  220,  220,    0,  217,  217,  217,
+      217,  217,  217,  217
     } ;
 
-static const flex_int16_t yy_nxt[347] =
+static const flex_int16_t yy_nxt[348] =
     {   0,
         4,    5,    6,    7,    8,    9,   10,   11,   12,   13,
        14,   15,   16,   17,   18,   19,   20,   21,   21,   22,
@@ -502,40 +502,40 @@ static const flex_int16_t yy_nxt[347] =
        36,   28,   28,   37,   28,   38,   39,   28,   28,   40,
        41,   42,   43,   44,   45,   28,   28,   46,   47,   48,
        49,   52,   55,   58,   61,   63,   69,   66,   70,   70,
-       70,  181,   67,   81,   64,   62,   74,   75,   56,   68,
-       69,   82,   70,   70,   70,  114,   73,   59,   53,   77,
+       70,  182,   67,   81,   64,   62,   74,   75,   56,   68,
+       69,   82,   70,   70,   70,  115,   73,   59,   53,   77,
        78,   85,   71,   87,   94,   72,  108,   95,   91,   99,
 
        73,   86,   71,   88,   92,   93,   89,  101,  103,  100,
-      104,   90,  106,  102,   52,   58,  105,  215,   58,  113,
-      113,   72,  112,  112,  112,  107,   69,  214,   70,   70,
-       70,  213,  109,  115,  115,  115,  116,  117,  141,   59,
-      212,   53,   59,  118,  119,  130,   73,  211,  131,  132,
-      133,  145,  150,  150,  146,  210,  142,  112,  112,  112,
-      115,  115,  115,  150,  150,  180,  180,  150,  150,  209,
-      151,  208,  207,  206,  205,  204,  203,  202,   73,  201,
-      200,  151,  153,  199,  198,  151,   51,   51,   51,   51,
-       51,   57,  197,   57,   57,   57,   79,   79,   79,  111,
+      104,   90,  106,  102,   52,   58,  105,  216,   58,  114,
+      114,   72,  113,  113,  113,  107,   69,  215,   70,   70,
+       70,  141,  109,  116,  116,  116,  118,  119,  214,   59,
+      130,   53,   59,  131,  132,  133,   73,  145,  213,  142,
+      146,  113,  113,  113,  151,  151,  116,  116,  116,  151,
+      151,  181,  181,  151,  151,  212,  211,  210,  209,  208,
+      207,  206,  152,  205,   73,  204,  203,  152,  202,  201,
+      154,  152,   51,   51,   51,   51,   51,   57,  200,   57,
+       57,   57,   79,   79,   79,  112,  199,  112,  112,  112,
 
-      196,  111,  111,  111,  152,  195,  152,  194,  193,  192,
-      191,  190,  189,  188,  187,  186,  185,  184,  183,  182,
-      153,  179,  178,  177,  176,  175,  174,  173,  172,  171,
-      170,  169,  168,  167,  166,  165,  164,  163,  162,  161,
-      160,  159,  158,  157,  156,  155,  154,  153,  149,  148,
-      147,  144,  143,  140,  139,  138,  137,  136,  135,  134,
-      129,  128,  127,  126,  125,  124,  123,  122,  121,  120,
-      110,  216,   98,   97,   96,   84,   83,   80,   76,   65,
-       60,   54,   50,  216,    3,  216,  216,  216,  216,  216,
-      216,  216,  216,  216,  216,  216,  216,  216,  216,  216,
+      153,  198,  153,  197,  196,  195,  194,  193,  192,  191,
+      190,  189,  188,  187,  186,  185,  184,  183,  154,  180,
+      179,  178,  177,  176,  175,  174,  173,  172,  171,  170,
+      169,  168,  167,  166,  165,  164,  163,  162,  161,  160,
+      159,  158,  157,  156,  155,  154,  150,  149,  148,  147,
+      144,  143,  140,  139,  138,  137,  136,  135,  134,  129,
+      128,  127,  126,  125,  124,  123,  122,  121,  120,  117,
+      111,  110,  217,   98,   97,   96,   84,   83,   80,   76,
+       65,   60,   54,   50,  217,    3,  217,  217,  217,  217,
+      217,  217,  217,  217,  217,  217,  217,  217,  217,  217,
 
-      216,  216,  216,  216,  216,  216,  216,  216,  216,  216,
-      216,  216,  216,  216,  216,  216,  216,  216,  216,  216,
-      216,  216,  216,  216,  216,  216,  216,  216,  216,  216,
-      216,  216,  216,  216,  216,  216,  216,  216,  216,  216,
-      216,  216,  216,  216,  216,  216
+      217,  217,  217,  217,  217,  217,  217,  217,  217,  217,
+      217,  217,  217,  217,  217,  217,  217,  217,  217,  217,
+      217,  217,  217,  217,  217,  217,  217,  217,  217,  217,
+      217,  217,  217,  217,  217,  217,  217,  217,  217,  217,
+      217,  217,  217,  217,  217,  217,  217
     } ;
 
-static const flex_int16_t yy_chk[347] =
+static const flex_int16_t yy_chk[348] =
     {   0,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
@@ -544,37 +544,37 @@ static const flex_int16_t yy_chk[347] =
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    8,   10,   11,   15,   17,   21,   19,   21,   21,
-       21,  223,   19,   32,   17,   15,   24,   24,   10,   19,
-       20,   32,   20,   20,   20,  221,   21,   11,    8,   26,
+       21,  224,   19,   32,   17,   15,   24,   24,   10,   19,
+       20,   32,   20,   20,   20,  222,   21,   11,    8,   26,
        26,   35,   20,   36,   38,   20,   47,   38,   37,   42,
 
        20,   35,   20,   36,   37,   37,   36,   43,   44,   42,
-       44,   36,   45,   43,   51,   57,   44,  214,   58,   71,
-       71,   20,   69,   69,   69,   45,   70,  213,   70,   70,
-       70,  210,   47,   73,   73,   73,   74,   74,  101,   57,
-      207,   51,   58,   78,   78,   92,   70,  204,   92,   93,
-       93,  104,  113,  113,  104,  203,  101,  112,  112,  112,
-      115,  115,  115,  150,  150,  151,  151,  180,  180,  199,
-      113,  197,  196,  194,  192,  191,  188,  187,  115,  184,
-      183,  150,  181,  178,  177,  180,  217,  217,  217,  217,
-      217,  218,  176,  218,  218,  218,  219,  219,  219,  220,
+       44,   36,   45,   43,   51,   57,   44,  215,   58,   71,
+       71,   20,   69,   69,   69,   45,   70,  214,   70,   70,
+       70,  101,   47,   73,   73,   73,   78,   78,  211,   57,
+       92,   51,   58,   92,   93,   93,   70,  104,  208,  101,
+      104,  113,  113,  113,  114,  114,  116,  116,  116,  151,
+      151,  152,  152,  181,  181,  205,  204,  200,  198,  197,
+      195,  193,  114,  192,  116,  189,  188,  151,  185,  184,
+      182,  181,  218,  218,  218,  218,  218,  219,  179,  219,
+      219,  219,  220,  220,  220,  221,  178,  221,  221,  221,
 
-      174,  220,  220,  220,  222,  172,  222,  171,  170,  169,
-      168,  167,  165,  164,  163,  162,  161,  160,  158,  157,
-      152,  149,  147,  146,  145,  144,  143,  142,  141,  140,
-      139,  138,  137,  136,  135,  134,  132,  130,  127,  126,
-      125,  124,  123,  122,  121,  120,  119,  114,  107,  106,
-      105,  103,  102,  100,   99,   98,   97,   96,   95,   94,
-       90,   89,   88,   87,   86,   85,   84,   83,   82,   81,
-       65,   53,   41,   40,   39,   34,   33,   31,   25,   18,
-       14,    9,    7,    3,  216,  216,  216,  216,  216,  216,
-      216,  216,  216,  216,  216,  216,  216,  216,  216,  216,
+      223,  177,  223,  175,  173,  172,  171,  170,  169,  168,
+      166,  165,  164,  163,  162,  161,  159,  158,  153,  149,
+      147,  146,  145,  144,  143,  142,  141,  140,  139,  138,
+      137,  136,  135,  134,  132,  130,  127,  126,  125,  124,
+      123,  122,  121,  120,  119,  115,  109,  107,  106,  105,
+      103,  102,  100,   99,   98,   97,   96,   95,   94,   90,
+       89,   88,   87,   86,   85,   84,   83,   82,   81,   74,
+       65,   55,   53,   41,   40,   39,   34,   33,   31,   25,
+       18,   14,    9,    7,    3,  217,  217,  217,  217,  217,
+      217,  217,  217,  217,  217,  217,  217,  217,  217,  217,
 
-      216,  216,  216,  216,  216,  216,  216,  216,  216,  216,
-      216,  216,  216,  216,  216,  216,  216,  216,  216,  216,
-      216,  216,  216,  216,  216,  216,  216,  216,  216,  216,
-      216,  216,  216,  216,  216,  216,  216,  216,  216,  216,
-      216,  216,  216,  216,  216,  216
+      217,  217,  217,  217,  217,  217,  217,  217,  217,  217,
+      217,  217,  217,  217,  217,  217,  217,  217,  217,  217,
+      217,  217,  217,  217,  217,  217,  217,  217,  217,  217,
+      217,  217,  217,  217,  217,  217,  217,  217,  217,  217,
+      217,  217,  217,  217,  217,  217,  217
     } ;
 
 static yy_state_type yy_last_accepting_state;
@@ -884,13 +884,13 @@ yy_match:
 			while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 				{
 				yy_current_state = (int) yy_def[yy_current_state];
-				if ( yy_current_state >= 217 )
+				if ( yy_current_state >= 218 )
 					yy_c = yy_meta[yy_c];
 				}
 			yy_current_state = yy_nxt[yy_base[yy_current_state] + yy_c];
 			++yy_cp;
 			}
-		while ( yy_base[yy_current_state] != 285 );
+		while ( yy_base[yy_current_state] != 286 );
 
 yy_find_action:
 		yy_act = yy_accept[yy_current_state];
@@ -1163,7 +1163,7 @@ YY_RULE_SETUP
 case 50:
 YY_RULE_SETUP
 #line 114 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
-{ std::string logMsg = "Parsing token: LOGIC_SHIFT_LEFT"; lexerLog(logMsg); return LOGIC_SHIFT_LEFT; }
+{ std::string logMsg = "Parsing token: LOGIC_SHIFT_RIGHT"; lexerLog(logMsg); return LOGIC_SHIFT_RIGHT; }
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
@@ -1198,156 +1198,166 @@ YY_RULE_SETUP
 case 57:
 YY_RULE_SETUP
 #line 123 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
-{ std::string logMsg = "Parsing token: BIT_AND_ASSIGN"; lexerLog(logMsg); return BIT_AND_ASSIGN; }
+{ std::string logMsg = "Parsing token: AND_ASSIGN"; lexerLog(logMsg); return AND_ASSIGN; }
 	YY_BREAK
 case 58:
 YY_RULE_SETUP
 #line 124 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
-{ std::string logMsg = "Parsing token: BIT_OR_ASSIGN"; lexerLog(logMsg); return BIT_OR_ASSIGN; }
+{ std::string logMsg = "Parsing token: OR_ASSIGN"; lexerLog(logMsg); return OR_ASSIGN; }
 	YY_BREAK
 case 59:
 YY_RULE_SETUP
-#line 125 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
-{ std::string logMsg = "Parsing token: BIT_XOR_ASSIGN"; lexerLog(logMsg); return BIT_XOR_ASSIGN; }
+#line 126 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
+{ std::string logMsg = "Parsing token: BIT_AND_ASSIGN"; lexerLog(logMsg); return BIT_AND_ASSIGN; }
 	YY_BREAK
 case 60:
 YY_RULE_SETUP
-#line 126 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
-{ std::string logMsg = "Parsing token: SHIFT_LEFT_ASSIGN"; lexerLog(logMsg); return SHIFT_LEFT_ASSIGN; }
+#line 127 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
+{ std::string logMsg = "Parsing token: BIT_OR_ASSIGN"; lexerLog(logMsg); return BIT_OR_ASSIGN; }
 	YY_BREAK
 case 61:
 YY_RULE_SETUP
-#line 127 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
-{ std::string logMsg = "Parsing token: SHIFT_RIGHT_ASSIGN"; lexerLog(logMsg); return SHIFT_RIGHT_ASSIGN; }
+#line 128 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
+{ std::string logMsg = "Parsing token: BIT_XOR_ASSIGN"; lexerLog(logMsg); return BIT_XOR_ASSIGN; }
 	YY_BREAK
 case 62:
 YY_RULE_SETUP
-#line 128 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
-{ std::string logMsg = "Parsing token: LOGIC_SHIFT_LEFT_ASSIGN"; lexerLog(logMsg); return LOGIC_SHIFT_LEFT_ASSIGN; }
+#line 129 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
+{ std::string logMsg = "Parsing token: SHIFT_LEFT_ASSIGN"; lexerLog(logMsg); return SHIFT_LEFT_ASSIGN; }
 	YY_BREAK
 case 63:
 YY_RULE_SETUP
 #line 130 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
-{ std::string logMsg = "Parsing token: INCREMENT"; lexerLog(logMsg); return INCREMENT; }
+{ std::string logMsg = "Parsing token: SHIFT_RIGHT_ASSIGN"; lexerLog(logMsg); return SHIFT_RIGHT_ASSIGN; }
 	YY_BREAK
 case 64:
 YY_RULE_SETUP
 #line 131 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
-{ std::string logMsg = "Parsing token: DECREMENT"; lexerLog(logMsg); return DECREMENT; }
+{ std::string logMsg = "Parsing token: LOGIC_SHIFT_RIGHT_ASSIGN"; lexerLog(logMsg); return LOGIC_SHIFT_RIGHT_ASSIGN; }
 	YY_BREAK
 case 65:
 YY_RULE_SETUP
-#line 132 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
-{ std::string logMsg = "Parsing token: LESS_THAN"; lexerLog(logMsg); return LESS_THAN; }
+#line 133 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
+{ std::string logMsg = "Parsing token: INCREMENT"; lexerLog(logMsg); return INCREMENT; }
 	YY_BREAK
 case 66:
 YY_RULE_SETUP
-#line 133 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
-{ std::string logMsg = "Parsing token: GREATER_THAN"; lexerLog(logMsg); return GREATER_THAN; }
+#line 134 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
+{ std::string logMsg = "Parsing token: DECREMENT"; lexerLog(logMsg); return DECREMENT; }
 	YY_BREAK
 case 67:
 YY_RULE_SETUP
 #line 135 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
-{ std::string logMsg = "Parsing token: LESS_THAN_EQUAL"; lexerLog(logMsg); return LESS_THAN_EQUAL; }
+{ std::string logMsg = "Parsing token: LESS_THAN"; lexerLog(logMsg); return LESS_THAN; }
 	YY_BREAK
 case 68:
 YY_RULE_SETUP
 #line 136 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
-{ std::string logMsg = "Parsing token: GREATER_THAN_EQUAL"; lexerLog(logMsg); return GREATER_THAN_EQUAL; }
+{ std::string logMsg = "Parsing token: GREATER_THAN"; lexerLog(logMsg); return GREATER_THAN; }
 	YY_BREAK
 case 69:
 YY_RULE_SETUP
-#line 137 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
-{ std::string logMsg = "Parsing token: EQUAL"; lexerLog(logMsg); return EQUAL; }
+#line 138 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
+{ std::string logMsg = "Parsing token: LESS_THAN_EQUAL"; lexerLog(logMsg); return LESS_THAN_EQUAL; }
 	YY_BREAK
 case 70:
 YY_RULE_SETUP
-#line 138 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
-{ std::string logMsg = "Parsing token: NOT_EQUAL"; lexerLog(logMsg); return NOT_EQUAL; }
+#line 139 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
+{ std::string logMsg = "Parsing token: GREATER_THAN_EQUAL"; lexerLog(logMsg); return GREATER_THAN_EQUAL; }
 	YY_BREAK
 case 71:
 YY_RULE_SETUP
 #line 140 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
-{ std::string logMsg = "Parsing token: AND"; lexerLog(logMsg); return AND; }
+{ std::string logMsg = "Parsing token: EQUAL"; lexerLog(logMsg); return EQUAL; }
 	YY_BREAK
 case 72:
 YY_RULE_SETUP
 #line 141 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
-{ std::string logMsg = "Parsing token: OR"; lexerLog(logMsg); return OR; }
+{ std::string logMsg = "Parsing token: NOT_EQUAL"; lexerLog(logMsg); return NOT_EQUAL; }
 	YY_BREAK
 case 73:
 YY_RULE_SETUP
-#line 144 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
-{ std::string logMsg = "Parsing token: COMMA"; lexerLog(logMsg); return COMMA; }
+#line 143 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
+{ std::string logMsg = "Parsing token: AND"; lexerLog(logMsg); return AND; }
 	YY_BREAK
 case 74:
 YY_RULE_SETUP
-#line 145 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
-{ std::string logMsg = "Parsing token: SEMICOLON"; lexerLog(logMsg); return SEMICOLON; }
+#line 144 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
+{ std::string logMsg = "Parsing token: OR"; lexerLog(logMsg); return OR; }
 	YY_BREAK
 case 75:
 YY_RULE_SETUP
-#line 146 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
-{ std::string logMsg = "Parsing token: COLON"; lexerLog(logMsg); return COLON; }
+#line 147 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
+{ std::string logMsg = "Parsing token: COMMA"; lexerLog(logMsg); return COMMA; }
 	YY_BREAK
 case 76:
 YY_RULE_SETUP
-#line 147 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
-{ std::string logMsg = "Parsing token: LEFT_BRACE"; lexerLog(logMsg); return LEFT_BRACE; }
+#line 148 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
+{ std::string logMsg = "Parsing token: SEMICOLON"; lexerLog(logMsg); return SEMICOLON; }
 	YY_BREAK
 case 77:
 YY_RULE_SETUP
-#line 148 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
-{ std::string logMsg = "Parsing token: RIGHT_BRACE"; lexerLog(logMsg); return RIGHT_BRACE; }
+#line 149 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
+{ std::string logMsg = "Parsing token: COLON"; lexerLog(logMsg); return COLON; }
 	YY_BREAK
 case 78:
 YY_RULE_SETUP
-#line 149 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
-{ std::string logMsg = "Parsing token: LEFT_PAREN"; lexerLog(logMsg); return LEFT_PAREN; }
+#line 150 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
+{ std::string logMsg = "Parsing token: LEFT_BRACE"; lexerLog(logMsg); return LEFT_BRACE; }
 	YY_BREAK
 case 79:
 YY_RULE_SETUP
-#line 150 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
-{ std::string logMsg = "Parsing token: RIGHT_PAREN"; lexerLog(logMsg); return RIGHT_PAREN; }
+#line 151 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
+{ std::string logMsg = "Parsing token: RIGHT_BRACE"; lexerLog(logMsg); return RIGHT_BRACE; }
 	YY_BREAK
 case 80:
 YY_RULE_SETUP
-#line 151 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
-{ std::string logMsg = "Parsing token: LEFT_BRACKET"; lexerLog(logMsg); return LEFT_BRACKET; }
+#line 152 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
+{ std::string logMsg = "Parsing token: LEFT_PAREN"; lexerLog(logMsg); return LEFT_PAREN; }
 	YY_BREAK
 case 81:
 YY_RULE_SETUP
-#line 152 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
-{ std::string logMsg = "Parsing token: RIGHT_BRACKET"; lexerLog(logMsg); return RIGHT_BRACKET; }
+#line 153 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
+{ std::string logMsg = "Parsing token: RIGHT_PAREN"; lexerLog(logMsg); return RIGHT_PAREN; }
 	YY_BREAK
 case 82:
 YY_RULE_SETUP
-#line 153 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
-{ std::string logMsg = "Parsing token: DOT"; lexerLog(logMsg); return DOT; }
+#line 154 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
+{ std::string logMsg = "Parsing token: LEFT_BRACKET"; lexerLog(logMsg); return LEFT_BRACKET; }
 	YY_BREAK
 case 83:
 YY_RULE_SETUP
-#line 154 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
-{ std::string logMsg = "Parsing token: ELLIPSIS"; lexerLog(logMsg); return ELLIPSIS; }
+#line 155 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
+{ std::string logMsg = "Parsing token: RIGHT_BRACKET"; lexerLog(logMsg); return RIGHT_BRACKET; }
 	YY_BREAK
 case 84:
 YY_RULE_SETUP
-#line 155 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
-{ std::string logMsg = "Parsing token: QUESTION"; lexerLog(logMsg); return QUESTION; }
+#line 156 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
+{ std::string logMsg = "Parsing token: DOT"; lexerLog(logMsg); return DOT; }
 	YY_BREAK
 case 85:
 YY_RULE_SETUP
-#line 156 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
-{ std::string logMsg = "Parsing token: BANG"; lexerLog(logMsg); return BANG; }
+#line 157 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
+{ std::string logMsg = "Parsing token: ELLIPSIS"; lexerLog(logMsg); return ELLIPSIS; }
 	YY_BREAK
 case 86:
 YY_RULE_SETUP
-#line 160 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
-{ std::string logMsg = "Parsing comment: " + std::string(yytext); lexerLog(logMsg); llcolumn += yyleng; }
+#line 158 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
+{ std::string logMsg = "Parsing token: QUESTION"; lexerLog(logMsg); return QUESTION; }
 	YY_BREAK
 case 87:
 YY_RULE_SETUP
-#line 162 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
+#line 159 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
+{ std::string logMsg = "Parsing token: BANG"; lexerLog(logMsg); return BANG; }
+	YY_BREAK
+case 88:
+YY_RULE_SETUP
+#line 163 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
+{ std::string logMsg = "Parsing comment: " + std::string(yytext); lexerLog(logMsg); llcolumn += yyleng; }
+	YY_BREAK
+case 89:
+YY_RULE_SETUP
+#line 165 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
 {
                             std::string logMsg = "Parsing multiline comment start";
                             lexerLog(logMsg);
@@ -1379,28 +1389,28 @@ YY_RULE_SETUP
                             lexerLog(endMsg);
                         }
 	YY_BREAK
-case 88:
-YY_RULE_SETUP
-#line 193 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
-{ llcolumn += yyleng; } // Update column for whitespace
-	YY_BREAK
-case 89:
-/* rule 89 can match eol */
-YY_RULE_SETUP
-#line 194 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
-{ std::string logMsg = "New line encountered"; lexerLog(logMsg); ++yylineno; llcolumn = 0; } // Increment line number and reset column on newline
-	YY_BREAK
 case 90:
 YY_RULE_SETUP
 #line 196 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
-{ std::string errMsg = "unknown token"; lexerLog(errMsg); yyerror("unknown token"); }
+{ llcolumn += yyleng; } // Update column for whitespace
 	YY_BREAK
 case 91:
+/* rule 91 can match eol */
 YY_RULE_SETUP
-#line 198 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
+#line 197 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
+{ std::string logMsg = "New line encountered"; lexerLog(logMsg); ++yylineno; llcolumn = 0; } // Increment line number and reset column on newline
+	YY_BREAK
+case 92:
+YY_RULE_SETUP
+#line 199 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
+{ std::string errMsg = "unknown token"; lexerLog(errMsg); yyerror("unknown token"); }
+	YY_BREAK
+case 93:
+YY_RULE_SETUP
+#line 201 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
 ECHO;
 	YY_BREAK
-#line 1403 "/home/napbad/Project/dap-dev-main/compiler/parser/token.cpp"
+#line 1413 "/home/napbad/Project/dap-dev-main/compiler/parser/token.cpp"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1697,7 +1707,7 @@ static int yy_get_next_buffer (void)
 		while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 			{
 			yy_current_state = (int) yy_def[yy_current_state];
-			if ( yy_current_state >= 217 )
+			if ( yy_current_state >= 218 )
 				yy_c = yy_meta[yy_c];
 			}
 		yy_current_state = yy_nxt[yy_base[yy_current_state] + yy_c];
@@ -1725,11 +1735,11 @@ static int yy_get_next_buffer (void)
 	while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 		{
 		yy_current_state = (int) yy_def[yy_current_state];
-		if ( yy_current_state >= 217 )
+		if ( yy_current_state >= 218 )
 			yy_c = yy_meta[yy_c];
 		}
 	yy_current_state = yy_nxt[yy_base[yy_current_state] + yy_c];
-	yy_is_jam = (yy_current_state == 216);
+	yy_is_jam = (yy_current_state == 217);
 
 		return yy_is_jam ? 0 : yy_current_state;
 }
@@ -2405,5 +2415,5 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 198 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
+#line 201 "/home/napbad/Project/dap-dev-main/compiler/parser/token.l"
 

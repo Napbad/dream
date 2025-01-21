@@ -32,6 +32,7 @@
 #include "common/config.h"
 #include "metadata.h"
 #include "parser/ASTNode.h"
+#include "parser/parser.hpp"
 #include "utilities/file_util.h"
 #include "utilities/llvm_util.h"
 #include "utilities/log_util.h"
@@ -61,12 +62,10 @@ Value *QualifiedNameNode::codeGen(inter_gen::InterGenContext *ctx) const
     ctx->currLine = this->lineNum;
 
     // get the value from exist variables
-    ctx->getVal(this->getName());
-
+    Value * value = ctx->getVal(this->getName());
 
     // return it
-
-    return nullptr;
+    return value;
 }
 
 Value *ProgramNode::codeGen(inter_gen::InterGenContext *ctx) const
@@ -87,15 +86,46 @@ Value *ProgramNode::codeGen(inter_gen::InterGenContext *ctx) const
     return nullptr;
 }
 
+bool detectType(const TypeNode* typeNode, const VariableDeclarationNode* node, inter_gen::InterGenContext* ctx, Type *varType)
+{
+    if (typeNode == nullptr) {
+        // auto detect type
+        if (node->value == nullptr) {
+            delete varType;
+            varType = nullptr;
+            return false;
+        }
+        // TODO: precise type detect, pointer to some type, array of some type
+        const Value *expressionValue = node->value->codeGen(ctx);
+        varType = expressionValue->getType();
+        return true;
+    }
+
+    varType = util::typeOf(node->type, ctx);
+        if (!varType) {
+            delete varType;
+            varType = nullptr;
+            util::logErr("unknown type: " + node->type->getName(), ctx, __FILE__, __LINE__);
+            return false;
+        }
+        return true;
+}
+
 Value *VariableDeclarationNode::codeGen(inter_gen::InterGenContext *ctx) const
 {
     // sync the context position
     ctx->currLine = this->lineNum;
 
     // find the type of variable
-    Type *varType = util::typeOf(this->type, ctx);
-    if (varType == nullptr) {
-        util::logErr("unknown type: " + type->getName(), ctx, __FILE__, __LINE__);
+    Type *varType = nullptr;
+
+    if (detectType(type, this, ctx, varType)) {
+#ifdef D_DEBUG
+        util::logErr("can not detect type [no initial expression]: " + variableName->getName(), ctx, __FILE__, __LINE__);
+#else
+        util::logErr("can not detect type [no initial expression]: " + variableName->getName(), ctx);
+#endif
+        return nullptr;
     }
 
     // generate the variable
@@ -109,12 +139,14 @@ Value *VariableDeclarationNode::codeGen(inter_gen::InterGenContext *ctx) const
     util::logInfo("Variable Declaration: " + this->variableName->getName(), ctx, __FILE__, __LINE__);
 #endif
 
-
+    if (this->variableGenerated) {
+        BUILDER.CreateStore(this->variableGenerateValue, allocaVar, false);
+    }
     // return the value
     return allocaVar;
 }
 
-Value *FunctionDeclarationNode::codeGen(inter_gen::InterGenContext *ctx)
+Value *FunctionDeclarationNode::codeGen(inter_gen::InterGenContext *ctx)const
 {
     // sync the context of the node
     ctx->currLine = this->lineNum;
@@ -132,7 +164,7 @@ Value *FunctionDeclarationNode::codeGen(inter_gen::InterGenContext *ctx)
 
     ctx->setCurrFun(function);
 
-    auto funMetaData = new inter_gen::FunctionMetaData(this->name, type, ctx);
+    const auto funMetaData = new inter_gen::FunctionMetaData(this->name, type, ctx);
 
     // generate the basic block
     const auto basicBlock = BasicBlock::Create(LLVMCTX, util::getFunBasicBlockName(&this->name), function);
@@ -153,6 +185,225 @@ Value *FunctionDeclarationNode::codeGen(inter_gen::InterGenContext *ctx)
     ctx->popBlock();
 
     return function;
+}
+
+Value * BinaryExpressionNode::codeGen(inter_gen::InterGenContext *ctx) const{
+
+    ctx->currLine = this->lineNum;
+    // Generate code for left-hand side and right-hand side Expressions
+    Value *lhsVal = left->codeGen(ctx);
+    Value *rhsVal = right->codeGen(ctx);
+
+    // Check for null results from the code generation
+    if (!lhsVal || !rhsVal) {
+        return nullptr;
+    }
+
+    // Check if both expressions are of the same type
+    const auto lhsType = lhsVal->getType();
+    if (const auto rhsType = rhsVal->getType(); lhsType != rhsType) {
+        if (llvm::isa<IntegerType>(lhsType) && llvm::isa<IntegerType>(rhsType)) {
+            if (lhsType->getIntegerBitWidth() > rhsType->getIntegerBitWidth()) {
+                rhsVal = BUILDER.CreateSExtOrTrunc(rhsVal, lhsType, "sext_or_trunc");
+            } else if (lhsType->getIntegerBitWidth() < rhsType->getIntegerBitWidth()) {
+                lhsVal = BUILDER.CreateSExtOrTrunc(lhsVal, rhsType, "sext_or_trunc");
+            }
+        } else {
+#ifdef D_DEBUG
+            util::logErr("Type mismatch in binary Expression", ctx,
+                         __FILE__, __LINE__);
+#else
+            util::logErr("Type mismatch in binary Expression", ctx);
+#endif
+
+            return nullptr;
+        }
+    }
+
+    const bool isFloatingPoint = lhsType->isFloatingPointTy();
+
+    switch (operatorType) {
+// Arithmetic operators
+    case PLUS:
+        return isFloatingPoint ? BUILDER.CreateFAdd(lhsVal, rhsVal, "addtmp")
+                               : BUILDER.CreateAdd(lhsVal, rhsVal, "addtmp");
+    case MINUS:
+        return isFloatingPoint ? BUILDER.CreateFSub(lhsVal, rhsVal, "subtmp")
+                               : BUILDER.CreateSub(lhsVal, rhsVal, "subtmp");
+    case MUL:
+        return isFloatingPoint ? BUILDER.CreateFMul(lhsVal, rhsVal, "multmp")
+                               : BUILDER.CreateMul(lhsVal, rhsVal, "multmp");
+    case DIV:
+        return isFloatingPoint ? BUILDER.CreateFDiv(lhsVal, rhsVal, "divtmp")
+                               : BUILDER.CreateSDiv(lhsVal, rhsVal, "divtmp");
+    case MOD:
+        return isFloatingPoint ? BUILDER.CreateFRem(lhsVal, rhsVal, "modtmp")
+                               : BUILDER.CreateSRem(lhsVal, rhsVal, "modtmp");
+
+    // Comparison operators
+    case LESS_THAN:
+        return isFloatingPoint ? BUILDER.CreateFCmpOLT(lhsVal, rhsVal, "ltcmp")
+                               : BUILDER.CreateICmpSLT(lhsVal, rhsVal, "ltcmp");
+    case GREATER_THAN:
+        return isFloatingPoint ? BUILDER.CreateFCmpOGT(lhsVal, rhsVal, "gtcmp")
+                               : BUILDER.CreateICmpSGT(lhsVal, rhsVal, "gtcmp");
+    case LESS_THAN_EQUAL:
+        return isFloatingPoint ? BUILDER.CreateFCmpOLE(lhsVal, rhsVal, "lecmp")
+                               : BUILDER.CreateICmpSLE(lhsVal, rhsVal, "lecmp");
+    case GREATER_THAN_EQUAL:
+        return isFloatingPoint ? BUILDER.CreateFCmpOGE(lhsVal, rhsVal, "gecmp")
+                               : BUILDER.CreateICmpSGE(lhsVal, rhsVal, "gecmp");
+    case EQUAL:
+        return isFloatingPoint ? BUILDER.CreateFCmpOEQ(lhsVal, rhsVal, "eqcmp")
+                               : BUILDER.CreateICmpEQ(lhsVal, rhsVal, "eqcmp");
+    case NOT_EQUAL:
+        return isFloatingPoint ? BUILDER.CreateFCmpONE(lhsVal, rhsVal, "necmp")
+                               : BUILDER.CreateICmpNE(lhsVal, rhsVal, "necmp");
+
+    // Logical operators
+    case AND:
+        return BUILDER.CreateAnd(lhsVal, rhsVal, "andtmp");
+    case OR:
+        return BUILDER.CreateOr(lhsVal, rhsVal, "ortmp");
+    case XOR:
+        return BUILDER.CreateXor(lhsVal, rhsVal, "xortmp");
+
+    // Bitwise operators
+    case SHIFT_LEFT:
+        return BUILDER.CreateShl(lhsVal, rhsVal, "lshifttmp");
+    case SHIFT_RIGHT:
+        return BUILDER.CreateAShr(lhsVal, rhsVal, "rshifttmp");
+    case LOGIC_SHIFT_RIGHT:
+        return BUILDER.CreateLShr(lhsVal, rhsVal, "urshifttmp");
+
+    // Assignment operators
+    case ASSIGN:
+        return BUILDER.CreateStore(rhsVal, lhsVal, false);
+    case ADD_ASSIGN: {
+        Value *result = isFloatingPoint ? BUILDER.CreateFAdd(lhsVal, rhsVal, "addassigntmp")
+                                        : BUILDER.CreateAdd(lhsVal, rhsVal, "addassigntmp");
+        return BUILDER.CreateStore(result, lhsVal);
+    }
+    case MINUS_ASSIGN: {
+        Value *result = isFloatingPoint ? BUILDER.CreateFSub(lhsVal, rhsVal, "subassigntmp")
+                                        : BUILDER.CreateSub(lhsVal, rhsVal, "subassigntmp");
+        return BUILDER.CreateStore(result, lhsVal);
+    }
+    case MUL_ASSIGN: {
+        Value *result = isFloatingPoint ? BUILDER.CreateFMul(lhsVal, rhsVal, "mulassigntmp")
+                                        : BUILDER.CreateMul(lhsVal, rhsVal, "mulassigntmp");
+        return BUILDER.CreateStore(result, lhsVal);
+    }
+    case DIV_ASSIGN: {
+        Value *result = isFloatingPoint ? BUILDER.CreateFDiv(lhsVal, rhsVal, "divassigntmp")
+                                        : BUILDER.CreateSDiv(lhsVal, rhsVal, "divassigntmp");
+        return BUILDER.CreateStore(result, lhsVal);
+    }
+    case MOD_ASSIGN: {
+        Value *result = isFloatingPoint ? BUILDER.CreateFRem(lhsVal, rhsVal, "modassigntmp")
+                                        : BUILDER.CreateSRem(lhsVal, rhsVal, "modassigntmp");
+        return BUILDER.CreateStore(result, lhsVal);
+    }
+
+    default:
+#ifdef D_DEBUG
+        util::logErr("Unknown binary operator", ctx,
+                     __FILE__, __LINE__);
+#else
+         util::logErr("Unknown binary operator", ctx);
+#endif
+        return nullptr;
+    }
+}
+
+Value * UnaryExpressionNode::codeGen(inter_gen::InterGenContext *ctx) const{
+
+     ctx->currLine = this->lineNum;
+    // Generate code for the expression of the unary operation
+    Value *operVal = expression->codeGen(ctx);
+
+    Value *res;
+    Value *var;
+    Value *varPtr;
+    // Handle increment or decrement
+    switch (operatorType) {
+    case DECREMENT:
+        operVal = BUILDER.CreateSub(operVal, ConstantInt::get(LLVMCTX, APInt(1, 1)), "decrease"); // Decrement
+        return operVal;
+    case INCREMENT:
+        operVal = BUILDER.CreateAdd(operVal, ConstantInt::get(operVal->getType(), 1), "increase"); // Increment
+        return operVal;
+    case MUL:
+        //
+        // if (llvm::isa<PointerType>(operVal->getType())) {
+        //     operVal = BUILDER.CreateLoad(expectDerefType_d->top(), operVal, "dereference");
+        //     return operVal;
+        // }
+
+#ifdef D_DEBUG
+        util::logErr("Invalid pointer dereference", ctx,
+                     __FILE__, __LINE__);
+#else
+        util::logErr("Invalid pointer dereference", ctx);
+#endif
+
+    case MINUS:
+        return BUILDER.CreateNeg(operVal, "negate");
+    case BIT_AND:
+
+        if (LoadInst * loadInst = dyn_cast<LoadInst>(operVal)) {
+            Value * ptr = loadInst->getOperand(0);
+            return ptr;
+        }
+
+        if (dyn_cast<AllocaInst>(operVal)) {
+            return operVal;
+        }
+        if (operVal->getType()->isArrayTy()) {
+            if (llvm::isa<LoadInst>(operVal)) {
+                auto *castReturn = dyn_cast<LoadInst>(operVal);
+                return castReturn->getPointerOperand();
+            }
+            Value *value = BUILDER.CreateGEP(
+                PointerType::get(operVal->getType()->getArrayElementType(), 0), operVal,
+                {ConstantInt::get(LLVMCTX, APInt(32, 0)), ConstantInt::get(LLVMCTX, APInt(32, 0))}, "arrAddress");
+            return value;
+        }
+        return BUILDER.CreateGEP(operVal->getType(), operVal, ConstantInt::get(LLVMCTX, APInt(1, 0)), "address");
+    case DIV_ASSIGN:
+        res = BUILDER.CreateSDiv(expression->codeGen(ctx), operVal);
+        var = expression->codeGen(ctx);
+        varPtr = BUILDER.CreateGEP(var->getType(), var, ConstantInt::get(LLVMCTX, APInt(1, 0)));
+        return BUILDER.CreateStore(res, varPtr);
+    case ADD_ASSIGN:
+        res = BUILDER.CreateAdd(expression->codeGen(ctx), operVal);
+        var = expression->codeGen(ctx);
+        varPtr = BUILDER.CreateGEP(var->getType(), var, ConstantInt::get(LLVMCTX, APInt(1, 0)));
+        return BUILDER.CreateStore(res, varPtr);
+
+    case MINUS_ASSIGN:
+        res = BUILDER.CreateSub(expression->codeGen(ctx), operVal);
+        var = expression->codeGen(ctx);
+        varPtr = BUILDER.CreateGEP(var->getType(), var, ConstantInt::get(LLVMCTX, APInt(1, 0)));
+        return BUILDER.CreateStore(res, varPtr);
+
+    case MUL_ASSIGN:
+        res = BUILDER.CreateMul(expression->codeGen(ctx), operVal);
+        var = expression->codeGen(ctx);
+        varPtr = BUILDER.CreateGEP(var->getType(), var, ConstantInt::get(LLVMCTX, APInt(1, 0)));
+        return BUILDER.CreateStore(res, varPtr);
+
+    case MOD_ASSIGN:
+        res = BUILDER.CreateSRem(expression->codeGen(ctx), operVal);
+        var = expression->codeGen(ctx);
+        varPtr = BUILDER.CreateGEP(var->getType(), var, ConstantInt::get(LLVMCTX, APInt(1, 0)));
+
+        return BUILDER.CreateStore(res, varPtr);
+    case BANG:
+        return BUILDER.CreateNot(operVal, "not");
+    default:
+        return nullptr;
+    }
 }
 
 } // namespace parser

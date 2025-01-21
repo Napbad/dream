@@ -33,6 +33,192 @@ void parserLog(std::string msg) {
     dap::util::logInfo(msg, nullptr, dap::parser::currentParsingFile, yylineno);
 #endif
 }
+
+std::string tokenToString(int token) {
+    switch (token) {
+        case PACKAGE:
+            return "PACKAGE";
+        case IMPORT:
+            return "IMPORT";
+        case FUN:
+            return "FUN";
+        case VOID:
+            return "VOID";
+        case FOR:
+            return "FOR";
+        case IF:
+            return "IF";
+        case ELSE:
+            return "ELSE";
+        case MATCH:
+            return "MATCH";
+        case STRUCT:
+            return "STRUCT";
+        case TRAIT:
+            return "TRAIT";
+        case TYPEDEF:
+            return "TYPEDEF";
+        case IMT:
+            return "IMT";
+        case VAR:
+            return "VAR";
+        case INSTANCEOF:
+            return "INSTANCEOF";
+        case RETURN:
+            return "RETURN";
+        case CONST:
+            return "CONST";
+        case EXTERN:
+            return "EXTERN";
+        case INT:
+            return "INT";
+        case BYTE:
+            return "BYTE";
+        case SHORT:
+            return "SHORT";
+        case LONG:
+            return "LONG";
+        case FLOAT:
+            return "FLOAT";
+        case DOUBLE:
+            return "DOUBLE";
+        case BOOL:
+            return "BOOL";
+        case UINT:
+            return "UINT";
+        case USHORT:
+            return "USHORT";
+        case ULONG:
+            return "ULONG";
+        case LLONG:
+            return "LLONG";
+        case ULLONG:
+            return "ULLONG";
+        case IDENTIFIER:
+            return "IDENTIFIER";
+        case INTEGER:
+            return "INTEGER";
+        case BINARY_LITERAL:
+            return "BINARY_LITERAL";
+        case OCTAL_LITERAL:
+            return "OCTAL_LITERAL";
+        case HEXADECIMAL_LITERAL:
+            return "HEXADECIMAL_LITERAL";
+        case STRING_LITERAL:
+            return "STRING_LITERAL";
+        case CHAR_LITERAL:
+            return "CHAR_LITERAL";
+        case FLOAT_LITERAL:
+            return "FLOAT_LITERAL";
+        case TRUE:
+            return "TRUE";
+        case FALSE:
+            return "FALSE";
+        case PLUS:
+            return "PLUS";
+        case MINUS:
+            return "MINUS";
+        case MUL:
+            return "MUL";
+        case DIV:
+            return "DIV";
+        case MOD:
+            return "MOD";
+        case BIT_AND:
+            return "BIT_AND";
+        case BIT_OR:
+            return "BIT_OR";
+        case BIT_XOR:
+            return "BIT_XOR";
+        case BIT_NOT:
+            return "BIT_NOT";
+        case SHIFT_LEFT:
+            return "SHIFT_LEFT";
+        case SHIFT_RIGHT:
+            return "SHIFT_RIGHT";
+        case LOGIC_SHIFT_RIGHT:
+            return "LOGIC_SHIFT_RIGHT";
+        case ASSIGN:
+            return "ASSIGN";
+        case ADD_ASSIGN:
+            return "ADD_ASSIGN";
+        case MUL_ASSIGN:
+            return "MUL_ASSIGN";
+        case DIV_ASSIGN:
+            return "DIV_ASSIGN";
+        case MINUS_ASSIGN:
+            return "MINUS_ASSIGN";
+        case MOD_ASSIGN:
+            return "MOD_ASSIGN";
+        case AND_ASSIGN:
+            return "AND_ASSIGN";
+        case OR_ASSIGN:
+            return "OR_ASSIGN";
+        case BIT_AND_ASSIGN:
+            return "BIT_AND_ASSIGN";
+        case BIT_OR_ASSIGN:
+            return "BIT_OR_ASSIGN";
+        case BIT_XOR_ASSIGN:
+            return "BIT_XOR_ASSIGN";
+        case SHIFT_LEFT_ASSIGN:
+            return "SHIFT_LEFT_ASSIGN";
+        case SHIFT_RIGHT_ASSIGN:
+            return "SHIFT_RIGHT_ASSIGN";
+        case LOGIC_SHIFT_RIGHT_ASSIGN:
+            return "LOGIC_SHIFT_RIGHT_ASSIGN";
+        case INCREMENT:
+            return "INCREMENT";
+        case DECREMENT:
+            return "DECREMENT";
+        case LESS_THAN:
+            return "LESS_THAN";
+        case GREATER_THAN:
+            return "GREATER_THAN";
+        case LESS_THAN_EQUAL:
+            return "LESS_THAN_EQUAL";
+        case GREATER_THAN_EQUAL:
+            return "GREATER_THAN_EQUAL";
+        case EQUAL:
+            return "EQUAL";
+        case NOT_EQUAL:
+            return "NOT_EQUAL";
+        case AND:
+            return "AND";
+        case OR:
+            return "OR";
+        case XOR:
+            return "XOR";
+        case COMMA:
+            return "COMMA";
+        case SEMICOLON:
+            return "SEMICOLON";
+        case COLON:
+            return "COLON";
+        case LEFT_BRACE:
+            return "LEFT_BRACE";
+        case RIGHT_BRACE:
+            return "RIGHT_BRACE";
+        case LEFT_PAREN:
+            return "LEFT_PAREN";
+        case RIGHT_PAREN:
+            return "RIGHT_PAREN";
+        case LEFT_BRACKET:
+            return "LEFT_BRACKET";
+        case RIGHT_BRACKET:
+            return "RIGHT_BRACKET";
+        case DOT:
+            return "DOT";
+        case ELLIPSIS:
+            return "ELLIPSIS";
+        case QUESTION:
+            return "QUESTION";
+        case BANG:
+            return "BANG";
+        default:
+            return "UNKNOWN";
+    }
+}
+
 %}
 
 %union {
@@ -64,24 +250,25 @@ void parserLog(std::string msg) {
 %token PACKAGE IMPORT FUN VOID FOR IF ELSE MATCH STRUCT TRAIT TYPEDEF IMT VAR INSTANCEOF RETURN CONST EXTERN
 %token INT BYTE SHORT LONG FLOAT DOUBLE BOOL UINT USHORT ULONG LLONG ULLONG
 %token IDENTIFIER INTEGER BINARY_LITERAL OCTAL_LITERAL HEXADECIMAL_LITERAL
-%token STRING_LITERAL CHAR_LITERAL FLOAT_LITERAL TRUE FALSE
-%token PLUS MINUS MUL DIV MOD BIT_AND BIT_OR BIT_XOR BIT_NOT SHIFT_LEFT SHIFT_RIGHT LOGIC_SHIFT_LEFT
+%token STRING_LITERAL CHAR_LITERAL FLOAT_LITERAL TRUE FALSE 
+%token PLUS MINUS MUL DIV MOD BIT_AND BIT_OR BIT_XOR BIT_NOT SHIFT_LEFT SHIFT_RIGHT LOGIC_SHIFT_RIGHT
 %token ASSIGN ADD_ASSIGN MUL_ASSIGN DIV_ASSIGN MINUS_ASSIGN MOD_ASSIGN
-%token BIT_AND_ASSIGN BIT_OR_ASSIGN BIT_XOR_ASSIGN SHIFT_LEFT_ASSIGN SHIFT_RIGHT_ASSIGN LOGIC_SHIFT_LEFT_ASSIGN
+%token AND_ASSIGN OR_ASSIGN
+%token BIT_AND_ASSIGN BIT_OR_ASSIGN BIT_XOR_ASSIGN SHIFT_LEFT_ASSIGN SHIFT_RIGHT_ASSIGN LOGIC_SHIFT_RIGHT_ASSIGN
 %token INCREMENT DECREMENT LESS_THAN GREATER_THAN LESS_THAN_EQUAL GREATER_THAN_EQUAL EQUAL NOT_EQUAL
-%token AND OR
+%token AND OR XOR
 %token COMMA SEMICOLON COLON LEFT_BRACE RIGHT_BRACE LEFT_PAREN RIGHT_PAREN LEFT_BRACKET RIGHT_BRACKET
-%token DOT ELLIPSIS QUESTION BANG 
+%token DOT ELLIPSIS QUESTION BANG  
 
 %type <str> IDENTIFIER INTEGER BINARY_LITERAL OCTAL_LITERAL HEXADECIMAL_LITERAL FLOAT_LITERAL STRING_LITERAL
 %type <ident> identifier
-%type <expr> expression functionCall bool_
+%type <expr> expression functionCall bool_ binaryExpression unaryExpression
 %type <stmt> importStmt packageDecl statement functionDeclaration variableDecl constantDecl structDecl returnStmt
 %type <stmtVec> statements
 %type <exprVec> expressions
 %type <typeNode> type
 %type <boolval> mutableModifier nullableModifier TRUE FALSE
-
+%type <token> binaryOperator unaryOperator
 %type <intExpr> integer
 %type <floatExpr> float_
 %type <strExpr> string_ CHAR_LITERAL
@@ -154,12 +341,25 @@ expression:
         // Log message when parsing a String expression node
         parserLog("Parsed String expression node");
     }
-    | bool_ {}
+    | bool_ {
+        $$ = $1;
+        parserLog("Parsed Boolean expression node"); 
+    }
     | functionCall {
         $$ = $1;
 
         parserLog("Parsed function call expression node: [" + dynamic_cast<dap::parser::FunctionCallExpressionNode*>($1)
                                                         ->name->getName() + "]");
+    }
+    | binaryExpression {
+        $$ = $1;
+
+        parserLog("Parsed binary expression node");
+    }
+    | unaryExpression {
+        $$ = $1;
+
+        parserLog("Parsed unary expression node");
     };
 
 functionDeclaration:
@@ -521,6 +721,7 @@ expressions:
 structDecl: 
     STRUCT identifier LEFT_BRACE structFields RIGHT_BRACE SEMICOLON {
         $$ = new dap::parser::StructDeclarationNode($2, $4);
+        parserLog("Parsed struct declaration node: [" + $2->getName() + "]");
     };
 
 
@@ -550,6 +751,88 @@ functionCall:
         parserLog("Parsed function call experssion node: [" + $1->getName() + "]");
     };
 
+binaryExpression:
+    expression binaryOperator expression {
+        $$ = new dap::parser::BinaryExpressionNode($1, $2, $3);
+        // Log message when parsing a binary expression node
+        parserLog("Parsed binary expression node: [" + tokenToString($2) + "]");
+    };
 
+binaryOperator:
+    ASSIGN {
+        $$ = ASSIGN;
+    }
+    | PLUS {
+        $$ = PLUS;
+    }
+    | MINUS {
+        $$ = MINUS;
+    }
+    | MUL {
+        $$ = MUL;
+    }
+    | DIV {
+        $$ = DIV;
+    }
+    | MOD {
+        $$ = MOD;
+    }
+    | EQUAL {
+        $$ = EQUAL;
+    }
+    | ADD_ASSIGN {
+        $$ = ADD_ASSIGN;
+    }
+    | MINUS_ASSIGN {
+        $$ = MINUS_ASSIGN;
+    }
+    | MUL_ASSIGN {
+        $$ = MUL_ASSIGN;
+    }
+    | DIV_ASSIGN {
+        $$ = DIV_ASSIGN;
+    }
+    | MOD_ASSIGN {
+        $$ = MOD_ASSIGN;
+    }
+    | AND {
+        $$ = AND;
+    }
+    | OR {
+        $$ = OR;
+    }
+    | XOR {
+        $$ = XOR;
+    }
+    | AND_ASSIGN {
+        $$ = AND_ASSIGN;
+    }
+    | OR_ASSIGN {
+        $$ = OR_ASSIGN;
+    };
+
+unaryExpression:
+    unaryOperator expression {
+        $$ = new dap::parser::UnaryExpressionNode($1, $2);
+        // Log message when parsing a unary expression node
+        parserLog("Parsed unary expression node: [" + tokenToString($1) + "]");
+    };
+
+unaryOperator:
+    PLUS {
+        $$ = PLUS;
+    }
+    | MINUS {
+        $$ = MINUS;
+    }
+    | BIT_AND {
+        $$ = BIT_AND;
+    }
+    | BANG {
+        $$ = BANG;
+    }
+    | MUL {
+        $$ = MUL;
+    };
 %%
 

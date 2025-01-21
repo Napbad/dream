@@ -104,42 +104,45 @@ extern int yydebug;
     BIT_NOT = 305,                 /* BIT_NOT  */
     SHIFT_LEFT = 306,              /* SHIFT_LEFT  */
     SHIFT_RIGHT = 307,             /* SHIFT_RIGHT  */
-    LOGIC_SHIFT_LEFT = 308,        /* LOGIC_SHIFT_LEFT  */
+    LOGIC_SHIFT_RIGHT = 308,       /* LOGIC_SHIFT_RIGHT  */
     ASSIGN = 309,                  /* ASSIGN  */
     ADD_ASSIGN = 310,              /* ADD_ASSIGN  */
     MUL_ASSIGN = 311,              /* MUL_ASSIGN  */
     DIV_ASSIGN = 312,              /* DIV_ASSIGN  */
     MINUS_ASSIGN = 313,            /* MINUS_ASSIGN  */
     MOD_ASSIGN = 314,              /* MOD_ASSIGN  */
-    BIT_AND_ASSIGN = 315,          /* BIT_AND_ASSIGN  */
-    BIT_OR_ASSIGN = 316,           /* BIT_OR_ASSIGN  */
-    BIT_XOR_ASSIGN = 317,          /* BIT_XOR_ASSIGN  */
-    SHIFT_LEFT_ASSIGN = 318,       /* SHIFT_LEFT_ASSIGN  */
-    SHIFT_RIGHT_ASSIGN = 319,      /* SHIFT_RIGHT_ASSIGN  */
-    LOGIC_SHIFT_LEFT_ASSIGN = 320, /* LOGIC_SHIFT_LEFT_ASSIGN  */
-    INCREMENT = 321,               /* INCREMENT  */
-    DECREMENT = 322,               /* DECREMENT  */
-    LESS_THAN = 323,               /* LESS_THAN  */
-    GREATER_THAN = 324,            /* GREATER_THAN  */
-    LESS_THAN_EQUAL = 325,         /* LESS_THAN_EQUAL  */
-    GREATER_THAN_EQUAL = 326,      /* GREATER_THAN_EQUAL  */
-    EQUAL = 327,                   /* EQUAL  */
-    NOT_EQUAL = 328,               /* NOT_EQUAL  */
-    AND = 329,                     /* AND  */
-    OR = 330,                      /* OR  */
-    COMMA = 331,                   /* COMMA  */
-    SEMICOLON = 332,               /* SEMICOLON  */
-    COLON = 333,                   /* COLON  */
-    LEFT_BRACE = 334,              /* LEFT_BRACE  */
-    RIGHT_BRACE = 335,             /* RIGHT_BRACE  */
-    LEFT_PAREN = 336,              /* LEFT_PAREN  */
-    RIGHT_PAREN = 337,             /* RIGHT_PAREN  */
-    LEFT_BRACKET = 338,            /* LEFT_BRACKET  */
-    RIGHT_BRACKET = 339,           /* RIGHT_BRACKET  */
-    DOT = 340,                     /* DOT  */
-    ELLIPSIS = 341,                /* ELLIPSIS  */
-    QUESTION = 342,                /* QUESTION  */
-    BANG = 343                     /* BANG  */
+    AND_ASSIGN = 315,              /* AND_ASSIGN  */
+    OR_ASSIGN = 316,               /* OR_ASSIGN  */
+    BIT_AND_ASSIGN = 317,          /* BIT_AND_ASSIGN  */
+    BIT_OR_ASSIGN = 318,           /* BIT_OR_ASSIGN  */
+    BIT_XOR_ASSIGN = 319,          /* BIT_XOR_ASSIGN  */
+    SHIFT_LEFT_ASSIGN = 320,       /* SHIFT_LEFT_ASSIGN  */
+    SHIFT_RIGHT_ASSIGN = 321,      /* SHIFT_RIGHT_ASSIGN  */
+    LOGIC_SHIFT_RIGHT_ASSIGN = 322, /* LOGIC_SHIFT_RIGHT_ASSIGN  */
+    INCREMENT = 323,               /* INCREMENT  */
+    DECREMENT = 324,               /* DECREMENT  */
+    LESS_THAN = 325,               /* LESS_THAN  */
+    GREATER_THAN = 326,            /* GREATER_THAN  */
+    LESS_THAN_EQUAL = 327,         /* LESS_THAN_EQUAL  */
+    GREATER_THAN_EQUAL = 328,      /* GREATER_THAN_EQUAL  */
+    EQUAL = 329,                   /* EQUAL  */
+    NOT_EQUAL = 330,               /* NOT_EQUAL  */
+    AND = 331,                     /* AND  */
+    OR = 332,                      /* OR  */
+    XOR = 333,                     /* XOR  */
+    COMMA = 334,                   /* COMMA  */
+    SEMICOLON = 335,               /* SEMICOLON  */
+    COLON = 336,                   /* COLON  */
+    LEFT_BRACE = 337,              /* LEFT_BRACE  */
+    RIGHT_BRACE = 338,             /* RIGHT_BRACE  */
+    LEFT_PAREN = 339,              /* LEFT_PAREN  */
+    RIGHT_PAREN = 340,             /* RIGHT_PAREN  */
+    LEFT_BRACKET = 341,            /* LEFT_BRACKET  */
+    RIGHT_BRACKET = 342,           /* RIGHT_BRACKET  */
+    DOT = 343,                     /* DOT  */
+    ELLIPSIS = 344,                /* ELLIPSIS  */
+    QUESTION = 345,                /* QUESTION  */
+    BANG = 346                     /* BANG  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -148,7 +151,7 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 38 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+#line 224 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
 
 #include <vector>
 #include "parser/ASTNode.h"
@@ -173,7 +176,7 @@ union YYSTYPE
     bool boolval;
     int token;
 
-#line 177 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.hpp"
+#line 180 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.hpp"
 
 };
 typedef union YYSTYPE YYSTYPE;

@@ -111,7 +111,7 @@ void lexerLog(std::string msg) {
 "~"                     { std::string logMsg = "Parsing token: BIT_NOT"; lexerLog(logMsg); return BIT_NOT; }
 "<<"                    { std::string logMsg = "Parsing token: SHIFT_LEFT"; lexerLog(logMsg); return SHIFT_LEFT; }
 ">>"                    { std::string logMsg = "Parsing token: SHIFT_RIGHT"; lexerLog(logMsg); return SHIFT_RIGHT; }
-"<<<"                   { std::string logMsg = "Parsing token: LOGIC_SHIFT_LEFT"; lexerLog(logMsg); return LOGIC_SHIFT_LEFT; }
+">>>"                   { std::string logMsg = "Parsing token: LOGIC_SHIFT_RIGHT"; lexerLog(logMsg); return LOGIC_SHIFT_RIGHT; }
 "="                     { std::string logMsg = "Parsing token: ASSIGN"; lexerLog(logMsg); return ASSIGN; }
 
 "+="                    { std::string logMsg = "Parsing token: ADD_ASSIGN"; lexerLog(logMsg); return ADD_ASSIGN; }
@@ -120,12 +120,15 @@ void lexerLog(std::string msg) {
 "-="                    { std::string logMsg = "Parsing token: MINUS_ASSIGN"; lexerLog(logMsg); return MINUS_ASSIGN; }
 "%="                    { std::string logMsg = "Parsing token: MOD_ASSIGN"; lexerLog(logMsg); return MOD_ASSIGN; }
 
+"&&="                   { std::string logMsg = "Parsing token: AND_ASSIGN"; lexerLog(logMsg); return AND_ASSIGN; }
+"||="                   { std::string logMsg = "Parsing token: OR_ASSIGN"; lexerLog(logMsg); return OR_ASSIGN; }
+
 "&="                    { std::string logMsg = "Parsing token: BIT_AND_ASSIGN"; lexerLog(logMsg); return BIT_AND_ASSIGN; }
 "|="                    { std::string logMsg = "Parsing token: BIT_OR_ASSIGN"; lexerLog(logMsg); return BIT_OR_ASSIGN; }
 "^="                    { std::string logMsg = "Parsing token: BIT_XOR_ASSIGN"; lexerLog(logMsg); return BIT_XOR_ASSIGN; }
 "<<="                   { std::string logMsg = "Parsing token: SHIFT_LEFT_ASSIGN"; lexerLog(logMsg); return SHIFT_LEFT_ASSIGN; }
 ">>="                   { std::string logMsg = "Parsing token: SHIFT_RIGHT_ASSIGN"; lexerLog(logMsg); return SHIFT_RIGHT_ASSIGN; }
-">>>="                  { std::string logMsg = "Parsing token: LOGIC_SHIFT_LEFT_ASSIGN"; lexerLog(logMsg); return LOGIC_SHIFT_LEFT_ASSIGN; }
+">>>="                  { std::string logMsg = "Parsing token: LOGIC_SHIFT_RIGHT_ASSIGN"; lexerLog(logMsg); return LOGIC_SHIFT_RIGHT_ASSIGN; }
 
 "++"                    { std::string logMsg = "Parsing token: INCREMENT"; lexerLog(logMsg); return INCREMENT; }
 "--"                    { std::string logMsg = "Parsing token: DECREMENT"; lexerLog(logMsg); return DECREMENT; }
