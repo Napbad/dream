@@ -78,7 +78,7 @@ void lexerLog(std::string msg) {
 "ushort"                { std::string logMsg = "Parsing token: USHORT"; lexerLog(logMsg); return USHORT; }
 "ulong"                 { std::string logMsg = "Parsing token: ULONG"; lexerLog(logMsg); return ULONG; }
 "llong"                 { std::string logMsg = "Parsing token: LLONG"; lexerLog(logMsg); return LLONG; }
-"ullong"                 { std::string logMsg = "Parsing token: ULLONG"; lexerLog(logMsg); return ULLONG; }
+"ullong"                { std::string logMsg = "Parsing token: ULLONG"; lexerLog(logMsg); return ULLONG; }
 
 "true"                  { std::string logMsg = "Parsing token: TRUE"; lexerLog(logMsg); return TRUE; }
 "false"                 { std::string logMsg = "Parsing token: FALSE"; lexerLog(logMsg); return FALSE; }

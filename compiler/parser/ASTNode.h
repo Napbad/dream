@@ -99,6 +99,8 @@ class QualifiedNameNode final : public Expression
     }
 
     [[nodiscard]] std::string getName() const;
+
+    llvm::Value *codeGen(inter_gen::InterGenContext *ctx) const;
 };
 
 class IntegerNode final : public Expression
@@ -276,7 +278,7 @@ class ProgramNode final : public ASTNode
     {
     }
 
-    llvm::Value *codeGen(inter_gen::InterGenContext *ctx);
+    llvm::Value *codeGen(inter_gen::InterGenContext *ctx) const;
 
     // Destructor for ProgramNode
     ~ProgramNode() override
@@ -505,7 +507,7 @@ class VariableDeclarationNode final : public Statement
     }
 
 
-    llvm::Value *codeGen(inter_gen::InterGenContext *ctx);
+    llvm::Value *codeGen(inter_gen::InterGenContext *ctx) const;
 };
 
 // Represents a for loop in the AST

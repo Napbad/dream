@@ -58,9 +58,7 @@ class FunctionMetaData
     VariableMetaData *getArgMetaData(const std::string &name);
     void setReturnMetaData(Value *value, VariableMetaData *variableMetaData);
 
-    FunctionMetaData(std::string name, FunctionType *funType) : name_(std::move(name)), funType(funType)
-    {
-    }
+    FunctionMetaData(std::string  name, FunctionType * type, InterGenContext * ctx);
 
     void addArg(const std::string &name, Value *arg, Type *type, VariableMetaData *argMeteData)
     {
@@ -112,6 +110,7 @@ class FunctionMetaData
     FunctionType *funType;
     std::vector<std::tuple<std::string, Value *, Type *, VariableMetaData *>> args;
     std::tuple<Value *, VariableMetaData *> returnVal;
+    InterGenContext *ctx;
 };
 
 class ModuleMetaData
@@ -124,7 +123,7 @@ class ModuleMetaData
     // Add a structure metadata to the module
     void addStruct(StructMetaData *structMeta)
     {
-        structs.push_back(structMeta);
+        // structs.push_back(structMeta);
         structMap[structMeta->getName()] = structMeta;
     }
 
@@ -140,7 +139,7 @@ class ModuleMetaData
     // Add a function metadata to the module
     void addFunction(FunctionMetaData *funcMeta)
     {
-        functions.push_back(funcMeta);
+        // functions.push_back(funcMeta);
         functionMap[funcMeta->getName()] = funcMeta;
     }
 
@@ -213,10 +212,10 @@ class ModuleMetaData
         return moduleSource;
     }
 
-    std::vector<FunctionMetaData *> getFunctions()
-    {
-        return functions;
-    }
+    // std::vector<FunctionMetaData *> getFunctions()
+    // {
+    //     return functions;
+    // }
 
     Module *getModule() const
     {
@@ -228,8 +227,8 @@ class ModuleMetaData
     VariableMetaData *getGlobalValMetaData(const std::string &name);
 
   private:
-    std::vector<StructMetaData *> structs;                                 // List of structure metadata
-    std::vector<FunctionMetaData *> functions;                             // List of function metadata
+    // std::vector<StructMetaData *> structs;                                 // List of structure metadata
+    // std::vector<FunctionMetaData *> functions;                             // List of function metadata
     std::unordered_map<std::string, StructMetaData *> structMap;           // Map of structure metadata by name
     std::unordered_map<std::string, FunctionMetaData *> functionMap;       // Map of function metadata by name
     std::unordered_map<std::string, VariableMetaData *> globalMetaDataMap; //
@@ -258,13 +257,19 @@ class VariableMetaData
     void enterNewScope(bool newMutable);
     void enterNewScope(void *voidArg, bool newNullable);
     void enterNewScope(bool newMutable, bool newNullable);
-    VariableMetaData(std::string name, Type *type, bool isMutable = false, bool isNullable = false);
+
+    VariableMetaData(const std::string & name,
+                    Type* varType,
+                    bool isMutable = false,
+                    bool isNullable = false,
+                    InterGenContext * ctx = nullptr);
 
   private:
     std::string name_;
     Type *type_ = nullptr;
     std::stack<bool> mutableStack_{};
     std::stack<bool> nullableStack_{};
+    InterGenContext *ctx = nullptr;
 };
 } // namespace dap::inter_gen
 

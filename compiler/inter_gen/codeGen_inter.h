@@ -74,7 +74,7 @@ class InterGenContext
     llvm::Module *module = nullptr;                  ///< LLVM module
     llvm::IRBuilder<> builder;                       ///< IR builder
     std::map<std::string, StructMetaData *> structs; ///< Struct metadata
-    std::unordered_map<std::string, FunctionMetaData *> functions{};
+    // std::unordered_map<std::string, FunctionMetaData *> functions{};
     ModuleMetaData *metaData = nullptr;
     int currLine = -1;
     std::string sourcePath;
@@ -84,9 +84,10 @@ class InterGenContext
     llvm::BasicBlock *mergeBBInNestIfSource = nullptr;
     llvm::Value *mergeBBInNestIfSrcVal = nullptr;
 
-    static FunctionMetaData *getFunMetaData(const std::string &name, const inter_gen::InterGenContext *ctx) ;
+    FunctionMetaData *getFunMetaData(const std::string &name, const inter_gen::InterGenContext *ctx) ;
     std::pair<llvm::Value *, VariableMetaData *> getValWithMetadata(const std::string &name);
-    static std::pair<llvm::Value *, VariableMetaData *> getValWithMetadata(const parser::QualifiedNameNode *name);
+    void addFunctionToMetaData( FunctionMetaData *function_meta_data)const;
+    std::pair<llvm::Value *, VariableMetaData *> getValWithMetadata(const parser::QualifiedNameNode *name);
     FunctionMetaData *getCurrFunMetaData() const;
     void setCurrFunMetaData(inter_gen::FunctionMetaData *funMetaData);
 

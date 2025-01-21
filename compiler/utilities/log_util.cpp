@@ -148,4 +148,5 @@ std::string colorCode(const FileColor color)
 }
 
 #endif
+
 } // namespace dap::util

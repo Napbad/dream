@@ -22,8 +22,8 @@ void readConfig(std::string configPath)
 
 int initCompiler(llvm::LLVMContext *llvmCtx)
 {
-
     util::initTypeMap(llvmCtx);
+    return 0;
 }
 
 std::vector<std::string> *filesToCompile = new std::vector<std::string>();

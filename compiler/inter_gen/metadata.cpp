@@ -4,6 +4,8 @@
 
 #include "metadata.h"
 
+#include <utility>
+
 #include "codeGen_inter.h"
 
 namespace dap::inter_gen
@@ -85,6 +87,10 @@ void FunctionMetaData::setReturnMetaData(Value *value, VariableMetaData *variabl
     returnVal = {value, variableMetaData};
 }
 
+FunctionMetaData::FunctionMetaData(std::string name, FunctionType *type, InterGenContext *ctx):
+    name_(std::move(name)), funType(type), ctx(ctx) {
+}
+
 void ModuleMetaData::addGlobalValMetaData(VariableMetaData *metaData)
 {
     globalMetaDataMap.insert({metaData->getName(), metaData});
@@ -141,14 +147,12 @@ void VariableMetaData::enterNewScope(bool newMutable, bool newNullable)
     nullableStack_.push(newNullable);
 }
 
-VariableMetaData::VariableMetaData(std::string name, Type *type, bool isMutable, bool isNullable
-
-)
-{
-    name_ = std::move(name);
-    type_ = type;
+VariableMetaData::VariableMetaData(const std::string &name, Type* varType, bool isMutable, bool isNullable, InterGenContext *ctx){
+    name_ = name;
+    type_ = varType;
     mutableStack_.push(isMutable);
     nullableStack_.push(isNullable);
+    this->ctx = ctx;
 }
 
 } // namespace dap::inter_gen

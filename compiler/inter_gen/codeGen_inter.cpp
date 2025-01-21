@@ -53,7 +53,23 @@ namespace parser
 using std::map;
 using std::string;
 
-Value *ProgramNode::codeGen(inter_gen::InterGenContext *ctx)
+
+// QualifiedNameNode is considered as an expression which represent the variable
+Value *QualifiedNameNode::codeGen(inter_gen::InterGenContext *ctx) const
+{
+    // sync the context
+    ctx->currLine = this->lineNum;
+
+    // get the value from exist variables
+    ctx->getVal(this->getName());
+
+
+    // return it
+
+    return nullptr;
+}
+
+Value *ProgramNode::codeGen(inter_gen::InterGenContext *ctx) const
 {
     // get the package and set the package directory
     ctx->currLine = this->lineNum;
@@ -71,25 +87,30 @@ Value *ProgramNode::codeGen(inter_gen::InterGenContext *ctx)
     return nullptr;
 }
 
-Value *VariableDeclarationNode::codeGen(inter_gen::InterGenContext *ctx)
+Value *VariableDeclarationNode::codeGen(inter_gen::InterGenContext *ctx) const
 {
     // sync the context position
     ctx->currLine = this->lineNum;
 
     // find the type of variable
-    llvm::Type *varType = util::typeOf(this->type, ctx);
+    Type *varType = util::typeOf(this->type, ctx);
     if (varType == nullptr) {
         util::logErr("unknown type: " + type->getName(), ctx, __FILE__, __LINE__);
     }
 
     // generate the variable
-    llvm::AllocaInst *allocaVar = BUILDER.CreateAlloca(varType, nullptr, this->variableName->getName());
+    AllocaInst *allocaVar = BUILDER.CreateAlloca(varType, nullptr, this->variableName->getName());
 
-    auto varMetaData = new inter_gen::VariableMetaData(variableName->getName(), varType, mutable_, nullable_);
+    auto varMetaData = new inter_gen::VariableMetaData(variableName->getName(), varType, mutable_, nullable_, ctx);
     ctx->locals().emplace(this->variableName->getName(),
                           std::pair<Value *, inter_gen::VariableMetaData *>(allocaVar, varMetaData));
-    // return the value
 
+#ifdef D_DEBUG
+    util::logInfo("Variable Declaration: " + this->variableName->getName(), ctx, __FILE__, __LINE__);
+#endif
+
+
+    // return the value
     return allocaVar;
 }
 
@@ -101,7 +122,7 @@ Value *FunctionDeclarationNode::codeGen(inter_gen::InterGenContext *ctx)
     // get the function declaration info
     auto params = std::vector<Type *>();
     for (const auto param : *this->parameterList) {
-        const auto node = dynamic_cast<parser::VariableDeclarationNode *>(param);
+        const auto node = dynamic_cast<VariableDeclarationNode *>(param);
         params.push_back(util::typeOf(node->type, ctx));
     }
 
@@ -111,11 +132,10 @@ Value *FunctionDeclarationNode::codeGen(inter_gen::InterGenContext *ctx)
 
     ctx->setCurrFun(function);
 
-    auto funMetaData = new inter_gen::FunctionMetaData(this->name, type);
-    ctx->functions.insert(std::pair(this->name, funMetaData));
+    auto funMetaData = new inter_gen::FunctionMetaData(this->name, type, ctx);
 
     // generate the basic block
-    auto basicBlock = BasicBlock::Create(LLVMCTX, util::getFunBasicBlockName(&this->name), function);
+    const auto basicBlock = BasicBlock::Create(LLVMCTX, util::getFunBasicBlockName(&this->name), function);
     ctx->pushBlock(basicBlock);
 
 
@@ -127,6 +147,7 @@ Value *FunctionDeclarationNode::codeGen(inter_gen::InterGenContext *ctx)
 #endif // D_DEBUG
 
     // register the function
+    ctx->addFunctionToMetaData(funMetaData);
 
     // pop the block
     ctx->popBlock();
@@ -140,11 +161,7 @@ namespace inter_gen
 {
 FunctionMetaData *InterGenContext::getFunMetaData(const std::string &name, const InterGenContext *ctx)
 {
-    // for (const auto &fun : metaData->getFunctions()) {
-    //     if (fun->getName() == name) {
-    //         return fun;
-    //     }
-    // }
+    FunctionMetaData * funMetaData = metaData->getFunction(name);
     // REPORT_ERROR("error at: " + ctx->sourcePath + ":" + std::to_string(ctx->currLine) + " \nFunction " + name +
     //                  " not found",
     //              __FILE__, __LINE__);
@@ -359,7 +376,7 @@ std::pair<Value *, VariableMetaData *> InterGenContext::getValWithMetadata(const
             return res;
         }
         if (Function *fun = blocks.top()->block->getParent()) {
-            const auto &funMetadata = functions[fun->getName().str()];
+            const auto &funMetadata = metaData->getFunction(fun->getName().str());
             for (auto &arg : fun->args()) {
                 if (arg.getName() == name) {
                     // return {&arg, funMetadata->getArgMetaData(arg.getName().str())};
@@ -375,6 +392,11 @@ std::pair<Value *, VariableMetaData *> InterGenContext::getValWithMetadata(const
     }
 
     return {nullptr, nullptr};
+}
+
+
+void InterGenContext::addFunctionToMetaData(FunctionMetaData *function_meta_data)const{
+    metaData->addFunction(function_meta_data);
 }
 
 FunctionMetaData *InterGenContext::getCurrFunMetaData() const
