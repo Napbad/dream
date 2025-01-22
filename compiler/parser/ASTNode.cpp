@@ -45,11 +45,11 @@ std::string dap::parser::IntegerNode::getVal()
     }
 }
 
-void dap::parser::VariableDeclarationNode::generateVariable(llvm::Value *value){
+void dap::parser::VariableDeclarationNode::generateVariable(llvm::Value *value)
+{
     this->variableGenerated = true;
     this->variableGenerateValue = value;
 }
-
 
 std::string dap::parser::QualifiedNameNode::getName() const
 {
@@ -67,8 +67,6 @@ std::string dap::parser::TypeNode::getName() const
     }
     return baseType;
 }
-
-
 
 dap::parser::FunctionDeclarationNode::~FunctionDeclarationNode()
 {

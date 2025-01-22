@@ -10,6 +10,8 @@
 #include <llvm/Support/TargetSelect.h>
 
 #include "common/config.h"
+#include "inter_gen/preprocessing/includeAnaylize.h"
+#include "machine_gen/codeGen_mechine.h"
 #include "parser/parserMain.h"
 #include "utilities/file_util.h"
 #include "utilities/log_util.h"
@@ -107,7 +109,7 @@ int main(const int argc, char **argv)
 
     // Collect non-option arguments as input files
     for (int i = optind; i < argc; ++i) {
-        inputFiles.push_back(argv[i]);
+        inputFiles.emplace_back(argv[i]);
     }
 
     if (helpRequested) {
@@ -139,34 +141,23 @@ int main(const int argc, char **argv)
             // std::string info = "Parsing file: " + file;
             // LOG_DEBUG(info);
 #endif
-            // yyrestart(fopen(file.c_str(), "r"));
-            // yylineno = 1;
-            // program = nullptr;
-            // openFile(file.c_str());
-            // auto *ctx = new inter_gen::InterGenContext(file);
-            // yyparse();
-            // // store the parser result and the context
-            // programMap_d->insert({program, ctx});
+            dap::parser::parseFile(file);
         }
 
 #ifdef D_DEBUG
         dap::util::copy_directory(sourceRuntimeDir + "asm", dap::buildDir + "dap/runtime/asm");
 #else
         dap::util::copy_directory("../src/dap/runtime/asm", dap::buildDir + "dap/runtime/asm");
-
 #endif
 
-        // auto includeAnalyzer = new dap::inter_gen::IncludeAnalyzer();
-        // includeAnalyzer->generateGraph();
-        // std::set<inter_gen::IncludeGraphNode *> roots = includeAnalyzer->getRoots();
-        // if (genIR)
-        // {
-        //     interGen(roots);
-        // }
-        // else
-        // {
-        //     mech_gen::execGen(roots);
-        // }
+        const auto includeAnalyzer = new dap::inter_gen::IncludeAnalyzer();
+        includeAnalyzer->generateGraph();
+        const std::set<dap::inter_gen::IncludeGraphNode *> roots = includeAnalyzer->getRoots();
+        if (genIR) {
+            interGen(roots);
+        } else {
+            dap::mech_gen::execGen(roots);
+        }
     } else {
         for (auto &file : inputFiles) {
             auto *ctx = new dap::inter_gen::InterGenContext(inputPath);

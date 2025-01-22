@@ -10,7 +10,6 @@ using std::cerr;
 using std::cout;
 using std::endl;
 
-
 void printHelpMsg()
 {
     cout << "Usage: "
@@ -44,8 +43,8 @@ void logWarn(const std::string &msg, const inter_gen::InterGenContext *ctx, cons
 {
     if (!ctx) {
         cout << colorCode(FileColor::BRIGHT_YELLOW) << "Warning: [ " << msg << " ] in " << file << ":" << line << endl;
-            return;
-}
+        return;
+    }
     cout << colorCode(FileColor::BRIGHT_YELLOW) << "Warning: [ " << msg << " ] in " << file << ":" << line << endl
          << "    Source: " << ctx->sourcePath << ":" << ctx->currLine << endl;
 }

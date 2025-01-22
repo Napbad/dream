@@ -112,7 +112,6 @@ void logWarn(const std::string &msg, const inter_gen::InterGenContext *ctx, cons
 
 void logInfo(const std::string &msg, const inter_gen::InterGenContext *ctx, const std::string &file, int line);
 
-
 #else
 
 void logErr(const std::string &msg);

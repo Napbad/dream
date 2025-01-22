@@ -58,7 +58,7 @@ class FunctionMetaData
     VariableMetaData *getArgMetaData(const std::string &name);
     void setReturnMetaData(Value *value, VariableMetaData *variableMetaData);
 
-    FunctionMetaData(std::string  name, FunctionType * type, InterGenContext * ctx);
+    FunctionMetaData(std::string name, FunctionType *type, InterGenContext *ctx);
 
     void addArg(const std::string &name, Value *arg, Type *type, VariableMetaData *argMeteData)
     {
@@ -258,11 +258,8 @@ class VariableMetaData
     void enterNewScope(void *voidArg, bool newNullable);
     void enterNewScope(bool newMutable, bool newNullable);
 
-    VariableMetaData(const std::string & name,
-                    Type* varType,
-                    bool isMutable = false,
-                    bool isNullable = false,
-                    InterGenContext * ctx = nullptr);
+    VariableMetaData(const std::string &name, Type *varType, bool isMutable = false, bool isNullable = false,
+                     InterGenContext *ctx = nullptr);
 
   private:
     std::string name_;

@@ -54,7 +54,6 @@ namespace parser
 using std::map;
 using std::string;
 
-
 // QualifiedNameNode is considered as an expression which represent the variable
 Value *QualifiedNameNode::codeGen(inter_gen::InterGenContext *ctx) const
 {
@@ -62,7 +61,7 @@ Value *QualifiedNameNode::codeGen(inter_gen::InterGenContext *ctx) const
     ctx->currLine = this->lineNum;
 
     // get the value from exist variables
-    Value * value = ctx->getVal(this->getName());
+    Value *value = ctx->getVal(this->getName());
 
     // return it
     return value;
@@ -86,12 +85,12 @@ Value *ProgramNode::codeGen(inter_gen::InterGenContext *ctx) const
     return nullptr;
 }
 
-bool detectType(const TypeNode* typeNode, const VariableDeclarationNode* node, inter_gen::InterGenContext* ctx, Type *varType)
+bool detectType(const TypeNode *typeNode, const VariableDeclarationNode *node, inter_gen::InterGenContext *ctx,
+                Type *varType)
 {
     if (typeNode == nullptr) {
         // auto detect type
         if (node->value == nullptr) {
-            delete varType;
             varType = nullptr;
             return false;
         }
@@ -102,26 +101,31 @@ bool detectType(const TypeNode* typeNode, const VariableDeclarationNode* node, i
     }
 
     varType = util::typeOf(node->type, ctx);
-        if (!varType) {
-            delete varType;
-            varType = nullptr;
-            util::logErr("unknown type: " + node->type->getName(), ctx, __FILE__, __LINE__);
-            return false;
-        }
-        return true;
+    if (!varType) {
+        varType = nullptr;
+#ifdef D_DEBUG
+        util::logErr("unknown type: " + node->type->getName(), ctx, __FILE__, __LINE__);
+#else
+        util::logErr("unknown type: " + node->type->getName(), ctx);
+#endif
+        return false;
+    }
+    return true;
 }
 
 Value *VariableDeclarationNode::codeGen(inter_gen::InterGenContext *ctx) const
 {
     // sync the context position
     ctx->currLine = this->lineNum;
+    ctx->setDefiningVariable(true);
 
     // find the type of variable
     Type *varType = nullptr;
 
     if (detectType(type, this, ctx, varType)) {
 #ifdef D_DEBUG
-        util::logErr("can not detect type [no initial expression]: " + variableName->getName(), ctx, __FILE__, __LINE__);
+        util::logErr("can not detect type [no initial expression]: " + variableName->getName(), ctx, __FILE__,
+                     __LINE__);
 #else
         util::logErr("can not detect type [no initial expression]: " + variableName->getName(), ctx);
 #endif
@@ -142,11 +146,14 @@ Value *VariableDeclarationNode::codeGen(inter_gen::InterGenContext *ctx) const
     if (this->variableGenerated) {
         BUILDER.CreateStore(this->variableGenerateValue, allocaVar, false);
     }
+
+    ctx->setDefiningVariable(false);
+
     // return the value
     return allocaVar;
 }
 
-Value *FunctionDeclarationNode::codeGen(inter_gen::InterGenContext *ctx)const
+Value *FunctionDeclarationNode::codeGen(inter_gen::InterGenContext *ctx) const
 {
     // sync the context of the node
     ctx->currLine = this->lineNum;
@@ -170,8 +177,7 @@ Value *FunctionDeclarationNode::codeGen(inter_gen::InterGenContext *ctx)const
     const auto basicBlock = BasicBlock::Create(LLVMCTX, util::getFunBasicBlockName(&this->name), function);
     ctx->pushBlock(basicBlock);
 
-
-    for (const auto stmt: *this->block) {
+    for (const auto stmt : *this->block) {
         stmt->codeGen(ctx);
     }
 #ifdef D_DEBUG
@@ -187,7 +193,8 @@ Value *FunctionDeclarationNode::codeGen(inter_gen::InterGenContext *ctx)const
     return function;
 }
 
-Value * BinaryExpressionNode::codeGen(inter_gen::InterGenContext *ctx) const{
+Value *BinaryExpressionNode::codeGen(inter_gen::InterGenContext *ctx) const
+{
 
     ctx->currLine = this->lineNum;
     // Generate code for left-hand side and right-hand side Expressions
@@ -210,8 +217,7 @@ Value * BinaryExpressionNode::codeGen(inter_gen::InterGenContext *ctx) const{
             }
         } else {
 #ifdef D_DEBUG
-            util::logErr("Type mismatch in binary Expression", ctx,
-                         __FILE__, __LINE__);
+            util::logErr("Type mismatch in binary Expression", ctx, __FILE__, __LINE__);
 #else
             util::logErr("Type mismatch in binary Expression", ctx);
 #endif
@@ -223,7 +229,7 @@ Value * BinaryExpressionNode::codeGen(inter_gen::InterGenContext *ctx) const{
     const bool isFloatingPoint = lhsType->isFloatingPointTy();
 
     switch (operatorType) {
-// Arithmetic operators
+        // Arithmetic operators
     case PLUS:
         return isFloatingPoint ? BUILDER.CreateFAdd(lhsVal, rhsVal, "addtmp")
                                : BUILDER.CreateAdd(lhsVal, rhsVal, "addtmp");
@@ -272,9 +278,7 @@ Value * BinaryExpressionNode::codeGen(inter_gen::InterGenContext *ctx) const{
     case SHIFT_LEFT:
         return BUILDER.CreateShl(lhsVal, rhsVal, "lshifttmp");
     case SHIFT_RIGHT:
-        return BUILDER.CreateAShr(lhsVal, rhsVal, "rshifttmp");
-    case LOGIC_SHIFT_RIGHT:
-        return BUILDER.CreateLShr(lhsVal, rhsVal, "urshifttmp");
+        return BUILDER.CreateAShr(lhsVal, rhsVal, "urshifttmp");
 
     // Assignment operators
     case ASSIGN:
@@ -307,18 +311,18 @@ Value * BinaryExpressionNode::codeGen(inter_gen::InterGenContext *ctx) const{
 
     default:
 #ifdef D_DEBUG
-        util::logErr("Unknown binary operator", ctx,
-                     __FILE__, __LINE__);
+        util::logErr("Unknown binary operator", ctx, __FILE__, __LINE__);
 #else
-         util::logErr("Unknown binary operator", ctx);
+        util::logErr("Unknown binary operator", ctx);
 #endif
         return nullptr;
     }
 }
 
-Value * UnaryExpressionNode::codeGen(inter_gen::InterGenContext *ctx) const{
+Value *UnaryExpressionNode::codeGen(inter_gen::InterGenContext *ctx) const
+{
 
-     ctx->currLine = this->lineNum;
+    ctx->currLine = this->lineNum;
     // Generate code for the expression of the unary operation
     Value *operVal = expression->codeGen(ctx);
 
@@ -341,8 +345,7 @@ Value * UnaryExpressionNode::codeGen(inter_gen::InterGenContext *ctx) const{
         // }
 
 #ifdef D_DEBUG
-        util::logErr("Invalid pointer dereference", ctx,
-                     __FILE__, __LINE__);
+        util::logErr("Invalid pointer dereference", ctx, __FILE__, __LINE__);
 #else
         util::logErr("Invalid pointer dereference", ctx);
 #endif
@@ -351,8 +354,8 @@ Value * UnaryExpressionNode::codeGen(inter_gen::InterGenContext *ctx) const{
         return BUILDER.CreateNeg(operVal, "negate");
     case BIT_AND:
 
-        if (LoadInst * loadInst = dyn_cast<LoadInst>(operVal)) {
-            Value * ptr = loadInst->getOperand(0);
+        if (LoadInst *loadInst = dyn_cast<LoadInst>(operVal)) {
+            Value *ptr = loadInst->getOperand(0);
             return ptr;
         }
 
@@ -406,16 +409,51 @@ Value * UnaryExpressionNode::codeGen(inter_gen::InterGenContext *ctx) const{
     }
 }
 
+Value *FunctionCallExpressionNode::codeGen(inter_gen::InterGenContext *ctx) const
+{
+    // context sync
+    ctx->currLine = this->lineNum;
+
+    // find the function, create the function
+    Function *function = MODULE->getFunction(name->getName());
+    if (!function) {
+#ifdef D_DEBUG
+        util::logErr("Function " + name->getName() + " not found", ctx, __FILE__, __LINE__);
+#else
+        util::logErr("Function " + name->getName() + " not found", ctx);
+#endif
+    }
+
+    // build args
+    std::vector<Value *> functionArgs;
+    for (auto arg : *args) {
+        functionArgs.push_back(arg->codeGen(ctx));
+    }
+
+    // call
+    Value *callResult = BUILDER.CreateCall(function, functionArgs, "call");
+
+    // return the value
+    return callResult;
+}
+
 } // namespace parser
 
 namespace inter_gen
 {
 FunctionMetaData *InterGenContext::getFunMetaData(const std::string &name, const InterGenContext *ctx)
 {
-    FunctionMetaData * funMetaData = metaData->getFunction(name);
-    // REPORT_ERROR("error at: " + ctx->sourcePath + ":" + std::to_string(ctx->currLine) + " \nFunction " + name +
-    //                  " not found",
-    //              __FILE__, __LINE__);
+    FunctionMetaData *funMetaData = metaData->getFunction(name);
+
+    if (funMetaData) {
+        return funMetaData;
+    }
+#ifdef D_DEBUG
+    util::logErr("Function " + name + " not found", ctx, __FILE__, __LINE__);
+#else
+    util::logErr("Function " + name + " not found", ctx);
+#endif
+
     return nullptr;
 }
 
@@ -645,8 +683,8 @@ std::pair<Value *, VariableMetaData *> InterGenContext::getValWithMetadata(const
     return {nullptr, nullptr};
 }
 
-
-void InterGenContext::addFunctionToMetaData(FunctionMetaData *function_meta_data)const{
+void InterGenContext::addFunctionToMetaData(FunctionMetaData *function_meta_data) const
+{
     metaData->addFunction(function_meta_data);
 }
 

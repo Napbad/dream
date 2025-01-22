@@ -22,6 +22,7 @@ class InterGenContext;
 namespace parser
 {
 
+class VariableDeclarationNode;
 class TypeNode;
 
 // Basic AST Node
@@ -253,9 +254,9 @@ class BoolNode final : public Expression
     }
 };
 
-class BinaryExpressionNode final : public Expression 
+class BinaryExpressionNode final : public Expression
 {
-    public:
+  public:
     Expression *left = nullptr;
     Expression *right = nullptr;
     int operatorType;
@@ -272,23 +273,20 @@ class BinaryExpressionNode final : public Expression
 
 class UnaryExpressionNode final : public Expression
 {
-public:
+  public:
     int operatorType;
     Expression *expression;
 
-    UnaryExpressionNode(
-        int operatorType,
-        Expression *expression
-    ): operatorType(operatorType), expression(expression) {
-
+    UnaryExpressionNode(int operatorType, Expression *expression) : operatorType(operatorType), expression(expression)
+    {
     }
-    ~UnaryExpressionNode() {
+    ~UnaryExpressionNode()
+    {
         delete expression;
     }
 
     llvm::Value *codeGen(inter_gen::InterGenContext *ctx) const;
 };
-
 
 // Represents a program in the AST
 class ProgramNode final : public ASTNode
@@ -347,13 +345,13 @@ class FunctionDeclarationNode final : public Statement
 {
   public:
     std::string name;
-    std::vector<Expression *> *parameterList;
+    std::vector<VariableDeclarationNode *> *parameterList;
     TypeNode *returnType;
     std::vector<Statement *> *block;
 
     // Constructor for FunctionDeclarationNode
-    FunctionDeclarationNode(std::string &name, std::vector<Expression *> *parameterList, TypeNode *returnType,
-                            std::vector<Statement *> *block)
+    FunctionDeclarationNode(std::string &name, std::vector<VariableDeclarationNode *> *parameterList,
+                            TypeNode *returnType, std::vector<Statement *> *block)
         : name(std::move(name)), parameterList(parameterList), returnType(returnType), block(block)
     {
     }
@@ -422,6 +420,7 @@ class FunctionCallExpressionNode final : public Expression
         }
         delete args;
     }
+    llvm::Value *codeGen(inter_gen::InterGenContext *ctx) const;
 };
 
 // Represents a return type in the AST
@@ -545,7 +544,8 @@ class VariableDeclarationNode final : public Statement
     llvm::Value *codeGen(inter_gen::InterGenContext *ctx) const;
 
     void generateVariable(llvm::Value *value);
-private:
+
+  private:
     bool variableGenerated = false;
     llvm::Value *variableGenerateValue = nullptr;
 };

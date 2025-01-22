@@ -11,8 +11,9 @@ namespace dap::inter_gen
 class InterGenContext;
 }
 
-namespace dap::util {
-    bool canDeclareMainFun(inter_gen::InterGenContext *ctx);
+namespace dap::util
+{
+bool canDeclareMainFun(inter_gen::InterGenContext *ctx);
 }
 
-#endif //SYNTAX_CHECK_UTIL_H
+#endif // SYNTAX_CHECK_UTIL_H

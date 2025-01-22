@@ -19,11 +19,11 @@ find_package(BISON REQUIRED)
 find_package(FLEX REQUIRED)
 
 if (NOT BISON_EXECUTABLE)
-  message(FATAL_ERROR "BISON executable not found")
+    message(FATAL_ERROR "BISON executable not found")
 endif ()
 
 if (NOT FLEX_EXECUTABLE)
-  message(FATAL_ERROR "FLEX executable not found")
+    message(FATAL_ERROR "FLEX executable not found")
 endif ()
 
 add_custom_command(
@@ -84,6 +84,10 @@ add_executable(dap_compiler
         utilities/syntax_check_util.h
         utilities/name_format_util.h
         utilities/name_format_util.cpp
+        machine_gen/codeGen_mechine.cpp
+        machine_gen/codeGen_mechine.h
+        inter_gen/preprocessing/includeAnaylize.h
+        inter_gen/preprocessing/includeAnaylize.cpp
 )
 
 

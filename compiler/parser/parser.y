@@ -265,14 +265,14 @@ std::string tokenToString(int token) {
 %type <expr> expression functionCall bool_ binaryExpression unaryExpression
 %type <stmt> importStmt packageDecl statement functionDeclaration variableDecl constantDecl structDecl returnStmt
 %type <stmtVec> statements
-%type <exprVec> expressions
+%type <exprVec> expressions 
 %type <typeNode> type
 %type <boolval> mutableModifier nullableModifier TRUE FALSE
 %type <token> binaryOperator unaryOperator
 %type <intExpr> integer
 %type <floatExpr> float_
 %type <strExpr> string_ CHAR_LITERAL
-%type <varDeclVec> structFields
+%type <varDeclVec> structFields functionParameters
 
 %start program
 %%
@@ -285,22 +285,22 @@ program:
     };
 
 variableDecl:
-    mutableModifier type identifier nullableModifier ASSIGN expression SEMICOLON {
+    mutableModifier type identifier nullableModifier ASSIGN expression {
         $$ = new dap::parser::VariableDeclarationNode($2, $6, $3, $4, $1);
         // Log message when parsing a variable declaration node
         parserLog("Parsed variable declaration node");
     }
-    | mutableModifier identifier nullableModifier ASSIGN expression SEMICOLON {
+    | mutableModifier identifier nullableModifier ASSIGN expression {
         $$ = new dap::parser::VariableDeclarationNode(nullptr, $5, $2, $3, $1);
         // Log message when parsing a variable declaration node without explicit type
         parserLog("Parsed variable declaration node without explicit type");
     }
-    | mutableModifier type identifier nullableModifier SEMICOLON {
+    | mutableModifier type identifier nullableModifier {
         $$ = new dap::parser::VariableDeclarationNode($2, nullptr, $3, $4, $1);
         // Log message when parsing a variable declaration node
         parserLog("Parsed variable declaration node");
     }
-    | mutableModifier identifier nullableModifier SEMICOLON {
+    | mutableModifier identifier nullableModifier {
         $$ = new dap::parser::VariableDeclarationNode(nullptr, nullptr, $2, $3, $1);
         // Log message when parsing a variable declaration node without explicit type
         parserLog("Parsed variable declaration node without explicit type");
@@ -308,12 +308,12 @@ variableDecl:
     ;
 
 constantDecl:
-    CONST type identifier ASSIGN expression SEMICOLON {
+    CONST type identifier ASSIGN expression {
         $$ = new dap::parser::ConstantDeclarationNode($2, $3, $5);
         // Log message when parsing a constant declaration node
         parserLog("Parsed constant declaration node");
     } 
-    | CONST identifier ASSIGN expression SEMICOLON {
+    | CONST identifier ASSIGN expression {
         $$ = new dap::parser::ConstantDeclarationNode(nullptr, $2, $4);
         // Log message when parsing a constant declaration node
         parserLog("Parsed constant declaration node");
@@ -387,7 +387,7 @@ functionDeclaration:
         // Log message when parsing a function declaration node without parameters
         parserLog("Parsed function declaration node without parameters");
     }
-    | FUN identifier LEFT_PAREN expressions RIGHT_PAREN LEFT_BRACE statements RIGHT_BRACE {
+    | FUN identifier LEFT_PAREN functionParameters RIGHT_PAREN LEFT_BRACE statements RIGHT_BRACE {
         if ($2->name_parts->size()!= 1) {
             // Call the error function if the identifier is invalid
             yyerror("Invalid identifier");
@@ -401,7 +401,7 @@ functionDeclaration:
         parserLog("Parsed function declaration node with parameters");
 
     }
-    | FUN identifier LEFT_PAREN expressions RIGHT_PAREN type LEFT_BRACE statements RIGHT_BRACE {
+    | FUN identifier LEFT_PAREN functionParameters RIGHT_PAREN type LEFT_BRACE statements RIGHT_BRACE {
         if ($2->name_parts->size()!= 1) {
             // Call the error function if the identifier is invalid
             yyerror("Invalid identifier");
@@ -414,7 +414,7 @@ functionDeclaration:
         // Log message when parsing a function declaration node with parameters and return type
         parserLog("Parsed function declaration node with parameters and return type");
     }
-    | FUN identifier LEFT_PAREN RIGHT_PAREN {
+    | FUN identifier LEFT_PAREN RIGHT_PAREN SEMICOLON {
         if ($2->name_parts->size()!= 1) {
             // Call the error function if the identifier is invalid
             yyerror("Invalid identifier");
@@ -426,7 +426,7 @@ functionDeclaration:
         // Log message when parsing a function declaration node without parameters
         parserLog("Parsed function declaration node without parameters");
     }
-    | FUN identifier LEFT_PAREN RIGHT_PAREN type {
+    | FUN identifier LEFT_PAREN RIGHT_PAREN type SEMICOLON {
         if ($2->name_parts->size()!= 1) {
             // Call the error function if the identifier is invalid
             yyerror("Invalid identifier");
@@ -438,7 +438,7 @@ functionDeclaration:
         // Log message when parsing a function declaration node without parameters
         parserLog("Parsed function declaration node without parameters");
     }
-    | FUN identifier LEFT_PAREN expressions RIGHT_PAREN {
+    | FUN identifier LEFT_PAREN functionParameters RIGHT_PAREN SEMICOLON {
         if ($2->name_parts->size()!= 1) {
             // Call the error function if the identifier is invalid
             yyerror("Invalid identifier");
@@ -452,7 +452,7 @@ functionDeclaration:
         parserLog("Parsed function declaration node with parameters");
 
     }
-    | FUN identifier LEFT_PAREN expressions RIGHT_PAREN type {
+    | FUN identifier LEFT_PAREN functionParameters RIGHT_PAREN type SEMICOLON {
         if ($2->name_parts->size()!= 1) {
             // Call the error function if the identifier is invalid
             yyerror("Invalid identifier");
@@ -466,6 +466,25 @@ functionDeclaration:
         parserLog("Parsed function declaration node with parameters and return type");
     };
 
+
+functionParameters:
+    /* empty */ {
+        $$ = new std::vector<dap::parser::VariableDeclarationNode*>();
+        // Log message when parsing a variable declaration node without explicit type
+        parserLog("Parsed variable declaration node without explicit type");
+    }
+    | variableDecl  {
+        $$ = new std::vector<dap::parser::VariableDeclarationNode*>();
+        $$->push_back(dynamic_cast<dap::parser::VariableDeclarationNode*>($1));
+        // Log message when parsing a variable declaration node
+        parserLog("Parsed variable declaration node");
+    }
+    | functionParameters COMMA variableDecl  {
+        $$ = $1;
+        $1->push_back(dynamic_cast<dap::parser::VariableDeclarationNode*>($3));
+        // Log message when parsing a variable declaration node
+        parserLog("Parsed variable declaration node");
+    };
 
 nullableModifier:
     /* empty */ {
@@ -667,12 +686,12 @@ statement:
         // Log message when parsing a function declaration statement node
         parserLog("Parsed function declaration statement node: [" + (dynamic_cast<dap::parser::FunctionDeclarationNode*>($1))->name + "]");
     }
-    | variableDecl {
+    | variableDecl SEMICOLON {
         $$ = $1;
         // Log message when parsing a variable declaration statement node
         parserLog("Parsed variable declaration statement node: [" + (dynamic_cast<dap::parser::VariableDeclarationNode*>($1))->variableName->getName() + "]");
     }
-    | constantDecl { 
+    | constantDecl SEMICOLON { 
         $$ = $1;
         // Log message when parsing a constant declaration statement node
         parserLog("Parsed constant declaration statement node: [" + (dynamic_cast<dap::parser::ConstantDeclarationNode*>($1))->name->getName() + "]");
@@ -710,6 +729,11 @@ expressions:
     /* empty */ {
         $$ = new std::vector<dap::parser::Expression*>();
         // Log message when starting to parse a list of expressions
+        parserLog("Started parsing expressions list");
+    }
+    | expression {
+        $$ = new std::vector<dap::parser::Expression*>();
+        $$->push_back($1);
         parserLog("Started parsing expressions list");
     }
     | expressions COMMA expression {

@@ -87,8 +87,9 @@ void FunctionMetaData::setReturnMetaData(Value *value, VariableMetaData *variabl
     returnVal = {value, variableMetaData};
 }
 
-FunctionMetaData::FunctionMetaData(std::string name, FunctionType *type, InterGenContext *ctx):
-    name_(std::move(name)), funType(type), ctx(ctx) {
+FunctionMetaData::FunctionMetaData(std::string name, FunctionType *type, InterGenContext *ctx)
+    : name_(std::move(name)), funType(type), ctx(ctx)
+{
 }
 
 void ModuleMetaData::addGlobalValMetaData(VariableMetaData *metaData)
@@ -147,7 +148,9 @@ void VariableMetaData::enterNewScope(bool newMutable, bool newNullable)
     nullableStack_.push(newNullable);
 }
 
-VariableMetaData::VariableMetaData(const std::string &name, Type* varType, bool isMutable, bool isNullable, InterGenContext *ctx){
+VariableMetaData::VariableMetaData(const std::string &name, Type *varType, bool isMutable, bool isNullable,
+                                   InterGenContext *ctx)
+{
     name_ = name;
     type_ = varType;
     mutableStack_.push(isMutable);
