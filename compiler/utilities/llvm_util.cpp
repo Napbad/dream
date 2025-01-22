@@ -1,22 +1,24 @@
-#include "llvm_util.h"
 
 #include <llvm/IR/DerivedTypes.h>
-// //
-// // Created by napbad on 10/28/24.
-// //
+#include <llvm/Pass.h>
+#include <llvm/Support/TargetSelect.h>
 
-// #include "llvm_util.h"
-// #include <unordered_map>
 
-// #include "data_struct_util.h"
-// #include "file_util.h"
+#include "llvm_util.h"
+
 namespace dap::util
 {
 static std::unordered_map<std::string, llvm::Type *> typeMap = {};
 
 llvm::Type *typeOf(const parser::TypeNode *type, const inter_gen::InterGenContext *ctx, parser::Expression *size)
 {
-
+    for (auto &[key, val] : typeMap)
+    {
+        if (key == type->getName())
+        {
+            return val;
+        }
+    }
     return nullptr;
 }
 
@@ -37,6 +39,16 @@ void initTypeMap(llvm::LLVMContext *llvmCtx)
     typeMap.emplace(std::string("llong"), llvm::Type::getInt128Ty(*llvmCtx));
     typeMap.emplace(std::string("ullong"), llvm::Type::getInt128Ty(*llvmCtx));
     typeMap.emplace(std::string("double"), llvm::Type::getDoubleTy(*llvmCtx));
+}
+
+void initTargets(){
+
+    llvm::InitializeAllTargetInfos();
+    llvm::InitializeAllTargets();
+    llvm::InitializeAllTargetMCs();
+    llvm::InitializeAllAsmParsers();
+    llvm::InitializeAllAsmPrinters();
+
 }
 
 } // namespace dap::util

@@ -23,6 +23,9 @@ void readConfig(std::string configPath)
 int initCompiler(llvm::LLVMContext *llvmCtx)
 {
     util::initTypeMap(llvmCtx);
+
+    util::initTargets();
+
     return 0;
 }
 

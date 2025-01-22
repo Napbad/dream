@@ -177,8 +177,12 @@ Value *FunctionDeclarationNode::codeGen(inter_gen::InterGenContext *ctx) const
     const auto basicBlock = BasicBlock::Create(LLVMCTX, util::getFunBasicBlockName(&this->name), function);
     ctx->pushBlock(basicBlock);
 
+    if (this->block) {
+
+
     for (const auto stmt : *this->block) {
         stmt->codeGen(ctx);
+    }
     }
 #ifdef D_DEBUG
     util::logInfo("Function Declaration: " + this->name, ctx, __FILE__, __LINE__);
@@ -441,11 +445,10 @@ Value *FunctionCallExpressionNode::codeGen(inter_gen::InterGenContext *ctx) cons
 
 namespace inter_gen
 {
-FunctionMetaData *InterGenContext::getFunMetaData(const std::string &name, const InterGenContext *ctx)
+FunctionMetaData *InterGenContext::getFunMetaData(const std::string &name, const InterGenContext *ctx)const
 {
-    FunctionMetaData *funMetaData = metaData->getFunction(name);
 
-    if (funMetaData) {
+    if (FunctionMetaData *funMetaData = metaData->getFunction(name)) {
         return funMetaData;
     }
 #ifdef D_DEBUG
@@ -475,7 +478,7 @@ std::pair<Value *, VariableMetaData *> InterGenContext::getValWithMetadata(const
 
 void InterGenContext::genIR(parser::ProgramNode *program)
 {
-    // program->codeGen(this);
+    program->codeGen(this);
 
     if (!mainFunction && (sourcePath.ends_with("/main.dap") || sourcePath == "main.dap")) {
         constexpr std::vector<Type *> argTypes;
@@ -540,14 +543,14 @@ void InterGenContext::genExec(parser::ProgramNode *program)
     }
 
     // Target machine setup
-    const std::string targetTriple = llvm::sys::getDefaultTargetTriple();
+    const std::string targetTriple = sys::getDefaultTargetTriple();
     module->setTargetTriple(targetTriple);
 
     std::string error;
-    const llvm::Target *target = llvm::TargetRegistry::lookupTarget(targetTriple, error);
+    const Target *target = TargetRegistry::lookupTarget(targetTriple, error);
 
     if (!target) {
-        llvm::errs() << "Error: " << error;
+        errs() << "Error: " << error;
         return;
     }
 
@@ -555,16 +558,16 @@ void InterGenContext::genExec(parser::ProgramNode *program)
     const std::string cpu = "generic";
     const std::string features;
 
-    const llvm::TargetOptions opt;
-    std::optional<llvm::Reloc::Model>();
-    llvm::TargetMachine *targetMachine =
-        target->createTargetMachine(targetTriple, cpu, features, opt, llvm::Reloc::PIC_);
+    const TargetOptions opt;
+    std::optional<Reloc::Model>();
+    TargetMachine *targetMachine =
+        target->createTargetMachine(targetTriple, cpu, features, opt, Reloc::PIC_);
 
     module->setDataLayout(targetMachine->createDataLayout());
 
     // Create the MCJIT execution engine
     std::unique_ptr<Module> modulePtr(module);
-    auto mem_mgr = std::make_unique<llvm::SectionMemoryManager>();
+    auto mem_mgr = std::make_unique<SectionMemoryManager>();
 
     // Save the generated code to a file
     std::error_code EC;
@@ -573,23 +576,23 @@ void InterGenContext::genExec(parser::ProgramNode *program)
     std::fstream outputFile(outputPath, std::ios::out);
     outputFile.close();
     filesToCompile->push_back(outputPath);
-    llvm::raw_fd_ostream dest(outputPath, EC, llvm::sys::fs::OF_None);
+    raw_fd_ostream dest(outputPath, EC, sys::fs::OF_None);
 
     if (EC) {
-        llvm::errs() << "Could not open file for writing: " << EC.message() << "\n";
+        errs() << "Could not open file for writing: " << EC.message() << "\n";
         return;
     }
 
-    llvm::legacy::PassManager pass;
-    if (targetMachine->addPassesToEmitFile(pass, dest, nullptr, llvm::CodeGenFileType::ObjectFile)) {
-        llvm::errs() << "TargetMachine can't emit a file of this type\n";
+    legacy::PassManager pass;
+    if (targetMachine->addPassesToEmitFile(pass, dest, nullptr, CodeGenFileType::ObjectFile)) {
+        errs() << "TargetMachine can't emit a file of this type\n";
         return;
     }
 
     pass.run(*module);
     dest.flush();
 
-    llvm::outs() << "Object file emitted to " << outputPath << "\n";
+    outs() << "Object file emitted to " << outputPath << "\n";
 }
 
 std::unordered_map<IncludeGraphNode *, bool> visited{};

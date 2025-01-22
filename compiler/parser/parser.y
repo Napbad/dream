@@ -755,7 +755,7 @@ structFields:
         // Log message when starting to parse a list of struct fields
         parserLog("Started parsing struct fields list");
     }
-    | structFields variableDecl {
+    | structFields variableDecl SEMICOLON {
         $$->push_back(dynamic_cast<dap::parser::VariableDeclarationNode*>($2));
         // Log message when adding a struct field to the struct fields list
         parserLog("Added struct field to struct fields list");

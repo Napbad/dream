@@ -135,6 +135,64 @@ std::string getStrFromVec(const std::vector<std::string> &vec, const std::string
     return res;
 }
 
+
+std::string basicTypeToString(BasicType type) {
+    std::string result;
+    switch (type) {
+    case BasicType::BOOL:
+        result = "BOOL";
+        break;
+    case BasicType::BYTE:
+        result = "BYTE";
+        break;
+    case BasicType::SHORT:
+        result = "SHORT";
+        break;
+    case BasicType::INT:
+        result = "INT";
+        break;
+    case BasicType::LONG:
+        result = "LONG";
+        break;
+    case BasicType::LLONG:
+        result = "LLONG";
+        break;
+    case BasicType::UBYTE:
+        result = "UBYTE";
+        break;
+    case BasicType::USHORT:
+        result = "USHORT";
+        break;
+    case BasicType::UINT:
+        result = "UINT";
+        break;
+    case BasicType::ULONG:
+        result = "ULONG";
+        break;
+    case BasicType::ULLONG:
+        result = "ULLONG";
+        break;
+    case BasicType::FLOAT:
+        result = "FLOAT";
+        break;
+    case BasicType::DOUBLE:
+        result = "DOUBLE";
+        break;
+    case BasicType::VOID:
+        result = "VOID";
+        break;
+    case BasicType::UNKNOWN:
+        result = "UNKNOWN";
+        break;
+    default:
+        result = "UNKNOWN";
+        break;
+    }
+    std::transform(result.begin(), result.end(), result.begin(), [](unsigned char c) {
+        return std::tolower(c);
+    });
+    return result;
+}
 std::string getLinesFromVec(const std::vector<std::string> &vector)
 {
     string res;

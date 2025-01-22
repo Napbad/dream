@@ -58,6 +58,9 @@ std::string dap::parser::QualifiedNameNode::getName() const
 
 std::string dap::parser::TypeNode::getName() const
 {
+    if (isBasicType) {
+        return util::basicTypeToString(basicType);
+    }
     std::string baseType = util::getStrFromVec(*typeBase->name_parts, ".");
     if (isArray) {
         return baseType + "[" + std::to_string(arraySize) + "]";

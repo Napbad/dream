@@ -1,5 +1,7 @@
 #include "parserMain.h"
 
+#include <fstream>
+
 namespace dap
 {
 std::unordered_map<parser::ProgramNode *, inter_gen::InterGenContext *> *programMap_d =
@@ -10,7 +12,7 @@ namespace parser
 
 std::string currentParsingFile = "";
 
-void parseFile(const std::string &file)
+std::pair<ProgramNode *, inter_gen::InterGenContext *> parseFile(const std::string &file)
 {
     // init
     yylineno = 1;
@@ -18,14 +20,21 @@ void parseFile(const std::string &file)
 
     currentParsingFile = file;
 
-    const auto openedFile = fopen(file.c_str(), "r");
+
+    FILE *openedFile = fopen(file.c_str(), "r");
+    // freopen(file.c_str(), "r", stdin);
+    // std::ifstream openedFile(file);
 
     yyrestart(openedFile);
 
     yyparse();
 
     // store program and context info
-    programMap_d->insert({program, new inter_gen::InterGenContext(file)});
+    auto pair = std::make_pair(program, new inter_gen::InterGenContext(file));
+    programMap_d->insert(pair);
+    fclose(openedFile);
+
+    return pair;
 }
 } // namespace parser
 

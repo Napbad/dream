@@ -15,6 +15,8 @@ llvm::Type *typeOf(const parser::TypeNode *type, const inter_gen::InterGenContex
 
 void initTypeMap(llvm::LLVMContext *llvmCtx);
 
+void initTargets();
+
 // /* Returns an LLVM type based on the identifier, which returns type for metadata (specially for pointer cause that
 //  * llvm's pointer do not have type  info) */
 // llvm::Type *typeOf_d(const parser::QualifiedNameNode &type, const inter_gen::InterGenContext *ctx, parser::Expr

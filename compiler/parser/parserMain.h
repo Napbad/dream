@@ -22,7 +22,7 @@ namespace dap::parser
 
 extern std::string currentParsingFile;
 
-void parseFile(const std::string &file);
+std::pair<ProgramNode *, inter_gen::InterGenContext *> parseFile(const std::string &file);
 } // namespace dap::parser
 
 #endif

@@ -7,10 +7,10 @@
 
 #include "common/define_d.h"
 
-// namespace dap::inter_gen
-// {
-// class InterGenContext;
-// };
+namespace dap::inter_gen
+{
+class InterGenContext;
+};
 
 namespace dap::util
 {

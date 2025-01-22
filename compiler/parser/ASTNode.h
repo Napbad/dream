@@ -5,11 +5,16 @@
 #ifndef ASTNODE_H
 #define ASTNODE_H
 
-#include "common/reserve.h"
 #include <llvm/IR/Value.h>
 #include <string>
 #include <utility>
 #include <vector>
+
+#include "common/reserve.h"
+#include "common/define_d.h"
+
+#include "utilities/log_util.h"
+
 
 namespace dap
 {
@@ -40,47 +45,26 @@ class ASTNode
     // Destructor for ASTNode
     virtual ~ASTNode() = default;
 
-    llvm::Value *codeGen(inter_gen::InterGenContext *ctx);
+    virtual llvm::Value *codeGen(inter_gen::InterGenContext *ctx) const {
+#ifdef D_DEBUG
+        util::logErr("Unimplement code generation function", ctx, __FILE__, __LINE__);
+#else
+        util::logErr("Unimplement code generation function", ctx);
+#endif
+        return nullptr;
+    }
 };
 
 // Base class for all AST nodes related to expressions
 class Expression : public ASTNode
 {
-  public:
-    // Constructor for Expression
-    explicit Expression() = default;
-    // Destructor for Expression
-    ~Expression() override
-    {
-        for (const ASTNode *child : children) {
-            delete child;
-        }
-    }
-    std::vector<ASTNode *> children;
-    llvm::Value *codeGen(inter_gen::InterGenContext *ctx)
-    {
-        return nullptr;
-    }
 };
 
 // Base class for all AST nodes related to statements
 class Statement : public ASTNode
 {
   public:
-    // Constructor for Statement
-
     Expression *value = nullptr;
-
-    explicit Statement() = default;
-
-    llvm::Value *codeGen(inter_gen::InterGenContext *ctx)
-    {
-        if (value != nullptr) {
-            return value->codeGen(ctx);
-        }
-
-        return nullptr;
-    }
 };
 
 class QualifiedNameNode final : public Expression
@@ -101,7 +85,7 @@ class QualifiedNameNode final : public Expression
 
     [[nodiscard]] std::string getName() const;
 
-    llvm::Value *codeGen(inter_gen::InterGenContext *ctx) const;
+    llvm::Value *codeGen(inter_gen::InterGenContext *ctx) const override;
 };
 
 class IntegerNode final : public Expression
@@ -268,7 +252,7 @@ class BinaryExpressionNode final : public Expression
         this->operatorType = operatorType;
     }
 
-    llvm::Value *codeGen(inter_gen::InterGenContext *ctx) const;
+    llvm::Value *codeGen(inter_gen::InterGenContext *ctx) const override;
 };
 
 class UnaryExpressionNode final : public Expression
@@ -285,7 +269,7 @@ class UnaryExpressionNode final : public Expression
         delete expression;
     }
 
-    llvm::Value *codeGen(inter_gen::InterGenContext *ctx) const;
+    llvm::Value *codeGen(inter_gen::InterGenContext *ctx) const override;
 };
 
 // Represents a program in the AST
@@ -313,7 +297,7 @@ class ProgramNode final : public ASTNode
     {
     }
 
-    llvm::Value *codeGen(inter_gen::InterGenContext *ctx) const;
+    llvm::Value *codeGen(inter_gen::InterGenContext *ctx) const override;
 
     // Destructor for ProgramNode
     ~ProgramNode() override
@@ -359,7 +343,7 @@ class FunctionDeclarationNode final : public Statement
     // Destructor for FunctionDeclarationNode
     ~FunctionDeclarationNode() override;
 
-    llvm::Value *codeGen(inter_gen::InterGenContext *ctx) const;
+    llvm::Value *codeGen(inter_gen::InterGenContext *ctx) const override;
 };
 
 // Represents a parameter list in the AST
@@ -420,7 +404,7 @@ class FunctionCallExpressionNode final : public Expression
         }
         delete args;
     }
-    llvm::Value *codeGen(inter_gen::InterGenContext *ctx) const;
+    llvm::Value *codeGen(inter_gen::InterGenContext *ctx) const override;
 };
 
 // Represents a return type in the AST
@@ -541,7 +525,7 @@ class VariableDeclarationNode final : public Statement
         delete type;
         delete expression;
     }
-    llvm::Value *codeGen(inter_gen::InterGenContext *ctx) const;
+    llvm::Value *codeGen(inter_gen::InterGenContext *ctx) const override;
 
     void generateVariable(llvm::Value *value);
 

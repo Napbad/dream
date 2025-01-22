@@ -8,6 +8,8 @@
 #include <string>
 #include <vector>
 
+#include "common/reserve.h"
+
 namespace dap::util
 {
 /**
@@ -115,6 +117,8 @@ bool strIsOnlyIdent(const std::string &ident);
 std::string getTextFromVec(const std::vector<std::string> &vec);
 
 std::string getStrFromVec(const std::vector<std::string> &vec, const std::string &delimiter);
+
+std::string basicTypeToString(BasicType type);
 
 /**
  * Gets lines from a vector of strings.

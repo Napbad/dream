@@ -6,6 +6,7 @@
 #define CONFIG_H
 #include <string>
 #include <vector>
+#include <llvm/IR/LLVMContext.h>
 
 namespace dap
 {
@@ -22,7 +23,7 @@ extern std::vector<std::string> *filesToCompile;
 
 void readConfig(std::string configPath);
 
-int initCompiler();
+int initCompiler(llvm::LLVMContext *llvmContext);
 } // namespace dap
 
 #endif // CONFIG_H

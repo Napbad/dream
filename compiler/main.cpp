@@ -1,13 +1,7 @@
-//
-// Created by napbad on 1/9/25.
-//
 #include <fstream>
 #include <getopt.h>
 #include <iostream>
-
 #include <llvm/Bitstream/BitstreamReader.h>
-#include <llvm/Pass.h>
-#include <llvm/Support/TargetSelect.h>
 
 #include "common/config.h"
 #include "inter_gen/preprocessing/includeAnaylize.h"
@@ -17,6 +11,11 @@
 #include "utilities/log_util.h"
 #include "utilities/obj_util.h"
 
+namespace dap::inter_gen
+{
+extern llvm::LLVMContext *llvmContext;
+}
+
 using std::cerr;
 using std::cout;
 using std::endl;
@@ -24,114 +23,85 @@ using std::string;
 
 #ifdef D_DEBUG
 static option long_options[] = {{"help", no_argument, nullptr, 'h'},
-                                {"directory", required_argument, nullptr, 'd'},
-                                {"debug", no_argument, nullptr, 'D'},
-                                {"generate-ir", no_argument, nullptr, 'i'},
-                                {"generate-exec", no_argument, nullptr, 'e'},
-                                {"version", no_argument, nullptr, 'v'},
-                                {"output", required_argument, nullptr, 'o'},
-                                {"output-exec-name", required_argument, nullptr, 'n'},
-                                {"source-runtime-dir", required_argument, nullptr, 's'},
-                                {nullptr, 0, nullptr, 0}};
+                            {"directory", required_argument, nullptr, 'd'},
+                            {"debug", no_argument, nullptr, 'D'},
+                            {"generate-ir", no_argument, nullptr, 'i'},
+                            {"generate-exec", no_argument, nullptr, 'e'},
+                            {"version", no_argument, nullptr, 'v'},
+                            {"output", required_argument, nullptr, 'o'},
+                            {"output-exec-name", required_argument, nullptr, 'n'},
+                            {"source-runtime-dir", required_argument, nullptr, 's'},
+                            {nullptr, 0, nullptr, 0}};
 #else
-
 static option long_options[] = {{"help", no_argument, nullptr, 'h'},
-                                {"directory", required_argument, nullptr, 'd'},
-                                {"debug", no_argument, nullptr, 'D'},
-                                {"generate-ir", no_argument, nullptr, 'i'},
-                                {"generate-exec", no_argument, nullptr, 'e'},
-                                {"version", no_argument, nullptr, 'v'},
-                                {"output", required_argument, nullptr, 'o'},
-                                {"output-exec-name", required_argument, nullptr, 'n'},
-                                {nullptr, 0, nullptr, 0}};
-
+                            {"directory", required_argument, nullptr, 'd'},
+                            {"debug", no_argument, nullptr, 'D'},
+                            {"generate-ir", no_argument, nullptr, 'i'},
+                            {"generate-exec", no_argument, nullptr, 'e'},
+                            {"version", no_argument, nullptr, 'v'},
+                            {"output", required_argument, nullptr, 'o'},
+                            {"output-exec-name", required_argument, nullptr, 'n'},
+                            {nullptr, 0, nullptr, 0}};
 #endif
 
-bool checkInputPathValidWithRemind(const std::string &inputPath);
+bool checkInputPathValidWithRemind(const std::string& inputPath);
 
-int main(const int argc, char **argv)
-{
-    dap::buildDir = "./build/";
-    int opt;
+struct CompilerOptions {
+    std::string inputPath;
+    std::vector<std::string> inputFiles;
+    std::string sourceRuntimeDir = "../../dap/runtime/";
     bool debugMode = false;
     bool compileDir = false;
     bool helpRequested = false;
     bool genIR = false;
     bool genExec = false;
-    string inputPath;
-    std::vector<std::string> inputFiles;
-    std::string sourceRuntimeDir = "../../dap/runtime/";
+    std::string buildDir = "./build/";
+    std::string targetExecName;
 
-    while ((opt = getopt_long(argc, argv, "n:d:o:ievhDs:", long_options, nullptr)) != -1) {
-        switch (opt) {
-        case 'h':
-            helpRequested = true;
-            break;
-        case 'd':
-            inputPath = optarg;
-            compileDir = true;
-            break;
-        case 'D':
-            debugMode = true;
-            break;
-        case 'i':
-            genIR = true;
-            break;
-        case 'e':
-            genExec = true;
-            break;
-        case 'v':
-            cout << "dap version: " << dap::D_VERSION << endl;
-            return 0;
-        case 'o':
-            dap::buildDir = optarg;
-            if (!dap::buildDir.ends_with("/")) {
-                dap::buildDir.append("/");
-            }
-            break;
-        case 'n':
-            dap::targetExecName = optarg;
-            break;
+    bool valid = true;
+};
 
-#ifdef D_DEBUG
-        case 's':
-            sourceRuntimeDir = optarg;
-            break;
-#endif
+CompilerOptions parseOptions(const int argc, char** argv);
 
-        default:
-            cerr << "Invalid option: " << static_cast<char>(opt) << endl;
-            cout << "Usage: " << argv[0]
-                 << " [-h] [-d <directory>] [-D] [-i] [-e] [-o <output_directory>] [-n <executable_name>]" << endl;
-            return 1;
-        }
+
+int main(const int argc, char** argv)
+{
+    dap::buildDir = "./build/";
+    int opt;
+
+    CompilerOptions options = parseOptions(argc, argv);
+
+    if (!options.valid) {
+        return 0;
     }
 
     // Collect non-option arguments as input files
     for (int i = optind; i < argc; ++i) {
-        inputFiles.emplace_back(argv[i]);
+        options.inputFiles.emplace_back(argv[i]);
     }
 
-    if (helpRequested) {
+    if (options.helpRequested) {
         dap::util::printHelpMsg();
     }
 
     // no input, just return
-    if (!checkInputPathValidWithRemind(inputPath)) {
+    if (!checkInputPathValidWithRemind(options.inputPath)) {
         return 1;
     }
 
-    llvm::InitializeAllTargetInfos();
-    llvm::InitializeAllTargets();
-    llvm::InitializeAllTargetMCs();
-    llvm::InitializeAllAsmParsers();
-    llvm::InitializeAllAsmPrinters();
-
+    dap::initCompiler(dap::inter_gen::llvmContext);
     dap::util::delete_directory(dap::buildDir);
 
-    if (compileDir) {
-        std::vector<std::string> files = dap::util::get_all_files_in_dir(inputPath);
-        for (const auto &file : files) {
+#ifdef D_DEBUG
+    dap::util::copy_directory(options.sourceRuntimeDir + "asm", dap::buildDir + "dap/runtime/asm");
+#else
+    dap::util::copy_directory("../src/dap/runtime/asm", dap::buildDir + "dap/runtime/asm");
+#endif
+
+
+    if (options.compileDir) {
+        std::vector<std::string> files = dap::util::get_all_files_in_dir(options.inputPath);
+        for (const auto& file : files) {
             if (!file.ends_with(".dap")) {
                 continue;
             }
@@ -141,33 +111,35 @@ int main(const int argc, char **argv)
             // std::string info = "Parsing file: " + file;
             // LOG_DEBUG(info);
 #endif
-            dap::parser::parseFile(file);
+            // dap::parser::parseFile(file);
         }
-
-#ifdef D_DEBUG
-        dap::util::copy_directory(sourceRuntimeDir + "asm", dap::buildDir + "dap/runtime/asm");
-#else
-        dap::util::copy_directory("../src/dap/runtime/asm", dap::buildDir + "dap/runtime/asm");
-#endif
 
         const auto includeAnalyzer = new dap::inter_gen::IncludeAnalyzer();
         includeAnalyzer->generateGraph();
-        const std::set<dap::inter_gen::IncludeGraphNode *> roots = includeAnalyzer->getRoots();
-        if (genIR) {
+        const std::set<dap::inter_gen::IncludeGraphNode*> roots = includeAnalyzer->getRoots();
+        if (options.genIR) {
             interGen(roots);
         } else {
             dap::mech_gen::execGen(roots);
         }
     } else {
-        for (auto &file : inputFiles) {
-            auto *ctx = new dap::inter_gen::InterGenContext(inputPath);
-            dap::parser::parseFile(file);
+        std::pair<dap::parser::ProgramNode *, dap::inter_gen::InterGenContext *> pair;
+        for (auto& file : options.inputFiles) {
+            pair = dap::parser::parseFile(file);
+        }
+
+        if (options.genIR)
+            pair.second->genIR(program);
+        else {
+            dap::mech_gen::execGen_singleFile(pair.second, program);
         }
     }
+
 
     dap::util::deleteDelayedObj();
     return 0;
 }
+
 
 bool checkInputPathValidWithRemind(const std::string &inputPath)
 {
@@ -180,4 +152,78 @@ bool checkInputPathValidWithRemind(const std::string &inputPath)
         }
     }
     return true;
+}
+
+CompilerOptions parseOptions(const int argc, char** argv)
+{
+    CompilerOptions options;
+    int opt;
+    while ((opt = getopt_long(argc, argv, "n:d:o:ievhDs:", long_options, nullptr))!= -1) {
+        switch (opt) {
+        case 'h':
+            options.helpRequested = true;
+            break;
+        case 'd':
+            if (optarg == nullptr) {
+                cerr << "Error: Missing argument for option -d" << endl;
+                options.valid = false;
+                return options;
+            }
+            options.inputPath = optarg;
+            options.compileDir = true;
+            break;
+        case 'D':
+            options.debugMode = true;
+            break;
+        case 'i':
+            options.genIR = true;
+            break;
+        case 'e':
+            options.genExec = true;
+            break;
+        case 'v':
+            std::cout << "dap version: " << dap::D_VERSION << std::endl;
+            options.valid = false;
+            return options;
+        case 'o':
+            if (optarg == nullptr) {
+                cerr << "Error: Missing argument for option -o" << endl;
+                options.valid = false;
+                return options;
+            }
+            options.buildDir = optarg;
+            if (!options.buildDir.ends_with("/")) {
+                options.buildDir.append("/");
+            }
+            break;
+        case 'n':
+            if (optarg == nullptr) {
+                cerr << "Error: Missing argument for option -n" << endl;
+                options.valid = false;
+                return options;
+            }
+            options.targetExecName = optarg;
+            break;
+#ifdef D_DEBUG
+        case 's':
+            if (optarg == nullptr) {
+                cerr << "Error: Missing argument for option -s" << endl;
+                options.valid = false;
+                return options;
+            }
+            options.sourceRuntimeDir = optarg;
+            if (!options.sourceRuntimeDir.ends_with("/")) {
+                options.sourceRuntimeDir.append("/");
+            }
+            break;
+#endif
+        default:
+            std::cerr << "Invalid option: " << static_cast<char>(opt) << std::endl;
+            std::cout << "Usage: " << argv[0]
+                      << " [-h] [-d <directory>] [-D] [-i] [-e] [-o <output_directory>] [-n <executable_name>]" << std::endl;
+            options.valid = false;
+            return options;
+        }
+    }
+    return options; // 添加返回语句
 }
