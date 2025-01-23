@@ -31,6 +31,7 @@
 
 #include "common/config.h"
 #include "metadata.h"
+#include "check/variableCheck.h"
 #include "parser/ASTNode.h"
 #include "parser/parser.hpp"
 #include "utilities/file_util.h"
@@ -38,6 +39,7 @@
 #include "utilities/log_util.h"
 #include "utilities/name_format_util.h"
 #include "utilities/string_util.h"
+#include "parser/ASTNode.h"
 
 namespace dap
 {
@@ -67,6 +69,50 @@ Value *QualifiedNameNode::codeGen(inter_gen::InterGenContext *ctx) const
     return value;
 }
 
+Value *StringNode::codeGen(inter_gen::InterGenContext *ctx) const
+{
+    // sync the context
+    ctx->currLine = this->lineNum;
+
+    // generate the value 
+    Value *value = ConstantDataArray::getString(LLVMCTX, this->stringValue, true);
+
+    // return it
+    return value;
+}
+
+Value *IntegerNode::codeGen(inter_gen::InterGenContext *ctx) const
+{
+    // sync the context
+    ctx->currLine = this->lineNum;
+
+    // generate the value
+    Value *value = ConstantInt::get(LLVMCTX, APInt(this->getBits(), this->getVal(), true));
+
+    // return it
+    return value;
+}
+
+Value *FloatNode::codeGen(inter_gen::InterGenContext *ctx) const 
+{
+    // sync the context
+    ctx->currLine = this->lineNum;
+
+    // generate the value
+
+    // Convert string value to double
+    const double floatValue = std::stod(this->getValue());
+
+    // Create APFloat from double
+    const APFloat apFloatValue(floatValue);
+
+    // generate the value
+    Value* value = ConstantFP::get(LLVMCTX, apFloatValue);
+
+    // return it
+    return value;
+}
+
 Value *ProgramNode::codeGen(inter_gen::InterGenContext *ctx) const
 {
     // get the package and set the package directory
@@ -85,19 +131,20 @@ Value *ProgramNode::codeGen(inter_gen::InterGenContext *ctx) const
     return nullptr;
 }
 
-bool detectType(const TypeNode *typeNode, const VariableDeclarationNode *node, inter_gen::InterGenContext *ctx,
-                Type *varType)
+std::pair<bool, Type *> detectType(const TypeNode *typeNode, const VariableDeclarationNode *node,
+                                   inter_gen::InterGenContext *ctx)
 {
+    Type *varType;
     if (typeNode == nullptr) {
         // auto detect type
         if (node->value == nullptr) {
             varType = nullptr;
-            return false;
+            return {false, varType};
         }
         // TODO: precise type detect, pointer to some type, array of some type
         const Value *expressionValue = node->value->codeGen(ctx);
         varType = expressionValue->getType();
-        return true;
+        return {true, varType};
     }
 
     varType = util::typeOf(node->type, ctx);
@@ -108,9 +155,9 @@ bool detectType(const TypeNode *typeNode, const VariableDeclarationNode *node, i
 #else
         util::logErr("unknown type: " + node->type->getName(), ctx);
 #endif
-        return false;
+        return {false, varType};
     }
-    return true;
+    return {true, varType};
 }
 
 Value *VariableDeclarationNode::codeGen(inter_gen::InterGenContext *ctx) const
@@ -122,7 +169,8 @@ Value *VariableDeclarationNode::codeGen(inter_gen::InterGenContext *ctx) const
     // find the type of variable
     Type *varType = nullptr;
 
-    if (detectType(type, this, ctx, varType)) {
+    const auto [typeDetectedSuccess, detectedType] = detectType(type, this, ctx);
+    if (!typeDetectedSuccess) {
 #ifdef D_DEBUG
         util::logErr("can not detect type [no initial expression]: " + variableName->getName(), ctx, __FILE__,
                      __LINE__);
@@ -131,9 +179,14 @@ Value *VariableDeclarationNode::codeGen(inter_gen::InterGenContext *ctx) const
 #endif
         return nullptr;
     }
+    varType = detectedType;
 
     // generate the variable
-    AllocaInst *allocaVar = BUILDER.CreateAlloca(varType, nullptr, this->variableName->getName());
+    AllocaInst *allocaVar = util::createAllocaInst(varType,
+     nullptr,
+      BUILDER,
+       this->variableName->getName(),
+        &LLVMCTX);
 
     auto varMetaData = new inter_gen::VariableMetaData(variableName->getName(), varType, mutable_, nullable_, ctx);
     ctx->locals().emplace(this->variableName->getName(),
@@ -160,29 +213,31 @@ Value *FunctionDeclarationNode::codeGen(inter_gen::InterGenContext *ctx) const
 
     // get the function declaration info
     auto params = std::vector<Type *>();
-    for (const auto param : *this->parameterList) {
-        const auto node = dynamic_cast<VariableDeclarationNode *>(param);
-        params.push_back(util::typeOf(node->type, ctx));
+    if (this->parameterList) {
+        for (const auto param : *this->parameterList) {
+            const auto node = dynamic_cast<VariableDeclarationNode *>(param);
+            params.push_back(util::typeOf(node->type, ctx));
+        }
     }
 
     // generate the function info
     const auto type = FunctionType::get(util::typeOf(this->returnType, ctx), params, false);
     Function *function = Function::Create(type, Function::ExternalLinkage, 0, this->name, MODULE);
+    const auto funMetaData = new inter_gen::FunctionMetaData(this->name, type, ctx);
 
     ctx->setCurrFun(function);
-
-    const auto funMetaData = new inter_gen::FunctionMetaData(this->name, type, ctx);
+    ctx->setCurrFunMetaData(funMetaData);
 
     // generate the basic block
     const auto basicBlock = BasicBlock::Create(LLVMCTX, util::getFunBasicBlockName(&this->name), function);
     ctx->pushBlock(basicBlock);
+    BUILDER.SetInsertPoint(basicBlock);
 
     if (this->block) {
 
-
-    for (const auto stmt : *this->block) {
-        stmt->codeGen(ctx);
-    }
+        for (const auto stmt : *this->block) {
+            stmt->codeGen(ctx);
+        }
     }
 #ifdef D_DEBUG
     util::logInfo("Function Declaration: " + this->name, ctx, __FILE__, __LINE__);
@@ -194,8 +249,18 @@ Value *FunctionDeclarationNode::codeGen(inter_gen::InterGenContext *ctx) const
     // pop the block
     ctx->popBlock();
 
+    // delete the function generate contexts
+    ctx->setCurrFun(nullptr);
+    ctx->setCurrFunMetaData(nullptr);
+
     return function;
 }
+
+// Value *FunctionCallExpressionNode::codeGen(inter_gen::InterGenContext *ctx) const
+// {
+//     ctx->currLine = this->lineNum;
+//     return nullptr;
+// }
 
 Value *BinaryExpressionNode::codeGen(inter_gen::InterGenContext *ctx) const
 {
@@ -430,7 +495,7 @@ Value *FunctionCallExpressionNode::codeGen(inter_gen::InterGenContext *ctx) cons
 
     // build args
     std::vector<Value *> functionArgs;
-    for (auto arg : *args) {
+    for (const auto arg : *args) {
         functionArgs.push_back(arg->codeGen(ctx));
     }
 
@@ -441,11 +506,32 @@ Value *FunctionCallExpressionNode::codeGen(inter_gen::InterGenContext *ctx) cons
     return callResult;
 }
 
+Value *ReturnStatementNode::codeGen(inter_gen::InterGenContext *ctx) const
+{
+    ctx->currLine = this->lineNum;
+    if (expression == nullptr) {
+        BUILDER.CreateRetVoid();
+        ctx->setCurrRetVal(nullptr);
+        return nullptr;
+    }
+    // Generate code for the return expression
+    Value *retVal = expression->codeGen(ctx);
+
+    const bool isNullable = inter_gen::isNullable(expression, ctx);
+    ctx->getCurrFunMetaData()->setReturnMetaData(
+        retVal, new inter_gen::VariableMetaData("", retVal->getType(), true, isNullable));
+
+    BUILDER.CreateRet(retVal);
+    ctx->setCurrRetVal(retVal);
+    // blockMappingRet_d->insert({ctx->currBlock(), retVal});
+    return retVal;
+}
+
 } // namespace parser
 
 namespace inter_gen
 {
-FunctionMetaData *InterGenContext::getFunMetaData(const std::string &name, const InterGenContext *ctx)const
+FunctionMetaData *InterGenContext::getFunMetaData(const std::string &name, const InterGenContext *ctx) const
 {
 
     if (FunctionMetaData *funMetaData = metaData->getFunction(name)) {
@@ -560,8 +646,7 @@ void InterGenContext::genExec(parser::ProgramNode *program)
 
     const TargetOptions opt;
     std::optional<Reloc::Model>();
-    TargetMachine *targetMachine =
-        target->createTargetMachine(targetTriple, cpu, features, opt, Reloc::PIC_);
+    TargetMachine *targetMachine = target->createTargetMachine(targetTriple, cpu, features, opt, Reloc::PIC_);
 
     module->setDataLayout(targetMachine->createDataLayout());
 
@@ -699,6 +784,14 @@ FunctionMetaData *InterGenContext::getCurrFunMetaData() const
 void InterGenContext::setCurrFunMetaData(FunctionMetaData *funMetaData)
 {
     currentFunMetaData = funMetaData;
+}
+
+InterGenContext::InterGenContext(std::string sourcePathInput)
+    : builder(llvm::IRBuilder(*llvmContext)), sourcePath(std::move(std::move(sourcePathInput)))
+{
+    fileName = sourcePath.substr(sourcePath.find_last_of('/') + 1);
+    module = new llvm::Module(sourcePath, *llvmContext);
+    metaData = new ModuleMetaData(module);
 }
 
 } // namespace inter_gen

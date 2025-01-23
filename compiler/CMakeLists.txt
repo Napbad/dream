@@ -88,6 +88,8 @@ add_executable(dap_compiler
         machine_gen/codeGen_mechine.h
         inter_gen/preprocessing/includeAnaylize.h
         inter_gen/preprocessing/includeAnaylize.cpp
+        inter_gen/check/variableCheck.cpp
+        inter_gen/check/variableCheck.h
 )
 
 

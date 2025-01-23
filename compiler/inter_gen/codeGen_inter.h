@@ -71,7 +71,7 @@ class InterGenContext
     bool definingVariable = false; ///< if now defining variable
 
   public:
-    llvm::Module *module ;                  ///< LLVM module
+    llvm::Module *module;                            ///< LLVM module
     llvm::IRBuilder<> builder;                       ///< IR builder
     std::map<std::string, StructMetaData *> structs; ///< Struct metadata
     // std::unordered_map<std::string, FunctionMetaData *> functions{};
@@ -84,7 +84,7 @@ class InterGenContext
     llvm::BasicBlock *mergeBBInNestIfSource = nullptr;
     llvm::Value *mergeBBInNestIfSrcVal = nullptr;
 
-    FunctionMetaData *getFunMetaData(const std::string &name, const inter_gen::InterGenContext *ctx)const;
+    FunctionMetaData *getFunMetaData(const std::string &name, const inter_gen::InterGenContext *ctx) const;
     std::pair<llvm::Value *, VariableMetaData *> getValWithMetadata(const std::string &name);
     void addFunctionToMetaData(FunctionMetaData *function_meta_data) const;
     std::pair<llvm::Value *, VariableMetaData *> getValWithMetadata(const parser::QualifiedNameNode *name);
@@ -94,12 +94,7 @@ class InterGenContext
     /**
      * @brief Constructor to initialize the module and IR builder.
      */
-    explicit InterGenContext(std::string sourcePathInput)
-        : builder(llvm::IRBuilder(*llvmContext)), sourcePath(std::move(std::move(sourcePathInput)))
-    {
-        fileName = sourcePath.substr(sourcePath.find_last_of('/') + 1);
-        module = new llvm::Module(sourcePath, *llvmContext);
-    }
+    explicit InterGenContext(std::string sourcePathInput);
 
     llvm::Value *getVal(const std::string &name);
 

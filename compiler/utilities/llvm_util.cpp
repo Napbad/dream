@@ -3,8 +3,9 @@
 #include <llvm/Pass.h>
 #include <llvm/Support/TargetSelect.h>
 
-
 #include "llvm_util.h"
+
+#include "inter_gen/codeGen_inter.h"
 
 namespace dap::util
 {
@@ -12,14 +13,27 @@ static std::unordered_map<std::string, llvm::Type *> typeMap = {};
 
 llvm::Type *typeOf(const parser::TypeNode *type, const inter_gen::InterGenContext *ctx, parser::Expression *size)
 {
-    for (auto &[key, val] : typeMap)
-    {
-        if (key == type->getName())
-        {
-            return val;
+    if (type == nullptr) {
+        return llvm::Type::getVoidTy(LLVMCTX);
+    }
+
+    llvm::Type *res = nullptr;
+
+    for (auto &[key, val] : typeMap) {
+        if (key == type->getName()) {
+            res = val;
         }
     }
-    return nullptr;
+
+    if (type->isArray) {
+        res = llvm::ArrayType::get(res, type->arraySize);
+    }
+
+    if (type->isPointer) {
+        res = llvm::PointerType::get(res, 0);
+    }
+
+    return res;
 }
 
 void initTypeMap(llvm::LLVMContext *llvmCtx)
@@ -41,14 +55,26 @@ void initTypeMap(llvm::LLVMContext *llvmCtx)
     typeMap.emplace(std::string("double"), llvm::Type::getDoubleTy(*llvmCtx));
 }
 
-void initTargets(){
+void initTargets()
+{
 
     llvm::InitializeAllTargetInfos();
     llvm::InitializeAllTargets();
     llvm::InitializeAllTargetMCs();
     llvm::InitializeAllAsmParsers();
     llvm::InitializeAllAsmPrinters();
+}
 
+llvm::AllocaInst *createAllocaInst(llvm::Type *type, llvm::Value *arraySize, llvm::IRBuilder<> &builder,
+                                   const std::string &name, llvm::LLVMContext *llvmContext)
+{
+    if (type->isArrayTy()) {
+        const uint64_t array_num_elements = type->getArrayNumElements();
+        return builder.CreateAlloca(
+            type, llvm::ConstantInt::get(llvm::Type::getInt32Ty(*llvmContext), llvm::APInt(32, array_num_elements)),
+            name);
+    }
+    return builder.CreateAlloca(type, nullptr, name);
 }
 
 } // namespace dap::util

@@ -164,7 +164,7 @@ union YYSTYPE
     dap::parser::TypeNode *typeNode;
     std::vector<dap::parser::TypeNode*> *typeNodeVec;
     dap::parser::IntegerNode *intExpr;
-    dap::parser::String *strExpr;
+    dap::parser::StringNode *strExpr;
     dap::parser::FloatNode *floatExpr;
     std::vector<dap::parser::Expression*> *exprVec;
     std::vector<dap::parser::Statement*> *stmtVec;

@@ -116,9 +116,7 @@ class FunctionMetaData
 class ModuleMetaData
 {
   public:
-    explicit ModuleMetaData(Module *module) : module_(module)
-    {
-    }
+    explicit ModuleMetaData(Module *module);
 
     // Add a structure metadata to the module
     void addStruct(StructMetaData *structMeta)

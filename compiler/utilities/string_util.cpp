@@ -135,8 +135,8 @@ std::string getStrFromVec(const std::vector<std::string> &vec, const std::string
     return res;
 }
 
-
-std::string basicTypeToString(BasicType type) {
+std::string basicTypeToString(BasicType type)
+{
     std::string result;
     switch (type) {
     case BasicType::BOOL:
@@ -188,9 +188,7 @@ std::string basicTypeToString(BasicType type) {
         result = "UNKNOWN";
         break;
     }
-    std::transform(result.begin(), result.end(), result.begin(), [](unsigned char c) {
-        return std::tolower(c);
-    });
+    std::transform(result.begin(), result.end(), result.begin(), [](unsigned char c) { return std::tolower(c); });
     return result;
 }
 std::string getLinesFromVec(const std::vector<std::string> &vector)

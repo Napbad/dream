@@ -233,7 +233,7 @@ std::string tokenToString(int token) {
     dap::parser::TypeNode *typeNode;
     std::vector<dap::parser::TypeNode*> *typeNodeVec;
     dap::parser::IntegerNode *intExpr;
-    dap::parser::String *strExpr;
+    dap::parser::StringNode *strExpr;
     dap::parser::FloatNode *floatExpr;
     std::vector<dap::parser::Expression*> *exprVec;
     std::vector<dap::parser::Statement*> *stmtVec;
@@ -288,21 +288,25 @@ variableDecl:
     mutableModifier type identifier nullableModifier ASSIGN expression {
         $$ = new dap::parser::VariableDeclarationNode($2, $6, $3, $4, $1);
         // Log message when parsing a variable declaration node
+        $$->lineNum = yylineno;
         parserLog("Parsed variable declaration node");
     }
     | mutableModifier identifier nullableModifier ASSIGN expression {
         $$ = new dap::parser::VariableDeclarationNode(nullptr, $5, $2, $3, $1);
         // Log message when parsing a variable declaration node without explicit type
+        $$->lineNum = yylineno;
         parserLog("Parsed variable declaration node without explicit type");
     }
     | mutableModifier type identifier nullableModifier {
         $$ = new dap::parser::VariableDeclarationNode($2, nullptr, $3, $4, $1);
         // Log message when parsing a variable declaration node
+        $$->lineNum = yylineno;
         parserLog("Parsed variable declaration node");
     }
     | mutableModifier identifier nullableModifier {
         $$ = new dap::parser::VariableDeclarationNode(nullptr, nullptr, $2, $3, $1);
         // Log message when parsing a variable declaration node without explicit type
+        $$->lineNum = yylineno;
         parserLog("Parsed variable declaration node without explicit type");
     }
     ;
@@ -311,11 +315,13 @@ constantDecl:
     CONST type identifier ASSIGN expression {
         $$ = new dap::parser::ConstantDeclarationNode($2, $3, $5);
         // Log message when parsing a constant declaration node
+        $$->lineNum = yylineno;
         parserLog("Parsed constant declaration node");
     } 
     | CONST identifier ASSIGN expression {
         $$ = new dap::parser::ConstantDeclarationNode(nullptr, $2, $4);
         // Log message when parsing a constant declaration node
+        $$->lineNum = yylineno;
         parserLog("Parsed constant declaration node");
     }
     ;
@@ -324,41 +330,49 @@ expression:
     integer {
         $$ = $1;
         // Log message when parsing an IntegerNode expression node
+        $$->lineNum = yylineno;
         parserLog("Parsed IntegerNode expression node");
     }
     | identifier {
         $$ = $1;
 
+        $$->lineNum = yylineno;
         parserLog("Parsed identifier expression node: [" + $1->getName() + "]");
     }
     | float_ {
         $$ = $1;
         // Log message when parsing a FloatNode expression node
+        $$->lineNum = yylineno;
         parserLog("Parsed FloatNode expression node");
     }
     | string_ {
         $$ = $1;
-        // Log message when parsing a String expression node
-        parserLog("Parsed String expression node");
+        // Log message when parsing a StringNode expression node
+        $$->lineNum = yylineno;
+        parserLog("Parsed StringNode expression node");
     }
     | bool_ {
         $$ = $1;
+        $$->lineNum = yylineno;
         parserLog("Parsed Boolean expression node"); 
     }
     | functionCall {
         $$ = $1;
 
+        $$->lineNum = yylineno;
         parserLog("Parsed function call expression node: [" + dynamic_cast<dap::parser::FunctionCallExpressionNode*>($1)
                                                         ->name->getName() + "]");
     }
     | binaryExpression {
         $$ = $1;
 
+        $$->lineNum = yylineno;
         parserLog("Parsed binary expression node");
     }
     | unaryExpression {
         $$ = $1;
 
+        $$->lineNum = yylineno;
         parserLog("Parsed unary expression node");
     };
 
@@ -373,6 +387,7 @@ functionDeclaration:
                                                         nullptr,
                                                         $6);
         // Log message when parsing a function declaration node without parameters
+        $$->lineNum = yylineno;
         parserLog("Parsed function declaration node without parameters");
     }
     | FUN identifier LEFT_PAREN RIGHT_PAREN type LEFT_BRACE statements RIGHT_BRACE {
@@ -385,6 +400,7 @@ functionDeclaration:
                                                         nullptr,
                                                         $7);
         // Log message when parsing a function declaration node without parameters
+        $$->lineNum = yylineno;
         parserLog("Parsed function declaration node without parameters");
     }
     | FUN identifier LEFT_PAREN functionParameters RIGHT_PAREN LEFT_BRACE statements RIGHT_BRACE {
@@ -398,6 +414,7 @@ functionDeclaration:
                                                         nullptr,
                                                         $7);
         // Log message when parsing a function declaration node with parameters
+        $$->lineNum = yylineno;
         parserLog("Parsed function declaration node with parameters");
 
     }
@@ -412,6 +429,7 @@ functionDeclaration:
                                                         $6,
                                                         $8);
         // Log message when parsing a function declaration node with parameters and return type
+        $$->lineNum = yylineno;
         parserLog("Parsed function declaration node with parameters and return type");
     }
     | FUN identifier LEFT_PAREN RIGHT_PAREN SEMICOLON {
@@ -424,6 +442,7 @@ functionDeclaration:
                                                         nullptr,
                                                         nullptr);
         // Log message when parsing a function declaration node without parameters
+        $$->lineNum = yylineno;
         parserLog("Parsed function declaration node without parameters");
     }
     | FUN identifier LEFT_PAREN RIGHT_PAREN type SEMICOLON {
@@ -436,6 +455,7 @@ functionDeclaration:
                                                         nullptr,
                                                         nullptr);
         // Log message when parsing a function declaration node without parameters
+        $$->lineNum = yylineno;
         parserLog("Parsed function declaration node without parameters");
     }
     | FUN identifier LEFT_PAREN functionParameters RIGHT_PAREN SEMICOLON {
@@ -449,6 +469,7 @@ functionDeclaration:
                                                         nullptr,
                                                         nullptr);
         // Log message when parsing a function declaration node with parameters
+        $$->lineNum = yylineno;
         parserLog("Parsed function declaration node with parameters");
 
     }
@@ -463,6 +484,7 @@ functionDeclaration:
                                                         $6,
                                                         nullptr);
         // Log message when parsing a function declaration node with parameters and return type
+        $$->lineNum = yylineno;
         parserLog("Parsed function declaration node with parameters and return type");
     };
 
@@ -471,18 +493,21 @@ functionParameters:
     /* empty */ {
         $$ = new std::vector<dap::parser::VariableDeclarationNode*>();
         // Log message when parsing a variable declaration node without explicit type
+
         parserLog("Parsed variable declaration node without explicit type");
     }
     | variableDecl  {
         $$ = new std::vector<dap::parser::VariableDeclarationNode*>();
         $$->push_back(dynamic_cast<dap::parser::VariableDeclarationNode*>($1));
         // Log message when parsing a variable declaration node
+
         parserLog("Parsed variable declaration node");
     }
     | functionParameters COMMA variableDecl  {
         $$ = $1;
         $1->push_back(dynamic_cast<dap::parser::VariableDeclarationNode*>($3));
         // Log message when parsing a variable declaration node
+
         parserLog("Parsed variable declaration node");
     };
 
@@ -490,31 +515,37 @@ nullableModifier:
     /* empty */ {
         $$ = false;
         // Log message when parsing a variable declaration node without explicit type
+
         parserLog("Parsed variable declaration node without explicit nullablity");
     }
     | QUESTION {
         $$ = true;
         // Log message when parsing a variable declaration node
+
         parserLog("Parsed variable declaration node");
         $$ = true;
     }
     | BANG {
         $$ = false;
         // Log message when parsing a variable declaration node
+
         parserLog("Parsed variable declaration node");
     };
 
 mutableModifier:
     /* empty */ {
         $$ = false;
+
         parserLog("Parsed variable declaration node without explicit mutability");
     }
     | IMT {
         $$ = false;
+
         parserLog("Parsed variable declaration node");
     }
     | VAR {
         $$ = true;
+
         parserLog("Parsed variable declaration node");
     };
 
@@ -524,6 +555,7 @@ identifier:
         $$ = new dap::parser::QualifiedNameNode(*$1);
         delete $1;
         // Log message when parsing an identifier node
+        $$->lineNum = yylineno;
         parserLog("Parsed identifier node");
     }
     | identifier DOT IDENTIFIER {
@@ -531,6 +563,7 @@ identifier:
         $$ = $1;
         delete $3;
         // Log message when parsing a qualified identifier node
+        $$->lineNum = yylineno;
         parserLog("Parsed qualified identifier node");
     };
 
@@ -538,6 +571,7 @@ integer:
     INTEGER {
         $$ = new dap::parser::IntegerNode(atol($1->c_str()));
         // Log message when parsing an IntegerNode node
+        $$->lineNum = yylineno;
         parserLog("Parsed IntegerNode node: integer[" + $$->getVal() + "]");
     };
 
@@ -545,13 +579,15 @@ float_:
     FLOAT_LITERAL {
         $$ = new dap::parser::FloatNode(atof($1->c_str()));
         // Log message when parsing a float node
+        $$->lineNum = yylineno;
         parserLog("Parsed float node");
     };
 
 string_:
     STRING_LITERAL {
-        $$ = new dap::parser::String(*$1);
+        $$ = new dap::parser::StringNode(*$1);
         // Log message when parsing a string node
+        $$->lineNum = yylineno;
         parserLog("Parsed string node");
     };
 
@@ -559,11 +595,13 @@ bool_:
     TRUE {
         $$ = new dap::parser::BoolNode(true);
         // Log message when parsing a boolean node
+        $$->lineNum = yylineno;
         parserLog("Parsed boolean node: [ TRUE ]");
     }
     | FALSE {
         $$ = new dap::parser::BoolNode(false);
         // Log message when parsing a boolean node
+        $$->lineNum = yylineno;
         parserLog("Parsed boolean node: [ FALSE ]");
     };
 
@@ -571,18 +609,21 @@ type:
     identifier {
         $$ = new dap::parser::TypeNode($1);
         // Log message when parsing a type node
+        $$->lineNum = yylineno;
         parserLog("Parsed type node");
     }
     | type MUL {
         $$ = $1;
         $$->isPointer = true;
         // Log message when parsing a pointer type node
+        $$->lineNum = yylineno;
         parserLog("Parsed pointer type node");
     }
     | type LEFT_BRACKET RIGHT_BRACKET {
         $$ = $1;
         $$->isArray = true;
         // Log message when parsing an array type node without size
+        $$->lineNum = yylineno;
         parserLog("Parsed array type node without size");
     }
     | type LEFT_BRACKET integer RIGHT_BRACKET {
@@ -590,66 +631,79 @@ type:
         $$->isArray = true;
         $$->arraySize = std::stoi($3->getVal());
         // Log message when parsing an array type node with size
+        $$->lineNum = yylineno;
         parserLog("Parsed array type node with size");
     }
     | INT {
         $$ = new dap::parser::TypeNode(BasicType::INT);
         // Log message when parsing an int type node
+        $$->lineNum = yylineno;
         parserLog("Parsed int type node");
     }
     | BYTE {
         $$ = new dap::parser::TypeNode(BasicType::BYTE);
         // Log message when parsing a byte type node
+        $$->lineNum = yylineno;
         parserLog("Parsed byte type node");
     }
     | SHORT {
         $$ = new dap::parser::TypeNode(BasicType::SHORT);
         // Log message when parsing a short type node
+        $$->lineNum = yylineno;
         parserLog("Parsed short type node");
     }
     | LONG {
         $$ = new dap::parser::TypeNode(BasicType::LONG);
         // Log message when parsing a long type node
+        $$->lineNum = yylineno;
         parserLog("Parsed long type node");
     }
     | FLOAT {
         $$ = new dap::parser::TypeNode(BasicType::FLOAT);
         // Log message when parsing a float type node
+        $$->lineNum = yylineno;
         parserLog("Parsed float type node");
     }
     | DOUBLE {
         $$ = new dap::parser::TypeNode(BasicType::DOUBLE);
         // Log message when parsing a double type node
+        $$->lineNum = yylineno;
         parserLog("Parsed double type node");
     }
     | BOOL {
         $$ = new dap::parser::TypeNode(BasicType::BOOL);
         // Log message when parsing a bool type node
+        $$->lineNum = yylineno;
         parserLog("Parsed bool type node");
     }
     | UINT {
         $$ = new dap::parser::TypeNode(BasicType::UINT);
         // Log message when parsing a uint type node
+        $$->lineNum = yylineno;
         parserLog("Parsed uint type node");
     }
     | USHORT {
         $$ = new dap::parser::TypeNode(BasicType::USHORT);
         // Log message when parsing a ushort type node
+        $$->lineNum = yylineno;
         parserLog("Parsed ushort type node");
     }
     | ULONG {
         $$ = new dap::parser::TypeNode(BasicType::ULONG);
         // Log message when parsing a ulong type node
+        $$->lineNum = yylineno;
         parserLog("Parsed ulong type node");
     }
     | LLONG {
         $$ = new dap::parser::TypeNode(BasicType::LLONG);
         // Log message when parsing a lllong type node
+        $$->lineNum = yylineno;
         parserLog("Parsed lllong type node");
     }
     | ULLONG {
         $$ = new dap::parser::TypeNode(BasicType::ULLONG);
         // Log message when parsing a ullong type node
+        $$->lineNum = yylineno;
         parserLog("Parsed ullong type node");
     };
 
@@ -684,32 +738,38 @@ statement:
     functionDeclaration {
         $$ = $1;
         // Log message when parsing a function declaration statement node
+        $$->lineNum = yylineno;
         parserLog("Parsed function declaration statement node: [" + (dynamic_cast<dap::parser::FunctionDeclarationNode*>($1))->name + "]");
     }
     | variableDecl SEMICOLON {
         $$ = $1;
         // Log message when parsing a variable declaration statement node
+        $$->lineNum = yylineno;
         parserLog("Parsed variable declaration statement node: [" + (dynamic_cast<dap::parser::VariableDeclarationNode*>($1))->variableName->getName() + "]");
     }
     | constantDecl SEMICOLON { 
         $$ = $1;
         // Log message when parsing a constant declaration statement node
+        $$->lineNum = yylineno;
         parserLog("Parsed constant declaration statement node: [" + (dynamic_cast<dap::parser::ConstantDeclarationNode*>($1))->name->getName() + "]");
     } 
     | structDecl {
         $$ = $1;
         // Log message when parsing a struct declaration statement node
+        $$->lineNum = yylineno;
         parserLog("Parsed struct declaration statement node: [" + (dynamic_cast<dap::parser::StructDeclarationNode*>($1))->name->getName() + "]");
     }
     | returnStmt {
         $$ = $1;
         // Log message when parsing a return statement node
+        $$->lineNum = yylineno;
         parserLog("Parsed return statement node");
     }
     | expression SEMICOLON {
         $$ = new dap::parser::Statement();
         $$->value = $1;
         // Log message when parsing a function call statement node
+        $$->lineNum = yylineno;
         parserLog("Parsed function call statement node");
     };
 
@@ -717,11 +777,13 @@ statements:
     /* empty */ {
         $$ = new std::vector<dap::parser::Statement*>();
         // Log message when starting to parse a list of statements
+
         parserLog("Started parsing statements list");
     }
     | statements statement {
         $$->push_back($2);
         // Log message when adding a statement to the statements list
+
         parserLog("Added statement to statements list");
     };
 
@@ -729,22 +791,26 @@ expressions:
     /* empty */ {
         $$ = new std::vector<dap::parser::Expression*>();
         // Log message when starting to parse a list of expressions
+
         parserLog("Started parsing expressions list");
     }
     | expression {
         $$ = new std::vector<dap::parser::Expression*>();
         $$->push_back($1);
+
         parserLog("Started parsing expressions list");
     }
     | expressions COMMA expression {
         $$->push_back($3);
         // Log message when adding an expression to the expressions list
+
         parserLog("Added expression to expressions list");
     };
 
 structDecl: 
     STRUCT identifier LEFT_BRACE structFields RIGHT_BRACE SEMICOLON {
         $$ = new dap::parser::StructDeclarationNode($2, $4);
+        $$->lineNum = yylineno;
         parserLog("Parsed struct declaration node: [" + $2->getName() + "]");
     };
 
@@ -753,11 +819,13 @@ structFields:
     /* empty */ {
         $$ = new std::vector<dap::parser::VariableDeclarationNode*>();
         // Log message when starting to parse a list of struct fields
+
         parserLog("Started parsing struct fields list");
     }
     | structFields variableDecl SEMICOLON {
         $$->push_back(dynamic_cast<dap::parser::VariableDeclarationNode*>($2));
         // Log message when adding a struct field to the struct fields list
+
         parserLog("Added struct field to struct fields list");
     };
 
@@ -765,6 +833,7 @@ returnStmt:
     RETURN expression SEMICOLON {
         $$ = new dap::parser::ReturnStatementNode($2);
         // Log message when parsing a return statement node
+        $$->lineNum = yylineno;
         parserLog("Parsed return statement node");
     };
 
@@ -772,6 +841,7 @@ functionCall:
     identifier LEFT_PAREN expressions RIGHT_PAREN {
         $$ = new dap::parser::FunctionCallExpressionNode($1, $3);
         // Log message when parsing a function call statement node
+        $$->lineNum = yylineno;
         parserLog("Parsed function call experssion node: [" + $1->getName() + "]");
     };
 
@@ -779,6 +849,7 @@ binaryExpression:
     expression binaryOperator expression {
         $$ = new dap::parser::BinaryExpressionNode($1, $2, $3);
         // Log message when parsing a binary expression node
+        $$->lineNum = yylineno;
         parserLog("Parsed binary expression node: [" + tokenToString($2) + "]");
     };
 
@@ -839,6 +910,7 @@ unaryExpression:
     unaryOperator expression {
         $$ = new dap::parser::UnaryExpressionNode($1, $2);
         // Log message when parsing a unary expression node
+        $$->lineNum = yylineno;
         parserLog("Parsed unary expression node: [" + tokenToString($1) + "]");
     };
 

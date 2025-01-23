@@ -7,7 +7,7 @@
 #include "utilities/llvm_util.h"
 #include "utilities/string_util.h"
 
-std::string dap::parser::IntegerNode::getVal()
+std::string dap::parser::IntegerNode::getVal() const
 {
     switch (intType) {
     case INT:
@@ -45,6 +45,31 @@ std::string dap::parser::IntegerNode::getVal()
     }
 }
 
+std::string dap::parser::FloatNode::getValue() const
+{
+    if (isDouble) {
+        return std::to_string(floatValue.doubleVal);
+    }
+        return std::to_string(floatValue.floatVal);
+}
+
+int dap::parser::IntegerNode::getBits() const
+{
+    switch (intType) {
+    case INT:
+        return sizeof(int) * 8;
+    case LONG:
+        return sizeof(long) * 8;
+    case SHORT:
+        return sizeof(short) * 8;
+    case CHAR:
+        return sizeof(char) * 8;
+    case LONG_LONG:
+        return sizeof(long long) * 8;
+    default:
+        return 0;
+    }
+}
 void dap::parser::VariableDeclarationNode::generateVariable(llvm::Value *value)
 {
     this->variableGenerated = true;

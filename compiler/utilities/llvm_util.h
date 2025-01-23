@@ -6,6 +6,9 @@
 #define LLVM_UTIL_H
 
 #include "parser/ASTNode.h"
+
+#include <llvm/IR/IRBuilder.h>
+#include <llvm/IR/Instructions.h>
 #include <llvm/IR/Type.h>
 namespace dap::util
 {
@@ -16,6 +19,9 @@ llvm::Type *typeOf(const parser::TypeNode *type, const inter_gen::InterGenContex
 void initTypeMap(llvm::LLVMContext *llvmCtx);
 
 void initTargets();
+
+llvm::AllocaInst *createAllocaInst(llvm::Type *type, llvm::Value *arraySize, llvm::IRBuilder<> &builder,
+                                   const std::string &name, llvm::LLVMContext *llvmContext);
 
 // /* Returns an LLVM type based on the identifier, which returns type for metadata (specially for pointer cause that
 //  * llvm's pointer do not have type  info) */

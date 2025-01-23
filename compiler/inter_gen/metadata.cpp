@@ -92,6 +92,18 @@ FunctionMetaData::FunctionMetaData(std::string name, FunctionType *type, InterGe
 {
 }
 
+ModuleMetaData::ModuleMetaData(Module *module) : module_(module)
+{
+    functionMap = std::unordered_map<std::string, FunctionMetaData *>();
+    globalMetaDataMap = std::unordered_map<std::string, VariableMetaData *>();
+    globalVals = std::vector<Value *>();
+    structMap = std::unordered_map<std::string, StructMetaData *>();
+    globalVar = std::vector<GlobalVariable *>();
+
+    moduleName = module_->getName().str();
+    modulePath = module_->getName();
+}
+
 void ModuleMetaData::addGlobalValMetaData(VariableMetaData *metaData)
 {
     globalMetaDataMap.insert({metaData->getName(), metaData});

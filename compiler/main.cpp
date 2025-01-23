@@ -23,28 +23,28 @@ using std::string;
 
 #ifdef D_DEBUG
 static option long_options[] = {{"help", no_argument, nullptr, 'h'},
-                            {"directory", required_argument, nullptr, 'd'},
-                            {"debug", no_argument, nullptr, 'D'},
-                            {"generate-ir", no_argument, nullptr, 'i'},
-                            {"generate-exec", no_argument, nullptr, 'e'},
-                            {"version", no_argument, nullptr, 'v'},
-                            {"output", required_argument, nullptr, 'o'},
-                            {"output-exec-name", required_argument, nullptr, 'n'},
-                            {"source-runtime-dir", required_argument, nullptr, 's'},
-                            {nullptr, 0, nullptr, 0}};
+                                {"directory", required_argument, nullptr, 'd'},
+                                {"debug", no_argument, nullptr, 'D'},
+                                {"generate-ir", no_argument, nullptr, 'i'},
+                                {"generate-exec", no_argument, nullptr, 'e'},
+                                {"version", no_argument, nullptr, 'v'},
+                                {"output", required_argument, nullptr, 'o'},
+                                {"output-exec-name", required_argument, nullptr, 'n'},
+                                {"source-runtime-dir", required_argument, nullptr, 's'},
+                                {nullptr, 0, nullptr, 0}};
 #else
 static option long_options[] = {{"help", no_argument, nullptr, 'h'},
-                            {"directory", required_argument, nullptr, 'd'},
-                            {"debug", no_argument, nullptr, 'D'},
-                            {"generate-ir", no_argument, nullptr, 'i'},
-                            {"generate-exec", no_argument, nullptr, 'e'},
-                            {"version", no_argument, nullptr, 'v'},
-                            {"output", required_argument, nullptr, 'o'},
-                            {"output-exec-name", required_argument, nullptr, 'n'},
-                            {nullptr, 0, nullptr, 0}};
+                                {"directory", required_argument, nullptr, 'd'},
+                                {"debug", no_argument, nullptr, 'D'},
+                                {"generate-ir", no_argument, nullptr, 'i'},
+                                {"generate-exec", no_argument, nullptr, 'e'},
+                                {"version", no_argument, nullptr, 'v'},
+                                {"output", required_argument, nullptr, 'o'},
+                                {"output-exec-name", required_argument, nullptr, 'n'},
+                                {nullptr, 0, nullptr, 0}};
 #endif
 
-bool checkInputPathValidWithRemind(const std::string& inputPath);
+bool checkInputPathValidWithRemind(const std::string &inputPath);
 
 struct CompilerOptions {
     std::string inputPath;
@@ -61,10 +61,9 @@ struct CompilerOptions {
     bool valid = true;
 };
 
-CompilerOptions parseOptions(const int argc, char** argv);
+CompilerOptions parseOptions(const int argc, char **argv);
 
-
-int main(const int argc, char** argv)
+int main(const int argc, char **argv)
 {
     dap::buildDir = "./build/";
     int opt;
@@ -98,10 +97,9 @@ int main(const int argc, char** argv)
     dap::util::copy_directory("../src/dap/runtime/asm", dap::buildDir + "dap/runtime/asm");
 #endif
 
-
     if (options.compileDir) {
         std::vector<std::string> files = dap::util::get_all_files_in_dir(options.inputPath);
-        for (const auto& file : files) {
+        for (const auto &file : files) {
             if (!file.ends_with(".dap")) {
                 continue;
             }
@@ -116,7 +114,7 @@ int main(const int argc, char** argv)
 
         const auto includeAnalyzer = new dap::inter_gen::IncludeAnalyzer();
         includeAnalyzer->generateGraph();
-        const std::set<dap::inter_gen::IncludeGraphNode*> roots = includeAnalyzer->getRoots();
+        const std::set<dap::inter_gen::IncludeGraphNode *> roots = includeAnalyzer->getRoots();
         if (options.genIR) {
             interGen(roots);
         } else {
@@ -124,7 +122,7 @@ int main(const int argc, char** argv)
         }
     } else {
         std::pair<dap::parser::ProgramNode *, dap::inter_gen::InterGenContext *> pair;
-        for (auto& file : options.inputFiles) {
+        for (auto &file : options.inputFiles) {
             pair = dap::parser::parseFile(file);
         }
 
@@ -135,11 +133,9 @@ int main(const int argc, char** argv)
         }
     }
 
-
     dap::util::deleteDelayedObj();
     return 0;
 }
-
 
 bool checkInputPathValidWithRemind(const std::string &inputPath)
 {
@@ -154,11 +150,11 @@ bool checkInputPathValidWithRemind(const std::string &inputPath)
     return true;
 }
 
-CompilerOptions parseOptions(const int argc, char** argv)
+CompilerOptions parseOptions(const int argc, char **argv)
 {
     CompilerOptions options;
     int opt;
-    while ((opt = getopt_long(argc, argv, "n:d:o:ievhDs:", long_options, nullptr))!= -1) {
+    while ((opt = getopt_long(argc, argv, "n:d:o:ievhDs:", long_options, nullptr)) != -1) {
         switch (opt) {
         case 'h':
             options.helpRequested = true;
@@ -220,7 +216,8 @@ CompilerOptions parseOptions(const int argc, char** argv)
         default:
             std::cerr << "Invalid option: " << static_cast<char>(opt) << std::endl;
             std::cout << "Usage: " << argv[0]
-                      << " [-h] [-d <directory>] [-D] [-i] [-e] [-o <output_directory>] [-n <executable_name>]" << std::endl;
+                      << " [-h] [-d <directory>] [-D] [-i] [-e] [-o <output_directory>] [-n <executable_name>]"
+                      << std::endl;
             options.valid = false;
             return options;
         }

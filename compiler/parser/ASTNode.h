@@ -10,11 +10,10 @@
 #include <utility>
 #include <vector>
 
-#include "common/reserve.h"
 #include "common/define_d.h"
+#include "common/reserve.h"
 
 #include "utilities/log_util.h"
-
 
 namespace dap
 {
@@ -45,7 +44,9 @@ class ASTNode
     // Destructor for ASTNode
     virtual ~ASTNode() = default;
 
-    virtual llvm::Value *codeGen(inter_gen::InterGenContext *ctx) const {
+    virtual llvm::Value *codeGen(inter_gen::InterGenContext *ctx) const
+    {
+
 #ifdef D_DEBUG
         util::logErr("Unimplement code generation function", ctx, __FILE__, __LINE__);
 #else
@@ -65,6 +66,19 @@ class Statement : public ASTNode
 {
   public:
     Expression *value = nullptr;
+
+    llvm::Value *codeGen(inter_gen::InterGenContext *ctx) const override {
+        if (value) {
+          return value->codeGen(ctx);
+        }
+
+#ifdef D_DEBUG
+        util::logErr("Unimplement code generation function", ctx, __FILE__, __LINE__);
+#else
+        util::logErr("Unimplement code generation function", ctx);
+#endif
+        return nullptr;
+    }
 };
 
 class QualifiedNameNode final : public Expression
@@ -163,7 +177,11 @@ class IntegerNode final : public Expression
 
     /// @brief Retrieves the string representation of the value.
     /// @return Returns a string that represents the current state of the value.
-    std::string getVal();
+    [[nodiscard]] std::string getVal() const;
+
+    [[nodiscard]] int getBits() const;
+
+    llvm::Value *codeGen(inter_gen::InterGenContext *ctx) const override;
 
   private:
     union value {
@@ -191,6 +209,7 @@ class IntegerNode final : public Expression
         DOUBLE,
         LONG_LONG,
     } intType;
+
 };
 
 class FloatNode : public Expression
@@ -214,17 +233,23 @@ class FloatNode : public Expression
         this->floatValue.doubleVal = value;
         this->isDouble = true;
     }
+    [[nodiscard]] std::string getValue() const;
+
+    llvm::Value *codeGen(inter_gen::InterGenContext *ctx) const override;
 };
 
-class String final : public Expression
+class StringNode final : public Expression
 {
   public:
     std::string stringValue;
 
-    explicit String(std::string value)
+    explicit StringNode(std::string value)
     {
         this->stringValue = std::move(value);
     }
+
+    llvm::Value *codeGen(inter_gen::InterGenContext *ctx) const override;
+
 };
 
 class BoolNode final : public Expression
@@ -264,7 +289,7 @@ class UnaryExpressionNode final : public Expression
     UnaryExpressionNode(int operatorType, Expression *expression) : operatorType(operatorType), expression(expression)
     {
     }
-    ~UnaryExpressionNode()
+    ~UnaryExpressionNode() override
     {
         delete expression;
     }
@@ -293,7 +318,7 @@ class ProgramNode final : public ASTNode
         importedPackages = new std::vector<importedPackageInfo *>();
     };
 
-    ProgramNode(std::vector<Statement *> *statements) : statements(statements)
+    explicit ProgramNode(std::vector<Statement *> *statements) : statements(statements)
     {
     }
 
@@ -797,6 +822,9 @@ class ReturnStatementNode final : public Statement
 
         delete expression;
     }
+
+    llvm::Value *codeGen(inter_gen::InterGenContext *ctx) const override;
+
 };
 } // namespace parser
 } // namespace dap

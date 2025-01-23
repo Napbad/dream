@@ -20,7 +20,6 @@ std::pair<ProgramNode *, inter_gen::InterGenContext *> parseFile(const std::stri
 
     currentParsingFile = file;
 
-
     FILE *openedFile = fopen(file.c_str(), "r");
     // freopen(file.c_str(), "r", stdin);
     // std::ifstream openedFile(file);
