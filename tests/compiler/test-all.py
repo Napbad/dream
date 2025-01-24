@@ -1,8 +1,7 @@
 import argparse
 import os.path
 
-from control.test_control import test_control
-from functional.test_functional import test_functional
+from functional.testFunctional import testFunctional
 from syntax.test_syntax import test_syntax
 from test_res import print_result
 from config import parse_config
@@ -37,12 +36,12 @@ directory = project_path + config.get("dap", {}).get("test", {}).get("target-dir
 source_runtime_dir = project_path + config.get("dap", {}).get("test", {}).get("source-runtime-dir")
 
 
-if (D_debug is None):
+if D_debug is None:
     D_debug = False
     print(Fore.YELLOW + "D_DEBUG is not set, default value is False" + Style.RESET_ALL)
 else:
     print(Fore.BLUE + f"D_DEBUG is set to {D_debug}" + Style.RESET_ALL)
-    if (D_debug is True):
+    if D_debug is True:
         print(Fore.YELLOW + "D_DEBUG is set to True, will print debug information" + Style.RESET_ALL)
         print(Fore.BLUE + f"dap_main:            {dap_main}" + Style.RESET_ALL)
         print(Fore.BLUE + f"project_path:        {project_path}" + Style.RESET_ALL)
@@ -64,6 +63,7 @@ for file in dap_files:
 print("\n")
 
 test_syntax(dap_main, source_runtime_dir, D_debug)
+testFunctional(dap_main, source_runtime_dir, D_debug)
 # test_functional(dap_main, source_runtime_dir, D_debug)
 # test_control(dap_main, source_runtime_dir, D_debug)
 test_output(dap_main, source_runtime_dir, D_debug)

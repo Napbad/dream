@@ -3,7 +3,9 @@ dap:
     log-path: /home/napbad/Project/dap-dev-main/logs/
     test:
         dap-main-path: compiler/cmake-build-debug/dap_compiler
-        target-directory: tests/dap_test
-        source-runtime-dir: dap/runtime
+        target-directory: tests/dap_test/
+        source-runtime-dir: dap/runtime/
         dap-main-argument: 
+        dap-build-executable-directory: tests/build/executable/
+        dap-build-executable-name: main
         D_DEBUG: False

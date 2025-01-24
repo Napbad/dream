@@ -1,6 +1,6 @@
 testNum = 0
 passedTest = 0
-failedTest = 0;
+failedTest = 0
 
 failedTestList = []
 

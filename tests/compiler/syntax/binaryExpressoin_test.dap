@@ -1,0 +1,18 @@
+package main;
+
+import a;
+
+fun main()  {
+
+    var x = 1;      // local variable
+    // const y = 10;   // local constant
+
+    imt z = 100;    // local constant with implicit type
+
+    x + z;
+
+    var int x2 = 3;
+    // const int y2 = 30;
+    // const int z2 = 300;
+    // return 0;
+}

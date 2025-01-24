@@ -1,7 +1,9 @@
 import os
+from pathlib import Path
 
 from colorama import Fore, Style
 
+from compiler import config
 from test_res import add_failed_test, success
 
 
@@ -33,7 +35,41 @@ def test_report_default(result, dap_file, test_name):
         print(Fore.RED, "FAIL:" + Fore.BLUE + " <" + test_name + ">\n" + Style.RESET_ALL)
         print(Fore.YELLOW + "stderr:" + Style.RESET_ALL)
         print(Fore.YELLOW + result.stderr + Style.RESET_ALL)
-        add_failed_test(dap_file)
+        add_failed_test(dap_file.__str__())
     else:
         success()
         print(Fore.GREEN + "" + test_name + " test PASS!" + Style.RESET_ALL)
+
+
+def build_executable_file_command(dap_main, dap_file):
+    arg = ""
+    project_path = config.config.get("dap", {}).get("project-path")
+    dap_build_executable_directory = config.config.get("dap", {}).get("test", {}).get("dap-build-executable-directory")
+    dap_build_executable_name = config.config.get("dap", {}).get("test", {}).get("dap-build-executable-name")
+
+    build_directory = project_path + dap_build_executable_directory
+
+    command_list = [
+        Path(os.path.abspath(dap_main)).__str__(),
+        os.path.abspath(dap_file),
+        arg.strip(),
+        "-o",
+        build_directory,
+        "-n",
+        dap_build_executable_name
+    ]
+
+    return command_list
+
+
+def run_executable_target():
+    project_path = config.get("dap", {}).get("project-path")
+    dap_build_executable_directory = config.get("dap", {}).get("test", {}).get("dap-build-executable-directory")
+    dap_build_executable_name = config.get("dap", {}).get("test", {}).get("dap-build-executable-name")
+
+    target = project_path + dap_build_executable_directory + dap_build_executable_name
+
+    command_list = [
+        target
+    ]
+    return command_list

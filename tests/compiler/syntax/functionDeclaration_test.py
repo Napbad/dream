@@ -11,7 +11,9 @@ from util import get_dap_files, test_report_default
 def testFunctionDeclaration(dap_main, source_runtime_dir, d_debug = False):
     arg = ""
 
-    dap_file = "./syntax/functionDeclaration.dap"
+    script_path = Path(__file__).resolve()
+    script_dir = script_path.parent
+    dap_file = script_dir / "functionDeclaration.dap"
     # Correct the command list by removing the extra spaces around -s
     command_list = [
         Path(os.path.abspath(dap_main)).__str__(),

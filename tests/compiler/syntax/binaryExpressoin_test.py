@@ -8,17 +8,14 @@ from test_res import success, add_failed_test
 from util import get_dap_files, test_report_default
 
 
-def testStructTypeDefine(dap_main, source_runtime_dir, d_debug = False):
+def testBinaryExpression(dap_main, source_runtime_dir, d_debug = False):
     arg = ""
-
     script_path = Path(__file__).resolve()
     script_dir = script_path.parent
-    dap_file = script_dir / "structTypeDefine_test.dap"
+    dap_file = script_dir / "binaryExpression_test.dap"
     # Correct the command list by removing the extra spaces around -s
     command_list = [
         Path(os.path.abspath(dap_main)).__str__(),
-        "-s",
-        source_runtime_dir,
         os.path.abspath(dap_file),
         arg.strip()  # Also remove any extra spaces from the arg if present
     ]
@@ -31,5 +28,5 @@ def testStructTypeDefine(dap_main, source_runtime_dir, d_debug = False):
         print(Fore.RED + result.stderr + Style.RESET_ALL)
         print(Fore.GREEN + result.stdout + Style.RESET_ALL)
 
-    test_report_default(result, dap_file, "struct type define syntax")
-    
+
+    test_report_default(result, dap_file, "binary expression parse")
