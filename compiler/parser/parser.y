@@ -15,6 +15,31 @@ extern int yylex();
 
 dap::parser::ProgramNode* program;
 
+
+
+struct ParseFlags {
+    bool isDefiningNumber = false;
+    bool isDefiningType = false;
+    bool isUnsignedNum = false;
+
+    BasicType dataType;
+
+} flags;
+
+void clearParseFlags() {
+    flags.isDefiningNumber = false;
+    flags.isDefiningType = false;
+    flags.isUnsignedNum = false;
+}
+
+void defineUnsignedNum() {
+    flags.isUnsignedNum = true;
+}
+
+void defineType() {
+    flags.isDefiningType = true;
+}
+
 namespace dap::parser {
 extern std::string currentParsingFile;
 }
@@ -569,7 +594,7 @@ identifier:
 
 integer:
     INTEGER {
-        $$ = new dap::parser::IntegerNode(atol($1->c_str()));
+        $$ = new dap::parser::IntegerNode($1, flags.dataType);
         // Log message when parsing an IntegerNode node
         $$->lineNum = yylineno;
         parserLog("Parsed IntegerNode node: integer[" + $$->getVal() + "]");
@@ -635,72 +660,84 @@ type:
         parserLog("Parsed array type node with size");
     }
     | INT {
+        flags.dataType = BasicType::INT;
         $$ = new dap::parser::TypeNode(BasicType::INT);
         // Log message when parsing an int type node
         $$->lineNum = yylineno;
         parserLog("Parsed int type node");
     }
     | BYTE {
+        flags.dataType = BasicType::BYTE;
         $$ = new dap::parser::TypeNode(BasicType::BYTE);
         // Log message when parsing a byte type node
         $$->lineNum = yylineno;
         parserLog("Parsed byte type node");
     }
     | SHORT {
+        flags.dataType = BasicType::SHORT;
         $$ = new dap::parser::TypeNode(BasicType::SHORT);
         // Log message when parsing a short type node
         $$->lineNum = yylineno;
         parserLog("Parsed short type node");
     }
     | LONG {
+        flags.dataType = BasicType::LONG;
         $$ = new dap::parser::TypeNode(BasicType::LONG);
         // Log message when parsing a long type node
         $$->lineNum = yylineno;
         parserLog("Parsed long type node");
     }
     | FLOAT {
+        flags.dataType = BasicType::FLOAT;
         $$ = new dap::parser::TypeNode(BasicType::FLOAT);
         // Log message when parsing a float type node
         $$->lineNum = yylineno;
         parserLog("Parsed float type node");
     }
     | DOUBLE {
+        flags.dataType = BasicType::DOUBLE;
         $$ = new dap::parser::TypeNode(BasicType::DOUBLE);
         // Log message when parsing a double type node
         $$->lineNum = yylineno;
         parserLog("Parsed double type node");
     }
     | BOOL {
+        flags.dataType = BasicType::BOOL;
         $$ = new dap::parser::TypeNode(BasicType::BOOL);
         // Log message when parsing a bool type node
         $$->lineNum = yylineno;
         parserLog("Parsed bool type node");
     }
     | UINT {
+        flags.dataType = BasicType::UINT;
         $$ = new dap::parser::TypeNode(BasicType::UINT);
         // Log message when parsing a uint type node
         $$->lineNum = yylineno;
         parserLog("Parsed uint type node");
     }
     | USHORT {
+        flags.dataType = BasicType::USHORT;
         $$ = new dap::parser::TypeNode(BasicType::USHORT);
         // Log message when parsing a ushort type node
         $$->lineNum = yylineno;
         parserLog("Parsed ushort type node");
     }
     | ULONG {
+        flags.dataType = BasicType::ULONG;
         $$ = new dap::parser::TypeNode(BasicType::ULONG);
         // Log message when parsing a ulong type node
         $$->lineNum = yylineno;
         parserLog("Parsed ulong type node");
     }
     | LLONG {
+        flags.dataType = BasicType::LLONG;
         $$ = new dap::parser::TypeNode(BasicType::LLONG);
         // Log message when parsing a lllong type node
         $$->lineNum = yylineno;
         parserLog("Parsed lllong type node");
     }
     | ULLONG {
+        flags.dataType = BasicType::ULLONG;
         $$ = new dap::parser::TypeNode(BasicType::ULLONG);
         // Log message when parsing a ullong type node
         $$->lineNum = yylineno;

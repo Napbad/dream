@@ -105,76 +105,54 @@ class QualifiedNameNode final : public Expression
 class IntegerNode final : public Expression
 {
   public:
-    explicit IntegerNode(int value)
+    explicit IntegerNode(std::string *value, BasicType type)
     {
-        this->intType = INT;
-        this->intValue.signedVal = value;
-        this->isSigned = true;
-    }
+        // Check if the value is null
+        if (!value) {
+            throw std::invalid_argument("Value cannot be null");
+        }
 
-    explicit IntegerNode(unsigned int value)
-    {
-        this->intType = INT;
-        this->intValue.unsignedVal = value;
-        this->isSigned = false;
-    }
+        // Determine if the value is signed or unsigned based on the type
+        isSigned = (type != BasicType::UBYTE && type != BasicType::USHORT && type != BasicType::UINT &&
+                    type != BasicType::ULONG && type != BasicType::ULLONG);
 
-    explicit IntegerNode(short value)
-    {
-        this->intType = SHORT;
-        this->intValue.shortVal = value;
-        this->isSigned = true;
+        // Convert the string to the appropriate type based on BasicType
+        try {
+            switch (type) {
+                case BasicType::BYTE:
+                case BasicType::UBYTE:
+                    intValue.charVal = static_cast<char>(std::stoi(*value));
+                    intType = CHAR;
+                    break;
+                case BasicType::SHORT:
+                case BasicType::USHORT:
+                    intValue.shortVal = static_cast<short>(std::stoi(*value));
+                    intType = SHORT;
+                    break;
+                case BasicType::INT:
+                case BasicType::UINT:
+                    intValue.signedVal = std::stoi(*value);
+                    intType = INT;
+                    break;
+                case BasicType::LONG:
+                case BasicType::ULONG:
+                    intValue.longVal = std::stol(*value);
+                    intType = LONG;
+                    break;
+                case BasicType::LLONG:
+                case BasicType::ULLONG:
+                    intValue.longLongVal = std::stoll(*value);
+                    intType = LONG_LONG;
+                    break;
+                default:
+                    throw std::invalid_argument("Unsupported BasicType for IntegerNode");
+            }
+        } catch (const std::out_of_range&) {
+            throw std::out_of_range("Value out of range for the specified BasicType");
+        } catch (const std::invalid_argument&) {
+            throw std::invalid_argument("Invalid integer value for the specified BasicType");
+        }
     }
-
-    explicit IntegerNode(unsigned short value)
-    {
-        this->intType = SHORT;
-        this->intValue.unsignedShortVal = value;
-        this->isSigned = false;
-    }
-
-    explicit IntegerNode(char value)
-    {
-        this->intType = CHAR;
-        this->intValue.charVal = value;
-        this->isSigned = true;
-    }
-
-    explicit IntegerNode(unsigned char value)
-    {
-        this->intType = CHAR;
-        this->intValue.unsignedCharVal = value;
-        this->isSigned = false;
-    }
-
-    explicit IntegerNode(long value)
-    {
-        this->intType = LONG;
-        this->intValue.longVal = value;
-        this->isSigned = true;
-    }
-
-    explicit IntegerNode(unsigned long value)
-    {
-        this->intType = LONG;
-        this->intValue.unsignedLongVal = value;
-        this->isSigned = false;
-    }
-
-    explicit IntegerNode(long long value)
-    {
-        this->intType = LONG_LONG;
-        this->intValue.longLongVal = value;
-        this->isSigned = true;
-    }
-
-    explicit IntegerNode(unsigned long long value)
-    {
-        this->intType = LONG_LONG;
-        this->intValue.unsignedLongLongVal = value;
-        this->isSigned = false;
-    }
-
     /// @brief Retrieves the string representation of the value.
     /// @return Returns a string that represents the current state of the value.
     [[nodiscard]] std::string getVal() const;
@@ -535,12 +513,12 @@ class VariableDeclarationNode final : public Statement
     bool nullable_;
     bool mutable_;
     TypeNode *type;
-    Expression *expression;
+    Expression *initialValue;
 
     // Constructor for VariableDeclarationNode
-    VariableDeclarationNode(TypeNode *type, Expression *expression, QualifiedNameNode *variableName,
+    VariableDeclarationNode(TypeNode *type, Expression *initialValue, QualifiedNameNode *variableName,
                             bool nullable = false, bool mutable_ = false)
-        : nullable_(nullable), mutable_(mutable_), type(type), variableName(variableName), expression(expression)
+        : nullable_(nullable), mutable_(mutable_), type(type), variableName(variableName), initialValue(initialValue)
     {
     }
 
@@ -548,7 +526,7 @@ class VariableDeclarationNode final : public Statement
     ~VariableDeclarationNode() override
     {
         delete type;
-        delete expression;
+        delete initialValue;
     }
     llvm::Value *codeGen(inter_gen::InterGenContext *ctx) const override;
 

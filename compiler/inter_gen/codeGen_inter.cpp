@@ -56,7 +56,7 @@ namespace parser
 using std::map;
 using std::string;
 
-// QualifiedNameNode is considered as an expression which represent the variable
+// QualifiedNameNode is considered as an initialValue which represent the variable
 Value *QualifiedNameNode::codeGen(inter_gen::InterGenContext *ctx) const
 {
     // sync the context
@@ -87,7 +87,49 @@ Value *IntegerNode::codeGen(inter_gen::InterGenContext *ctx) const
     ctx->currLine = this->lineNum;
 
     // generate the value
-    Value *value = ConstantInt::get(LLVMCTX, APInt(this->getBits(), this->getVal(), true));
+    Value *value;
+
+ // Determine the LLVM type and create the constant integer
+    switch (intType) {
+        case CHAR:
+        case BYTE:
+            if (isSigned) {
+                value = ConstantInt::get(LLVMCTX, APInt(8, static_cast<int8_t>(intValue.charVal), true));
+            } else {
+                value = ConstantInt::get(LLVMCTX, APInt(8, intValue.unsignedCharVal, false));
+            }
+            break;
+        case SHORT:
+            if (isSigned) {
+                value = ConstantInt::get(LLVMCTX, APInt(16, intValue.shortVal, true));
+            } else {
+                value = ConstantInt::get(LLVMCTX, APInt(16, intValue.unsignedShortVal, false));
+            }
+            break;
+        case INT:
+            if (isSigned) {
+                value = ConstantInt::get(LLVMCTX, APInt(32, intValue.signedVal, true));
+            } else {
+                value = ConstantInt::get(LLVMCTX, APInt(32, static_cast<uint64_t>(intValue.unsignedVal), false));
+            }
+            break;
+        case LONG:
+            if (isSigned) {
+                value = ConstantInt::get(LLVMCTX, APInt(64, intValue.longVal, true));
+            } else {
+                value = ConstantInt::get(LLVMCTX, APInt(64, intValue.unsignedLongVal, false));
+            }
+            break;
+        case LONG_LONG:
+            if (isSigned) {
+                value = ConstantInt::get(LLVMCTX, APInt(64, intValue.longLongVal, true));
+            } else {
+                value = ConstantInt::get(LLVMCTX, APInt(64, intValue.unsignedLongLongVal, false));
+            }
+            break;
+        default:
+            throw std::runtime_error("Unsupported integer type for code generation");
+    }
 
     // return it
     return value;
@@ -172,10 +214,10 @@ Value *VariableDeclarationNode::codeGen(inter_gen::InterGenContext *ctx) const
     const auto [typeDetectedSuccess, detectedType] = detectType(type, this, ctx);
     if (!typeDetectedSuccess) {
 #ifdef D_DEBUG
-        util::logErr("can not detect type [no initial expression]: " + variableName->getName(), ctx, __FILE__,
+        util::logErr("can not detect type [no initial initialValue]: " + variableName->getName(), ctx, __FILE__,
                      __LINE__);
 #else
-        util::logErr("can not detect type [no initial expression]: " + variableName->getName(), ctx);
+        util::logErr("can not detect type [no initial initialValue]: " + variableName->getName(), ctx);
 #endif
         return nullptr;
     }
@@ -198,6 +240,11 @@ Value *VariableDeclarationNode::codeGen(inter_gen::InterGenContext *ctx) const
 
     if (this->variableGenerated) {
         BUILDER.CreateStore(this->variableGenerateValue, allocaVar, false);
+    }
+
+    if (this->initialValue) {
+        Value * initialValueGen = initialValue->codeGen(ctx);
+        BUILDER.CreateStore(initialValueGen, allocaVar, false);
     }
 
     ctx->setDefiningVariable(false);
@@ -392,7 +439,7 @@ Value *UnaryExpressionNode::codeGen(inter_gen::InterGenContext *ctx) const
 {
 
     ctx->currLine = this->lineNum;
-    // Generate code for the expression of the unary operation
+    // Generate code for the initialValue of the unary operation
     Value *operVal = expression->codeGen(ctx);
 
     Value *res;
@@ -514,7 +561,7 @@ Value *ReturnStatementNode::codeGen(inter_gen::InterGenContext *ctx) const
         ctx->setCurrRetVal(nullptr);
         return nullptr;
     }
-    // Generate code for the return expression
+    // Generate code for the return initialValue
     Value *retVal = expression->codeGen(ctx);
 
     const bool isNullable = inter_gen::isNullable(expression, ctx);
