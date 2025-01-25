@@ -34,6 +34,7 @@ D_debug = config.get("dap", {}).get("test", {}).get("D_DEBUG")
 dap_main = project_path + config.get("dap", {}).get("test", {}).get("dap-main-path")
 directory = project_path + config.get("dap", {}).get("test", {}).get("target-directory")
 source_runtime_dir = project_path + config.get("dap", {}).get("test", {}).get("source-runtime-dir")
+debug_mode = config.get("dap", {}).get("test", {}).get("debug-mode")
 
 
 if D_debug is None:
@@ -62,10 +63,10 @@ for file in dap_files:
 
 print("\n")
 
-test_syntax(dap_main, source_runtime_dir, D_debug)
-testFunctional(dap_main, source_runtime_dir, D_debug)
-# test_functional(dap_main, source_runtime_dir, D_debug)
-# test_control(dap_main, source_runtime_dir, D_debug)
-test_output(dap_main, source_runtime_dir, D_debug)
+test_syntax(dap_main, source_runtime_dir, debug_mode)
+testFunctional(dap_main, source_runtime_dir, debug_mode)
+# test_functional(dap_main, source_runtime_dir, debug_mode)
+# test_control(dap_main, source_runtime_dir, debug_mode)
+test_output(dap_main, source_runtime_dir, debug_mode)
 
 print_result()

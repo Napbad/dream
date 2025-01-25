@@ -1,4 +1,5 @@
 import os.path
+import shlex
 import subprocess
 from pathlib import Path
 
@@ -7,27 +8,23 @@ from colorama import Fore, Style
 from test_res import success, add_failed_test
 from util import get_dap_files, test_report_default
 
+from compiler.util import build_executable_file_command
 
-def testStructTypeDefine(dap_main, source_runtime_dir, d_debug = False):
+
+def testStructTypeDefine(dap_main, source_runtime_dir, debug_mode = False):
     arg = ""
 
     script_path = Path(__file__).resolve()
     script_dir = script_path.parent
     dap_file = script_dir / "structTypeDefine_test.dap"
     # Correct the command list by removing the extra spaces around -s
-    command_list = [
-        Path(os.path.abspath(dap_main)).__str__(),
-        "-s",
-        source_runtime_dir,
-        os.path.abspath(dap_file),
-        arg.strip()  # Also remove any extra spaces from the arg if present
-    ]
-    result = subprocess.run(command_list, capture_output=True, text=True)
+    command_list = build_executable_file_command(dap_main, dap_file)
+    result = subprocess.run(shlex.join(command_list), capture_output=True, text=True, shell=True)
 
     print(Fore.BLUE + f"Testing: {dap_file}" + Style.RESET_ALL)
 
 
-    if d_debug:
+    if debug_mode:
         print(Fore.RED + result.stderr + Style.RESET_ALL)
         print(Fore.GREEN + result.stdout + Style.RESET_ALL)
 

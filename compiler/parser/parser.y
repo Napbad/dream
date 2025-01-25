@@ -8,6 +8,7 @@
 #include "common/define_d.h"
 #include "utilities/file_util.h"
 #include "utilities/log_util.h"
+#include "utilities/string_util.h"
 
 extern int yylineno;
 
@@ -422,7 +423,7 @@ functionDeclaration:
         }
         $$ = new dap::parser::FunctionDeclarationNode($2->name_parts->at(0),
                                                         nullptr,
-                                                        nullptr,
+                                                        $5,
                                                         $7);
         // Log message when parsing a function declaration node without parameters
         $$->lineNum = yylineno;
@@ -610,7 +611,8 @@ float_:
 
 string_:
     STRING_LITERAL {
-        $$ = new dap::parser::StringNode(*$1);
+
+        $$ = new dap::parser::StringNode(*dap::util::getPureStr($1));
         // Log message when parsing a string node
         $$->lineNum = yylineno;
         parserLog("Parsed string node");

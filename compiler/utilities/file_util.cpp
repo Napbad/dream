@@ -45,7 +45,7 @@ void create_package_dir(string pkg_dir_name)
         pos = pkg_dir_name.find('.', pos + 1);
     }
 
-    pkg_dir_name = DEFUALT_BUILD_DIR + pkg_dir_name;
+    pkg_dir_name = buildDir + pkg_dir_name;
 
     try {
         if (!std::filesystem::exists(pkg_dir_name)) {
@@ -64,7 +64,7 @@ std::string convert_pkg_to_path(const std::string &pkg_name)
         if (c == '.')
             c = '/';
 
-    res = DEFUALT_BUILD_DIR + res + "/";
+    res = buildDir + res + "/";
 
     return res;
 }

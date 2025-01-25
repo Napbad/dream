@@ -12,6 +12,7 @@ using std::endl;
 
 void printHelpMsg()
 {
+    cout << endl;
     cout << "Usage: "
          << " [-h] [-d <directory>] [-D] [-i] [-e] [-o <output_directory>] [-n <executable_name>]" << endl;
     cout << "  -h, --help            Show this help message and exit" << endl;
@@ -25,6 +26,8 @@ void printHelpMsg()
 #ifdef D_DEBUG
     cout << "  -s, --source-runtime-dir Source directory of runtime" << endl;
 #endif
+    cout << endl;
+
 }
 
 #ifdef D_DEBUG

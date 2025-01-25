@@ -1,4 +1,5 @@
 import os.path
+import shlex
 import subprocess
 from pathlib import Path
 
@@ -25,7 +26,7 @@ def test_control(dap_main, source_runtime_dir, d_debug = False):
             os.path.abspath(Path(dap_file).parent) + "/build",
             arg.strip()  # Also remove any extra spaces from the arg if present
         ]
-        result = subprocess.run(command_list, capture_output=True, text=True)
+        result = subprocess.run(shlex.join(command_list), capture_output=True, text=True, shell=True)
 
         print(Fore.BLUE + f"Executing: {dap_file} {arg}" + Style.RESET_ALL)
         print(result.args)

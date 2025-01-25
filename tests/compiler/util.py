@@ -48,24 +48,26 @@ def build_executable_file_command(dap_main, dap_file):
     dap_build_executable_name = config.config.get("dap", {}).get("test", {}).get("dap-build-executable-name")
 
     build_directory = project_path + dap_build_executable_directory
+    source_runtime_dir = project_path + config.config.get("dap", {}).get("test", {}).get("dap-source-runtime-dir")
 
     command_list = [
         Path(os.path.abspath(dap_main)).__str__(),
         os.path.abspath(dap_file),
-        arg.strip(),
         "-o",
         build_directory,
         "-n",
-        dap_build_executable_name
+        dap_build_executable_name,
+        "-s",
+        source_runtime_dir
     ]
 
     return command_list
 
 
 def run_executable_target():
-    project_path = config.get("dap", {}).get("project-path")
-    dap_build_executable_directory = config.get("dap", {}).get("test", {}).get("dap-build-executable-directory")
-    dap_build_executable_name = config.get("dap", {}).get("test", {}).get("dap-build-executable-name")
+    project_path = config.config.get("dap", {}).get("project-path")
+    dap_build_executable_directory = config.config.get("dap", {}).get("test", {}).get("dap-build-executable-directory")
+    dap_build_executable_name = config.config.get("dap", {}).get("test", {}).get("dap-build-executable-name")
 
     target = project_path + dap_build_executable_directory + dap_build_executable_name
 

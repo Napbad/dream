@@ -5,11 +5,12 @@
 #ifndef CODEGEN_MECHINE_H
 #define CODEGEN_MECHINE_H
 
-#include "inter_gen/codeGen_inter.h"
-#include "inter_gen/preprocessing/includeAnaylize.h"
 #include <set>
 #include <string>
 
+#include "common/define_d.h"
+#include "inter_gen/codeGen_inter.h"
+#include "inter_gen/preprocessing/includeAnaylize.h"
 namespace dap
 {
 namespace inter_gen

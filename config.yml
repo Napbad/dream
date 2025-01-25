@@ -6,6 +6,8 @@ dap:
         target-directory: tests/dap_test/
         source-runtime-dir: dap/runtime/
         dap-main-argument: 
-        dap-build-executable-directory: tests/build/executable/
-        dap-build-executable-name: main
-        D_DEBUG: False
+        dap-build-executable-directory: tests/build/
+        dap-build-executable-name: main_proj
+        dap-source-runtime-dir: dap/runtime/
+        debug-mode: False
+        D_DEBUG: True

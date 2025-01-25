@@ -23,9 +23,6 @@ struct TypeDefine3 {
     var TypeDefine2 td;
 };
 
-
-
-
 fun main()  {
 
     // return 0;

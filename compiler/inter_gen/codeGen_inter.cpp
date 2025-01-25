@@ -163,12 +163,6 @@ Value *ProgramNode::codeGen(inter_gen::InterGenContext *ctx) const
     for (Statement *stmt : *statements) {
         stmt->codeGen(ctx);
     }
-    util::create_package_dir(util::getStrFromVec(*packageName->name_parts, "."));
-
-    for (const auto statement : *statements) {
-        statement->codeGen(ctx);
-    }
-
     // Generate code for program statements
     return nullptr;
 }
@@ -268,24 +262,27 @@ Value *FunctionDeclarationNode::codeGen(inter_gen::InterGenContext *ctx) const
     }
 
     // generate the function info
+    Type * returnType = util::typeOf(this->returnType, ctx);
     const auto type = FunctionType::get(util::typeOf(this->returnType, ctx), params, false);
     Function *function = Function::Create(type, Function::ExternalLinkage, 0, this->name, MODULE);
     const auto funMetaData = new inter_gen::FunctionMetaData(this->name, type, ctx);
 
+    // generate the basic block
+    if (!this->block) {
+        return function;
+    }
+
+    // generate the block statements
     ctx->setCurrFun(function);
     ctx->setCurrFunMetaData(funMetaData);
 
-    // generate the basic block
     const auto basicBlock = BasicBlock::Create(LLVMCTX, util::getFunBasicBlockName(&this->name), function);
     ctx->pushBlock(basicBlock);
     BUILDER.SetInsertPoint(basicBlock);
 
-    if (this->block) {
-
         for (const auto stmt : *this->block) {
             stmt->codeGen(ctx);
         }
-    }
 #ifdef D_DEBUG
     util::logInfo("Function Declaration: " + this->name, ctx, __FILE__, __LINE__);
 #endif // D_DEBUG
@@ -295,6 +292,10 @@ Value *FunctionDeclarationNode::codeGen(inter_gen::InterGenContext *ctx) const
 
     // pop the block
     ctx->popBlock();
+
+    if (ctx->package == "main" && function->getName() == "main") {
+        ctx->setMainFun(function);
+    }
 
     // delete the function generate contexts
     ctx->setCurrFun(nullptr);
@@ -642,7 +643,7 @@ void InterGenContext::genIR(parser::ProgramNode *program)
     pm.add(createPrintModulePass(outfile));
     pm.run(*module);
 
-    outfile.flush();
+    // outfile.flush();
     outfile.close();
 }
 
@@ -655,7 +656,9 @@ void InterGenContext::genExec(parser::ProgramNode *program)
     InitializeAllAsmParsers();
     InitializeAllAsmPrinters();
 
-    // program->codeGen(this);
+    this->package = program->packageName->getName();
+
+    program->codeGen(this);
 
     if (!mainFunction && (sourcePath.ends_with("/main.dap") || sourcePath == "main.dap")) {
         // Define the main function (i32 @main())
@@ -704,6 +707,7 @@ void InterGenContext::genExec(parser::ProgramNode *program)
     // Save the generated code to a file
     std::error_code EC;
     util::replaceAll(package, ".", "/");
+
     std::string outputPath = buildDir + package + "/" + fileName + ".o";
     std::fstream outputFile(outputPath, std::ios::out);
     outputFile.close();

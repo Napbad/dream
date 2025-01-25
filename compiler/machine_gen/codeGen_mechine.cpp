@@ -11,10 +11,9 @@
 #include "common/config.h"
 
 #include "inter_gen/codeGen_inter.h"
-// #include "inter_gen/preprocessing/includeAnaylize.h"
 #include "utilities/string_util.h"
 
-#include <parser/parserMain.h>
+#include "parser/parserMain.h"
 
 std::unordered_map<dap::inter_gen::IncludeGraphNode *, bool> dap::mech_gen::visited;
 
@@ -42,7 +41,13 @@ void dap::mech_gen::execGen_singleFile(inter_gen::InterGenContext *ctx, dap::par
     ctx->genExec(program);
     std::string files = util::getStrFromVec(*filesToCompile, " ");
     files.append(" ").append(buildDir).append("dap/runtime/asm/_start.o ");
-    system(("ld " + files + arg + " -o " + targetExecName + " ").c_str());
+    system(("ld " + files + arg + " -o " + buildDir + targetExecName + " ").c_str());
+#ifdef D_DEBUG
+    util::logInfo("executable file has been generate: " + buildDir + targetExecName, ctx, __FILE__, __LINE__);
+#else
+    util::logInfo("executable file has been generate: " + buildDir + targetExecName, ctx)
+#endif
+
 }
 
 void dap::mech_gen::genExecToOneFile(inter_gen::IncludeGraphNode *node)

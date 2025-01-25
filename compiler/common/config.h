@@ -10,7 +10,7 @@
 
 namespace dap
 {
-const std::string DEFUALT_BUILD_DIR = "./build";
+const std::string DEFUALT_BUILD_DIR = "./build/";
 const std::string DEFAULT_TARGET_NAME = "executable";
 
 extern std::string buildDir;

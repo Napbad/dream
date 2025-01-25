@@ -61,7 +61,7 @@ struct CompilerOptions {
     bool valid = true;
 };
 
-CompilerOptions parseOptions(const int argc, char **argv);
+CompilerOptions parseOptions(int argc, char **argv);
 
 int main(const int argc, char **argv)
 {
@@ -81,6 +81,7 @@ int main(const int argc, char **argv)
 
     if (options.helpRequested) {
         dap::util::printHelpMsg();
+        return 0;
     }
 
     // no input, just return
@@ -94,7 +95,7 @@ int main(const int argc, char **argv)
 #ifdef D_DEBUG
     dap::util::copy_directory(options.sourceRuntimeDir + "asm", dap::buildDir + "dap/runtime/asm");
 #else
-    dap::util::copy_directory("../src/dap/runtime/asm", dap::buildDir + "dap/runtime/asm");
+    dap::util::copy_directory("../../dap/runtime/asm", dap::buildDir + "dap/runtime/asm");
 #endif
 
     if (options.compileDir) {
@@ -126,8 +127,9 @@ int main(const int argc, char **argv)
             pair = dap::parser::parseFile(file);
         }
 
-        if (options.genIR)
+        if (options.genIR) {
             pair.second->genIR(program);
+        }
         else {
             dap::mech_gen::execGen_singleFile(pair.second, program);
         }
@@ -222,5 +224,9 @@ CompilerOptions parseOptions(const int argc, char **argv)
             return options;
         }
     }
+
+    dap::buildDir = options.buildDir;
+    dap::targetExecName = options.targetExecName;
+
     return options; // 添加返回语句
 }

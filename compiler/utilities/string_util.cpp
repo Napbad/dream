@@ -281,4 +281,17 @@ bool findExpectStr(std::string value, const std::string &basic_string)
     }
     return false;
 }
+std::string *getPureStr(std::string *sourceStr)
+{
+    if (sourceStr == nullptr) {
+        return nullptr;
+    }
+    if (!sourceStr->empty() && sourceStr->front() == '"') {
+        sourceStr->erase(0, 1);
+    }
+    if (!sourceStr->empty() && sourceStr->back() == '"') {
+        sourceStr->pop_back();
+    }
+    return sourceStr;
+}
 } // namespace dap::util
