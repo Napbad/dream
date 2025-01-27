@@ -6,6 +6,8 @@ from pathlib import Path
 from colorama import Fore, Style
 
 from compiler.syntax.basicTypeDefine_test import testBasicTypeDefine
+from compiler.syntax.forControlFlow_test import testForControlFlow
+from compiler.syntax.ifControlFlow_test import testIfControlFlow
 from compiler.syntax.structTypeDefine_test import testStructTypeDefine
 from compiler.syntax.returnStmt_test import testReturnStmt
 from compiler.syntax.functionCallStmt_test import testFunctionCallStmt
@@ -24,3 +26,5 @@ def test_syntax(dap_main, source_runtime_dir, debug_mode = False):
     testFunctionCallStmt(dap_main, source_runtime_dir, debug_mode)
     testFunctionDeclaration(dap_main, source_runtime_dir, debug_mode)
     testBinaryExpression(dap_main, source_runtime_dir, debug_mode)
+    testForControlFlow(dap_main, source_runtime_dir, debug_mode)
+    testIfControlFlow(dap_main, source_runtime_dir, debug_mode)

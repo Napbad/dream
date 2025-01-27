@@ -1,0 +1,15 @@
+package main;
+
+fun write(imt int fd, byte* str, int len);  
+
+fun main() int {
+
+    var int a = 10;
+    var int b = 20;
+
+    for int i = 0; i < 10; ++i {
+        b += i;
+    }
+
+    return 0;
+}

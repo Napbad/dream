@@ -1,5 +1,7 @@
 package main;
 
+fun write(imt int fd, byte* str, int len);  
+
 fun main() int {
 
     var int a = 10;
@@ -29,11 +31,6 @@ fun main() int {
 
     if a < b {
         write(1, "a < b", 6);
-    }
-
-
-    for int i = 0; i < 10; ++i {
-        b += i;
     }
 
     return 0;
