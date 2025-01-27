@@ -289,7 +289,7 @@ std::string tokenToString(int token) {
 %type <str> IDENTIFIER INTEGER BINARY_LITERAL OCTAL_LITERAL HEXADECIMAL_LITERAL FLOAT_LITERAL STRING_LITERAL
 %type <ident> identifier
 %type <expr> expression functionCall bool_ binaryExpression unaryExpression
-%type <stmt> importStmt packageDecl statement functionDeclaration variableDecl constantDecl structDecl returnStmt
+%type <stmt> importStmt packageDecl statement functionDeclaration variableDecl constantDecl structDecl returnStmt ifStatement forStatement
 %type <stmtVec> statements
 %type <exprVec> expressions 
 %type <typeNode> type
@@ -537,6 +537,29 @@ functionParameters:
         parserLog("Parsed variable declaration node");
     };
 
+ifStatement: 
+    IF expression LEFT_BRACE statements RIGHT_BRACE {
+        $$ = new dap::parser::IfStatementNode($2, $4);
+        // Log message when parsing an if statement node
+        $$->lineNum = yylineno;
+        parserLog("Parsed if statement node");
+    }
+    | IF expression LEFT_BRACE statements RIGHT_BRACE ELSE LEFT_BRACE statements RIGHT_BRACE {
+        $$ = new dap::parser::IfStatementNode($2, $4, $8);
+        // Log message when parsing an if statement node
+        $$->lineNum = yylineno;
+        parserLog("Parsed if statement node");
+    }
+    ;
+
+forStatement:
+    FOR variableDecl SEMICOLON expression SEMICOLON expression LEFT_BRACE statements RIGHT_BRACE {
+        $$ = new dap::parser::ForStatementNode(dynamic_cast<dap::parser::VariableDeclarationNode*>($2), $4, $6, $8);
+        // Log message when parsing an if statement node
+        $$->lineNum = yylineno;
+        parserLog("Parsed for statement node");
+    };
+    
 nullableModifier:
     /* empty */ {
         $$ = false;
@@ -810,7 +833,15 @@ statement:
         // Log message when parsing a function call statement node
         $$->lineNum = yylineno;
         parserLog("Parsed function call statement node");
+    }
+    | ifStatement {
+        $$ = $1;
+
+    }
+    | forStatement {
+        $$ = $1;
     };
+
 
 statements:
     /* empty */ {

@@ -12,6 +12,7 @@
 #include <llvm/IR/IRBuilder.h>
 #include <llvm/IR/IRPrintingPasses.h>
 #include <llvm/IR/Instructions.h>
+#include <llvm/IR/LLVMContext.h>
 #include <llvm/IR/LegacyPassManager.h>
 #include <llvm/IR/Module.h>
 #include <llvm/IR/Type.h>
@@ -29,9 +30,9 @@
 
 #include "codeGen_inter.h"
 
+#include "check/variableCheck.h"
 #include "common/config.h"
 #include "metadata.h"
-#include "check/variableCheck.h"
 #include "parser/ASTNode.h"
 #include "parser/parser.hpp"
 #include "utilities/file_util.h"
@@ -39,7 +40,6 @@
 #include "utilities/log_util.h"
 #include "utilities/name_format_util.h"
 #include "utilities/string_util.h"
-#include "parser/ASTNode.h"
 
 namespace dap
 {
@@ -74,7 +74,7 @@ Value *StringNode::codeGen(inter_gen::InterGenContext *ctx) const
     // sync the context
     ctx->currLine = this->lineNum;
 
-    // generate the value 
+    // generate the value
     Value *value = ConstantDataArray::getString(LLVMCTX, this->stringValue, true);
 
     // return it
@@ -89,53 +89,53 @@ Value *IntegerNode::codeGen(inter_gen::InterGenContext *ctx) const
     // generate the value
     Value *value;
 
- // Determine the LLVM type and create the constant integer
+    // Determine the LLVM type and create the constant integer
     switch (intType) {
-        case CHAR:
-        case BYTE:
-            if (isSigned) {
-                value = ConstantInt::get(LLVMCTX, APInt(8, static_cast<int8_t>(intValue.charVal), true));
-            } else {
-                value = ConstantInt::get(LLVMCTX, APInt(8, intValue.unsignedCharVal, false));
-            }
-            break;
-        case SHORT:
-            if (isSigned) {
-                value = ConstantInt::get(LLVMCTX, APInt(16, intValue.shortVal, true));
-            } else {
-                value = ConstantInt::get(LLVMCTX, APInt(16, intValue.unsignedShortVal, false));
-            }
-            break;
-        case INT:
-            if (isSigned) {
-                value = ConstantInt::get(LLVMCTX, APInt(32, intValue.signedVal, true));
-            } else {
-                value = ConstantInt::get(LLVMCTX, APInt(32, static_cast<uint64_t>(intValue.unsignedVal), false));
-            }
-            break;
-        case LONG:
-            if (isSigned) {
-                value = ConstantInt::get(LLVMCTX, APInt(64, intValue.longVal, true));
-            } else {
-                value = ConstantInt::get(LLVMCTX, APInt(64, intValue.unsignedLongVal, false));
-            }
-            break;
-        case LONG_LONG:
-            if (isSigned) {
-                value = ConstantInt::get(LLVMCTX, APInt(64, intValue.longLongVal, true));
-            } else {
-                value = ConstantInt::get(LLVMCTX, APInt(64, intValue.unsignedLongLongVal, false));
-            }
-            break;
-        default:
-            throw std::runtime_error("Unsupported integer type for code generation");
+    case CHAR:
+    case BYTE:
+        if (isSigned) {
+            value = ConstantInt::get(LLVMCTX, APInt(8, static_cast<int8_t>(intValue.charVal), true));
+        } else {
+            value = ConstantInt::get(LLVMCTX, APInt(8, intValue.unsignedCharVal, false));
+        }
+        break;
+    case SHORT:
+        if (isSigned) {
+            value = ConstantInt::get(LLVMCTX, APInt(16, intValue.shortVal, true));
+        } else {
+            value = ConstantInt::get(LLVMCTX, APInt(16, intValue.unsignedShortVal, false));
+        }
+        break;
+    case INT:
+        if (isSigned) {
+            value = ConstantInt::get(LLVMCTX, APInt(32, intValue.signedVal, true));
+        } else {
+            value = ConstantInt::get(LLVMCTX, APInt(32, static_cast<uint64_t>(intValue.unsignedVal), false));
+        }
+        break;
+    case LONG:
+        if (isSigned) {
+            value = ConstantInt::get(LLVMCTX, APInt(64, intValue.longVal, true));
+        } else {
+            value = ConstantInt::get(LLVMCTX, APInt(64, intValue.unsignedLongVal, false));
+        }
+        break;
+    case LONG_LONG:
+        if (isSigned) {
+            value = ConstantInt::get(LLVMCTX, APInt(64, intValue.longLongVal, true));
+        } else {
+            value = ConstantInt::get(LLVMCTX, APInt(64, intValue.unsignedLongLongVal, false));
+        }
+        break;
+    default:
+        throw std::runtime_error("Unsupported integer type for code generation");
     }
 
     // return it
     return value;
 }
 
-Value *FloatNode::codeGen(inter_gen::InterGenContext *ctx) const 
+Value *FloatNode::codeGen(inter_gen::InterGenContext *ctx) const
 {
     // sync the context
     ctx->currLine = this->lineNum;
@@ -149,7 +149,7 @@ Value *FloatNode::codeGen(inter_gen::InterGenContext *ctx) const
     const APFloat apFloatValue(floatValue);
 
     // generate the value
-    Value* value = ConstantFP::get(LLVMCTX, apFloatValue);
+    Value *value = ConstantFP::get(LLVMCTX, apFloatValue);
 
     // return it
     return value;
@@ -218,11 +218,7 @@ Value *VariableDeclarationNode::codeGen(inter_gen::InterGenContext *ctx) const
     varType = detectedType;
 
     // generate the variable
-    AllocaInst *allocaVar = util::createAllocaInst(varType,
-     nullptr,
-      BUILDER,
-       this->variableName->getName(),
-        &LLVMCTX);
+    AllocaInst *allocaVar = util::createAllocaInst(varType, nullptr, BUILDER, this->variableName->getName(), &LLVMCTX);
 
     auto varMetaData = new inter_gen::VariableMetaData(variableName->getName(), varType, mutable_, nullable_, ctx);
     ctx->locals().emplace(this->variableName->getName(),
@@ -237,7 +233,7 @@ Value *VariableDeclarationNode::codeGen(inter_gen::InterGenContext *ctx) const
     }
 
     if (this->initialValue) {
-        Value * initialValueGen = initialValue->codeGen(ctx);
+        Value *initialValueGen = initialValue->codeGen(ctx);
         BUILDER.CreateStore(initialValueGen, allocaVar, false);
     }
 
@@ -262,7 +258,7 @@ Value *FunctionDeclarationNode::codeGen(inter_gen::InterGenContext *ctx) const
     }
 
     // generate the function info
-    Type * returnType = util::typeOf(this->returnType, ctx);
+    Type *returnType = util::typeOf(this->returnType, ctx);
     const auto type = FunctionType::get(util::typeOf(this->returnType, ctx), params, false);
     Function *function = Function::Create(type, Function::ExternalLinkage, 0, this->name, MODULE);
     const auto funMetaData = new inter_gen::FunctionMetaData(this->name, type, ctx);
@@ -280,9 +276,9 @@ Value *FunctionDeclarationNode::codeGen(inter_gen::InterGenContext *ctx) const
     ctx->pushBlock(basicBlock);
     BUILDER.SetInsertPoint(basicBlock);
 
-        for (const auto stmt : *this->block) {
-            stmt->codeGen(ctx);
-        }
+    for (const auto stmt : *this->block) {
+        stmt->codeGen(ctx);
+    }
 #ifdef D_DEBUG
     util::logInfo("Function Declaration: " + this->name, ctx, __FILE__, __LINE__);
 #endif // D_DEBUG
@@ -309,6 +305,33 @@ Value *FunctionDeclarationNode::codeGen(inter_gen::InterGenContext *ctx) const
 //     ctx->currLine = this->lineNum;
 //     return nullptr;
 // }
+
+llvm::Value *StructDeclarationNode::codeGen(inter_gen::InterGenContext *ctx) const
+{
+    ctx->currLine = this->lineNum;
+    ctx->setDefStruct(true);
+
+    auto *structMetaData = new inter_gen::StructMetaData(ctx, name->getName());
+    ctx->registerStructMetadata(structMetaData);
+
+    // define the type of the struct
+    std::vector<Type *> fieldTypes;
+    fieldTypes.reserve(structMemberList->size());
+
+    // generate the types to fieldTypes and metaData
+    for (auto field : *structMemberList) {
+        fieldTypes.push_back(util::typeOf(field->type, ctx));
+        structMetaData->addField(field->variableName->getName(),
+                                 new inter_gen::VariableMetaData(field->variableName->getName(), fieldTypes.back(),
+                                                                 field->mutable_, field->nullable_));
+    }
+
+    StructType *structType = StructType::create(LLVMCTX, fieldTypes, name->getName());
+
+    structMetaData->setStructType(structType);
+
+    return nullptr;
+}
 
 Value *BinaryExpressionNode::codeGen(inter_gen::InterGenContext *ctx) const
 {
@@ -732,6 +755,10 @@ void InterGenContext::genExec(parser::ProgramNode *program)
 }
 
 std::unordered_map<IncludeGraphNode *, bool> visited{};
+
+void InterGenContext::registerStructMetadata(StructMetaData *metaData)const{
+    this->metaData->addStruct(metaData);
+}
 
 void interGen_oneFile(IncludeGraphNode *node)
 {

@@ -73,8 +73,6 @@ class InterGenContext
   public:
     llvm::Module *module;                            ///< LLVM module
     llvm::IRBuilder<> builder;                       ///< IR builder
-    std::map<std::string, StructMetaData *> structs; ///< Struct metadata
-    // std::unordered_map<std::string, FunctionMetaData *> functions{};
     ModuleMetaData *metaData = nullptr;
     int currLine = -1;
     std::string sourcePath;
@@ -254,6 +252,7 @@ class InterGenContext
         return nullptr;
     }
 
+    void registerStructMetadata(StructMetaData *metaData)const;
     std::string errMsg(const std::string &msg) const
     {
         return "Error at: " + sourcePath + std::to_string(currLine) + ": \n" + msg;

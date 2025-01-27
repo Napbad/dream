@@ -573,12 +573,19 @@ class ForLoopNode final : public Statement
 class IfStatementNode final : public Statement
 {
   public:
-    ASTNode *conditionExpression;
-    ASTNode *thenBlock;
-    ASTNode *elseBlock;
+    Expression *conditionExpression;
+    std::vector<Statement*> *thenBlock;
+    std::vector<Statement*> *elseBlock;
+    Statement *elseIf;
 
     // Constructor for IfStatementNode
-    IfStatementNode() : conditionExpression(nullptr), thenBlock(nullptr), elseBlock(nullptr)
+    IfStatementNode(
+        Expression *conditionExpression,
+        std::vector<Statement*> *thenBlock,
+        std::vector<Statement*> *elseBlock = nullptr,
+        Statement *elseIf = nullptr
+    ): 
+    conditionExpression(conditionExpression), thenBlock(thenBlock), elseBlock(elseBlock), elseIf(elseIf)
     {
     }
 
@@ -588,6 +595,37 @@ class IfStatementNode final : public Statement
         delete conditionExpression;
         delete thenBlock;
         delete elseBlock;
+    }
+};
+
+class ForStatementNode final : public Statement
+{
+  public:
+    VariableDeclarationNode *conditionDeclaration;
+    Expression *condition;
+    Expression *variableChange;
+    std::vector<Statement*> *block;
+
+    // Constructor for ForStatementNode
+    ForStatementNode(
+        VariableDeclarationNode *conditionDeclaration,
+        Expression *condition,
+        Expression *variableChange,
+        std::vector<Statement*> *block
+    ) : conditionDeclaration(conditionDeclaration),
+        condition(condition),
+        variableChange(variableChange),
+        block(block)
+    {
+    }
+
+    // Destructor for ForStatementNode
+    ~ForStatementNode() override
+    {
+        delete condition;
+        delete block;
+        delete variableChange;
+        delete conditionDeclaration;
     }
 };
 
@@ -668,6 +706,8 @@ class StructDeclarationNode final : public Statement
 
         delete structMemberList;
     }
+
+    llvm::Value *codeGen(inter_gen::InterGenContext *ctx) const override;
 };
 
 // Represents a struct member list in the AST

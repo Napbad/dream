@@ -33,6 +33,12 @@ llvm::Type *typeOf(const parser::TypeNode *type, const inter_gen::InterGenContex
         res = llvm::PointerType::get(res, 0);
     }
 
+    // maybe struct type
+    llvm::StructType *structType = llvm::StructType::getTypeByName(LLVMCTX, type->getName());
+    if (structType) {
+        return structType;
+    }
+
     return res;
 }
 
