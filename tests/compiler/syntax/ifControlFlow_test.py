@@ -5,10 +5,9 @@ from pathlib import Path
 
 from colorama import Fore, Style
 
-from test_res import success, add_failed_test
-from util import get_dap_files, test_report_default
 
-from compiler.util import build_executable_file_command
+
+from compiler.util import build_executable_file_command, test_report_default
 
 
 def testIfControlFlow(dap_main, source_runtime_dir, debug_mode = False):
@@ -27,4 +26,4 @@ def testIfControlFlow(dap_main, source_runtime_dir, debug_mode = False):
         print(Fore.RED + result.stderr + Style.RESET_ALL)
         print(Fore.GREEN + result.stdout + Style.RESET_ALL)
 
-    test_report_default(result, dap_file, "if control syntax test")
+    test_report_default(result, dap_file, "if control syntax")

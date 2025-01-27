@@ -75,3 +75,32 @@ def run_executable_target():
         target
     ]
     return command_list
+
+def test_report_compare(result, dap_file, test_name, expect_contain_word):
+
+    if result.returncode != 0:
+        print(Fore.RED + "Error: " + Style.RESET_ALL + result.stderr)
+        print(Fore.RED + "Error: " + Style.RESET_ALL + result.stdout)
+        add_failed_test(dap_file)
+        return
+
+    b1 = result.stderr.__contains__("error")
+    b2 = result.stderr.__contains__("warning")
+    b3 = result.stderr.__contains__("Error")
+    b4 = result.stdout.__contains__("error")
+    b5 = result.stdout.__contains__("warning")
+    b6 = result.stdout.__contains__("Error")
+
+    if (result.stderr.__contains__("error") or result.stderr.__contains__("warning") or result.stderr.__contains__("Error")) \
+        or (result.stdout.__contains__("error") or result.stdout.__contains__("warning") or result.stdout.__contains__("Error")):
+        print(Fore.RED, "FAIL:" + Fore.BLUE + " <" + test_name + ">\n" + Style.RESET_ALL)
+        print(Fore.YELLOW + "stderr:" + Style.RESET_ALL)
+        print(Fore.YELLOW + result.stderr + Style.RESET_ALL)
+        add_failed_test(dap_file.__str__())
+        return 
+    if result.stdout.__contains__(expect_contain_word):
+        success()
+        print(Fore.GREEN + "" + test_name + " test PASS!" + Style.RESET_ALL)
+    else:
+        add_failed_test(dap_file)
+
