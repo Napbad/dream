@@ -1,15 +1,13 @@
-# 获取当前文件的绝对路径
 import sys
 import os.path
 
+from compiler.control import test_control
+
 
 current_file_path = os.path.abspath(__file__)
-# 获取当前文件所在的目录
 current_dir = os.path.dirname(current_file_path)
-# 获取项目的根目录（假设 tests 目录在项目根目录下）
 project_root = os.path.dirname(current_dir)
 
-# 将项目根目录添加到 Python 模块搜索路径中
 sys.path.append(project_root)
 
 import argparse
@@ -76,11 +74,13 @@ for file in dap_files:
 
 print("\n")
 
+test_output(dap_main, source_runtime_dir, D_debug, debug_mode)
+
+
 testFunctional(dap_main, source_runtime_dir, debug_mode)
 test_syntax(dap_main, source_runtime_dir, debug_mode)
 
 # test_functional(dap_main, source_runtime_dir, debug_mode, D_debug)
-# test_control(dap_main, source_runtime_dir, debug_mode, D_debug)
-test_output(dap_main, source_runtime_dir, D_debug, debug_mode)
+test_control(dap_main, source_runtime_dir, debug_mode)
 
 print_result()
