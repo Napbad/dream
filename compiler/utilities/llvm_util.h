@@ -20,8 +20,16 @@ void initTypeMap(llvm::LLVMContext *llvmCtx);
 
 void initTargets();
 
-llvm::AllocaInst *createAllocaInst(llvm::Type *type, llvm::Value *arraySize, llvm::IRBuilder<> &builder,
-                                   const std::string &name, llvm::LLVMContext *llvmContext);
+llvm::AllocaInst *createAllocaInst(llvm::Type *type,  llvm::IRBuilder<> &builder,
+                                    const std::string &name, llvm::LLVMContext *llvmContext);
+
+llvm::Value *toBool(llvm::Value *src, inter_gen::InterGenContext *ctx);
+
+bool basicBlockEndWithBranchStatement(const llvm::BasicBlock *bb, const inter_gen::InterGenContext *ctx);
+
+llvm::Value *getLastValue(llvm::BasicBlock *src, inter_gen::InterGenContext *ctx);
+
+llvm::Constant* createNullValue(llvm::LLVMContext& context, llvm::Type* type);
 
 // /* Returns an LLVM type based on the identifier, which returns type for metadata (specially for pointer cause that
 //  * llvm's pointer do not have type  info) */

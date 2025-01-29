@@ -228,5 +228,5 @@ CompilerOptions parseOptions(const int argc, char **argv)
     dap::buildDir = options.buildDir;
     dap::targetExecName = options.targetExecName;
 
-    return options; // 添加返回语句
+    return options;
 }

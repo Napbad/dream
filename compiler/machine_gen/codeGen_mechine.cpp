@@ -4,7 +4,8 @@
 
 #include <string>
 #include <unordered_map>
-#include <unordered_set>
+#include <fstream>
+#include <filesystem>
 
 #include "codeGen_mechine.h"
 
@@ -14,6 +15,7 @@
 #include "utilities/string_util.h"
 
 #include "parser/parserMain.h"
+
 
 std::unordered_map<dap::inter_gen::IncludeGraphNode *, bool> dap::mech_gen::visited;
 
@@ -41,7 +43,18 @@ void dap::mech_gen::execGen_singleFile(inter_gen::InterGenContext *ctx, dap::par
     ctx->genExec(program);
     std::string files = util::getStrFromVec(*filesToCompile, " ");
     files.append(" ").append(buildDir).append("dap/runtime/asm/_start.o ");
-    system(("ld " + files + arg + " -o " + buildDir + targetExecName + " ").c_str());
+
+    std::string targetPath = buildDir + targetExecName;
+    std::string targetPathSource = targetPath;
+
+    if (std::filesystem::exists(targetPath)) {
+        while (std::filesystem::is_directory(targetPath)) {
+            targetPath.append("_");
+        }
+        util::logInfo("targetPath exists: " + targetPathSource + ", change to " + targetPath, ctx, __FILE__, __LINE__);
+    }
+
+    system(("ld " + files + arg + " -o " + targetPath + " ").c_str());
 #ifdef D_DEBUG
     util::logInfo("executable file has been generate: " + buildDir + targetExecName, ctx, __FILE__, __LINE__);
 #else

@@ -596,6 +596,8 @@ class IfStatementNode final : public Statement
         delete thenBlock;
         delete elseBlock;
     }
+
+    llvm::Value *codeGen(inter_gen::InterGenContext *ctx) const override;
 };
 
 class ForStatementNode final : public Statement
@@ -627,6 +629,7 @@ class ForStatementNode final : public Statement
         delete variableChange;
         delete conditionDeclaration;
     }
+    llvm::Value *codeGen(inter_gen::InterGenContext *ctx) const override;
 };
 
 // Represents a match statement in the AST

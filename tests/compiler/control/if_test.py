@@ -7,7 +7,7 @@ from pathlib import Path
 from colorama import Fore, Style
 
 from compiler.test_res import failedTest, success, add_failed_test
-from compiler.util import build_executable_file_command, test_report_compare, test_report_default, run_executable_target
+from compiler.util import build_executable_file_command, report_failed_test, test_report_compare, test_report_default, run_executable_target
 
 
 def testBasicIfControlFlow(dap_main, source_runtime_dir, debug_mode = False):
@@ -25,7 +25,7 @@ def testBasicIfControlFlow(dap_main, source_runtime_dir, debug_mode = False):
 
     if result.returncode != 0 and (not result.stderr == ""):
         print(Fore.RED + "Error: " + Style.RESET_ALL + result.stderr)
-        add_failed_test(dap_file)
+        report_failed_test(dap_file)
         return
 
     target_run_result = subprocess.run(run_executable_target(), capture_output=True, text=True, shell=True)

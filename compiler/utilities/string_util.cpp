@@ -294,4 +294,44 @@ std::string *getPureStr(std::string *sourceStr)
     }
     return sourceStr;
 }
+
+std::string getTypeName(const llvm::Type *type, inter_gen::InterGenContext *ctx) {
+    if (type->isPointerTy()) {
+        return getTypeName(type->getContainedType(0), ctx) + "*";
+    }
+    if (type->isArrayTy()) {
+        return getTypeName(type->getArrayElementType(), ctx) + "[]";
+    }
+    if (type->isIntegerTy()) {
+        switch (type->getIntegerBitWidth()) {
+            case 8:
+                return "byte";
+            case 16:
+                return "short";
+            case 32:
+                return "int";
+            case 64:
+                return "long";
+            default:
+                return "int" + std::to_string(type->getIntegerBitWidth()) + "_t";
+        }
+    }
+    if (type->isFloatTy()) {
+        return "float";
+    }
+    if (type->isDoubleTy()) {
+        return "double";
+    }
+    if (type->isVoidTy()) {
+        return "void";
+    }
+    if (type->isStructTy()) {
+        return "struct";
+    }
+    if (type->isFunctionTy()) {
+        return "function";
+    }
+    return "unknown";
+}
+
 } // namespace dap::util

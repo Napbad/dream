@@ -5,6 +5,7 @@
 #ifndef CODEGEN_H
 #define CODEGEN_H
 
+#include <queue>
 #include <stack>
 #include <utility>
 
@@ -12,7 +13,6 @@
 #include <llvm/IR/Function.h>
 #include <llvm/IR/IRBuilder.h>
 #include <llvm/IR/LLVMContext.h>
-#include <llvm/IR/Module.h>
 
 #define LLVMCTX ctx->module->getContext()
 #define MODULE ctx->module
@@ -69,7 +69,12 @@ class InterGenContext
     FunctionMetaData *currentFunMetaData = nullptr;
     bool definingStruct = false;   ///< if now defining struct
     bool definingVariable = false; ///< if now defining variable
+    std::stack<bool> definingNestedIfStatement;
 
+    std::stack<llvm::BasicBlock*> elseIfBlock_merge;
+    std::stack<llvm::Value *> elseIfBlockValue;
+    std::vector<llvm::BasicBlock *> targetMergeBlocks;
+    std::vector<std::pair<llvm::BasicBlock *, llvm::Value *>> valueToMerge;
   public:
     llvm::Module *module;                            ///< LLVM module
     llvm::IRBuilder<> builder;                       ///< IR builder
@@ -78,9 +83,7 @@ class InterGenContext
     std::string sourcePath;
     std::string package;
     std::string fileName;
-    llvm::BasicBlock *mergeBBInNestIf = nullptr;
-    llvm::BasicBlock *mergeBBInNestIfSource = nullptr;
-    llvm::Value *mergeBBInNestIfSrcVal = nullptr;
+
 
     FunctionMetaData *getFunMetaData(const std::string &name, const inter_gen::InterGenContext *ctx) const;
     std::pair<llvm::Value *, VariableMetaData *> getValWithMetadata(const std::string &name);
@@ -257,6 +260,58 @@ class InterGenContext
     {
         return "Error at: " + sourcePath + std::to_string(currLine) + ": \n" + msg;
     }
+
+    void setDefiningNestIfStatementFlag(const bool cond)
+    {
+        if (cond)
+            definingNestedIfStatement.push(true);
+        else
+            definingNestedIfStatement.pop();
+    }
+
+    bool isDefiningNestIfStatement() const
+    {
+        return definingNestedIfStatement.top();
+    }
+
+    void addNestIfStatementResult(llvm::Value *val, llvm::BasicBlock* block)
+    {
+        elseIfBlock_merge.push(block);
+        elseIfBlockValue.push(val);
+    }
+
+    std::pair<llvm::Value *, llvm::BasicBlock*> getNestIfStatementResult()
+    {
+        llvm::Value *val = elseIfBlockValue.top();
+        llvm::BasicBlock *block = elseIfBlock_merge.top();
+        elseIfBlockValue.pop();
+        elseIfBlock_merge.pop();
+        return {val, block};
+    }
+
+    void addTargetMergeBlock(llvm::BasicBlock* block)
+    {
+        targetMergeBlocks.push_back(block);
+    }
+
+    void addValueToBeMerged(llvm::Value *val, llvm::BasicBlock *block)
+    {
+        valueToMerge.emplace_back(block, val);
+    }
+
+    std::vector<std::pair<llvm::BasicBlock *, llvm::Value *>> getValueToBeMerged()
+    {
+        return valueToMerge;
+    }
+
+    llvm::BasicBlock* getTargetMergeBlock()const
+    {
+        llvm::BasicBlock* block = targetMergeBlocks.back();
+        return block;
+    }
+
+
+
 };
 
 void interGen_oneFile(IncludeGraphNode *node);

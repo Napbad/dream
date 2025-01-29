@@ -550,6 +550,12 @@ ifStatement:
         $$->lineNum = yylineno;
         parserLog("Parsed if statement node");
     }
+    | IF expression LEFT_BRACE statements RIGHT_BRACE ELSE ifStatement {
+        $$ = new dap::parser::IfStatementNode($2, $4, nullptr, $7);
+        // Log message when parsing an if statement node
+        $$->lineNum = yylineno;
+        parserLog("Parsed if statement node");
+    }
     ;
 
 forStatement:
@@ -974,7 +980,20 @@ binaryOperator:
     }
     | OR_ASSIGN {
         $$ = OR_ASSIGN;
+    }
+    | GREATER_THAN {
+        $$ = GREATER_THAN;
+    }
+    | LESS_THAN {
+        $$ = LESS_THAN;
+    }
+    | GREATER_THAN_EQUAL {
+        $$ = GREATER_THAN_EQUAL;
+    }
+    | LESS_THAN_EQUAL {
+        $$ = LESS_THAN_EQUAL;
     };
+
 
 unaryExpression:
     unaryOperator expression {

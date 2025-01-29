@@ -1,7 +1,7 @@
 package main;
 
-extern fun write(int fd, byte* data, int size) int;
-extern fun fsync(int fd) int;
+fun write(int fd, byte* data, int size) int;
+fun fsync(int fd) int;
 
 fun main() int {
 

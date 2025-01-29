@@ -104,3 +104,9 @@ def test_report_compare(result, dap_file, test_name, expect_contain_word):
     else:
         add_failed_test(dap_file)
 
+        
+def report_failed_test(dap_file):
+    if isinstance(dap_file, str):
+        add_failed_test(dap_file)
+        return
+    add_failed_test(str(dap_file))

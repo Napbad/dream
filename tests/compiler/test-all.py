@@ -1,7 +1,6 @@
 import sys
 import os.path
 
-from compiler.control import test_control
 
 
 current_file_path = os.path.abspath(__file__)
@@ -12,6 +11,8 @@ sys.path.append(project_root)
 
 import argparse
 
+
+from compiler.control import test_control
 from functional.testFunctional import testFunctional
 from syntax.test_syntax import test_syntax
 from test_res import print_result
@@ -81,6 +82,6 @@ testFunctional(dap_main, source_runtime_dir, debug_mode)
 test_syntax(dap_main, source_runtime_dir, debug_mode)
 
 # test_functional(dap_main, source_runtime_dir, debug_mode, D_debug)
-test_control(dap_main, source_runtime_dir, debug_mode)
+test_control.testControlFlow(dap_main, source_runtime_dir, debug_mode)
 
 print_result()

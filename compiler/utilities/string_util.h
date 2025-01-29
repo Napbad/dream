@@ -9,6 +9,7 @@
 #include <vector>
 
 #include "common/reserve.h"
+#include "inter_gen/codeGen_inter.h"
 
 namespace dap::util
 {
@@ -196,6 +197,8 @@ void replaceAllWithoutStr(std::string &str, const char *from, const char *to);
 bool findExpectStr(std::string value, const std::string &basic_string);
 
 std::string *getPureStr(std::string *sourceStr);
+
+std::string getTypeName(const llvm::Type *type, inter_gen::InterGenContext *ctx);
 
 } // namespace dap::util
 

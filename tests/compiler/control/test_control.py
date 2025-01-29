@@ -11,6 +11,6 @@ from compiler.control.if_test import testBasicIfControlFlow
 from util import get_dap_files
 
 
-def test_control(dap_main, source_runtime_dir, debug_mode = False):
+def testControlFlow(dap_main, source_runtime_dir, debug_mode = False):
     testBasicIfControlFlow(dap_main, source_runtime_dir, debug_mode)
     testBasicForControlFlow(dap_main, source_runtime_dir, debug_mode)

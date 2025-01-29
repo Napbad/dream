@@ -7,5 +7,11 @@
 namespace dap::util
 {
 std::string getFunBasicBlockName(const std::string *funName);
+
+std::string getIfBasicBlockName(const std::string &funName);
+
+std::string getElseBasicBlockName(const std::string &funName);
+
+std::string getMergeBasicBlockName(const std::string &funName);
 }
 #endif // !NAME_FORMAT_UTIL
