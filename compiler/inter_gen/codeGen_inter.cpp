@@ -103,7 +103,6 @@ Value *IntegerNode::codeGen(inter_gen::InterGenContext *ctx) const
     case BYTE:
         if (isSigned) {
             value = ConstantInt::get(LLVMCTX, APInt(8, static_cast<int8_t>(intValue.charVal), true));
-            std::cout << &LLVMCTX << std::endl;
         } else {
             value = ConstantInt::get(LLVMCTX, APInt(8, intValue.unsignedCharVal, false));
         }
