@@ -39,7 +39,7 @@ def add_failed_test(test_name):
     global failedTestList
     with lock:
         failedTest += 1
-        failedTestList.append(test_name)
+        failedTestList.append(str(test_name))
 
 def success():
     global passedTest

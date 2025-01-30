@@ -70,6 +70,7 @@ class InterGenContext
     bool definingStruct = false;   ///< if now defining struct
     bool definingVariable = false; ///< if now defining variable
     std::stack<bool> definingNestedIfStatement;
+    bool assigning;
 
     std::stack<llvm::BasicBlock*> elseIfBlock_merge;
     std::stack<llvm::Value *> elseIfBlockValue;
@@ -91,6 +92,16 @@ class InterGenContext
     std::pair<llvm::Value *, VariableMetaData *> getValWithMetadata(const parser::QualifiedNameNode *name);
     FunctionMetaData *getCurrFunMetaData() const;
     void setCurrFunMetaData(inter_gen::FunctionMetaData *funMetaData);
+
+    void setIsAssigning(const bool cond)
+    {
+        assigning = cond;
+    }
+
+    bool isAssigning()const
+    {
+        return assigning;
+    }
 
     /**
      * @brief Constructor to initialize the module and IR builder.

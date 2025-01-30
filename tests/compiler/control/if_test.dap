@@ -8,31 +8,37 @@ fun main() int {
     var int a = 10;
     var int b = 20;
 
+    imt str1 = "a > b";
+    imt str2 = "a <= b";
+    imt str3 = "a == b";
+    imt str4 = "a < b";
+
     if a > b {
-        write(1, "a > b", 6);
+        write(1, &str1, 6);
     } else {
-        write(1, "a <= b", 6);
+        write(1, &str2, 6);
     }
 
     a = 20; 
 
     if a > b {
-        write(1, "a > b", 6);
-    } elif a == b {
-        write(1, "a == b", 6);
+        write(1, &str1, 6);
+    } else if a == b {
+        write(1, &str3, 6);
     } else {
-        write(1, "a < b", 6);
+        write(1, &str4, 6);
     }
 
     a = 30;
 
     if a > b {
-        write(1, "a > b", 6);
+        write(1, &str1, 6);
     }
 
     if a < b {
-        write(1, "a < b", 6);
+        write(1, &str4, 6);
     }
 
     return 0;
+
 }

@@ -65,6 +65,14 @@ Value *QualifiedNameNode::codeGen(inter_gen::InterGenContext *ctx) const
     // get the value from exist variables
     Value *value = ctx->getVal(this->getName());
 
+    if (isa<AllocaInst>(value)) {
+        auto *allocaInst = dyn_cast<AllocaInst>(value);
+        if (ctx->isAssigning()) {
+            return allocaInst;
+        }
+        return BUILDER.CreateLoad(allocaInst->getAllocatedType(), allocaInst);
+    }
+
     // return it
     return value;
 }
@@ -173,12 +181,12 @@ std::pair<bool, Type *> detectType(const TypeNode *typeNode, const VariableDecla
     Type *varType;
     if (typeNode == nullptr) {
         // auto detect type
-        if (node->value == nullptr) {
+        if (node->initialValue == nullptr) {
             varType = nullptr;
             return {false, varType};
         }
         // TODO: precise type detect, pointer to some type, array of some type
-        const Value *expressionValue = node->value->codeGen(ctx);
+        const Value *expressionValue = node->initialValue->codeGen(ctx);
         varType = expressionValue->getType();
         return {true, varType};
     }
@@ -337,6 +345,11 @@ Value *BinaryExpressionNode::codeGen(inter_gen::InterGenContext *ctx) const
 
     ctx->currLine = this->lineNum;
     // Generate code for left-hand side and right-hand side Expressions
+
+    if (operatorType == ASSIGN) {
+        ctx->setIsAssigning(true);
+    }
+
     Value *lhsVal = left->codeGen(ctx);
     Value *rhsVal = right->codeGen(ctx);
 
@@ -429,6 +442,7 @@ Value *BinaryExpressionNode::codeGen(inter_gen::InterGenContext *ctx) const
 
     // Assignment operators
     case ASSIGN:
+        ctx->setIsAssigning(false);
         return BUILDER.CreateStore(rhsVal, lhsVal, false);
     case ADD_ASSIGN: {
         Value *result = isFloatingPoint ? BUILDER.CreateFAdd(lhsVal, rhsVal, "addassigntmp")
@@ -824,20 +838,21 @@ PHINode *ifStatementBlockGenerate_ifelseif(
     // create PHI node
     if (isHighestLevelIf) {
         std::vector<std::pair<BasicBlock *, Value *>> valuesToBeMerged = ctx->getValueToBeMerged();
-        node = BUILDER.CreatePHI(thenBlockReturnValue->getType(), valuesToBeMerged.size());
+        node = BUILDER.CreatePHI(thenBlockReturnValue->getType(), valuesToBeMerged.size() + 1);
 
+        node->addIncoming(thenBlockReturnValue, thenBlock);
         for (const auto &[block, value] : valuesToBeMerged) {
             node->addIncoming(value, block);
         }
+
+        ctx->setDefiningNestIfStatementFlag(false);
+
     } else {
         // add then block to the merge list
         ctx->addValueToBeMerged(thenBlockReturnValue, thenBlock);
         return nullptr;
     }
 
-    if (isHighestLevelIf) {
-        ctx->setDefiningNestIfStatementFlag(false);
-    }
 
     return node;
 }
