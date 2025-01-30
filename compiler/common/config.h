@@ -23,7 +23,7 @@ extern std::vector<std::string> *filesToCompile;
 
 void readConfig(std::string configPath);
 
-int initCompiler(llvm::LLVMContext *llvmContext);
+int initCompiler(llvm::LLVMContext &llvmContext);
 } // namespace dap
 
 #endif // CONFIG_H

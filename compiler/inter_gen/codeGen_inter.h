@@ -26,7 +26,7 @@ class QualifiedNameNode;
 namespace dap::inter_gen
 {
 
-static llvm::LLVMContext *llvmContext = new llvm::LLVMContext();
+extern llvm::LLVMContext *llvmContext;
 
 class FunctionMetaData;
 class StructMetaData;

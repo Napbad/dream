@@ -103,6 +103,7 @@ Value *IntegerNode::codeGen(inter_gen::InterGenContext *ctx) const
     case BYTE:
         if (isSigned) {
             value = ConstantInt::get(LLVMCTX, APInt(8, static_cast<int8_t>(intValue.charVal), true));
+            std::cout << &LLVMCTX << std::endl;
         } else {
             value = ConstantInt::get(LLVMCTX, APInt(8, intValue.unsignedCharVal, false));
         }
@@ -373,6 +374,8 @@ Value *BinaryExpressionNode::codeGen(inter_gen::InterGenContext *ctx) const
             if (lhsType->getIntegerBitWidth() > rhsType->getIntegerBitWidth()) {
                 rhsVal = BUILDER.CreateSExtOrTrunc(rhsVal, lhsType, "sext_or_trunc");
             } else if (lhsType->getIntegerBitWidth() < rhsType->getIntegerBitWidth()) {
+                lhsVal = BUILDER.CreateSExtOrTrunc(lhsVal, rhsType, "sext_or_trunc");
+            } else {
                 lhsVal = BUILDER.CreateSExtOrTrunc(lhsVal, rhsType, "sext_or_trunc");
             }
         } else {
@@ -899,28 +902,25 @@ Value *ForStatementNode::codeGen(inter_gen::InterGenContext *ctx) const {
     Value *initGen = conditionDeclaration->codeGen(ctx);
 
     // Generate code for loop condition
-    Value *condVal = conditionDeclaration->codeGen(ctx);
-    Value *brCond;
+    // Value *condVal = conditionDeclaration->codeGen(ctx);
+    Value *brCond = condition->codeGen(ctx);
 
     // Handle different types for loop condition: integer, floating point, or
-    // pointer
-    switch (condVal->getType()->getTypeID()) {
-    case Type::IntegerTyID:
-        brCond = BUILDER.CreateICmp(CmpInst::ICMP_NE, condVal, ConstantInt::get(LLVMCTX, APInt(1, 0)));
-        break;
-    case Type::DoubleTyID:
-    case Type::FloatTyID:
-        brCond = BUILDER.CreateFCmp(CmpInst::FCMP_ONE, condVal, ConstantFP::get(LLVMCTX, APFloat(0.0)));
-        break;
-    case Type::PointerTyID:
-        brCond = BUILDER.CreateICmp(CmpInst::ICMP_NE, condVal, ConstantPointerNull::get(PointerType::get(LLVMCTX, 0)));
-        break;
-    default:
-
-
-
-        return nullptr;
-    }
+    // // pointer
+    // switch (condVal->getType()->getTypeID()) {
+    // case Type::IntegerTyID:
+    //     brCond = BUILDER.CreateICmp(CmpInst::ICMP_NE, condVal, ConstantInt::get(LLVMCTX, APInt(1, 0)));
+    //     break;
+    // case Type::DoubleTyID:
+    // case Type::FloatTyID:
+    //     brCond = BUILDER.CreateFCmp(CmpInst::FCMP_ONE, condVal, ConstantFP::get(LLVMCTX, APFloat(0.0)));
+    //     break;
+    // case Type::PointerTyID:
+    //     brCond = BUILDER.CreateICmp(CmpInst::ICMP_NE, condVal, ConstantPointerNull::get(PointerType::get(LLVMCTX, 0)));
+    //     break;
+    // default:
+    //     return nullptr;
+    // }
 
     // Create the loop and exit basic blocks
     Function *fun = ctx->getCurrFun();
@@ -973,6 +973,9 @@ Value *ReturnStatementNode::codeGen(inter_gen::InterGenContext *ctx) const
 
 namespace inter_gen
 {
+
+llvm::LLVMContext *llvmContext = new llvm::LLVMContext();
+
 FunctionMetaData *InterGenContext::getFunMetaData(const std::string &name, const InterGenContext *ctx) const
 {
 

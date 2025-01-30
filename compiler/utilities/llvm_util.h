@@ -16,7 +16,7 @@ namespace dap::util
 llvm::Type *typeOf(const parser::TypeNode *type, const inter_gen::InterGenContext *ctx,
                    parser::Expression *size = nullptr);
 
-void initTypeMap(llvm::LLVMContext *llvmCtx);
+void initTypeMap(llvm::LLVMContext &llvmCtx);
 
 void initTargets();
 

@@ -26,6 +26,10 @@ llvm::Type *typeOf(const parser::TypeNode *type, const inter_gen::InterGenContex
         }
     }
 
+    if (llvm::StructType * structType = llvm::StructType::getTypeByName(LLVMCTX, type->getName())) {
+        res = structType;
+    }
+
     if (type->isArray) {
         res = llvm::ArrayType::get(res, type->arraySize);
     }
@@ -42,23 +46,23 @@ llvm::Type *typeOf(const parser::TypeNode *type, const inter_gen::InterGenContex
     return res;
 }
 
-void initTypeMap(llvm::LLVMContext *llvmCtx)
+void initTypeMap(llvm::LLVMContext &llvmCtx)
 {
-    typeMap.emplace(std::string("int"), llvm::Type::getInt32Ty(*llvmCtx));
-    typeMap.emplace(std::string("int"), llvm::Type::getInt32Ty(*llvmCtx));
-    typeMap.emplace(std::string("byte"), llvm::Type::getInt8Ty(*llvmCtx));
-    typeMap.emplace(std::string("short"), llvm::Type::getInt16Ty(*llvmCtx));
-    typeMap.emplace(std::string("long"), llvm::Type::getInt64Ty(*llvmCtx));
-    typeMap.emplace(std::string("char"), llvm::Type::getInt8Ty(*llvmCtx));
-    typeMap.emplace(std::string("float"), llvm::Type::getFloatTy(*llvmCtx));
-    typeMap.emplace(std::string("string"), llvm::PointerType::get(llvm::Type::getInt8Ty(*llvmCtx), 0));
-    typeMap.emplace(std::string("bool"), llvm::Type::getInt1Ty(*llvmCtx));
-    typeMap.emplace(std::string("uint"), llvm::Type::getInt32Ty(*llvmCtx));
-    typeMap.emplace(std::string("ushort"), llvm::Type::getInt16Ty(*llvmCtx));
-    typeMap.emplace(std::string("ulong"), llvm::Type::getInt64Ty(*llvmCtx));
-    typeMap.emplace(std::string("llong"), llvm::Type::getInt128Ty(*llvmCtx));
-    typeMap.emplace(std::string("ullong"), llvm::Type::getInt128Ty(*llvmCtx));
-    typeMap.emplace(std::string("double"), llvm::Type::getDoubleTy(*llvmCtx));
+    typeMap.emplace(std::string("int"), llvm::Type::getInt32Ty(llvmCtx));
+    typeMap.emplace(std::string("int"), llvm::Type::getInt32Ty(llvmCtx));
+    typeMap.emplace(std::string("byte"), llvm::Type::getInt8Ty(llvmCtx));
+    typeMap.emplace(std::string("short"), llvm::Type::getInt16Ty(llvmCtx));
+    typeMap.emplace(std::string("long"), llvm::Type::getInt64Ty(llvmCtx));
+    typeMap.emplace(std::string("char"), llvm::Type::getInt8Ty(llvmCtx));
+    typeMap.emplace(std::string("float"), llvm::Type::getFloatTy(llvmCtx));
+    typeMap.emplace(std::string("string"), llvm::PointerType::get(llvm::Type::getInt8Ty(llvmCtx), 0));
+    typeMap.emplace(std::string("bool"), llvm::Type::getInt1Ty(llvmCtx));
+    typeMap.emplace(std::string("uint"), llvm::Type::getInt32Ty(llvmCtx));
+    typeMap.emplace(std::string("ushort"), llvm::Type::getInt16Ty(llvmCtx));
+    typeMap.emplace(std::string("ulong"), llvm::Type::getInt64Ty(llvmCtx));
+    typeMap.emplace(std::string("llong"), llvm::Type::getInt128Ty(llvmCtx));
+    typeMap.emplace(std::string("ullong"), llvm::Type::getInt128Ty(llvmCtx));
+    typeMap.emplace(std::string("double"), llvm::Type::getDoubleTy(llvmCtx));
 }
 
 void initTargets()

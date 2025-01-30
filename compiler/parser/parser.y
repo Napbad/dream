@@ -16,8 +16,6 @@ extern int yylex();
 
 dap::parser::ProgramNode* program;
 
-
-
 struct ParseFlags {
     bool isDefiningNumber = false;
     bool isDefiningType = false;
@@ -1018,6 +1016,12 @@ unaryOperator:
     }
     | MUL {
         $$ = MUL;
+    }
+    | INCREMENT {
+        $$ = INCREMENT;
+    }
+    | DECREMENT {
+        $$ = DECREMENT;
     };
 %%
 

@@ -13,7 +13,6 @@
 
 namespace dap::inter_gen
 {
-extern llvm::LLVMContext *llvmContext;
 }
 
 using std::cerr;
@@ -89,7 +88,7 @@ int main(const int argc, char **argv)
         return 1;
     }
 
-    dap::initCompiler(dap::inter_gen::llvmContext);
+    dap::initCompiler(*dap::inter_gen::llvmContext);
     dap::util::delete_directory(dap::buildDir);
 
 #ifdef D_DEBUG
