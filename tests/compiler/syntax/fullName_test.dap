@@ -1,0 +1,18 @@
+package main;
+
+import a;
+
+fun main() int {
+
+    a.foo();
+
+    b.c();
+
+    a.b.c();
+
+    var value1 = a.b;
+
+    imt value2 = c.a();
+
+    return 0;
+}

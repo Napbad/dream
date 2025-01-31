@@ -286,12 +286,12 @@ std::string tokenToString(int token) {
 
 %type <str> IDENTIFIER INTEGER BINARY_LITERAL OCTAL_LITERAL HEXADECIMAL_LITERAL FLOAT_LITERAL STRING_LITERAL
 %type <ident> identifier
-%type <expr> expression functionCall bool_ binaryExpression unaryExpression
+%type <expr> expression functionCall bool_ binaryExpression unaryExpression arrayExpression
 %type <stmt> importStmt packageDecl statement functionDeclaration variableDecl constantDecl structDecl returnStmt ifStatement forStatement
 %type <stmtVec> statements
 %type <exprVec> expressions 
 %type <typeNode> type
-%type <boolval> mutableModifier nullableModifier TRUE FALSE
+%type <boolval> mutableModifier nullableModifier TRUE FALSE 
 %type <token> binaryOperator unaryOperator
 %type <intExpr> integer
 %type <floatExpr> float_
@@ -398,6 +398,12 @@ expression:
 
         $$->lineNum = yylineno;
         parserLog("Parsed unary expression node");
+    }
+    | arrayExpression {
+        $$ = $1;
+
+        $$->lineNum = yylineno;
+        parserLog("Parsed array expression node");
     };
 
 functionDeclaration:
@@ -925,6 +931,14 @@ binaryExpression:
         // Log message when parsing a binary expression node
         $$->lineNum = yylineno;
         parserLog("Parsed binary expression node: [" + tokenToString($2) + "]");
+    };
+
+arrayExpression:
+    identifier LEFT_BRACKET expression RIGHT_BRACKET {
+        $$ = new dap::parser::ArrayExpressionNode($1, $3);
+        // Log message when parsing an array expression node
+        $$->lineNum = yylineno;
+        parserLog("Parsed array expression node: [" + $1->getName() + "]");
     };
 
 binaryOperator:

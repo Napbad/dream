@@ -56,6 +56,49 @@ namespace parser
 using std::map;
 using std::string;
 
+Value *getValueFromOneName(inter_gen::InterGenContext *ctx, const std::string &name)
+{
+    Value * val = ctx->getVal(name);
+
+    if (isa<AllocaInst>(val)) {
+        auto allocaInst = dyn_cast<AllocaInst>(val);
+        if (ctx->isAssigning()) {
+            return allocaInst;
+        }
+
+        return BUILDER.CreateLoad( allocaInst->getAllocatedType(), allocaInst);
+    }
+
+    return val;
+}
+
+Value *getValFromStructValue(inter_gen::InterGenContext *ctx, Value *structValue, const std::string &structFieldName)
+{
+    if (!structValue) {
+#ifdef D_DEBUG
+        util::logErr("getValFromStructValue: structValue is nullptr", ctx, __FILE__, __LINE__);
+#else
+        util::logErr("getValFromStructValue: structValue is nullptr", ctx);
+#endif
+        return nullptr;
+    }
+    const auto structType = dyn_cast<StructType>(structValue->getType());
+    if (!structType) {
+#ifdef D_DEBUG
+        util::logErr("getValFromStructValue: structType is nullptr", ctx, __FILE__, __LINE__);
+#else
+        util::logErr("getValFromStructValue: structType is nullptr", ctx);
+#endif
+        return nullptr;
+    }
+
+    const auto structField = structType->getStructName();
+    const inter_gen::StructMetaData * structMetaData = ctx->metaData->getStruct(structField.str());
+
+    return BUILDER.CreateStructGEP(structMetaData->getFieldType(structFieldName),
+        structValue,structMetaData->getFieldIndex(structFieldName)/* TODO: fill name here*/);
+}
+
 // QualifiedNameNode is considered as an initialValue which represent the variable
 Value *QualifiedNameNode::codeGen(inter_gen::InterGenContext *ctx) const
 {
@@ -63,15 +106,28 @@ Value *QualifiedNameNode::codeGen(inter_gen::InterGenContext *ctx) const
     ctx->currLine = this->lineNum;
 
     // get the value from exist variables
-    Value *value = ctx->getVal(this->getName());
+    Value *value;
 
-    if (isa<AllocaInst>(value)) {
-        auto *allocaInst = dyn_cast<AllocaInst>(value);
-        if (ctx->isAssigning()) {
-            return allocaInst;
-        }
-        return BUILDER.CreateLoad(allocaInst->getAllocatedType(), allocaInst);
+    // only one name
+    if (name_parts->size() == 1) {
+        value = getValueFromOneName(ctx, name_parts->front());
+        return value;
     }
+
+    // struct name
+    Value * structValue = getValueFromOneName(ctx, name_parts->front());
+    if (!structValue) {
+        return nullptr;
+    }
+
+    name_parts->erase(name_parts->begin());
+
+    for (auto &name : *name_parts) {
+        // update the structValue, wait for the next time's update
+        structValue = getValFromStructValue(ctx, structValue, name);
+    }
+
+    value = structValue;
 
     // return it
     return value;
@@ -203,6 +259,29 @@ std::pair<bool, Type *> detectType(const TypeNode *typeNode, const VariableDecla
     }
     return {true, varType};
 }
+
+
+llvm::Value *ArrayExpressionNode::codeGen(inter_gen::InterGenContext *ctx) const
+{
+
+    // sync the inter gen context
+    ctx->currLine = this->lineNum;
+
+    Value *arrayBase  = expression->codeGen(ctx);
+    Value *indexValue = index->codeGen(ctx);
+
+    const std::vector<Value *> indices = {
+        ConstantInt::get(Type::getInt32Ty(LLVMCTX), 0),
+        indexValue // Index
+    };
+
+    if (arrayBase && indexValue) {
+        return BUILDER.CreateGEP(arrayBase->getType(), arrayBase, indices, "array_access");
+    }
+
+    return nullptr;
+}
+
 
 Value *VariableDeclarationNode::codeGen(inter_gen::InterGenContext *ctx) const
 {
@@ -992,17 +1071,17 @@ FunctionMetaData *InterGenContext::getFunMetaData(const std::string &name, const
 
 std::pair<Value *, VariableMetaData *> InterGenContext::getValWithMetadata(const parser::QualifiedNameNode *name)
 {
-    // int idx = 0;
-    // std::pair<Value *, VariableMetaData *> val_with_metadata = this->getValWithMetadata(name->getName(idx));
-    // while (val_with_metadata.first && val_with_metadata.second) {
-    //     if (name->name_parts->size() == idx + 1) {
-    //         return val_with_metadata;
-    //     }
-    //     idx++;
-    // }
-    // {
-    //     // REPORT_ERROR(errMsg("Value not found" + name->getName()), __FILE__, __LINE__);
-    // }
+    int idx = 0;
+    std::pair<Value *, VariableMetaData *> val_with_metadata = this->getValWithMetadata(name->getName());
+    while (val_with_metadata.first && val_with_metadata.second) {
+        if (name->name_parts->size() == idx + 1) {
+            return val_with_metadata;
+        }
+        idx++;
+    }
+    {
+        // REPORT_ERROR(errMsg("Value not found" + name->getName()), __FILE__, __LINE__);
+    }
     return {nullptr, nullptr};
 }
 
@@ -1213,7 +1292,7 @@ std::pair<Value *, VariableMetaData *> InterGenContext::getValWithMetadata(const
             const auto &funMetadata = metaData->getFunction(fun->getName().str());
             for (auto &arg : fun->args()) {
                 if (arg.getName() == name) {
-                    // return {&arg, funMetadata->getArgMetaData(arg.getName().str())};
+                    return {&arg, funMetadata->getArgMetaData(arg.getName().str())};
                 }
             }
         }
@@ -1244,7 +1323,7 @@ void InterGenContext::setCurrFunMetaData(FunctionMetaData *funMetaData)
 }
 
 InterGenContext::InterGenContext(std::string sourcePathInput)
-    : builder(llvm::IRBuilder(*llvmContext)), sourcePath(std::move(std::move(sourcePathInput)))
+    :assigning(false), builder(llvm::IRBuilder(*llvmContext)), sourcePath(std::move(std::move(sourcePathInput)))
 {
     fileName = sourcePath.substr(sourcePath.find_last_of('/') + 1);
     module = new llvm::Module(sourcePath, *llvmContext);

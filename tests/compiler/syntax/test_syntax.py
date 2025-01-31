@@ -13,6 +13,7 @@ from compiler.syntax.returnStmt_test import testReturnStmt
 from compiler.syntax.functionCallStmt_test import testFunctionCallStmt
 from compiler.syntax.functionDeclaration_test import testFunctionDeclaration
 from compiler.syntax.binaryExpressoin_test import testBinaryExpression
+from compiler.syntax.fullName_test import testFullName
 
 
 def test_syntax(dap_main, source_runtime_dir, debug_mode = False):
@@ -28,3 +29,4 @@ def test_syntax(dap_main, source_runtime_dir, debug_mode = False):
     testBinaryExpression(dap_main, source_runtime_dir, debug_mode)
     testForControlFlow(dap_main, source_runtime_dir, debug_mode)
     testIfControlFlow(dap_main, source_runtime_dir, debug_mode)
+    testFullName(dap_main, source_runtime_dir, debug_mode)

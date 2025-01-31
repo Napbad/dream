@@ -258,6 +258,19 @@ class BinaryExpressionNode final : public Expression
     llvm::Value *codeGen(inter_gen::InterGenContext *ctx) const override;
 };
 
+class ArrayExpressionNode final : public Expression
+{
+  public:
+    QualifiedNameNode *expression;
+    Expression *index;
+
+    ArrayExpressionNode(QualifiedNameNode *expression, Expression *index) : expression(expression), index(index)
+    {
+    }
+
+    llvm::Value *codeGen(inter_gen::InterGenContext *ctx) const override;
+};
+
 class UnaryExpressionNode final : public Expression
 {
   public:
