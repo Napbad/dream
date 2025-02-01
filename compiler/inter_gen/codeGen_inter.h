@@ -93,12 +93,12 @@ class InterGenContext
     FunctionMetaData *getCurrFunMetaData() const;
     void setCurrFunMetaData(inter_gen::FunctionMetaData *funMetaData);
 
-    void setIsAssigning(const bool cond)
+    void setNeedPointer(const bool cond)
     {
         assigning = cond;
     }
 
-    bool isAssigning()const
+    bool isNeedPointer()const
     {
         return assigning;
     }

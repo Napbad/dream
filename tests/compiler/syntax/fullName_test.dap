@@ -2,17 +2,22 @@ package main;
 
 import a;
 
+struct A {
+    var int a;
+    var int b;
+    imt int c;
+};
+
 fun main() int {
 
-    a.foo();
+    var A a1;
+    a1.a = 10;
+    a1.b = 20;
+    a1.c = 30;
 
-    b.c();
+    var value1 = a1.b;
 
-    a.b.c();
-
-    var value1 = a.b;
-
-    imt value2 = c.a();
+    imt value2 = a1.c;
 
     return 0;
 }

@@ -62,7 +62,7 @@ Value *getValueFromOneName(inter_gen::InterGenContext *ctx, const std::string &n
 
     if (isa<AllocaInst>(val)) {
         auto allocaInst = dyn_cast<AllocaInst>(val);
-        if (ctx->isAssigning()) {
+        if (ctx->isNeedPointer()) {
             return allocaInst;
         }
 
@@ -82,7 +82,15 @@ Value *getValFromStructValue(inter_gen::InterGenContext *ctx, Value *structValue
 #endif
         return nullptr;
     }
-    const auto structType = dyn_cast<StructType>(structValue->getType());
+
+    Type* structType;
+    if (isa<AllocaInst>(structValue)) {
+        structType = dyn_cast<AllocaInst>(structValue)->getAllocatedType();
+    }
+    else {
+        structType = dyn_cast<StructType>(structValue->getType());
+    }
+
     if (!structType) {
 #ifdef D_DEBUG
         util::logErr("getValFromStructValue: structType is nullptr", ctx, __FILE__, __LINE__);
@@ -95,8 +103,23 @@ Value *getValFromStructValue(inter_gen::InterGenContext *ctx, Value *structValue
     const auto structField = structType->getStructName();
     const inter_gen::StructMetaData * structMetaData = ctx->metaData->getStruct(structField.str());
 
-    return BUILDER.CreateStructGEP(structMetaData->getFieldType(structFieldName),
-        structValue,structMetaData->getFieldIndex(structFieldName)/* TODO: fill name here*/);
+    // std::vector<Value*>
+    if (ctx->isNeedPointer()) {
+        return BUILDER.CreateInBoundsGEP(structType,
+            structValue,
+            {ConstantInt::get(LLVMCTX, APInt(32, 0)),
+                ConstantInt::get(LLVMCTX, APInt(32, structMetaData->getFieldIndex(structFieldName)))});
+    }
+    // return BUILDER.CreateLoad(structMetaData->getFieldType(structFieldName), BUILDER.CreateInBoundsGEP(structType,
+    //         structValue,
+    //         {ConstantInt::get(LLVMCTX, APInt(32, 0)),
+    //             ConstantInt::get(LLVMCTX, APInt(32, structMetaData->getFieldIndex(structFieldName)))}));
+    // structValue = BUILDER.CreateGEP(structType, structValue, {ConstantInt::get(LLVMCTX, APInt(32, 0))});
+    return BUILDER.CreateInBoundsGEP(structType,
+    structValue,
+    {ConstantInt::get(LLVMCTX, APInt(32, 0)),
+        ConstantInt::get(LLVMCTX, APInt(32, structMetaData->getFieldIndex(structFieldName)))});
+    // return BUILDER.CreateExtractValue(structValue, {structMetaData->getFieldIndex(structFieldName)} /* TODO: fill name here*/);
 }
 
 // QualifiedNameNode is considered as an initialValue which represent the variable
@@ -115,18 +138,27 @@ Value *QualifiedNameNode::codeGen(inter_gen::InterGenContext *ctx) const
     }
 
     // struct name
+    bool isNeedPointer = ctx->isNeedPointer();
+    ctx->setNeedPointer(true);
     Value * structValue = getValueFromOneName(ctx, name_parts->front());
     if (!structValue) {
         return nullptr;
     }
 
+    string firstName = *name_parts->begin();
     name_parts->erase(name_parts->begin());
 
-    for (auto &name : *name_parts) {
+
+    for (int i = 0; i < name_parts->size(); i++) {
+        if (i == name_parts->size() - 1) {
+            ctx->setNeedPointer(isNeedPointer);
+        }
+
         // update the structValue, wait for the next time's update
-        structValue = getValFromStructValue(ctx, structValue, name);
+        structValue = getValFromStructValue(ctx, structValue, name_parts->at(i));
     }
 
+    name_parts->insert(name_parts->begin(), firstName);
     value = structValue;
 
     // return it
@@ -426,10 +458,10 @@ Value *BinaryExpressionNode::codeGen(inter_gen::InterGenContext *ctx) const
     // Generate code for left-hand side and right-hand side Expressions
 
     if (operatorType == ASSIGN) {
-        ctx->setIsAssigning(true);
+        ctx->setNeedPointer(true);
     }
-
     Value *lhsVal = left->codeGen(ctx);
+    ctx->setNeedPointer(false);
     Value *rhsVal = right->codeGen(ctx);
 
     // Check for null results from the code generation
@@ -447,7 +479,7 @@ Value *BinaryExpressionNode::codeGen(inter_gen::InterGenContext *ctx) const
         rhsType = (dyn_cast<AllocaInst>(rhsVal))->getAllocatedType();
     }
     // Check if both expressions are of the same type
-    if (lhsType != rhsType) {
+    if (lhsType != rhsType && operatorType != ASSIGN) {
         if (llvm::isa<IntegerType>(lhsType) && llvm::isa<IntegerType>(rhsType)) {
             if (lhsType->getIntegerBitWidth() > rhsType->getIntegerBitWidth()) {
                 rhsVal = BUILDER.CreateSExtOrTrunc(rhsVal, lhsType, "sext_or_trunc");
@@ -523,7 +555,7 @@ Value *BinaryExpressionNode::codeGen(inter_gen::InterGenContext *ctx) const
 
     // Assignment operators
     case ASSIGN:
-        ctx->setIsAssigning(false);
+        ctx->setNeedPointer(false);
         return BUILDER.CreateStore(rhsVal, lhsVal, false);
     case ADD_ASSIGN: {
         Value *result = isFloatingPoint ? BUILDER.CreateFAdd(lhsVal, rhsVal, "addassigntmp")
