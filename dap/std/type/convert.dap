@@ -1,9 +1,0 @@
-package dap.std.type;
-
-// extern fun charToInt(imt byte c) int;
-
-// extern fun intToChar(imt int i) byte;
-
-// extern fun charToStr(imt byte c) byte*;
-
-// extern fun charToInt32(imt byte c) int;

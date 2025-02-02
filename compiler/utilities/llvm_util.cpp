@@ -35,7 +35,10 @@ llvm::Type *typeOf(const parser::TypeNode *type, const inter_gen::InterGenContex
     }
 
     if (type->isPointer) {
-        res = llvm::PointerType::get(res, 0);
+        if (res) {
+            res = llvm::PointerType::get(res, 0);
+        }
+        res = llvm::PointerType::get(LLVMCTX, 0);
     }
 
     return res;
@@ -58,6 +61,7 @@ void initTypeMap(llvm::LLVMContext &llvmCtx)
     typeMap.emplace(std::string("llong"), llvm::Type::getInt128Ty(llvmCtx));
     typeMap.emplace(std::string("ullong"), llvm::Type::getInt128Ty(llvmCtx));
     typeMap.emplace(std::string("double"), llvm::Type::getDoubleTy(llvmCtx));
+    typeMap.emplace(std::string("void"), llvm::Type::getVoidTy(llvmCtx));
 }
 
 void initTargets()

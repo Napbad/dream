@@ -1,37 +1,36 @@
 package dap.runtime.sys;
 
-package dap.runtime.sys;
 
-extern fun open(imt byte* pathname, imt int flags, imt int mode) int;
-extern fun close(imt int fd) int;
-extern fun read(imt int fd, imt byte* buf, imt int count) int;
-extern fun write(imt int fd, imt byte* buf, imt int count) int;
-extern fun lseek(imt int fd, imt int offset, imt int whence) int;
-extern fun fsync(imt int fd) int;
+fun open(imt byte* pathname, imt int flags, imt int mode) int;
+fun close(imt int fd) int;
+fun read(imt int fd, imt byte* buf, imt int count) int;
+fun write(imt int fd, imt byte* buf, imt int count) int;
+fun lseek(imt int fd, imt int offset, imt int whence) int;
+fun fsync(imt int fd) int;
 
-extern fun fork() int;
-extern fun execve(imt byte* filename, imt byte* argv, imt byte* envp) int;
-extern fun wait(imt int* status) int;
+fun fork() int;
+fun execve(imt byte* filename, imt byte* argv, imt byte* envp) int;
+fun wait(imt int* status) int;
 
-extern fun sbrk(imt int increment) int;
+fun sbrk(imt int increment) int;
 
-extern fun mkdir(imt byte* pathname, imt int mode) int;
-extern fun rmdir(imt byte* pathname) int;
-extern fun unlink(imt byte* pathname) int;
-extern fun link(imt byte* oldpath, imt byte* newpath) int;
-extern fun rename(imt byte* oldpath, imt byte* newpath) int;
-extern fun chdir(imt byte* path) int;
-extern fun getcwd(imt byte* buf, imt int size) int;
-extern fun stat(imt byte* path, imt int* buf) int;
-extern fun fstat(imt int fd, imt int* buf) int;
-extern fun chmod(imt byte* path, imt int mode) int;
-extern fun chown(imt byte* path, imt int owner, imt int group) int;
-extern fun truncate(imt byte* path, imt int length) int;
-extern fun ftruncate(imt int fd, imt int length) int;
-extern fun access(imt byte* path, imt int mode) int;
-extern fun sync() int;
-extern fun umask(imt int mask) int;
-extern fun utime(imt byte* path, imt int* times) int;
-extern fun utime(imt byte* path, imt int* times) int;
+fun mkdir(imt byte* pathname, imt int mode) int;
+fun rmdir(imt byte* pathname) int;
+fun unlink(imt byte* pathname) int;
+fun link(imt byte* oldpath, imt byte* newpath) int;
+fun rename(imt byte* oldpath, imt byte* newpath) int;
+fun chdir(imt byte* path) int;
+fun getcwd(imt byte* buf, imt int size) int;
+fun stat(imt byte* path, imt int* buf) int;
+fun fstat(imt int fd, imt int* buf) int;
+fun chmod(imt byte* path, imt int mode) int;
+fun chown(imt byte* path, imt int owner, imt int group) int;
+fun truncate(imt byte* path, imt int length) int;
+fun ftruncate(imt int fd, imt int length) int;
+fun access(imt byte* path, imt int mode) int;
+fun sync() int;
+fun umask(imt int mask) int;
+fun utime(imt byte* path, imt int* times) int;
+fun utime(imt byte* path, imt int* times) int;
 
-extern fun exit(imt int code) int;
+fun exit(imt int code) int;

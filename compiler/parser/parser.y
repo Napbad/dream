@@ -20,6 +20,7 @@ struct ParseFlags {
     bool isDefiningNumber = false;
     bool isDefiningType = false;
     bool isUnsignedNum = false;
+    bool isDefiningVariable = false;
 
     BasicType dataType;
 
@@ -29,6 +30,7 @@ void clearParseFlags() {
     flags.isDefiningNumber = false;
     flags.isDefiningType = false;
     flags.isUnsignedNum = false;
+    flags.isDefiningVariable = false;
 }
 
 void defineUnsignedNum() {
@@ -288,7 +290,7 @@ std::string tokenToString(int token) {
 %type <ident> identifier
 %type <expr> expression functionCall bool_ binaryExpression unaryExpression arrayExpression truncExpression
 %type <stmt> importStmt packageDecl statement functionDeclaration variableDecl constantDecl structDecl returnStmt ifStatement forStatement
-%type <stmtVec> statements
+%type <stmtVec> statements importStmts
 %type <exprVec> expressions 
 %type <typeNode> type
 %type <boolval> mutableModifier nullableModifier TRUE FALSE 
@@ -301,7 +303,7 @@ std::string tokenToString(int token) {
 %start program
 %%
 program:
-    packageDecl importStmt statements {
+    packageDecl importStmts statements {
         // Create a new program node
         program->statements = $3;
         // Log message when parsing a program node
@@ -410,6 +412,11 @@ expression:
 
         $$->lineNum = yylineno;
         parserLog("Parsed trunc expression node");
+    }
+    | LEFT_PAREN expression RIGHT_PAREN {
+        $$ = $2;
+        $$->lineNum = yylineno;
+        parserLog("Parsed parenthesized expression node");
     };
 
 functionDeclaration:
@@ -424,6 +431,8 @@ functionDeclaration:
                                                         $6);
         // Log message when parsing a function declaration node without parameters
         $$->lineNum = yylineno;
+        flags.dataType = BasicType::UNKNOWN;
+
         parserLog("Parsed function declaration node without parameters");
     }
     | FUN identifier LEFT_PAREN RIGHT_PAREN type LEFT_BRACE statements RIGHT_BRACE {
@@ -437,6 +446,8 @@ functionDeclaration:
                                                         $7);
         // Log message when parsing a function declaration node without parameters
         $$->lineNum = yylineno;
+        flags.dataType = BasicType::UNKNOWN;
+
         parserLog("Parsed function declaration node without parameters");
     }
     | FUN identifier LEFT_PAREN functionParameters RIGHT_PAREN LEFT_BRACE statements RIGHT_BRACE {
@@ -451,6 +462,8 @@ functionDeclaration:
                                                         $7);
         // Log message when parsing a function declaration node with parameters
         $$->lineNum = yylineno;
+        flags.dataType = BasicType::UNKNOWN;
+
         parserLog("Parsed function declaration node with parameters");
 
     }
@@ -466,6 +479,8 @@ functionDeclaration:
                                                         $8);
         // Log message when parsing a function declaration node with parameters and return type
         $$->lineNum = yylineno;
+        flags.dataType = BasicType::UNKNOWN;
+
         parserLog("Parsed function declaration node with parameters and return type");
     }
     | FUN identifier LEFT_PAREN RIGHT_PAREN SEMICOLON {
@@ -479,6 +494,8 @@ functionDeclaration:
                                                         nullptr);
         // Log message when parsing a function declaration node without parameters
         $$->lineNum = yylineno;
+        flags.dataType = BasicType::UNKNOWN;
+
         parserLog("Parsed function declaration node without parameters");
     }
     | FUN identifier LEFT_PAREN RIGHT_PAREN type SEMICOLON {
@@ -492,6 +509,8 @@ functionDeclaration:
                                                         nullptr);
         // Log message when parsing a function declaration node without parameters
         $$->lineNum = yylineno;
+        flags.dataType = BasicType::UNKNOWN;
+
         parserLog("Parsed function declaration node without parameters");
     }
     | FUN identifier LEFT_PAREN functionParameters RIGHT_PAREN SEMICOLON {
@@ -506,6 +525,8 @@ functionDeclaration:
                                                         nullptr);
         // Log message when parsing a function declaration node with parameters
         $$->lineNum = yylineno;
+        flags.dataType = BasicType::UNKNOWN;
+
         parserLog("Parsed function declaration node with parameters");
 
     }
@@ -521,6 +542,8 @@ functionDeclaration:
                                                         nullptr);
         // Log message when parsing a function declaration node with parameters and return type
         $$->lineNum = yylineno;
+        flags.dataType = BasicType::UNKNOWN;
+
         parserLog("Parsed function declaration node with parameters and return type");
     };
 
@@ -634,9 +657,12 @@ identifier:
 
 integer:
     INTEGER {
-        $$ = new dap::parser::IntegerNode($1, flags.dataType);
+
+        $$ = new dap::parser::IntegerNode($1, BasicType::ULLONG);
         // Log message when parsing an IntegerNode node
         $$->lineNum = yylineno;
+        flags.dataType = BasicType::UNKNOWN;
+
         parserLog("Parsed IntegerNode node: integer[" + $$->getVal() + "]");
     };
 
@@ -783,6 +809,13 @@ type:
         // Log message when parsing a ullong type node
         $$->lineNum = yylineno;
         parserLog("Parsed ullong type node");
+    }
+    | VOID {
+        flags.dataType = BasicType::VOID;
+        $$ = new dap::parser::TypeNode(BasicType::VOID);
+        // Log message when parsing a void type node
+        $$->lineNum = yylineno;
+        parserLog("Parsed void type node");
     };
 
 packageDecl:
@@ -796,10 +829,7 @@ packageDecl:
     };
 
 importStmt:
-    /* empty */ {
-
-    }
-    | IMPORT identifier SEMICOLON {
+    IMPORT identifier SEMICOLON {
         auto info = new dap::parser::ProgramNode::importedPackageInfo($2, false);
         program->importedPackages->push_back(info);
         // Log message when parsing an import statement node
@@ -810,6 +840,14 @@ importStmt:
         program->importedPackages->push_back(info);
         // Log message when parsing an import wildcard statement node
         parserLog("Parsed import wildcard statement node: import [" + $2->getName() + "] [all]");
+    };
+
+importStmts:
+    /* empty */ {
+
+    }
+    | importStmts importStmt {
+
     };
 
 statement:
@@ -823,24 +861,36 @@ statement:
         $$ = $1;
         // Log message when parsing a variable declaration statement node
         $$->lineNum = yylineno;
+
+        flags.dataType = BasicType::UNKNOWN;
+
         parserLog("Parsed variable declaration statement node: [" + (dynamic_cast<dap::parser::VariableDeclarationNode*>($1))->variableName->getName() + "]");
     }
     | constantDecl SEMICOLON { 
         $$ = $1;
         // Log message when parsing a constant declaration statement node
         $$->lineNum = yylineno;
+
+        flags.dataType = BasicType::UNKNOWN;
+
         parserLog("Parsed constant declaration statement node: [" + (dynamic_cast<dap::parser::ConstantDeclarationNode*>($1))->name->getName() + "]");
     } 
     | structDecl {
         $$ = $1;
         // Log message when parsing a struct declaration statement node
         $$->lineNum = yylineno;
+
+        flags.dataType = BasicType::UNKNOWN;
+
         parserLog("Parsed struct declaration statement node: [" + (dynamic_cast<dap::parser::StructDeclarationNode*>($1))->name->getName() + "]");
     }
     | returnStmt {
         $$ = $1;
         // Log message when parsing a return statement node
         $$->lineNum = yylineno;
+
+        flags.dataType = BasicType::UNKNOWN;
+
         parserLog("Parsed return statement node");
     }
     | expression SEMICOLON {
@@ -921,7 +971,14 @@ returnStmt:
         // Log message when parsing a return statement node
         $$->lineNum = yylineno;
         parserLog("Parsed return statement node");
+    }
+    | RETURN SEMICOLON {
+        $$ = new dap::parser::ReturnStatementNode(nullptr);
+        // Log message when parsing a return statement node
+        $$->lineNum = yylineno;
+        parserLog("Parsed return statement node [no value returned]");
     };
+
 
 functionCall:
     identifier LEFT_PAREN expressions RIGHT_PAREN {
@@ -976,6 +1033,9 @@ binaryOperator:
     }
     | EQUAL {
         $$ = EQUAL;
+    }
+    | NOT_EQUAL {
+        $$ = NOT_EQUAL;
     }
     | ADD_ASSIGN {
         $$ = ADD_ASSIGN;

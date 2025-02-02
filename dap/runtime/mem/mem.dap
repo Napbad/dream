@@ -1,6 +1,6 @@
 package dap.runtime.mem;
 
-include dap.runtime.sys.sysFun;
+import dap.runtime.sys.sysFun;
 
 struct block_d {
     var int size;
@@ -14,7 +14,8 @@ fun malloc(imt int size) int {
       return 0;
     }
 
-    imt int ptr = sbrk(size);
+    // imt int ptr = sbrk(size);
+    imt int ptr;
     if ptr == -1 {
       return 0;
     }

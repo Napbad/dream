@@ -1,6 +1,6 @@
 package dap.runtime.gc;
 
-include dap.runtime.sys.sysFun;
+import dap.runtime.sys.sysFun;
 
 
 fun gc() {

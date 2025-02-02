@@ -35,11 +35,14 @@
 #include "metadata.h"
 #include "parser/ASTNode.h"
 #include "parser/parser.hpp"
+#include "preprocessing/includeAnaylize.h"
 #include "utilities/file_util.h"
 #include "utilities/llvm_util.h"
 #include "utilities/log_util.h"
 #include "utilities/name_format_util.h"
 #include "utilities/string_util.h"
+
+#include <parser/parserMain.h>
 
 namespace dap
 {
@@ -183,6 +186,11 @@ Value *IntegerNode::codeGen(inter_gen::InterGenContext *ctx) const
 
     // generate the value
     Value *value;
+    //
+    // if (Type* expectType = ctx->getExpectType()) {
+    //     value = ConstantInt::get(expectType, APInt(expectType->getIntegerBitWidth(), static_cast<uint64_t>(intValue.unsignedVal), false));
+    //     return value;
+    // }
 
     // Determine the LLVM type and create the constant integer
     switch (intType) {
@@ -223,7 +231,8 @@ Value *IntegerNode::codeGen(inter_gen::InterGenContext *ctx) const
         }
         break;
     default:
-        throw std::runtime_error("Unsupported integer type for code generation");
+        value = ConstantInt::get(LLVMCTX, APInt(32, intValue.longLongVal, true));
+        // throw std::runtime_error("Unsupported integer type for code generation");
     }
 
     // return it
@@ -250,11 +259,11 @@ Value *FloatNode::codeGen(inter_gen::InterGenContext *ctx) const
     return value;
 }
 
-void importFile(inter_gen::InterGenContext *ctx, ProgramNode *program)
+void importFile(inter_gen::InterGenContext *ctx, const ProgramNode *program)
 {
     ctx->currLine = program->lineNum;
 
-    for (auto path : *program->importedPackages) {
+    for (const auto path : *program->importedPackages) {
         const std::string target = util::getStrFromVec(*path->packageName->name_parts, ".");
         if (!inter_gen::moduleMap->contains(target)) {
             util::logErr("error at: " + ctx->sourcePath + ":" + std::to_string(ctx->currLine) +
@@ -272,12 +281,16 @@ void importFile(inter_gen::InterGenContext *ctx, ProgramNode *program)
         }
     }
 }
+
 Value *ProgramNode::codeGen(inter_gen::InterGenContext *ctx) const
 {
     // get the package and set the package directory
     ctx->currLine = this->lineNum;
-    inter_gen::moduleMap->emplace(util::getStrFromVec(*packageName->name_parts, "."), ctx->metaData);
+
     util::create_package_dir(util::getStrFromVec(*packageName->name_parts, "."));
+
+    importFile(ctx, this);
+
     for (const Statement *stmt : *statements) {
         stmt->codeGen(ctx);
     }
@@ -356,6 +369,8 @@ Value *VariableDeclarationNode::codeGen(inter_gen::InterGenContext *ctx) const
     }
     varType = detectedType;
 
+    ctx->setExpectType(varType);
+
     // generate the variable
     AllocaInst *allocaVar = util::createAllocaInst(varType, BUILDER, this->variableName->getName(), &LLVMCTX);
 
@@ -373,11 +388,16 @@ Value *VariableDeclarationNode::codeGen(inter_gen::InterGenContext *ctx) const
 
     if (this->initialValue) {
         Value *initialValueGen = initialValue->codeGen(ctx);
+
+        if (!initialValueGen) {
+            return nullptr;
+        }
+
         BUILDER.CreateStore(initialValueGen, allocaVar, false);
     }
 
     ctx->setDefiningVariable(false);
-
+    ctx->setExpectType(nullptr);
     // return the value
     return allocaVar;
 }
@@ -400,6 +420,13 @@ Value *FunctionDeclarationNode::codeGen(inter_gen::InterGenContext *ctx) const
     const auto type = FunctionType::get(util::typeOf(this->returnType, ctx), params, false);
     Function *function = Function::Create(type, Function::ExternalLinkage, 0, this->name, MODULE);
     const auto funMetaData = new inter_gen::FunctionMetaData(this->name, type, ctx);
+
+    int argIndex = 0;
+    for (auto &arg : function->args()) {
+        arg.setName(this->parameterList->at(argIndex)->variableName->getName());
+        ++argIndex;
+    }
+    ctx->metaData->addFunction(funMetaData);
 
     // generate the basic block
     if (!this->block) {
@@ -508,7 +535,16 @@ Value *BinaryExpressionNode::codeGen(inter_gen::InterGenContext *ctx) const
             } else {
                 lhsVal = BUILDER.CreateSExtOrTrunc(lhsVal, rhsType, "sext_or_trunc");
             }
-        } else {
+        }
+        else if (lhsType->isPointerTy() && rhsType->isIntegerTy()) {
+            rhsVal = BUILDER.CreateIntToPtr(rhsVal, lhsType, "int_to_ptr");
+            rhsType = lhsType;
+        }
+        else if (lhsType->isIntegerTy() && rhsType->isPointerTy()) {
+            lhsVal = BUILDER.CreatePtrToInt(lhsVal, rhsType, "ptr_to_int");
+            lhsType = rhsType;
+        }
+        else {
 #ifdef D_DEBUG
             util::logErr("Type mismatch in binary Expression", ctx, __FILE__, __LINE__);
 #else
@@ -729,8 +765,10 @@ Value *FunctionCallExpressionNode::codeGen(inter_gen::InterGenContext *ctx) cons
     if (!function) {
 #ifdef D_DEBUG
         util::logErr("Function " + name->getName() + " not found", ctx, __FILE__, __LINE__);
+        return nullptr;
 #else
         util::logErr("Function " + name->getName() + " not found", ctx);
+        return nullptr;
 #endif
     }
 
@@ -740,6 +778,10 @@ Value *FunctionCallExpressionNode::codeGen(inter_gen::InterGenContext *ctx) cons
         functionArgs.push_back(arg->codeGen(ctx));
     }
 
+    if (function->getReturnType() == nullptr) {
+        BUILDER.CreateCall(function, functionArgs, "call");
+        return nullptr;
+    }
     // call
     Value *callResult = BUILDER.CreateCall(function, functionArgs, "call");
 
@@ -1255,13 +1297,13 @@ void interGen_oneFile(IncludeGraphNode *node)
         return;
     }
     visited.insert({node, false});
-    // if (!node->getIncludes().empty()) {
-    //     for (const auto oneNode : node->getIncludes()) {
-    //         interGen_oneFile(oneNode);
-    //     }
-    // }
-    // programMap_d->at(node->getProgram())->genIR(node->getProgram());
-    // visited.insert({node, true});
+    if (!node->getIncludes().empty()) {
+        for (const auto oneNode : node->getIncludes()) {
+            interGen_oneFile(oneNode);
+        }
+    }
+    programMap_d->at(node->getProgram())->genIR(node->getProgram());
+    visited.insert({node, true});
 }
 
 void interGen(const std::set<IncludeGraphNode *> &map)
@@ -1351,6 +1393,14 @@ FunctionMetaData *InterGenContext::getCurrFunMetaData() const
 void InterGenContext::setCurrFunMetaData(FunctionMetaData *funMetaData)
 {
     currentFunMetaData = funMetaData;
+}
+
+void InterGenContext::setName(const std::string &nameString){
+    name = nameString;
+}
+
+std::string InterGenContext::getName() const{
+    return name;
 }
 
 InterGenContext::InterGenContext(std::string sourcePathInput)

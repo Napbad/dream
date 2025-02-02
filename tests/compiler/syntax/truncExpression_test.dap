@@ -1,0 +1,17 @@
+package main;
+
+import a;
+
+fun main()  {
+
+    var a = 1;
+    var b = 2;
+
+    var c = (int)a;
+    var d = (int)b;
+
+    var l = (long)a;
+
+    var ul = (ulong)a;
+    // return 0;
+}

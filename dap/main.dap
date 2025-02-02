@@ -1,18 +1,18 @@
 package main;
 
-import dap.std.math.math;
-import dap.runtime.sys.sysFun;
-import dap.runtime.mem.mem;
-import dap.std.type.convert;
-import dap.std.type.string_d;
-import dap.std.io.output;
+// import dap.std.math.math;
+// import dap.runtime.sys.sysFun;
+// import dap.runtime.mem.mem;
+// import dap.std.type.convert;
+// import dap.std.type.string_d;
+// import dap.std.io.output;
 
-imt byte[11] val = "2147483647";
+// imt byte[11] val = "2147483647";
 
-struct S {
-  imt int a;
-  imt int b;
-};
+// struct S {
+//   imt int a;
+//   imt int b;
+// };
 
 fun main() int {
 

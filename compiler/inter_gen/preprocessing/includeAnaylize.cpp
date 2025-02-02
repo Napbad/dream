@@ -11,6 +11,7 @@
 #include "inter_gen/codeGen_inter.h"
 
 #include "common/define_d.h"
+#include "inter_gen/metadata.h"
 #include "utilities/log_util.h"
 
 namespace dap::inter_gen
@@ -53,7 +54,7 @@ void IncludeAnalyzer::generateGraph()
 {
     for (auto &[prog, ctx] : *programMap_d) {
         // generate the node
-        std::string name = ctx->module->getName().str();
+        std::string name = ctx->getName();
         auto *node = new IncludeGraphNode(name, prog);
         nodes.insert({name, node});
         roots.insert(node);
@@ -64,9 +65,10 @@ void IncludeAnalyzer::generateGraph()
 
         analyze();
     }
+
     // generate full include graph
     for (const auto &programContext : *programMap_d) {
-        for (IncludeGraphNode *includeGraphNode = nodes.at(programContext.second->module->getName().str());
+        for (IncludeGraphNode *includeGraphNode = nodes.at(programContext.second->getName());
              const auto include : includeGraphNode->getIncludes_path()) {
             if (!nodes.contains(*include)) {
 #ifdef D_DEBUG

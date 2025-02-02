@@ -1,6 +1,10 @@
 #include "parserMain.h"
 
+#include "inter_gen/metadata.h"
+#include "utilities/string_util.h"
+
 #include <fstream>
+#include <filesystem>
 
 namespace dap
 {
@@ -29,8 +33,22 @@ std::pair<ProgramNode *, inter_gen::InterGenContext *> parseFile(const std::stri
     yyparse();
 
     // store program and context info
-    auto pair = std::make_pair(program, new inter_gen::InterGenContext(file));
+    auto ctx = new inter_gen::InterGenContext(file);
+    auto pair = std::make_pair(program, ctx);
     programMap_d->insert(pair);
+
+    std::string moduleName = util::getStrFromVec(*(program->packageName->name_parts), ".");
+    moduleName.append(".");
+    std::filesystem::__cxx11::path pathObj(file);
+    std::string fileName = pathObj.filename().string();
+
+    moduleName.append(fileName);
+
+    moduleName.erase(moduleName.find(".dap"), 4);
+
+    ctx->setName(moduleName);
+    inter_gen::moduleMap->emplace(moduleName, ctx->metaData);
+
     fclose(openedFile);
 
     return pair;

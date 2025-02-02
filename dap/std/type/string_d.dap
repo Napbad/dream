@@ -1,7 +1,6 @@
 package dap.std.type;
 
-include dap.std.type.convert;
-include dap.runtime.mem.mem;
+import dap.runtime.mem.mem;
 
 fun strlen(imt byte* s) int {
     var int res? = 0;
@@ -9,6 +8,7 @@ fun strlen(imt byte* s) int {
       return 0;
     }
     for int i = 0; (i < 99999999) && (s[i] != 0); ++i {
+    // for int i = 0; (s[i] != 0); ++i {
       res = i;
     }
     return res + 1;
@@ -47,7 +47,7 @@ fun strmove(var byte* dest, imt byte* src) {
 fun strcmp(imt byte* s1, imt byte* s2) int {
     for int i = 0; s1[i] != 0; ++i {
         if s1[i] != s2[i] {
-            return charToInt(s1[i] - s2[i]);
+            return (int)(s1[i] - s2[i]);
         }
     }
     return 0;
@@ -56,6 +56,6 @@ fun strcmp(imt byte* s1, imt byte* s2) int {
 fun mkStr(imt byte c) byte* {
     var byte* s = malloc(2);
     s[0] = c;
-    s[1] = intToChar(0);
+    s[1] = (byte)(0);
     return s;
 }

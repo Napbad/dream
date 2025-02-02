@@ -71,11 +71,13 @@ class InterGenContext
     bool definingVariable = false; ///< if now defining variable
     std::stack<bool> definingNestedIfStatement;
     bool assigning;
+    llvm::Type* expectType = nullptr;
 
     std::stack<llvm::BasicBlock *> elseIfBlock_merge;
     std::stack<llvm::Value *> elseIfBlockValue;
     std::vector<llvm::BasicBlock *> targetMergeBlocks;
     std::vector<std::pair<llvm::BasicBlock *, llvm::Value *>> valueToMerge;
+    std::string name;
 
   public:
     llvm::Module *module;      ///< LLVM module
@@ -102,6 +104,10 @@ class InterGenContext
     {
         return assigning;
     }
+
+    void setName(const std::string & nameString);
+
+    std::string getName() const;
 
     /**
      * @brief Constructor to initialize the module and IR builder.
@@ -320,6 +326,14 @@ class InterGenContext
     {
         llvm::BasicBlock *block = targetMergeBlocks.back();
         return block;
+    }
+
+    void setExpectType(llvm::Type *type) {
+        expectType = type;
+    }
+
+    llvm::Type* getExpectType() const {
+        return expectType;
     }
 };
 

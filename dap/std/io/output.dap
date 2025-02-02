@@ -1,8 +1,7 @@
 package dap.std.io;
 
-include dap.std.type.string_d;
-include dap.std.type.convert;
-include dap.runtime.sys.sysFun;
+import dap.std.type.string_d;
+import dap.runtime.sys.sysFun;
 
 fun print(imt byte* str) void {
     write(1, str, strlen(str));
@@ -11,11 +10,11 @@ fun print(imt byte* str) void {
 
 fun println(imt byte* str) void {
     print(str);
-    write(1, charToStr(int32To8(10)), 2);
+    write(1, mkStr((byte)(10)), 2);
     fsync(1);
 }
 
 fun newline() void {
-    write(1, charToStr(int32To8(10)), 2);
+    write(1, mkStr((byte)(10)), 2);
     fsync(1);
 }
