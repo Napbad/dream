@@ -102,6 +102,8 @@ def test_report_compare(result, dap_file, test_name, expect_contain_word):
         success()
         print(Fore.GREEN + "" + test_name + " test PASS!" + Style.RESET_ALL)
     else:
+        print(Fore.RED, "FAIL:" + Fore.BLUE + " <" + test_name + ">\n" + Style.RESET_ALL)
+        print(Fore.YELLOW + "expect: " + expect_contain_word + Style.RESET_ALL)
         add_failed_test(dap_file)
 
         

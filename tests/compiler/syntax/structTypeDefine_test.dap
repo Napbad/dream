@@ -1,7 +1,5 @@
 package main;
 
-import a;
-
 struct TypeDefine {
     var int a;
     imt int b;

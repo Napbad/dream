@@ -1,7 +1,5 @@
 package main;
 
-import a;
-
 struct A {
     var int a;
     var int b;

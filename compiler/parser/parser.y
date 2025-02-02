@@ -658,10 +658,13 @@ identifier:
 integer:
     INTEGER {
 
-        $$ = new dap::parser::IntegerNode($1, BasicType::ULLONG);
+        if (flags.dataType == BasicType::UNKNOWN) {
+            flags.dataType = BasicType::INT;
+        }
+
+        $$ = new dap::parser::IntegerNode($1, flags.dataType);
         // Log message when parsing an IntegerNode node
         $$->lineNum = yylineno;
-        flags.dataType = BasicType::UNKNOWN;
 
         parserLog("Parsed IntegerNode node: integer[" + $$->getVal() + "]");
     };
@@ -914,12 +917,14 @@ statements:
         $$ = new std::vector<dap::parser::Statement*>();
         // Log message when starting to parse a list of statements
 
+        flags.dataType = BasicType::UNKNOWN;
         parserLog("Started parsing statements list");
     }
     | statements statement {
         $$->push_back($2);
         // Log message when adding a statement to the statements list
 
+        flags.dataType = BasicType::UNKNOWN;
         parserLog("Added statement to statements list");
     };
 

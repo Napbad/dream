@@ -867,15 +867,15 @@ static const yytype_int16 yyrline[] =
      362,   368,   374,   380,   385,   392,   398,   404,   410,   416,
      423,   438,   453,   470,   486,   501,   516,   533,   552,   558,
      565,   574,   580,   586,   595,   603,   609,   616,   624,   629,
-     634,   642,   649,   659,   670,   678,   687,   693,   701,   707,
-     714,   721,   729,   736,   743,   750,   757,   764,   771,   778,
-     785,   792,   799,   806,   813,   822,   825,   832,   838,   846,
-     849,   854,   860,   869,   878,   887,   896,   903,   907,   913,
-     919,   927,   933,   939,   947,   955,   961,   969,   975,   984,
-     992,  1000,  1008,  1016,  1019,  1022,  1025,  1028,  1031,  1034,
-    1037,  1040,  1043,  1046,  1049,  1052,  1055,  1058,  1061,  1064,
-    1067,  1070,  1073,  1076,  1079,  1085,  1093,  1096,  1099,  1102,
-    1105,  1108,  1111
+     634,   642,   649,   659,   673,   681,   690,   696,   704,   710,
+     717,   724,   732,   739,   746,   753,   760,   767,   774,   781,
+     788,   795,   802,   809,   816,   825,   828,   835,   841,   849,
+     852,   857,   863,   872,   881,   890,   899,   906,   910,   916,
+     923,   932,   938,   944,   952,   960,   966,   974,   980,   989,
+     997,  1005,  1013,  1021,  1024,  1027,  1030,  1033,  1036,  1039,
+    1042,  1045,  1048,  1051,  1054,  1057,  1060,  1063,  1066,  1069,
+    1072,  1075,  1078,  1081,  1084,  1090,  1098,  1101,  1104,  1107,
+    1110,  1113,  1116
 };
 #endif
 
@@ -2278,29 +2278,32 @@ yyreduce:
 #line 659 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
             {
 
-        (yyval.intExpr) = new dap::parser::IntegerNode((yyvsp[0].str), BasicType::ULLONG);
+        if (flags.dataType == BasicType::UNKNOWN) {
+            flags.dataType = BasicType::INT;
+        }
+
+        (yyval.intExpr) = new dap::parser::IntegerNode((yyvsp[0].str), flags.dataType);
         // Log message when parsing an IntegerNode node
         (yyval.intExpr)->lineNum = yylineno;
-        flags.dataType = BasicType::UNKNOWN;
 
         parserLog("Parsed IntegerNode node: integer[" + (yyval.intExpr)->getVal() + "]");
     }
-#line 2289 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 2292 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 44: /* float_: FLOAT_LITERAL  */
-#line 670 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+#line 673 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
                   {
         (yyval.floatExpr) = new dap::parser::FloatNode(atof((yyvsp[0].str)->c_str()));
         // Log message when parsing a float node
         (yyval.floatExpr)->lineNum = yylineno;
         parserLog("Parsed float node");
     }
-#line 2300 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 2303 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 45: /* string_: STRING_LITERAL  */
-#line 678 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+#line 681 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
                    {
 
         (yyval.strExpr) = new dap::parser::StringNode(*dap::util::getPureStr((yyvsp[0].str)));
@@ -2308,44 +2311,44 @@ yyreduce:
         (yyval.strExpr)->lineNum = yylineno;
         parserLog("Parsed string node");
     }
-#line 2312 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 2315 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 46: /* bool_: TRUE  */
-#line 687 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+#line 690 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
          {
         (yyval.expr) = new dap::parser::BoolNode(true);
         // Log message when parsing a boolean node
         (yyval.expr)->lineNum = yylineno;
         parserLog("Parsed boolean node: [ TRUE ]");
     }
-#line 2323 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 2326 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 47: /* bool_: FALSE  */
-#line 693 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+#line 696 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
             {
         (yyval.expr) = new dap::parser::BoolNode(false);
         // Log message when parsing a boolean node
         (yyval.expr)->lineNum = yylineno;
         parserLog("Parsed boolean node: [ FALSE ]");
     }
-#line 2334 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 2337 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 48: /* type: identifier  */
-#line 701 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+#line 704 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
                {
         (yyval.typeNode) = new dap::parser::TypeNode((yyvsp[0].ident));
         // Log message when parsing a type node
         (yyval.typeNode)->lineNum = yylineno;
         parserLog("Parsed type node");
     }
-#line 2345 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 2348 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 49: /* type: type MUL  */
-#line 707 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+#line 710 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
                {
         (yyval.typeNode) = (yyvsp[-1].typeNode);
         (yyval.typeNode)->isPointer = true;
@@ -2353,11 +2356,11 @@ yyreduce:
         (yyval.typeNode)->lineNum = yylineno;
         parserLog("Parsed pointer type node");
     }
-#line 2357 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 2360 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 50: /* type: type LEFT_BRACKET RIGHT_BRACKET  */
-#line 714 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+#line 717 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
                                       {
         (yyval.typeNode) = (yyvsp[-2].typeNode);
         (yyval.typeNode)->isArray = true;
@@ -2365,11 +2368,11 @@ yyreduce:
         (yyval.typeNode)->lineNum = yylineno;
         parserLog("Parsed array type node without size");
     }
-#line 2369 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 2372 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 51: /* type: type LEFT_BRACKET integer RIGHT_BRACKET  */
-#line 721 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+#line 724 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
                                               {
         (yyval.typeNode) = (yyvsp[-3].typeNode);
         (yyval.typeNode)->isArray = true;
@@ -2378,11 +2381,11 @@ yyreduce:
         (yyval.typeNode)->lineNum = yylineno;
         parserLog("Parsed array type node with size");
     }
-#line 2382 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 2385 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 52: /* type: INT  */
-#line 729 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+#line 732 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
           {
         flags.dataType = BasicType::INT;
         (yyval.typeNode) = new dap::parser::TypeNode(BasicType::INT);
@@ -2390,11 +2393,11 @@ yyreduce:
         (yyval.typeNode)->lineNum = yylineno;
         parserLog("Parsed int type node");
     }
-#line 2394 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 2397 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 53: /* type: BYTE  */
-#line 736 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+#line 739 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
            {
         flags.dataType = BasicType::BYTE;
         (yyval.typeNode) = new dap::parser::TypeNode(BasicType::BYTE);
@@ -2402,11 +2405,11 @@ yyreduce:
         (yyval.typeNode)->lineNum = yylineno;
         parserLog("Parsed byte type node");
     }
-#line 2406 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 2409 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 54: /* type: SHORT  */
-#line 743 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+#line 746 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
             {
         flags.dataType = BasicType::SHORT;
         (yyval.typeNode) = new dap::parser::TypeNode(BasicType::SHORT);
@@ -2414,11 +2417,11 @@ yyreduce:
         (yyval.typeNode)->lineNum = yylineno;
         parserLog("Parsed short type node");
     }
-#line 2418 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 2421 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 55: /* type: LONG  */
-#line 750 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+#line 753 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
            {
         flags.dataType = BasicType::LONG;
         (yyval.typeNode) = new dap::parser::TypeNode(BasicType::LONG);
@@ -2426,11 +2429,11 @@ yyreduce:
         (yyval.typeNode)->lineNum = yylineno;
         parserLog("Parsed long type node");
     }
-#line 2430 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 2433 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 56: /* type: FLOAT  */
-#line 757 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+#line 760 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
             {
         flags.dataType = BasicType::FLOAT;
         (yyval.typeNode) = new dap::parser::TypeNode(BasicType::FLOAT);
@@ -2438,11 +2441,11 @@ yyreduce:
         (yyval.typeNode)->lineNum = yylineno;
         parserLog("Parsed float type node");
     }
-#line 2442 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 2445 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 57: /* type: DOUBLE  */
-#line 764 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+#line 767 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
              {
         flags.dataType = BasicType::DOUBLE;
         (yyval.typeNode) = new dap::parser::TypeNode(BasicType::DOUBLE);
@@ -2450,11 +2453,11 @@ yyreduce:
         (yyval.typeNode)->lineNum = yylineno;
         parserLog("Parsed double type node");
     }
-#line 2454 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 2457 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 58: /* type: BOOL  */
-#line 771 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+#line 774 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
            {
         flags.dataType = BasicType::BOOL;
         (yyval.typeNode) = new dap::parser::TypeNode(BasicType::BOOL);
@@ -2462,11 +2465,11 @@ yyreduce:
         (yyval.typeNode)->lineNum = yylineno;
         parserLog("Parsed bool type node");
     }
-#line 2466 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 2469 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 59: /* type: UINT  */
-#line 778 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+#line 781 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
            {
         flags.dataType = BasicType::UINT;
         (yyval.typeNode) = new dap::parser::TypeNode(BasicType::UINT);
@@ -2474,11 +2477,11 @@ yyreduce:
         (yyval.typeNode)->lineNum = yylineno;
         parserLog("Parsed uint type node");
     }
-#line 2478 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 2481 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 60: /* type: USHORT  */
-#line 785 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+#line 788 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
              {
         flags.dataType = BasicType::USHORT;
         (yyval.typeNode) = new dap::parser::TypeNode(BasicType::USHORT);
@@ -2486,11 +2489,11 @@ yyreduce:
         (yyval.typeNode)->lineNum = yylineno;
         parserLog("Parsed ushort type node");
     }
-#line 2490 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 2493 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 61: /* type: ULONG  */
-#line 792 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+#line 795 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
             {
         flags.dataType = BasicType::ULONG;
         (yyval.typeNode) = new dap::parser::TypeNode(BasicType::ULONG);
@@ -2498,11 +2501,11 @@ yyreduce:
         (yyval.typeNode)->lineNum = yylineno;
         parserLog("Parsed ulong type node");
     }
-#line 2502 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 2505 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 62: /* type: LLONG  */
-#line 799 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+#line 802 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
             {
         flags.dataType = BasicType::LLONG;
         (yyval.typeNode) = new dap::parser::TypeNode(BasicType::LLONG);
@@ -2510,11 +2513,11 @@ yyreduce:
         (yyval.typeNode)->lineNum = yylineno;
         parserLog("Parsed lllong type node");
     }
-#line 2514 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 2517 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 63: /* type: ULLONG  */
-#line 806 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+#line 809 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
              {
         flags.dataType = BasicType::ULLONG;
         (yyval.typeNode) = new dap::parser::TypeNode(BasicType::ULLONG);
@@ -2522,11 +2525,11 @@ yyreduce:
         (yyval.typeNode)->lineNum = yylineno;
         parserLog("Parsed ullong type node");
     }
-#line 2526 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 2529 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 64: /* type: VOID  */
-#line 813 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+#line 816 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
            {
         flags.dataType = BasicType::VOID;
         (yyval.typeNode) = new dap::parser::TypeNode(BasicType::VOID);
@@ -2534,78 +2537,78 @@ yyreduce:
         (yyval.typeNode)->lineNum = yylineno;
         parserLog("Parsed void type node");
     }
-#line 2538 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 2541 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 65: /* packageDecl: %empty  */
-#line 822 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+#line 825 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
                 {
 
     }
-#line 2546 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 2549 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 66: /* packageDecl: PACKAGE identifier SEMICOLON  */
-#line 825 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+#line 828 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
                                  {
         program->packageName = (yyvsp[-1].ident);
         // Log message when parsing a package declaration node
         parserLog("Parsed package declaration node: package [" + (yyvsp[-1].ident)->getName() + "]");
     }
-#line 2556 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 2559 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 67: /* importStmt: IMPORT identifier SEMICOLON  */
-#line 832 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+#line 835 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
                                 {
         auto info = new dap::parser::ProgramNode::importedPackageInfo((yyvsp[-1].ident), false);
         program->importedPackages->push_back(info);
         // Log message when parsing an import statement node
         parserLog("Parsed import statement node: import [" + (yyvsp[-1].ident)->getName() + "]");
     }
-#line 2567 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 2570 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 68: /* importStmt: IMPORT identifier DOT MUL SEMICOLON  */
-#line 838 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+#line 841 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
                                           {
         auto info = new dap::parser::ProgramNode::importedPackageInfo((yyvsp[-3].ident), true);
         program->importedPackages->push_back(info);
         // Log message when parsing an import wildcard statement node
         parserLog("Parsed import wildcard statement node: import [" + (yyvsp[-3].ident)->getName() + "] [all]");
     }
-#line 2578 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 2581 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 69: /* importStmts: %empty  */
-#line 846 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+#line 849 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
                 {
 
     }
-#line 2586 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 2589 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 70: /* importStmts: importStmts importStmt  */
-#line 849 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+#line 852 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
                              {
 
     }
-#line 2594 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 2597 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 71: /* statement: functionDeclaration  */
-#line 854 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+#line 857 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
                         {
         (yyval.stmt) = (yyvsp[0].stmt);
         // Log message when parsing a function declaration statement node
         (yyval.stmt)->lineNum = yylineno;
         parserLog("Parsed function declaration statement node: [" + (dynamic_cast<dap::parser::FunctionDeclarationNode*>((yyvsp[0].stmt)))->name + "]");
     }
-#line 2605 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 2608 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 72: /* statement: variableDecl SEMICOLON  */
-#line 860 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+#line 863 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
                              {
         (yyval.stmt) = (yyvsp[-1].stmt);
         // Log message when parsing a variable declaration statement node
@@ -2615,11 +2618,11 @@ yyreduce:
 
         parserLog("Parsed variable declaration statement node: [" + (dynamic_cast<dap::parser::VariableDeclarationNode*>((yyvsp[-1].stmt)))->variableName->getName() + "]");
     }
-#line 2619 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 2622 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 73: /* statement: constantDecl SEMICOLON  */
-#line 869 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+#line 872 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
                              { 
         (yyval.stmt) = (yyvsp[-1].stmt);
         // Log message when parsing a constant declaration statement node
@@ -2629,11 +2632,11 @@ yyreduce:
 
         parserLog("Parsed constant declaration statement node: [" + (dynamic_cast<dap::parser::ConstantDeclarationNode*>((yyvsp[-1].stmt)))->name->getName() + "]");
     }
-#line 2633 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 2636 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 74: /* statement: structDecl  */
-#line 878 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+#line 881 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
                  {
         (yyval.stmt) = (yyvsp[0].stmt);
         // Log message when parsing a struct declaration statement node
@@ -2643,11 +2646,11 @@ yyreduce:
 
         parserLog("Parsed struct declaration statement node: [" + (dynamic_cast<dap::parser::StructDeclarationNode*>((yyvsp[0].stmt)))->name->getName() + "]");
     }
-#line 2647 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 2650 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 75: /* statement: returnStmt  */
-#line 887 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+#line 890 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
                  {
         (yyval.stmt) = (yyvsp[0].stmt);
         // Log message when parsing a return statement node
@@ -2657,11 +2660,11 @@ yyreduce:
 
         parserLog("Parsed return statement node");
     }
-#line 2661 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 2664 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 76: /* statement: expression SEMICOLON  */
-#line 896 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+#line 899 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
                            {
         (yyval.stmt) = new dap::parser::Statement();
         (yyval.stmt)->value = (yyvsp[-1].expr);
@@ -2669,424 +2672,426 @@ yyreduce:
         (yyval.stmt)->lineNum = yylineno;
         parserLog("Parsed function call statement node");
     }
-#line 2673 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 2676 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 77: /* statement: ifStatement  */
-#line 903 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+#line 906 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
                   {
         (yyval.stmt) = (yyvsp[0].stmt);
 
     }
-#line 2682 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 2685 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 78: /* statement: forStatement  */
-#line 907 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+#line 910 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
                    {
         (yyval.stmt) = (yyvsp[0].stmt);
     }
-#line 2690 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 2693 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 79: /* statements: %empty  */
-#line 913 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+#line 916 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
                 {
         (yyval.stmtVec) = new std::vector<dap::parser::Statement*>();
         // Log message when starting to parse a list of statements
 
+        flags.dataType = BasicType::UNKNOWN;
         parserLog("Started parsing statements list");
     }
-#line 2701 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 2705 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 80: /* statements: statements statement  */
-#line 919 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+#line 923 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
                            {
         (yyval.stmtVec)->push_back((yyvsp[0].stmt));
         // Log message when adding a statement to the statements list
 
+        flags.dataType = BasicType::UNKNOWN;
         parserLog("Added statement to statements list");
     }
-#line 2712 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 2717 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 81: /* expressions: %empty  */
-#line 927 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+#line 932 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
                 {
         (yyval.exprVec) = new std::vector<dap::parser::Expression*>();
         // Log message when starting to parse a list of expressions
 
         parserLog("Started parsing expressions list");
     }
-#line 2723 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 2728 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 82: /* expressions: expression  */
-#line 933 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+#line 938 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
                  {
         (yyval.exprVec) = new std::vector<dap::parser::Expression*>();
         (yyval.exprVec)->push_back((yyvsp[0].expr));
 
         parserLog("Started parsing expressions list");
     }
-#line 2734 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 2739 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 83: /* expressions: expressions COMMA expression  */
-#line 939 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+#line 944 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
                                    {
         (yyval.exprVec)->push_back((yyvsp[0].expr));
         // Log message when adding an expression to the expressions list
 
         parserLog("Added expression to expressions list");
     }
-#line 2745 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 2750 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 84: /* structDecl: STRUCT identifier LEFT_BRACE structFields RIGHT_BRACE SEMICOLON  */
-#line 947 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+#line 952 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
                                                                     {
         (yyval.stmt) = new dap::parser::StructDeclarationNode((yyvsp[-4].ident), (yyvsp[-2].varDeclVec));
         (yyval.stmt)->lineNum = yylineno;
         parserLog("Parsed struct declaration node: [" + (yyvsp[-4].ident)->getName() + "]");
     }
-#line 2755 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 2760 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 85: /* structFields: %empty  */
-#line 955 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+#line 960 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
                 {
         (yyval.varDeclVec) = new std::vector<dap::parser::VariableDeclarationNode*>();
         // Log message when starting to parse a list of struct fields
 
         parserLog("Started parsing struct fields list");
     }
-#line 2766 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 2771 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 86: /* structFields: structFields variableDecl SEMICOLON  */
-#line 961 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+#line 966 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
                                           {
         (yyval.varDeclVec)->push_back(dynamic_cast<dap::parser::VariableDeclarationNode*>((yyvsp[-1].stmt)));
         // Log message when adding a struct field to the struct fields list
 
         parserLog("Added struct field to struct fields list");
     }
-#line 2777 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 2782 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 87: /* returnStmt: RETURN expression SEMICOLON  */
-#line 969 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+#line 974 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
                                 {
         (yyval.stmt) = new dap::parser::ReturnStatementNode((yyvsp[-1].expr));
         // Log message when parsing a return statement node
         (yyval.stmt)->lineNum = yylineno;
         parserLog("Parsed return statement node");
     }
-#line 2788 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 2793 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 88: /* returnStmt: RETURN SEMICOLON  */
-#line 975 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+#line 980 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
                        {
         (yyval.stmt) = new dap::parser::ReturnStatementNode(nullptr);
         // Log message when parsing a return statement node
         (yyval.stmt)->lineNum = yylineno;
         parserLog("Parsed return statement node [no value returned]");
     }
-#line 2799 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 2804 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 89: /* functionCall: identifier LEFT_PAREN expressions RIGHT_PAREN  */
-#line 984 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+#line 989 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
                                                   {
         (yyval.expr) = new dap::parser::FunctionCallExpressionNode((yyvsp[-3].ident), (yyvsp[-1].exprVec));
         // Log message when parsing a function call statement node
         (yyval.expr)->lineNum = yylineno;
         parserLog("Parsed function call experssion node: [" + (yyvsp[-3].ident)->getName() + "]");
     }
-#line 2810 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 2815 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 90: /* binaryExpression: expression binaryOperator expression  */
-#line 992 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+#line 997 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
                                          {
         (yyval.expr) = new dap::parser::BinaryExpressionNode((yyvsp[-2].expr), (yyvsp[-1].token), (yyvsp[0].expr));
         // Log message when parsing a binary expression node
         (yyval.expr)->lineNum = yylineno;
         parserLog("Parsed binary expression node: [" + tokenToString((yyvsp[-1].token)) + "]");
     }
-#line 2821 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 2826 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 91: /* arrayExpression: identifier LEFT_BRACKET expression RIGHT_BRACKET  */
-#line 1000 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+#line 1005 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
                                                      {
         (yyval.expr) = new dap::parser::ArrayExpressionNode((yyvsp[-3].ident), (yyvsp[-1].expr));
         // Log message when parsing an array expression node
         (yyval.expr)->lineNum = yylineno;
         parserLog("Parsed array expression node: [" + (yyvsp[-3].ident)->getName() + "]");
     }
-#line 2832 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 2837 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 92: /* truncExpression: LEFT_PAREN type RIGHT_PAREN LEFT_PAREN expression RIGHT_PAREN  */
-#line 1008 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+#line 1013 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
                                                                   {
         (yyval.expr) = new dap::parser::TruncExpressionNode((yyvsp[-4].typeNode), (yyvsp[-1].expr));
         // Log message when parsing a trunc expression node
         (yyval.expr)->lineNum = yylineno;
         parserLog("Parsed trunc expression node: [" + (yyvsp[-4].typeNode)->getName() + "]");
     }
-#line 2843 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 2848 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 93: /* binaryOperator: ASSIGN  */
-#line 1016 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+#line 1021 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
            {
         (yyval.token) = ASSIGN;
     }
-#line 2851 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 2856 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 94: /* binaryOperator: PLUS  */
-#line 1019 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+#line 1024 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
            {
         (yyval.token) = PLUS;
     }
-#line 2859 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 2864 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 95: /* binaryOperator: MINUS  */
-#line 1022 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+#line 1027 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
             {
         (yyval.token) = MINUS;
     }
-#line 2867 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 2872 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 96: /* binaryOperator: MUL  */
-#line 1025 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+#line 1030 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
           {
         (yyval.token) = MUL;
     }
-#line 2875 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 2880 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 97: /* binaryOperator: DIV  */
-#line 1028 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+#line 1033 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
           {
         (yyval.token) = DIV;
     }
-#line 2883 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 2888 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 98: /* binaryOperator: MOD  */
-#line 1031 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+#line 1036 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
           {
         (yyval.token) = MOD;
     }
-#line 2891 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 2896 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 99: /* binaryOperator: EQUAL  */
-#line 1034 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+#line 1039 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
             {
         (yyval.token) = EQUAL;
     }
-#line 2899 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 2904 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 100: /* binaryOperator: NOT_EQUAL  */
-#line 1037 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+#line 1042 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
                 {
         (yyval.token) = NOT_EQUAL;
     }
-#line 2907 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 2912 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 101: /* binaryOperator: ADD_ASSIGN  */
-#line 1040 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+#line 1045 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
                  {
         (yyval.token) = ADD_ASSIGN;
     }
-#line 2915 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 2920 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 102: /* binaryOperator: MINUS_ASSIGN  */
-#line 1043 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+#line 1048 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
                    {
         (yyval.token) = MINUS_ASSIGN;
     }
-#line 2923 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 2928 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 103: /* binaryOperator: MUL_ASSIGN  */
-#line 1046 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+#line 1051 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
                  {
         (yyval.token) = MUL_ASSIGN;
     }
-#line 2931 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 2936 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 104: /* binaryOperator: DIV_ASSIGN  */
-#line 1049 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+#line 1054 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
                  {
         (yyval.token) = DIV_ASSIGN;
     }
-#line 2939 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 2944 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 105: /* binaryOperator: MOD_ASSIGN  */
-#line 1052 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+#line 1057 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
                  {
         (yyval.token) = MOD_ASSIGN;
     }
-#line 2947 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 2952 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 106: /* binaryOperator: AND  */
-#line 1055 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+#line 1060 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
           {
         (yyval.token) = AND;
     }
-#line 2955 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 2960 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 107: /* binaryOperator: OR  */
-#line 1058 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+#line 1063 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
          {
         (yyval.token) = OR;
     }
-#line 2963 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 2968 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 108: /* binaryOperator: XOR  */
-#line 1061 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+#line 1066 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
           {
         (yyval.token) = XOR;
     }
-#line 2971 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 2976 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 109: /* binaryOperator: AND_ASSIGN  */
-#line 1064 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+#line 1069 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
                  {
         (yyval.token) = AND_ASSIGN;
     }
-#line 2979 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 2984 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 110: /* binaryOperator: OR_ASSIGN  */
-#line 1067 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+#line 1072 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
                 {
         (yyval.token) = OR_ASSIGN;
     }
-#line 2987 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 2992 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 111: /* binaryOperator: GREATER_THAN  */
-#line 1070 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+#line 1075 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
                    {
         (yyval.token) = GREATER_THAN;
     }
-#line 2995 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 3000 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 112: /* binaryOperator: LESS_THAN  */
-#line 1073 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+#line 1078 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
                 {
         (yyval.token) = LESS_THAN;
     }
-#line 3003 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 3008 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 113: /* binaryOperator: GREATER_THAN_EQUAL  */
-#line 1076 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+#line 1081 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
                          {
         (yyval.token) = GREATER_THAN_EQUAL;
     }
-#line 3011 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 3016 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 114: /* binaryOperator: LESS_THAN_EQUAL  */
-#line 1079 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+#line 1084 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
                       {
         (yyval.token) = LESS_THAN_EQUAL;
     }
-#line 3019 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 3024 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 115: /* unaryExpression: unaryOperator expression  */
-#line 1085 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+#line 1090 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
                              {
         (yyval.expr) = new dap::parser::UnaryExpressionNode((yyvsp[-1].token), (yyvsp[0].expr));
         // Log message when parsing a unary expression node
         (yyval.expr)->lineNum = yylineno;
         parserLog("Parsed unary expression node: [" + tokenToString((yyvsp[-1].token)) + "]");
     }
-#line 3030 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 3035 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 116: /* unaryOperator: PLUS  */
-#line 1093 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+#line 1098 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
          {
         (yyval.token) = PLUS;
     }
-#line 3038 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 3043 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 117: /* unaryOperator: MINUS  */
-#line 1096 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+#line 1101 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
             {
         (yyval.token) = MINUS;
     }
-#line 3046 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 3051 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 118: /* unaryOperator: BIT_AND  */
-#line 1099 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+#line 1104 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
               {
         (yyval.token) = BIT_AND;
     }
-#line 3054 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 3059 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 119: /* unaryOperator: BANG  */
-#line 1102 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+#line 1107 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
            {
         (yyval.token) = BANG;
     }
-#line 3062 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 3067 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 120: /* unaryOperator: MUL  */
-#line 1105 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+#line 1110 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
           {
         (yyval.token) = MUL;
     }
-#line 3070 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 3075 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 121: /* unaryOperator: INCREMENT  */
-#line 1108 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+#line 1113 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
                 {
         (yyval.token) = INCREMENT;
     }
-#line 3078 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 3083 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
   case 122: /* unaryOperator: DECREMENT  */
-#line 1111 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+#line 1116 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
                 {
         (yyval.token) = DECREMENT;
     }
-#line 3086 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 3091 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
     break;
 
 
-#line 3090 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
+#line 3095 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.cpp"
 
       default: break;
     }
@@ -3279,6 +3284,6 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 1114 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
+#line 1119 "/home/napbad/Project/dap-dev-main/compiler/parser/parser.y"
 
 
