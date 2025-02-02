@@ -93,5 +93,5 @@
     },
     "terminal.external.linuxExec": "konsole",
     "cmake.sourceDirectory": "/home/napbad/Project/dap-dev-main/compiler",
-    "C_Cpp.errorSquiggles": "disabled"
+    "C_Cpp.errorSquiggles": "enabled"
 }

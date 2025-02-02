@@ -684,6 +684,23 @@ Value *UnaryExpressionNode::codeGen(inter_gen::InterGenContext *ctx) const
     }
 }
 
+llvm::Value *TruncExpressionNode::codeGen(inter_gen::InterGenContext *ctx) const
+{
+    // sync context
+    ctx->currLine = this->lineNum;
+
+    // get target type
+    Type* targetType = util::typeOf(this->targetType, ctx);
+
+    Value * value = expression->codeGen(ctx);
+
+    // trunc
+    value = BUILDER.CreateTrunc(value, targetType, "trunc");
+
+    return value;
+}
+
+
 Value *FunctionCallExpressionNode::codeGen(inter_gen::InterGenContext *ctx) const
 {
     // context sync

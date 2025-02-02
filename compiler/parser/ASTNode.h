@@ -288,6 +288,19 @@ class UnaryExpressionNode final : public Expression
     llvm::Value *codeGen(inter_gen::InterGenContext *ctx) const override;
 };
 
+class TruncExpressionNode final : public Expression
+{
+  public:
+    Expression *expression;
+    TypeNode* targetType;
+
+    explicit TruncExpressionNode(TypeNode* targetType, Expression *expression) : targetType(targetType), expression(expression)
+    {
+    }
+
+    llvm::Value *codeGen(inter_gen::InterGenContext *ctx) const override;
+};
+
 // Represents a program in the AST
 class ProgramNode final : public ASTNode
 {

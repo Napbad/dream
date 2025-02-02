@@ -286,7 +286,7 @@ std::string tokenToString(int token) {
 
 %type <str> IDENTIFIER INTEGER BINARY_LITERAL OCTAL_LITERAL HEXADECIMAL_LITERAL FLOAT_LITERAL STRING_LITERAL
 %type <ident> identifier
-%type <expr> expression functionCall bool_ binaryExpression unaryExpression arrayExpression
+%type <expr> expression functionCall bool_ binaryExpression unaryExpression arrayExpression truncExpression
 %type <stmt> importStmt packageDecl statement functionDeclaration variableDecl constantDecl structDecl returnStmt ifStatement forStatement
 %type <stmtVec> statements
 %type <exprVec> expressions 
@@ -404,6 +404,12 @@ expression:
 
         $$->lineNum = yylineno;
         parserLog("Parsed array expression node");
+    }
+    | truncExpression {
+        $$ = $1;
+
+        $$->lineNum = yylineno;
+        parserLog("Parsed trunc expression node");
     };
 
 functionDeclaration:
@@ -939,6 +945,14 @@ arrayExpression:
         // Log message when parsing an array expression node
         $$->lineNum = yylineno;
         parserLog("Parsed array expression node: [" + $1->getName() + "]");
+    };
+
+truncExpression:
+    LEFT_PAREN type RIGHT_PAREN LEFT_PAREN expression RIGHT_PAREN {
+        $$ = new dap::parser::TruncExpressionNode($2, $5);
+        // Log message when parsing a trunc expression node
+        $$->lineNum = yylineno;
+        parserLog("Parsed trunc expression node: [" + ->getName() + "]");
     };
 
 binaryOperator:
