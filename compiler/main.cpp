@@ -128,8 +128,7 @@ int main(const int argc, char **argv)
 
         if (options.genIR) {
             pair.second->genIR(program);
-        }
-        else {
+        } else {
             dap::mech_gen::execGen_singleFile(pair.second, program);
         }
     }

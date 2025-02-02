@@ -13,5 +13,5 @@ std::string getIfBasicBlockName(const std::string &funName);
 std::string getElseBasicBlockName(const std::string &funName);
 
 std::string getMergeBasicBlockName(const std::string &funName);
-}
+} // namespace dap::util
 #endif // !NAME_FORMAT_UTIL

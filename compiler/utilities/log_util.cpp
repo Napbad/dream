@@ -27,7 +27,6 @@ void printHelpMsg()
     cout << "  -s, --source-runtime-dir Source directory of runtime" << endl;
 #endif
     cout << endl;
-
 }
 
 #ifdef D_DEBUG

@@ -1,11 +1,11 @@
 package main;
 
-include dap.std.math.math;
-include dap.runtime.sys.sysFun;
-include dap.runtime.mem.mem;
-include dap.std.type.convert;
-include dap.std.type.string_d;
-include dap.std.io.output;
+import dap.std.math.math;
+import dap.runtime.sys.sysFun;
+import dap.runtime.mem.mem;
+import dap.std.type.convert;
+import dap.std.type.string_d;
+import dap.std.io.output;
 
 imt byte[11] val = "2147483647";
 
@@ -15,65 +15,7 @@ struct S {
 };
 
 fun main() int {
-  imt int* a = 1;
 
-  write(1, charToStr(intToChar(*a)), 1);
-  fsync(1);
-
-  imt S s;
-  s.a = 2;
-  write(1, charToStr(intToChar(s.a)), 1);
-  fsync(1);
-
-  imt int[5] arr = [1,2,3,4,5];
-  write(1, charToStr(intToChar(arr[2])), 1);
-  fsync(1);
-
-  imt S * sp;
-  sp.a = 4;
-  write(1, charToStr(intToChar(sp.a)), 1);
-  fsync(1);
-
-  imt int b = 5;
-  write(1, charToStr(intToChar(b)), 1);
-  fsync(1);
-
-  imt byte* s2 = "hello";
-  print(s2);
-  newline();
-
-  var int ptrMalloc = malloc(4);
-  ptrMalloc = 5;
-  write(1, charToStr(intToChar(ptrMalloc)), 1);
-  newline();
-
-  imt int i = 0;
-  imt int i2 = 1;
-
-  imt int resAdd = add(i, i2);
-  write(1, charToStr(intToChar(resAdd)), 1);
-  newline();
-
-  imt byte[8] s3 = "hellooo";
-  write (1, &s3, 8);
-
-  imt byte[6] b2 = "1 > 2";
-  if 1 > 2 {
-    print(&b2);
-  } elif 1 < 2 {
-    print(&b2);
-  } else {
-    print(&b2);
-  }
-  var char charVariable = 'A';  // Define a mutable character variable and initialize it with character 'A'.
-  var byte[2] charVal = " ";
-  print(&charVal);
-
-  charVal[0] = charVariable;
-  print(&charVal);
-
-  newline();
-  print(&val);
 
   return 0;
 }

@@ -58,7 +58,7 @@ using std::string;
 
 Value *getValueFromOneName(inter_gen::InterGenContext *ctx, const std::string &name)
 {
-    Value * val = ctx->getVal(name);
+    Value *val = ctx->getVal(name);
 
     if (isa<AllocaInst>(val)) {
         auto allocaInst = dyn_cast<AllocaInst>(val);
@@ -66,7 +66,7 @@ Value *getValueFromOneName(inter_gen::InterGenContext *ctx, const std::string &n
             return allocaInst;
         }
 
-        return BUILDER.CreateLoad( allocaInst->getAllocatedType(), allocaInst);
+        return BUILDER.CreateLoad(allocaInst->getAllocatedType(), allocaInst);
     }
 
     return val;
@@ -83,11 +83,10 @@ Value *getValFromStructValue(inter_gen::InterGenContext *ctx, Value *structValue
         return nullptr;
     }
 
-    Type* structType;
+    Type *structType;
     if (isa<AllocaInst>(structValue)) {
         structType = dyn_cast<AllocaInst>(structValue)->getAllocatedType();
-    }
-    else {
+    } else {
         structType = dyn_cast<StructType>(structValue->getType());
     }
 
@@ -101,25 +100,26 @@ Value *getValFromStructValue(inter_gen::InterGenContext *ctx, Value *structValue
     }
 
     const auto structField = structType->getStructName();
-    const inter_gen::StructMetaData * structMetaData = ctx->metaData->getStruct(structField.str());
+    const inter_gen::StructMetaData *structMetaData = ctx->metaData->getStruct(structField.str());
 
     // std::vector<Value*>
     if (ctx->isNeedPointer()) {
-        return BUILDER.CreateInBoundsGEP(structType,
-            structValue,
+        return BUILDER.CreateInBoundsGEP(
+            structType, structValue,
             {ConstantInt::get(LLVMCTX, APInt(32, 0)),
-                ConstantInt::get(LLVMCTX, APInt(32, structMetaData->getFieldIndex(structFieldName)))});
+             ConstantInt::get(LLVMCTX, APInt(32, structMetaData->getFieldIndex(structFieldName)))});
     }
     // return BUILDER.CreateLoad(structMetaData->getFieldType(structFieldName), BUILDER.CreateInBoundsGEP(structType,
     //         structValue,
     //         {ConstantInt::get(LLVMCTX, APInt(32, 0)),
     //             ConstantInt::get(LLVMCTX, APInt(32, structMetaData->getFieldIndex(structFieldName)))}));
     // structValue = BUILDER.CreateGEP(structType, structValue, {ConstantInt::get(LLVMCTX, APInt(32, 0))});
-    return BUILDER.CreateInBoundsGEP(structType,
-    structValue,
-    {ConstantInt::get(LLVMCTX, APInt(32, 0)),
-        ConstantInt::get(LLVMCTX, APInt(32, structMetaData->getFieldIndex(structFieldName)))});
-    // return BUILDER.CreateExtractValue(structValue, {structMetaData->getFieldIndex(structFieldName)} /* TODO: fill name here*/);
+    return BUILDER.CreateInBoundsGEP(
+        structType, structValue,
+        {ConstantInt::get(LLVMCTX, APInt(32, 0)),
+         ConstantInt::get(LLVMCTX, APInt(32, structMetaData->getFieldIndex(structFieldName)))});
+    // return BUILDER.CreateExtractValue(structValue, {structMetaData->getFieldIndex(structFieldName)} /* TODO: fill
+    // name here*/);
 }
 
 // QualifiedNameNode is considered as an initialValue which represent the variable
@@ -140,14 +140,13 @@ Value *QualifiedNameNode::codeGen(inter_gen::InterGenContext *ctx) const
     // struct name
     bool isNeedPointer = ctx->isNeedPointer();
     ctx->setNeedPointer(true);
-    Value * structValue = getValueFromOneName(ctx, name_parts->front());
+    Value *structValue = getValueFromOneName(ctx, name_parts->front());
     if (!structValue) {
         return nullptr;
     }
 
     string firstName = *name_parts->begin();
     name_parts->erase(name_parts->begin());
-
 
     for (int i = 0; i < name_parts->size(); i++) {
         if (i == name_parts->size() - 1) {
@@ -251,10 +250,33 @@ Value *FloatNode::codeGen(inter_gen::InterGenContext *ctx) const
     return value;
 }
 
+void importFile(inter_gen::InterGenContext *ctx, ProgramNode *program)
+{
+    ctx->currLine = program->lineNum;
+
+    for (auto path : *program->importedPackages) {
+        const std::string target = util::getStrFromVec(*path->packageName->name_parts, ".");
+        if (!inter_gen::moduleMap->contains(target)) {
+            util::logErr("error at: " + ctx->sourcePath + ":" + std::to_string(ctx->currLine) +
+                             " \nInclude statement failed: " + target,
+                         ctx, __FILE__, __LINE__);
+            return;
+        }
+
+        for (const auto moduleMetaData = inter_gen::moduleMap->at(target);
+             const auto &[functionName, function] : moduleMetaData->getFunctions()) {
+            if (!ctx->metaData->getFunction(function->getName())) {
+                Function::Create(function->getType(), Function::ExternalLinkage, function->getName(), MODULE);
+                ctx->metaData->addFunction(function);
+            }
+        }
+    }
+}
 Value *ProgramNode::codeGen(inter_gen::InterGenContext *ctx) const
 {
     // get the package and set the package directory
     ctx->currLine = this->lineNum;
+    inter_gen::moduleMap->emplace(util::getStrFromVec(*packageName->name_parts, "."), ctx->metaData);
     util::create_package_dir(util::getStrFromVec(*packageName->name_parts, "."));
     for (const Statement *stmt : *statements) {
         stmt->codeGen(ctx);
@@ -292,14 +314,13 @@ std::pair<bool, Type *> detectType(const TypeNode *typeNode, const VariableDecla
     return {true, varType};
 }
 
-
-llvm::Value *ArrayExpressionNode::codeGen(inter_gen::InterGenContext *ctx) const
+Value *ArrayExpressionNode::codeGen(inter_gen::InterGenContext *ctx) const
 {
 
     // sync the inter gen context
     ctx->currLine = this->lineNum;
 
-    Value *arrayBase  = expression->codeGen(ctx);
+    Value *arrayBase = expression->codeGen(ctx);
     Value *indexValue = index->codeGen(ctx);
 
     const std::vector<Value *> indices = {
@@ -313,7 +334,6 @@ llvm::Value *ArrayExpressionNode::codeGen(inter_gen::InterGenContext *ctx) const
 
     return nullptr;
 }
-
 
 Value *VariableDeclarationNode::codeGen(inter_gen::InterGenContext *ctx) const
 {
@@ -593,7 +613,6 @@ Value *BinaryExpressionNode::codeGen(inter_gen::InterGenContext *ctx) const
     }
 }
 
-
 Value *UnaryExpressionNode::codeGen(inter_gen::InterGenContext *ctx) const
 {
 
@@ -690,16 +709,15 @@ llvm::Value *TruncExpressionNode::codeGen(inter_gen::InterGenContext *ctx) const
     ctx->currLine = this->lineNum;
 
     // get target type
-    Type* targetType = util::typeOf(this->targetType, ctx);
+    Type *targetType = util::typeOf(this->targetType, ctx);
 
-    Value * value = expression->codeGen(ctx);
+    Value *value = expression->codeGen(ctx);
 
     // trunc
     value = BUILDER.CreateTrunc(value, targetType, "trunc");
 
     return value;
 }
-
 
 Value *FunctionCallExpressionNode::codeGen(inter_gen::InterGenContext *ctx) const
 {
@@ -729,15 +747,11 @@ Value *FunctionCallExpressionNode::codeGen(inter_gen::InterGenContext *ctx) cons
     return callResult;
 }
 
-PHINode *createPHINode(
-    Value *thenValue,
-    BasicBlock *thenBlock,
-    Value *elseValue,
-    BasicBlock *elseBlock,
-    inter_gen::InterGenContext *ctx
-) {
-    Type * thenType = nullptr;
-    const Type * elseType = nullptr;
+PHINode *createPHINode(Value *thenValue, BasicBlock *thenBlock, Value *elseValue, BasicBlock *elseBlock,
+                       inter_gen::InterGenContext *ctx)
+{
+    Type *thenType = nullptr;
+    const Type *elseType = nullptr;
     if (thenValue) {
         thenType = thenValue->getType();
     }
@@ -758,32 +772,25 @@ PHINode *createPHINode(
         return nullptr;
     }
 
-    PHINode * phiNode = BUILDER.CreatePHI(thenType, 2, "PHI_node");
+    PHINode *phiNode = BUILDER.CreatePHI(thenType, 2, "PHI_node");
 
     phiNode->addIncoming(thenValue, thenBlock);
     phiNode->addIncoming(elseValue, elseBlock);
     return phiNode;
 }
 
-
-Value * ifStatementBlockGenerate_if(  Value *conditionBoolVal,
-                                const std::vector<Statement*> *thenBlockStatement,
-                                inter_gen::InterGenContext *ctx) {
+Value *ifStatementBlockGenerate_if(Value *conditionBoolVal, const std::vector<Statement *> *thenBlockStatement,
+                                   inter_gen::InterGenContext *ctx)
+{
 
     // if then block
     const std::string thenBlockName = ctx->getCurrFunMetaData()->getName();
-    BasicBlock *thenBlock = BasicBlock::Create(
-        LLVMCTX,
-        util::getIfBasicBlockName(thenBlockName),
-        ctx->getCurrFun());
+    BasicBlock *thenBlock = BasicBlock::Create(LLVMCTX, util::getIfBasicBlockName(thenBlockName), ctx->getCurrFun());
 
     // merge block
     const std::string mergeBlockName = ctx->getCurrFunMetaData()->getName();
-    BasicBlock *mergeBlock = BasicBlock::Create(
-        LLVMCTX,
-        util::getMergeBasicBlockName(mergeBlockName),
-        ctx->getCurrFun());
-
+    BasicBlock *mergeBlock =
+        BasicBlock::Create(LLVMCTX, util::getMergeBasicBlockName(mergeBlockName), ctx->getCurrFun());
 
     BUILDER.CreateCondBr(conditionBoolVal, thenBlock, mergeBlock);
 
@@ -796,15 +803,13 @@ Value * ifStatementBlockGenerate_if(  Value *conditionBoolVal,
         statement->codeGen(ctx);
     }
 
-    if (!util::basicBlockEndWithBranchStatement(thenBlock, ctx)){
+    if (!util::basicBlockEndWithBranchStatement(thenBlock, ctx)) {
         thenBlockReturnValue = util::getLastValue(thenBlock, ctx);
         BUILDER.CreateBr(mergeBlock);
-
     }
     ctx->popBlock();
 
     BUILDER.SetInsertPoint(mergeBlock);
-
 
     if (ctx->isDefiningNestIfStatement()) {
         ctx->addValueToBeMerged(thenBlockReturnValue, thenBlock);
@@ -813,32 +818,23 @@ Value * ifStatementBlockGenerate_if(  Value *conditionBoolVal,
     return thenBlockReturnValue;
 }
 
-Value * ifStatementBlockGenerate_ifelse(  Value *conditionBoolVal,
-                                const std::vector<Statement*> *thenBlockStatement,
-                                const std::vector<Statement*> *elseBlockStatement,
-                                inter_gen::InterGenContext *ctx) {
-    
+Value *ifStatementBlockGenerate_ifelse(Value *conditionBoolVal, const std::vector<Statement *> *thenBlockStatement,
+                                       const std::vector<Statement *> *elseBlockStatement,
+                                       inter_gen::InterGenContext *ctx)
+{
+
     // if then block
     const std::string thenBlockName = ctx->getCurrFunMetaData()->getName();
-    BasicBlock *thenBlock = BasicBlock::Create(
-        LLVMCTX,
-        util::getIfBasicBlockName(thenBlockName),
-        ctx->getCurrFun());
+    BasicBlock *thenBlock = BasicBlock::Create(LLVMCTX, util::getIfBasicBlockName(thenBlockName), ctx->getCurrFun());
 
     // else block
     const std::string elseBlockName = ctx->getCurrFunMetaData()->getName();
-    BasicBlock *elseBlock = BasicBlock::Create(
-        LLVMCTX,
-        util::getElseBasicBlockName(elseBlockName),
-        ctx->getCurrFun());
+    BasicBlock *elseBlock = BasicBlock::Create(LLVMCTX, util::getElseBasicBlockName(elseBlockName), ctx->getCurrFun());
 
     // merge block
     const std::string mergeBlockName = ctx->getCurrFunMetaData()->getName();
-    BasicBlock *mergeBlock = BasicBlock::Create(
-        LLVMCTX,
-        util::getMergeBasicBlockName(mergeBlockName),
-        ctx->getCurrFun());
-
+    BasicBlock *mergeBlock =
+        BasicBlock::Create(LLVMCTX, util::getMergeBasicBlockName(mergeBlockName), ctx->getCurrFun());
 
     BUILDER.CreateCondBr(conditionBoolVal, thenBlock, elseBlock);
 
@@ -851,10 +847,9 @@ Value * ifStatementBlockGenerate_ifelse(  Value *conditionBoolVal,
         statement->codeGen(ctx);
     }
 
-    if (!util::basicBlockEndWithBranchStatement(thenBlock, ctx)){
+    if (!util::basicBlockEndWithBranchStatement(thenBlock, ctx)) {
         thenBlockReturnValue = util::getLastValue(thenBlock, ctx);
         BUILDER.CreateBr(mergeBlock);
-
     }
     ctx->popBlock();
 
@@ -863,12 +858,11 @@ Value * ifStatementBlockGenerate_ifelse(  Value *conditionBoolVal,
     ctx->pushBlock(elseBlock);
     Value *elseBlockReturnValue = nullptr;
 
-
     for (const auto *statement : *elseBlockStatement) {
         statement->codeGen(ctx);
     }
 
-    if (!util::basicBlockEndWithBranchStatement(elseBlock, ctx)){
+    if (!util::basicBlockEndWithBranchStatement(elseBlock, ctx)) {
         elseBlockReturnValue = util::getLastValue(elseBlock, ctx);
         BUILDER.CreateBr(mergeBlock);
     }
@@ -886,16 +880,12 @@ Value * ifStatementBlockGenerate_ifelse(  Value *conditionBoolVal,
         return nullptr;
     }
 
-    PHINode* node = createPHINode(thenBlockReturnValue, thenBlock, elseBlockReturnValue, elseBlock, ctx);
+    PHINode *node = createPHINode(thenBlockReturnValue, thenBlock, elseBlockReturnValue, elseBlock, ctx);
     return node;
-
 }
 
-PHINode *ifStatementBlockGenerate_ifelseif(
-                            Value *conditionBoolVal,
-                            const std::vector<Statement*> *thenBlockStatement,
-                            const Statement* elseIfStatement,
-                            inter_gen::InterGenContext *ctx)
+PHINode *ifStatementBlockGenerate_ifelseif(Value *conditionBoolVal, const std::vector<Statement *> *thenBlockStatement,
+                                           const Statement *elseIfStatement, inter_gen::InterGenContext *ctx)
 {
     // context relate
     bool isHighestLevelIf = false;
@@ -906,26 +896,17 @@ PHINode *ifStatementBlockGenerate_ifelseif(
     } else {
         // merge block
         const std::string mergeBlockName = ctx->getCurrFunMetaData()->getName();
-        mergeBlock = BasicBlock::Create(
-            LLVMCTX,
-            util::getElseBasicBlockName(mergeBlockName),
-            ctx->getCurrFun());
+        mergeBlock = BasicBlock::Create(LLVMCTX, util::getElseBasicBlockName(mergeBlockName), ctx->getCurrFun());
         ctx->addTargetMergeBlock(mergeBlock);
     }
 
     // if then block
     std::string thenBlockName = ctx->getCurrFunMetaData()->getName();
-    BasicBlock *thenBlock = BasicBlock::Create(
-        LLVMCTX,
-        util::getIfBasicBlockName(thenBlockName),
-        ctx->getCurrFun());
+    BasicBlock *thenBlock = BasicBlock::Create(LLVMCTX, util::getIfBasicBlockName(thenBlockName), ctx->getCurrFun());
 
     // else block
     const std::string elseBlockName = ctx->getCurrFunMetaData()->getName();
-    BasicBlock *elseBlock = BasicBlock::Create(
-        LLVMCTX,
-        util::getElseBasicBlockName(elseBlockName),
-        ctx->getCurrFun());
+    BasicBlock *elseBlock = BasicBlock::Create(LLVMCTX, util::getElseBasicBlockName(elseBlockName), ctx->getCurrFun());
 
     BUILDER.CreateCondBr(conditionBoolVal, thenBlock, elseBlock);
 
@@ -945,14 +926,14 @@ PHINode *ifStatementBlockGenerate_ifelseif(
     elseIfStatement->codeGen(ctx);
 
     // create PHI node
-    PHINode* node;
+    PHINode *node;
 
     ctx->popBlock();
 
-    BasicBlock * blockToMerge = ctx->getTargetMergeBlock();
+    BasicBlock *blockToMerge = ctx->getTargetMergeBlock();
 
     // add branch statement to the then block
-    if (!util::basicBlockEndWithBranchStatement(thenBlock, ctx)){
+    if (!util::basicBlockEndWithBranchStatement(thenBlock, ctx)) {
         thenBlockReturnValue = util::getLastValue(thenBlock, ctx);
         BUILDER.SetInsertPoint(thenBlock);
         BUILDER.CreateBr(blockToMerge);
@@ -983,22 +964,21 @@ PHINode *ifStatementBlockGenerate_ifelseif(
         return nullptr;
     }
 
-
     return node;
 }
 Value *IfStatementNode::codeGen(inter_gen::InterGenContext *ctx) const
-{   
-    // context sync 
+{
+    // context sync
     ctx->currLine = this->lineNum;
 
-    // if condition 
+    // if condition
     Value *condition = conditionExpression->codeGen(ctx);
     if (!condition) {
 #ifdef D_DEBUG
         util::logErr("Invalid condition", ctx, __FILE__, __LINE__);
 #else
         util::logErr("Invalid condition", ctx);
-#endif   
+#endif
         return nullptr;
     }
     Value *conditionBoolVal = util::toBool(condition, ctx);
@@ -1012,7 +992,7 @@ Value *IfStatementNode::codeGen(inter_gen::InterGenContext *ctx) const
 
     if (!elseIf && elseBlock) {
         value = ifStatementBlockGenerate_ifelse(conditionBoolVal, thenBlock, elseBlock, ctx);
-    }  
+    }
 
     if (elseIf) {
         value = ifStatementBlockGenerate_ifelseif(conditionBoolVal, thenBlock, elseIf, ctx);
@@ -1023,7 +1003,8 @@ Value *IfStatementNode::codeGen(inter_gen::InterGenContext *ctx) const
     return value;
 }
 
-Value *ForStatementNode::codeGen(inter_gen::InterGenContext *ctx) const {
+Value *ForStatementNode::codeGen(inter_gen::InterGenContext *ctx) const
+{
     ctx->currLine = this->lineNum;
     // Generate code for initialization Expression
     Value *initGen = conditionDeclaration->codeGen(ctx);
@@ -1043,8 +1024,8 @@ Value *ForStatementNode::codeGen(inter_gen::InterGenContext *ctx) const {
     //     brCond = BUILDER.CreateFCmp(CmpInst::FCMP_ONE, condVal, ConstantFP::get(LLVMCTX, APFloat(0.0)));
     //     break;
     // case Type::PointerTyID:
-    //     brCond = BUILDER.CreateICmp(CmpInst::ICMP_NE, condVal, ConstantPointerNull::get(PointerType::get(LLVMCTX, 0)));
-    //     break;
+    //     brCond = BUILDER.CreateICmp(CmpInst::ICMP_NE, condVal, ConstantPointerNull::get(PointerType::get(LLVMCTX,
+    //     0))); break;
     // default:
     //     return nullptr;
     // }
@@ -1062,8 +1043,8 @@ Value *ForStatementNode::codeGen(inter_gen::InterGenContext *ctx) const {
         statement->codeGen(ctx);
     }
     BUILDER.CreateStore(variableChange->codeGen(ctx),
-                        initGen); // Update the loop step variable
-    brCond = condition->codeGen(ctx);  // Re-check the loop condition
+                        initGen);     // Update the loop step variable
+    brCond = condition->codeGen(ctx); // Re-check the loop condition
     BUILDER.CreateCondBr(brCond, loopBB, exitBB);
 
     // Insert the exit block after the loop ends
@@ -1263,7 +1244,8 @@ void InterGenContext::genExec(parser::ProgramNode *program)
 
 std::unordered_map<IncludeGraphNode *, bool> visited{};
 
-void InterGenContext::registerStructMetadata(StructMetaData *metaData)const{
+void InterGenContext::registerStructMetadata(StructMetaData *metaData) const
+{
     this->metaData->addStruct(metaData);
 }
 
@@ -1372,13 +1354,12 @@ void InterGenContext::setCurrFunMetaData(FunctionMetaData *funMetaData)
 }
 
 InterGenContext::InterGenContext(std::string sourcePathInput)
-    :assigning(false), builder(llvm::IRBuilder(*llvmContext)), sourcePath(std::move(std::move(sourcePathInput)))
+    : assigning(false), builder(llvm::IRBuilder(*llvmContext)), sourcePath(std::move(std::move(sourcePathInput)))
 {
     fileName = sourcePath.substr(sourcePath.find_last_of('/') + 1);
-    module = new llvm::Module(sourcePath, *llvmContext);
+    module = new Module(sourcePath, *llvmContext);
     metaData = new ModuleMetaData(module);
     definingNestedIfStatement.push(false);
-
 }
 
 } // namespace inter_gen

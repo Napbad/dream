@@ -5,8 +5,8 @@
 
 #include "llvm_util.h"
 
-#include "string_util.h"
 #include "inter_gen/codeGen_inter.h"
+#include "string_util.h"
 
 namespace dap::util
 {
@@ -26,7 +26,7 @@ llvm::Type *typeOf(const parser::TypeNode *type, const inter_gen::InterGenContex
         }
     }
 
-    if (llvm::StructType * structType = llvm::StructType::getTypeByName(LLVMCTX, type->getName())) {
+    if (llvm::StructType *structType = llvm::StructType::getTypeByName(LLVMCTX, type->getName())) {
         res = structType;
     }
 
@@ -70,8 +70,8 @@ void initTargets()
     llvm::InitializeAllAsmPrinters();
 }
 
-llvm::AllocaInst *createAllocaInst(llvm::Type *type,  llvm::IRBuilder<> &builder,
-                                   const std::string &name, llvm::LLVMContext *llvmContext)
+llvm::AllocaInst *createAllocaInst(llvm::Type *type, llvm::IRBuilder<> &builder, const std::string &name,
+                                   llvm::LLVMContext *llvmContext)
 {
     if (type->isArrayTy()) {
         const uint64_t array_num_elements = type->getArrayNumElements();
@@ -89,15 +89,20 @@ llvm::Value *toBool(llvm::Value *src, inter_gen::InterGenContext *ctx)
     if (llvm::Type *condType = src->getType(); condType->isIntegerTy()) {
         src = BUILDER.CreateICmpNE(src, llvm::ConstantInt::get(condType, 0), "boolValue");
         return src;
-    } else {if (condType->isFloatingPointTy()) {
-        src = BUILDER.CreateFCmpONE(src, llvm::ConstantFP::get(condType, 0.0), "boolValue");
-        return src;
-    }if (condType->isPointerTy() || condType->isArrayTy()) {
-        src = BUILDER.CreateICmpNE(src, llvm::ConstantPointerNull::get(cast<llvm::PointerType>(condType)), "boolValue");
-        return src;
-    }}
+    } else {
+        if (condType->isFloatingPointTy()) {
+            src = BUILDER.CreateFCmpONE(src, llvm::ConstantFP::get(condType, 0.0), "boolValue");
+            return src;
+        }
+        if (condType->isPointerTy() || condType->isArrayTy()) {
+            src = BUILDER.CreateICmpNE(src, llvm::ConstantPointerNull::get(cast<llvm::PointerType>(condType)),
+                                       "boolValue");
+            return src;
+        }
+    }
 #ifdef D_DEBUG
-    logWarn("Unsupported type for boolean conversion: " + util::getTypeName(src->getType(), ctx), ctx, __FILE__, __LINE__);
+    logWarn("Unsupported type for boolean conversion: " + util::getTypeName(src->getType(), ctx), ctx, __FILE__,
+            __LINE__);
 #else
     logWarn("Unsupported type for boolean conversion: " + util::getTypeName(src->getType(), ctx), ctx);
 #endif
@@ -109,10 +114,9 @@ bool basicBlockEndWithBranchStatement(const llvm::BasicBlock *bb, const inter_ge
     auto bbIterator = bb->end();
 
     --bbIterator;
-    if (bbIterator->getOpcode() == llvm::Instruction::Br
-        || bbIterator->getOpcode() == llvm::Instruction::Ret){
-            return true;
-        }
+    if (bbIterator->getOpcode() == llvm::Instruction::Br || bbIterator->getOpcode() == llvm::Instruction::Ret) {
+        return true;
+    }
 
     return false;
 }
@@ -133,20 +137,21 @@ llvm::Value *getLastValue(llvm::BasicBlock *src, inter_gen::InterGenContext *ctx
     return (*basicBlockIterator).getOperand(0);
 }
 
-
-llvm::Constant* createNullValue(llvm::LLVMContext& context, llvm::Type* type) {
-    if (!type) return nullptr;
+llvm::Constant *createNullValue(llvm::LLVMContext &context, llvm::Type *type)
+{
+    if (!type)
+        return nullptr;
 
     if (type->isPointerTy()) {
         return llvm::Constant::getNullValue(type);
     }
     if (type->isStructTy()) {
-        auto* structType = llvm::cast<llvm::StructType>(type);
+        auto *structType = llvm::cast<llvm::StructType>(type);
         const unsigned numElements = structType->getNumElements();
-        std::vector<llvm::Constant*> nullMembers;
+        std::vector<llvm::Constant *> nullMembers;
         for (unsigned i = 0; i < numElements; ++i) {
-            llvm::Type* memberType = structType->getElementType(i);
-            if (llvm::Constant* nullMember = createNullValue(context, memberType)) {
+            llvm::Type *memberType = structType->getElementType(i);
+            if (llvm::Constant *nullMember = createNullValue(context, memberType)) {
                 nullMembers.push_back(nullMember);
             }
         }
@@ -154,7 +159,5 @@ llvm::Constant* createNullValue(llvm::LLVMContext& context, llvm::Type* type) {
     }
     return llvm::Constant::getNullValue(type);
 }
-
-
 
 } // namespace dap::util

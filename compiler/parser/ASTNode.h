@@ -67,9 +67,10 @@ class Statement : public ASTNode
   public:
     Expression *value = nullptr;
 
-    llvm::Value *codeGen(inter_gen::InterGenContext *ctx) const override {
+    llvm::Value *codeGen(inter_gen::InterGenContext *ctx) const override
+    {
         if (value) {
-          return value->codeGen(ctx);
+            return value->codeGen(ctx);
         }
 
 #ifdef D_DEBUG
@@ -119,37 +120,37 @@ class IntegerNode final : public Expression
         // Convert the string to the appropriate type based on BasicType
         try {
             switch (type) {
-                case BasicType::BYTE:
-                case BasicType::UBYTE:
-                    intValue.charVal = static_cast<char>(std::stoi(*value));
-                    intType = CHAR;
-                    break;
-                case BasicType::SHORT:
-                case BasicType::USHORT:
-                    intValue.shortVal = static_cast<short>(std::stoi(*value));
-                    intType = SHORT;
-                    break;
-                case BasicType::INT:
-                case BasicType::UINT:
-                    intValue.signedVal = std::stoi(*value);
-                    intType = INT;
-                    break;
-                case BasicType::LONG:
-                case BasicType::ULONG:
-                    intValue.longVal = std::stol(*value);
-                    intType = LONG;
-                    break;
-                case BasicType::LLONG:
-                case BasicType::ULLONG:
-                    intValue.longLongVal = std::stoll(*value);
-                    intType = LONG_LONG;
-                    break;
-                default:
-                    throw std::invalid_argument("Unsupported BasicType for IntegerNode");
+            case BasicType::BYTE:
+            case BasicType::UBYTE:
+                intValue.charVal = static_cast<char>(std::stoi(*value));
+                intType = CHAR;
+                break;
+            case BasicType::SHORT:
+            case BasicType::USHORT:
+                intValue.shortVal = static_cast<short>(std::stoi(*value));
+                intType = SHORT;
+                break;
+            case BasicType::INT:
+            case BasicType::UINT:
+                intValue.signedVal = std::stoi(*value);
+                intType = INT;
+                break;
+            case BasicType::LONG:
+            case BasicType::ULONG:
+                intValue.longVal = std::stol(*value);
+                intType = LONG;
+                break;
+            case BasicType::LLONG:
+            case BasicType::ULLONG:
+                intValue.longLongVal = std::stoll(*value);
+                intType = LONG_LONG;
+                break;
+            default:
+                throw std::invalid_argument("Unsupported BasicType for IntegerNode");
             }
-        } catch (const std::out_of_range&) {
+        } catch (const std::out_of_range &) {
             throw std::out_of_range("Value out of range for the specified BasicType");
-        } catch (const std::invalid_argument&) {
+        } catch (const std::invalid_argument &) {
             throw std::invalid_argument("Invalid integer value for the specified BasicType");
         }
     }
@@ -187,7 +188,6 @@ class IntegerNode final : public Expression
         DOUBLE,
         LONG_LONG,
     } intType;
-
 };
 
 class FloatNode : public Expression
@@ -227,7 +227,6 @@ class StringNode final : public Expression
     }
 
     llvm::Value *codeGen(inter_gen::InterGenContext *ctx) const override;
-
 };
 
 class BoolNode final : public Expression
@@ -292,9 +291,10 @@ class TruncExpressionNode final : public Expression
 {
   public:
     Expression *expression;
-    TypeNode* targetType;
+    TypeNode *targetType;
 
-    explicit TruncExpressionNode(TypeNode* targetType, Expression *expression) : targetType(targetType), expression(expression)
+    explicit TruncExpressionNode(TypeNode *targetType, Expression *expression)
+        : targetType(targetType), expression(expression)
     {
     }
 
@@ -600,18 +600,14 @@ class IfStatementNode final : public Statement
 {
   public:
     Expression *conditionExpression;
-    std::vector<Statement*> *thenBlock;
-    std::vector<Statement*> *elseBlock;
+    std::vector<Statement *> *thenBlock;
+    std::vector<Statement *> *elseBlock;
     Statement *elseIf;
 
     // Constructor for IfStatementNode
-    IfStatementNode(
-        Expression *conditionExpression,
-        std::vector<Statement*> *thenBlock,
-        std::vector<Statement*> *elseBlock = nullptr,
-        Statement *elseIf = nullptr
-    ): 
-    conditionExpression(conditionExpression), thenBlock(thenBlock), elseBlock(elseBlock), elseIf(elseIf)
+    IfStatementNode(Expression *conditionExpression, std::vector<Statement *> *thenBlock,
+                    std::vector<Statement *> *elseBlock = nullptr, Statement *elseIf = nullptr)
+        : conditionExpression(conditionExpression), thenBlock(thenBlock), elseBlock(elseBlock), elseIf(elseIf)
     {
     }
 
@@ -632,18 +628,12 @@ class ForStatementNode final : public Statement
     VariableDeclarationNode *conditionDeclaration;
     Expression *condition;
     Expression *variableChange;
-    std::vector<Statement*> *block;
+    std::vector<Statement *> *block;
 
     // Constructor for ForStatementNode
-    ForStatementNode(
-        VariableDeclarationNode *conditionDeclaration,
-        Expression *condition,
-        Expression *variableChange,
-        std::vector<Statement*> *block
-    ) : conditionDeclaration(conditionDeclaration),
-        condition(condition),
-        variableChange(variableChange),
-        block(block)
+    ForStatementNode(VariableDeclarationNode *conditionDeclaration, Expression *condition, Expression *variableChange,
+                     std::vector<Statement *> *block)
+        : conditionDeclaration(conditionDeclaration), condition(condition), variableChange(variableChange), block(block)
     {
     }
 
@@ -871,7 +861,6 @@ class ReturnStatementNode final : public Statement
     }
 
     llvm::Value *codeGen(inter_gen::InterGenContext *ctx) const override;
-
 };
 } // namespace parser
 } // namespace dap

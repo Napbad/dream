@@ -10,6 +10,8 @@
 
 namespace dap::inter_gen
 {
+std::unordered_map<std::string, ModuleMetaData *> *moduleMap = new std::unordered_map<std::string, ModuleMetaData *>;
+
 StructMetaData::StructMetaData(InterGenContext *context, std::string name) : ctx(context), name_(std::move(name))
 {
 }
@@ -115,6 +117,11 @@ VariableMetaData *ModuleMetaData::getGlobalValMetaData(const std::string &name)
         return nullptr;
     }
     return globalMetaDataMap[name];
+}
+
+std::unordered_map<std::string, FunctionMetaData *> ModuleMetaData::getFunctions()
+{
+    return functionMap;
 }
 
 bool VariableMetaData::isMutable() const

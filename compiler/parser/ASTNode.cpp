@@ -50,7 +50,7 @@ std::string dap::parser::FloatNode::getValue() const
     if (isDouble) {
         return std::to_string(floatValue.doubleVal);
     }
-        return std::to_string(floatValue.floatVal);
+    return std::to_string(floatValue.floatVal);
 }
 
 int dap::parser::IntegerNode::getBits() const
@@ -105,4 +105,3 @@ dap::parser::FunctionDeclarationNode::~FunctionDeclarationNode()
     }
     delete block;
 }
-

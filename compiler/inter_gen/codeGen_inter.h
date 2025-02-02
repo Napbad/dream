@@ -72,19 +72,19 @@ class InterGenContext
     std::stack<bool> definingNestedIfStatement;
     bool assigning;
 
-    std::stack<llvm::BasicBlock*> elseIfBlock_merge;
+    std::stack<llvm::BasicBlock *> elseIfBlock_merge;
     std::stack<llvm::Value *> elseIfBlockValue;
     std::vector<llvm::BasicBlock *> targetMergeBlocks;
     std::vector<std::pair<llvm::BasicBlock *, llvm::Value *>> valueToMerge;
+
   public:
-    llvm::Module *module;                            ///< LLVM module
-    llvm::IRBuilder<> builder;                       ///< IR builder
+    llvm::Module *module;      ///< LLVM module
+    llvm::IRBuilder<> builder; ///< IR builder
     ModuleMetaData *metaData = nullptr;
     int currLine = -1;
     std::string sourcePath;
     std::string package;
     std::string fileName;
-
 
     FunctionMetaData *getFunMetaData(const std::string &name, const inter_gen::InterGenContext *ctx) const;
     std::pair<llvm::Value *, VariableMetaData *> getValWithMetadata(const std::string &name);
@@ -98,7 +98,7 @@ class InterGenContext
         assigning = cond;
     }
 
-    bool isNeedPointer()const
+    bool isNeedPointer() const
     {
         return assigning;
     }
@@ -266,7 +266,8 @@ class InterGenContext
         return nullptr;
     }
 
-    void registerStructMetadata(StructMetaData *metaData)const;
+    void registerStructMetadata(StructMetaData *metaData) const;
+
     std::string errMsg(const std::string &msg) const
     {
         return "Error at: " + sourcePath + std::to_string(currLine) + ": \n" + msg;
@@ -285,13 +286,13 @@ class InterGenContext
         return definingNestedIfStatement.top();
     }
 
-    void addNestIfStatementResult(llvm::Value *val, llvm::BasicBlock* block)
+    void addNestIfStatementResult(llvm::Value *val, llvm::BasicBlock *block)
     {
         elseIfBlock_merge.push(block);
         elseIfBlockValue.push(val);
     }
 
-    std::pair<llvm::Value *, llvm::BasicBlock*> getNestIfStatementResult()
+    std::pair<llvm::Value *, llvm::BasicBlock *> getNestIfStatementResult()
     {
         llvm::Value *val = elseIfBlockValue.top();
         llvm::BasicBlock *block = elseIfBlock_merge.top();
@@ -300,7 +301,7 @@ class InterGenContext
         return {val, block};
     }
 
-    void addTargetMergeBlock(llvm::BasicBlock* block)
+    void addTargetMergeBlock(llvm::BasicBlock *block)
     {
         targetMergeBlocks.push_back(block);
     }
@@ -315,14 +316,11 @@ class InterGenContext
         return valueToMerge;
     }
 
-    llvm::BasicBlock* getTargetMergeBlock()const
+    llvm::BasicBlock *getTargetMergeBlock() const
     {
-        llvm::BasicBlock* block = targetMergeBlocks.back();
+        llvm::BasicBlock *block = targetMergeBlocks.back();
         return block;
     }
-
-
-
 };
 
 void interGen_oneFile(IncludeGraphNode *node);

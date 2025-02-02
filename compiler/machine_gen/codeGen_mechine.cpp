@@ -2,10 +2,10 @@
 // Created by napbad on 11/26/24.
 //
 
+#include <filesystem>
+#include <fstream>
 #include <string>
 #include <unordered_map>
-#include <fstream>
-#include <filesystem>
 
 #include "codeGen_mechine.h"
 
@@ -15,7 +15,6 @@
 #include "utilities/string_util.h"
 
 #include "parser/parserMain.h"
-
 
 std::unordered_map<dap::inter_gen::IncludeGraphNode *, bool> dap::mech_gen::visited;
 
@@ -60,7 +59,6 @@ void dap::mech_gen::execGen_singleFile(inter_gen::InterGenContext *ctx, dap::par
 #else
     util::logInfo("executable file has been generate: " + buildDir + targetExecName, ctx)
 #endif
-
 }
 
 void dap::mech_gen::genExecToOneFile(inter_gen::IncludeGraphNode *node)

@@ -952,7 +952,7 @@ truncExpression:
         $$ = new dap::parser::TruncExpressionNode($2, $5);
         // Log message when parsing a trunc expression node
         $$->lineNum = yylineno;
-        parserLog("Parsed trunc expression node: [" + ->getName() + "]");
+        parserLog("Parsed trunc expression node: [" + $2->getName() + "]");
     };
 
 binaryOperator:

@@ -224,6 +224,8 @@ class ModuleMetaData
 
     VariableMetaData *getGlobalValMetaData(const std::string &name);
 
+    std::unordered_map<std::string, FunctionMetaData *> getFunctions();
+
   private:
     // std::vector<StructMetaData *> structs;                                 // List of structure metadata
     // std::vector<FunctionMetaData *> functions;                             // List of function metadata
@@ -266,6 +268,8 @@ class VariableMetaData
     std::stack<bool> nullableStack_{};
     InterGenContext *ctx = nullptr;
 };
+
+extern std::unordered_map<std::string, ModuleMetaData *> *moduleMap;
 } // namespace dap::inter_gen
 
 #endif // STRUCTMETADATA_H

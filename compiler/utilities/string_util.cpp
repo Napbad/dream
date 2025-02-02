@@ -295,7 +295,8 @@ std::string *getPureStr(std::string *sourceStr)
     return sourceStr;
 }
 
-std::string getTypeName(const llvm::Type *type, inter_gen::InterGenContext *ctx) {
+std::string getTypeName(const llvm::Type *type, inter_gen::InterGenContext *ctx)
+{
     if (type->isPointerTy()) {
         return getTypeName(type->getContainedType(0), ctx) + "*";
     }
@@ -304,16 +305,16 @@ std::string getTypeName(const llvm::Type *type, inter_gen::InterGenContext *ctx)
     }
     if (type->isIntegerTy()) {
         switch (type->getIntegerBitWidth()) {
-            case 8:
-                return "byte";
-            case 16:
-                return "short";
-            case 32:
-                return "int";
-            case 64:
-                return "long";
-            default:
-                return "int" + std::to_string(type->getIntegerBitWidth()) + "_t";
+        case 8:
+            return "byte";
+        case 16:
+            return "short";
+        case 32:
+            return "int";
+        case 64:
+            return "long";
+        default:
+            return "int" + std::to_string(type->getIntegerBitWidth()) + "_t";
         }
     }
     if (type->isFloatTy()) {
