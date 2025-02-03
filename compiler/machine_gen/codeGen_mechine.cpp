@@ -28,10 +28,10 @@ void dap::mech_gen::execGen(const std::set<inter_gen::IncludeGraphNode *> &map)
     std::string files = util::getStrFromVec(*filesToCompile, " ");
     files.append(" ").append(buildDir).append("dap/runtime/asm/_start.o ");
 #ifdef D_DEBUG
-    util::logErr("Compiling with command: " + ("ld " + files + arg + " -o " + targetExecName + " "), nullptr, __FILE__,
+    util::logInfo("Compiling with command: " + ("ld " + files + arg + " -o " + targetExecName + " "), nullptr, __FILE__,
                  __LINE__);
 #else
-    util::logErr("Compiling with command: " + ("ld " + files + arg + " -o " + targetExecName + " "), nullptr);
+    util::logInfo("Compiling with command: " + ("ld " + files + arg + " -o " + targetExecName + " "), nullptr);
 #endif
 
     system(("ld " + files + arg + " -o " + targetExecName + " ").c_str());

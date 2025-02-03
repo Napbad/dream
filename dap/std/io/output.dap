@@ -6,15 +6,18 @@ import dap.runtime.sys.sysFun;
 fun print(imt byte* str) void {
     write(1, str, strlen(str));
     fsync(1);
+    return;
 }
 
 fun println(imt byte* str) void {
     print(str);
-    write(1, mkStr((byte)(10)), 2);
+    write(1, str, strlen(str));
     fsync(1);
+    return;
 }
 
 fun newline() void {
-    write(1, mkStr((byte)(10)), 2);
+    write(1, &(byte)(10), 2);
     fsync(1);
+    return;
 }

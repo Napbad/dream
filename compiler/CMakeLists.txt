@@ -90,6 +90,8 @@ add_executable(dap_compiler
         inter_gen/preprocessing/includeAnaylize.cpp
         inter_gen/check/variableCheck.cpp
         inter_gen/check/variableCheck.h
+        inter_gen/globalInterInfo.cpp
+        inter_gen/globalInterInfo.h
 )
 
 

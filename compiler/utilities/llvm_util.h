@@ -10,6 +10,12 @@
 #include <llvm/IR/IRBuilder.h>
 #include <llvm/IR/Instructions.h>
 #include <llvm/IR/Type.h>
+
+namespace dap::inter_gen
+{
+extern std::unordered_map<llvm::PointerType*, llvm::Type* > pointerMap;
+}
+
 namespace dap::util
 {
 // Returns an LLVM type based on the TypeNode

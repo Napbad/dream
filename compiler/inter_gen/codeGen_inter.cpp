@@ -334,15 +334,49 @@ Value *ArrayExpressionNode::codeGen(inter_gen::InterGenContext *ctx) const
     ctx->currLine = this->lineNum;
 
     Value *arrayBase = expression->codeGen(ctx);
+
+    bool needPointer = ctx->isNeedPointer();
+    ctx->setNeedPointer(false);
     Value *indexValue = index->codeGen(ctx);
+    ctx->setNeedPointer(needPointer);
 
     const std::vector<Value *> indices = {
-        ConstantInt::get(Type::getInt32Ty(LLVMCTX), 0),
+        // ConstantInt::get(Type::getInt32Ty(LLVMCTX), 0),
         indexValue // Index
     };
 
     if (arrayBase && indexValue) {
-        return BUILDER.CreateGEP(arrayBase->getType(), arrayBase, indices, "array_access");
+        if (!arrayBase->getType()->isArrayTy() && !arrayBase->getType()->isPointerTy()) {
+#ifdef D_DEBUG
+            util::logErr("not support type to get value on offset", ctx, __FILE__, __LINE__);
+#else
+            util::logErr("not support type to get value on offset", ctx);
+#endif
+        }
+
+        if (arrayBase->getType()->isArrayTy()) {
+            auto arrayType = dyn_cast<ArrayType>(arrayBase->getType());
+            Type * elementType = arrayType->getElementType();
+            Value* elementPointer = BUILDER.CreateGEP(elementType, arrayBase, indices, "array_access");
+            if (needPointer) {
+                return elementPointer;
+            }
+            return BUILDER.CreateLoad(elementType, elementPointer, "array_access_value");
+        }
+
+        if (arrayBase->getType()->isPointerTy()) {
+            auto pointerType = dyn_cast<PointerType>(arrayBase->getType());
+            if (inter_gen::pointerMap.contains(pointerType)) {
+                Value* elementPointer = BUILDER.CreateGEP(inter_gen::pointerMap[pointerType], arrayBase, indexValue, "pointer_offset_access");
+                if (needPointer) {
+                    return elementPointer;
+                }
+                return BUILDER.CreateLoad(inter_gen::pointerMap[pointerType], elementPointer, "pointer_offset_access_value");
+            }
+            // Type * elementType = pointerType->getScalarType();
+            return BUILDER.CreateGEP(IntegerType::get(LLVMCTX, 32), arrayBase, indices, "array_access");
+        }
+
     }
 
     return nullptr;
@@ -503,12 +537,13 @@ Value *BinaryExpressionNode::codeGen(inter_gen::InterGenContext *ctx) const
 
     ctx->currLine = this->lineNum;
     // Generate code for left-hand side and right-hand side Expressions
+    const bool needPointer = ctx->isNeedPointer();
 
     if (operatorType == ASSIGN) {
         ctx->setNeedPointer(true);
     }
     Value *lhsVal = left->codeGen(ctx);
-    ctx->setNeedPointer(false);
+    ctx->setNeedPointer(needPointer);
     Value *rhsVal = right->codeGen(ctx);
 
     // Check for null results from the code generation
@@ -611,7 +646,6 @@ Value *BinaryExpressionNode::codeGen(inter_gen::InterGenContext *ctx) const
 
     // Assignment operators
     case ASSIGN:
-        ctx->setNeedPointer(false);
         return BUILDER.CreateStore(rhsVal, lhsVal, false);
     case ADD_ASSIGN: {
         Value *result = isFloatingPoint ? BUILDER.CreateFAdd(lhsVal, rhsVal, "addassigntmp")
@@ -750,7 +784,7 @@ llvm::Value *TruncExpressionNode::codeGen(inter_gen::InterGenContext *ctx) const
     Value *value = expression->codeGen(ctx);
 
     // trunc
-    value = BUILDER.CreateTrunc(value, targetType, "trunc");
+    value = BUILDER.CreateSExtOrTrunc(value, targetType, "trunc");
 
     return value;
 }
@@ -778,10 +812,11 @@ Value *FunctionCallExpressionNode::codeGen(inter_gen::InterGenContext *ctx) cons
         functionArgs.push_back(arg->codeGen(ctx));
     }
 
-    if (function->getReturnType() == nullptr) {
-        BUILDER.CreateCall(function, functionArgs, "call");
+    if (function->getReturnType() == nullptr || function->getReturnType()->isVoidTy()) {
+        BUILDER.CreateCall(function, functionArgs);
         return nullptr;
     }
+
     // call
     Value *callResult = BUILDER.CreateCall(function, functionArgs, "call");
 

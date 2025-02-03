@@ -36,7 +36,9 @@ llvm::Type *typeOf(const parser::TypeNode *type, const inter_gen::InterGenContex
 
     if (type->isPointer) {
         if (res) {
-            res = llvm::PointerType::get(res, 0);
+            auto tmpRes = llvm::PointerType::get(res, 0);
+            inter_gen::pointerMap.emplace(tmpRes, res);
+            res = tmpRes;
         }
         res = llvm::PointerType::get(LLVMCTX, 0);
     }

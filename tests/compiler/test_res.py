@@ -1,5 +1,7 @@
 import threading
 
+from colorama import Fore
+
 
 testNum = 0
 passedTest = 0
@@ -59,3 +61,13 @@ def print_result():
         print("Failed tests:")
         for test in failedTestList:
             print("\n\t" + test)
+    else:
+        print(Fore.GREEN + """
+ _______     _       ______    ______   _  
+|_   __ \   / \    .' ____ \ .' ____ \ | | 
+  | |__) | / _ \   | (___ \_|| (___ \_|| | 
+  |  ___/ / ___ \   _.____`.  _.____`. | | 
+ _| |_  _/ /   \ \_| \____) || \____) ||_| 
+|_____||____| |____|\______.' \______.'(_) 
+                                           
+""" + Fore.RESET)

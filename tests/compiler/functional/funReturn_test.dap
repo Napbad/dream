@@ -1,0 +1,13 @@
+package main;
+
+fun write(imt int fd, imt byte* str, imt int len) int;
+
+fun add (imt int a, imt int b) int {
+    return a + b;
+}
+
+fun main() int {
+    var b = add(97, 1);
+    write(1, &b, 2); 
+    return 0;
+}

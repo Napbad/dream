@@ -1,7 +1,5 @@
 package main;
 
-import a;
-
 fun write(imt int fd, imt byte *value, imt int len) int;
 
 fun main() int {

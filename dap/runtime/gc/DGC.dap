@@ -4,5 +4,5 @@ import dap.runtime.sys.sysFun;
 
 
 fun gc() {
-
+    return;
 }

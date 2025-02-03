@@ -1,21 +1,17 @@
 package main;
 
-// import dap.std.math.math;
-// import dap.runtime.sys.sysFun;
-// import dap.runtime.mem.mem;
-// import dap.std.type.convert;
-// import dap.std.type.string_d;
-// import dap.std.io.output;
+import dap.std.io.output;
+import dap.std.io.input;
 
-// imt byte[11] val = "2147483647";
-
-// struct S {
-//   imt int a;
-//   imt int b;
-// };
 
 fun main() int {
+  // var byte[32] buf;
 
+  // stdioRead(&buf, 32);
+
+  // newline();
+
+  // print(&buf);
 
   return 0;
 }
